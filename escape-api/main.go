@@ -1,23 +1,33 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"path/filepath"
+	"text/template"
 )
 
 func main() {
-	registerPathHandlers()
+	startServer()
+}
+
+func startServer() {
 	fs := http.FileServer(http.Dir("./escape-api/assets"))
 	http.Handle("/assets/", http.StripPrefix("/assets/", fs))
+	http.Handle("/favicon.ico", fs)
 
 	http.HandleFunc("/", serveHtml)
 
 	http.ListenAndServe(":80", nil)
 }
 
-func registerPathHandlers() {
-	//http.HandleFunc("/", escape_html.Test)
-}
-
 func serveHtml(w http.ResponseWriter, r *http.Request) {
-	//lp := filepath.Join("escape-api", "assets")
+	layoutPath := filepath.Join("escape-api", "assets", "html", "templates", "layout.html")
+	requestedFilePath := filepath.Join("escape-api", "assets", "html", fmt.Sprintf("%s.html", filepath.Clean(r.URL.Path)))
+
+	tmpl, err := template.ParseFiles(layoutPath, requestedFilePath)
+	if err != nil {
+		tmpl, _ = template.ParseFiles(layoutPath, filepath.Join("escape-api", "assets", "html", "index.html"))
+	}
+	tmpl.ExecuteTemplate(w, "layout", nil)
 }

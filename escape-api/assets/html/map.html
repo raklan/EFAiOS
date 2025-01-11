@@ -1,0 +1,81 @@
+{{define "styling"}}
+<style type="text/css">
+    svg {}
+
+    .hexfield {
+        fill: transparent;
+        stroke: yellowgreen;
+        stroke-width: 1;
+    }
+
+    .hexfield:focus {
+        outline: none;
+    }
+
+    .hexfield:hover {
+        fill: green;
+    }
+
+    .hexfield:active {
+        fill: red;
+        outline: none;
+    }
+
+    .hexfield.clicked {
+        fill: black;
+    }
+</style>
+{{end}}
+
+{{define "body"}}
+<div class="container" id="gridParent"></div>
+<div class="row">
+    <div class="span6" style="text-align:center">
+        <div id="container"> </div>
+        <h2><small id="logger">click around the grid</small></h2>
+    </div>
+    <div class="span6">
+        <form class="form-horizontal" id="rebuildform">
+            <div class="control-group">
+                <label class="control-label">Rows</label>
+                <div class="controls">
+                    <input class="input" id="rows" placeholder="Rows" value="5" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Columns</label>
+                <div class="controls">
+                    <input class="input" id="columns" placeholder="Columns" value="10" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Radius</label>
+                <div class="controls">
+                    <input class="input" id="radius" placeholder="Radius" value="20" />
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button class="btn" id="rebuild">Rebuild</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <hr />
+</div>
+
+{{end}}
+{{define "scripts"}}
+<script src="/assets/js/hexgrid.js"></script>
+<script>
+    function rebuildFormSubmit(event) {
+        event.preventDefault();
+        rebuildGrid();
+    }
+    rebuildGrid();
+    document.getElementById("rebuildform").addEventListener('submit', rebuildFormSubmit)
+</script>
+{{end}}
+
+</html>
