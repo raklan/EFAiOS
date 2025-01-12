@@ -1,5 +1,14 @@
 //Heavily inspired by https://github.com/gojko/hexgridwidget, but altered to not require JQuery
 
+const SpaceTypes = {
+    Wall: 0,
+    Safe: 1,
+    Dangerous: 2,
+    Pod: 3,
+    HumanStart: 4,
+    AlienStart: 5
+}
+
 const WALL_TOOL = 'Walls';
 const POD_TOOL = 'Pods';
 const SAFE_TOOL = 'Safe Sector';
@@ -43,10 +52,11 @@ function createGrid(radius, columns, rows, cssClass) {
                     toPoint(-1 * radius / 2, height),
                     toPoint(-1 * radius, 0)
                 ].join(' '));
-            poly.setAttribute('class', cssClass);
+            poly.setAttribute('class', [cssClass, 'safe'].join(' '));
             poly.setAttribute('tabindex', 1);
             poly.setAttribute('hex-row', row);
             poly.setAttribute('hex-column', column);
+            poly.setAttribute('hex-type', SpaceTypes.Safe);
             svgParent.appendChild(poly);
         }
     }
@@ -54,24 +64,31 @@ function createGrid(radius, columns, rows, cssClass) {
 
 function hexClick(event) {
     event.target.classList = []
+    event.target.removeAttribute('hex-type')
     switch(currentTool){
         case WALL_TOOL:
             event.target.classList.add('wall');
+            event.target.setAttribute('hex-type', SpaceTypes.Wall);
             break;
         case POD_TOOL:
             event.target.classList.add('pod');
+            event.target.setAttribute('hex-type', SpaceTypes.Pod);
             break;
         case SAFE_TOOL:
             event.target.classList.add('safe');
+            event.target.setAttribute('hex-type', SpaceTypes.Safe);
             break;
         case DANGER_TOOL:
             event.target.classList.add('dangerous');
+            event.target.setAttribute('hex-type', SpaceTypes.Dangerous);
             break;
         case ALIEN_TOOL:
             event.target.classList.add('alienstart')
+            event.target.setAttribute('hex-type', SpaceTypes.AlienStart);
             break;
         case HUMAN_TOOL:
             event.target.classList.add('humanstart')
+            event.target.setAttribute('hex-type', SpaceTypes.HumanStart);
             break;
     }
     event.target.classList.add('hexfield')
@@ -95,4 +112,28 @@ function rebuildGrid() {
 function setTool(newTool){
     currentTool = newTool;
     document.getElementById("current-tool").innerText = `Current Tool: ${newTool}`;
+}
+
+function exportMap(){
+    var game = {
+        spaces: {}
+    };
+    var polycontainer = document.getElementById("polycontainer")
+    console.log('exporting', polycontainer.children)
+
+    for(child of polycontainer.children){
+        var row = child.getAttribute('hex-row')
+            col = child.getAttribute('hex-column')
+            type = child.getAttribute('hex-type')
+        game.spaces[`${row},${col}`] = {
+            row: parseInt(row),
+            col: parseInt(col),
+            type: parseInt(type)
+        }
+    }
+
+    fetch('http://localhost/api/map', {
+        method: "POST",
+        body: JSON.stringify(game)
+    }).then(resp => resp.json()).then(apiObj => console.log(apiObj))
 }

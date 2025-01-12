@@ -12,10 +12,6 @@
         outline: none;
     }
 
-    .hexfield:hover {
-        fill: green;
-    }
-
     .hexfield:active {
         fill: red;
         outline: none;
@@ -44,7 +40,10 @@
     .hexfield.humanstart{
         fill: blue;
     }
-
+    
+    .hexfield:hover {
+        fill: green;
+    }
     #sidebar {
         background-color: blue;
     }
@@ -62,6 +61,8 @@
         <button type="button" onclick="setTool('Dangerous Sector')">Dangerous Sector</button>
         <button type="button" onclick="setTool('Human Start')">Human Start</button>
         <button type="button" onclick="setTool('Alien Start')">Alien Start</button>
+        <br/>
+        <button type="button" onclick="exportMap()">Save</button>
         <div class="row">
             <div class="span6">
                 <form class="form-horizontal" id="rebuildform">

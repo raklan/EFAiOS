@@ -2,6 +2,7 @@ package Models
 
 type GameMap struct {
 	Id     string           `json:"id"`
+	Name   string           `json:"name"`
 	Rows   int              `json:"rows"`
 	Cols   int              `json:"cols"`
 	Spaces map[string]Space `json:"spaces"`
@@ -17,7 +18,7 @@ const (
 )
 
 type Space struct {
-	Row  int `json:"Row"`
-	Col  int `json:"Col"`
+	Row  int `json:"row"`
+	Col  int `json:"col"`
 	Type int `json:"type"`
 }

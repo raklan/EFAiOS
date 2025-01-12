@@ -1,6 +1,7 @@
 FROM golang:1.23 AS builder
 
 RUN mkdir /logs
+RUN mkdir /maps
 WORKDIR /app
 
 RUN mkdir ./escape-engine
@@ -17,6 +18,7 @@ FROM busybox
 COPY --from=builder /app/escape-api/escapeserver /app/
 COPY ./escape-api/assets /escape-api/assets
 COPY --from=builder /logs /logs
+COPY --from=builder /maps /maps
 EXPOSE 10000
 
 ENTRYPOINT ["/app/escapeserver"]
