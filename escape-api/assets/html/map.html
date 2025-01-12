@@ -21,53 +21,85 @@
         outline: none;
     }
 
-    .hexfield.clicked {
+    .hexfield.wall {
+        fill: brown;
+    }
+
+    .hexfield.safe{
+        fill: white;
+    }
+
+    .hexfield.dangerous{
+        fill: gray;
+    }
+
+    .hexfield.pod {
         fill: black;
+    }
+
+    .hexfield.alienstart{
+        fill: red;
+    }
+
+    .hexfield.humanstart{
+        fill: blue;
+    }
+
+    #sidebar {
+        background-color: blue;
     }
 </style>
 {{end}}
 
 {{define "body"}}
-<div class="container" id="gridParent"></div>
-<div class="row">
-    <div class="span6" style="text-align:center">
-        <div id="container"> </div>
-        <h2><small id="logger">click around the grid</small></h2>
+<div id="page" style="height: 100%; width: 100%; display: flex;">
+    <div id="sidebar">
+        <span id="current-tool">Current Tool: None</span>
+        <br/>
+        <button type="button" onclick="setTool('Walls')">Walls</button>
+        <button type="button" onclick="setTool('Pods')">Pods</button>
+        <button type="button" onclick="setTool('Safe Sector')">Safe Sector</button>
+        <button type="button" onclick="setTool('Dangerous Sector')">Dangerous Sector</button>
+        <button type="button" onclick="setTool('Human Start')">Human Start</button>
+        <button type="button" onclick="setTool('Alien Start')">Alien Start</button>
+        <div class="row">
+            <div class="span6">
+                <form class="form-horizontal" id="rebuildform">
+                    <div class="control-group">
+                        <label class="control-label">Rows</label>
+                        <div class="controls">
+                            <input class="input" id="rows" placeholder="Rows" value="5" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Columns</label>
+                        <div class="controls">
+                            <input class="input" id="columns" placeholder="Columns" value="10" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Radius</label>
+                        <div class="controls">
+                            <input class="input" id="radius" placeholder="Radius" value="20" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button class="btn" id="rebuild">Rebuild</button>
+                        </div>
+                    </div>
+    
+                </form>
+            </div>
+            <hr />
+        </div>
     </div>
-    <div class="span6">
-        <form class="form-horizontal" id="rebuildform">
-            <div class="control-group">
-                <label class="control-label">Rows</label>
-                <div class="controls">
-                    <input class="input" id="rows" placeholder="Rows" value="5" />
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label">Columns</label>
-                <div class="controls">
-                    <input class="input" id="columns" placeholder="Columns" value="10" />
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label">Radius</label>
-                <div class="controls">
-                    <input class="input" id="radius" placeholder="Radius" value="20" />
-                </div>
-            </div>
-            <div class="control-group">
-                <div class="controls">
-                    <button class="btn" id="rebuild">Rebuild</button>
-                </div>
-            </div>
-
-        </form>
-    </div>
-    <hr />
+    <div class="container" id="gridParent"></div>
+    
 </div>
-
 {{end}}
 {{define "scripts"}}
-<script src="/assets/js/hexgrid.js"></script>
+<script src="/assets/js/mapeditor.js"></script>
 <script>
     function rebuildFormSubmit(event) {
         event.preventDefault();
