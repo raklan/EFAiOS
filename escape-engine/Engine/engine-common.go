@@ -3,11 +3,17 @@ package Engine
 import (
 	"context"
 	"fmt"
+	"log"
 	"math/rand"
 	"os"
 	"time"
 
 	"github.com/go-redis/redis/v8"
+)
+
+const (
+	ModuleLogPrefix  = "ESCAPE-ENGINE"
+	PackageLogPrefix = "Engine"
 )
 
 func getRedisAddress() string {
@@ -34,4 +40,20 @@ func GenerateId() string {
 	}
 
 	return fmt.Sprint(time.Now().UnixMilli(), string(code))
+}
+
+// Generates a random 4-character room code. For use in creating lobbies
+func generateRoomCode() string {
+	const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	code := make([]byte, 4)
+	for i := range code {
+		code[i] = letters[rand.Intn(len(letters))]
+	}
+
+	return string(code)
+}
+
+// Logs the error in the format of "[funcLogPrefix] ERROR! [err]"
+func LogError(funcLogPrefix string, err error) {
+	log.Printf("%s ERROR! %s", funcLogPrefix, err)
 }

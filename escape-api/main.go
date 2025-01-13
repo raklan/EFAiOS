@@ -3,9 +3,12 @@ package main
 import (
 	"escape-engine/Engine"
 	"fmt"
+	"log"
 	"net/http"
 	"path/filepath"
 	"text/template"
+
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func main() {
@@ -13,6 +16,7 @@ func main() {
 }
 
 func startServer() {
+
 	fs := http.FileServer(http.Dir("./escape-api/assets"))
 	http.Handle("/assets/", http.StripPrefix("/assets/", fs))
 	http.Handle("/favicon.ico", fs)
@@ -20,10 +24,22 @@ func startServer() {
 	http.HandleFunc("/", serveHtml)
 
 	http.HandleFunc("/api/map", Engine.Map)
+	http.HandleFunc("/api/allMaps", Engine.AllMaps)
 
-	fmt.Println("=========================Starting Server========================")
+	log.Println("=========================Starting Server========================")
 
 	http.ListenAndServe(":80", nil)
+}
+
+func setUpLogging() {
+	logName := "./logs/server.log"
+	log.SetPrefix("ESCAPE-API: ")
+	log.SetOutput(&lumberjack.Logger{
+		Filename: logName,
+		MaxSize:  1,
+		MaxAge:   7,
+		Compress: false,
+	})
 }
 
 func serveHtml(w http.ResponseWriter, r *http.Request) {

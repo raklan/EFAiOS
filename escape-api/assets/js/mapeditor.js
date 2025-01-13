@@ -132,7 +132,7 @@ function exportMap(){
         }
     }
 
-    fetch('http://localhost/api/map', {
+    fetch('/api/map', {
         method: "POST",
         body: JSON.stringify(game)
     }).then(resp => resp.json()).then(apiObj => console.log(apiObj))
