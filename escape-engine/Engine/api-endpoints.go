@@ -2,9 +2,27 @@ package Engine
 
 import (
 	"encoding/json"
+	"escape-api/LogUtil"
 	"escape-engine/Models"
+	"log"
 	"net/http"
+	"strings"
 )
+
+// Given the path, gets any data that should be rendered with that requested template, if any. Only returns an error if one occurs (i.e. no data being found is not considered an error)
+func GetApiData(path string) (any, error) {
+	funcLogPrefix := "==GetApiData=="
+	defer LogUtil.EnsureLogPrefixIsReset()
+	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
+
+	log.Printf("%s Getting Api Data for path {%s}", funcLogPrefix, path)
+
+	if strings.ToLower(path) == "/maps" {
+		mapIds, err := GetAllMaps()
+		return mapIds, err
+	}
+	return nil, nil
+}
 
 func Map(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {

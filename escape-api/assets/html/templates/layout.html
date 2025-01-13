@@ -1,15 +1,19 @@
 {{define "layout"}}
-<!doctype html>
-<html style="height: 100%; width: 100%;">
-<head>
-	<meta charset="utf-8">
-	<title>EFAiOS</title>
-	<link rel="stylesheet" href="/assets/stylesheets/main.css">
-	{{template "styling"}}
-</head>
-<body style="height: 100%; width: 100%;">
-	{{template "body"}}
-</body>
-{{template "scripts"}}
-</html>
+	<!doctype html>
+	<html style="height: 100%; width: 100%;">
+
+	<head>
+		<meta charset="utf-8">
+		<title>EFAiOS</title>
+		<link rel="stylesheet" href="/assets/stylesheets/main.css">
+		{{template "styling" .}}
+	</head>
+
+	<body style="height: 100%; width: 100%;">
+		{{template "body" .}}
+		<!--IMPORTANT: The '.' sends the data passed in during execution of this template to the nested template being executed into these-->
+	</body>
+	{{template "scripts" .}}
+
+	</html>
 {{end}}

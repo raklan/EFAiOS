@@ -40,6 +40,11 @@ func SaveMapToDB(m Models.GameMap) (Models.GameMap, error) {
 }
 
 func GetMapFromDB(mapId string) (Models.GameMap, error) {
+	funcLogPrefix := "==GetMapFromDB=="
+	defer LogUtil.EnsureLogPrefixIsReset()
+	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
+
+	log.Printf("%s Getting map from DB with id == {%s}", funcLogPrefix, mapId)
 	data, err := os.ReadFile(fmt.Sprintf("./maps/map_%s.json", mapId))
 	if err != nil {
 		return Models.GameMap{}, err
@@ -56,6 +61,12 @@ func GetMapFromDB(mapId string) (Models.GameMap, error) {
 }
 
 func GetAllMaps() ([]string, error) {
+	funcLogPrefix := "==GetAllMaps=="
+	defer LogUtil.EnsureLogPrefixIsReset()
+	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
+
+	log.Printf("%s Getting all maps from DB", funcLogPrefix)
+
 	files, err := os.ReadDir("./maps/")
 	toReturn := []string{}
 	if err != nil {
@@ -67,6 +78,8 @@ func GetAllMaps() ([]string, error) {
 			toReturn = append(toReturn, file.Name())
 		}
 	}
+
+	log.Printf("%s Found %d maps, returning list...", funcLogPrefix, len(toReturn))
 
 	return toReturn, nil
 }

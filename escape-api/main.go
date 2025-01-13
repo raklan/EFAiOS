@@ -3,15 +3,16 @@ package main
 import (
 	"escape-engine/Engine"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
-	"text/template"
 
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func main() {
+	setUpLogging()
 	startServer()
 }
 
@@ -46,7 +47,17 @@ func serveHtml(w http.ResponseWriter, r *http.Request) {
 	layoutPath := filepath.Join("escape-api", "assets", "html", "templates", "layout.html")
 	requestedFilePath := filepath.Join("escape-api", "assets", "html", fmt.Sprintf("%s.html", filepath.Clean(r.URL.Path)))
 
-	tmpl, err := template.ParseFiles(layoutPath, requestedFilePath)
+	templateData, err := Engine.GetApiData(r.URL.Path)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	temp := template.New("layout.html").Funcs(template.FuncMap{
+		"StripMapId": Engine.StripMapId,
+	})
+
+	tmpl, err := temp.ParseFiles(layoutPath, requestedFilePath)
 	if err != nil {
 		tmpl, err = template.ParseFiles(layoutPath, filepath.Join("escape-api", "assets", "html", "index.html"))
 		if err != nil {
@@ -54,5 +65,6 @@ func serveHtml(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	tmpl.ExecuteTemplate(w, "layout", nil)
+
+	tmpl.ExecuteTemplate(w, "layout", templateData)
 }
