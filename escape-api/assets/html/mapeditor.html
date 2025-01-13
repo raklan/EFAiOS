@@ -79,14 +79,8 @@
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label">Radius</label>
                         <div class="controls">
-                            <input class="input" id="radius" placeholder="Radius" value="20" />
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <div class="controls">
-                            <button class="btn" id="rebuild">Rebuild</button>
+                            <button class="btn" id="rebuild">Clear & Rebuild</button>
                         </div>
                     </div>
     
@@ -106,8 +100,8 @@
         event.preventDefault();
         rebuildGrid();
     }
-    rebuildGrid();
     document.getElementById("rebuildform").addEventListener('submit', rebuildFormSubmit)
+    initializePage();
 </script>
 {{end}}
 

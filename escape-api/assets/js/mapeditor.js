@@ -18,7 +18,12 @@ const ALIEN_TOOL = 'Alien Start';
 
 var currentTool = 'None';
 
-function createGrid(radius, columns, rows, cssClass) {
+var radius = 20;
+var cssClass = 'hexfield';//If you change this, change it in hexClick() too
+
+var MAP = null
+
+function createGrid(rows, columns) {
 
     var grid = document.getElementById("gridParent");
 
@@ -57,13 +62,41 @@ function createGrid(radius, columns, rows, cssClass) {
             poly.setAttribute('hex-row', row);
             poly.setAttribute('hex-column', column);
             poly.setAttribute('hex-type', SpaceTypes.Safe);
+            poly.setAttribute('id', `hex-${row}-${column}`)
+            poly.innerHTML = "h"
             svgParent.appendChild(poly);
         }
     }
 }
 
+function drawMapOnPage(){
+    if(!MAP){
+        return;
+    }
+
+    document.getElementById('columns').value = MAP.cols;
+    document.getElementById('rows').value = MAP.rows;
+    Object.values(MAP.spaces).forEach(space => {
+        var el = document.getElementById(`hex-${space.row}-${space.col}`)
+        if(el){
+            var spaceClass = 'safe'
+            switch (space.type){
+                case SpaceTypes.Wall: spaceClass = 'wall'; break;
+                case SpaceTypes.Safe: spaceClass = 'safe'; break;
+                case SpaceTypes.Pod: spaceClass = 'pod'; break;
+                case SpaceTypes.Dangerous: spaceClass = 'dangerous'; break;
+                case SpaceTypes.HumanStart: spaceClass = 'humanstart'; break;
+                case SpaceTypes.AlienStart: spaceClass = 'alienstart'; break;
+            }
+
+            el.classList = [cssClass, spaceClass].join(' ');
+            el.setAttribute('hex-type', space.type);
+        }
+    });
+}
+
 function hexClick(event) {
-    event.target.classList = []
+    event.target.classList = [cssClass]
     event.target.removeAttribute('hex-type')
     switch(currentTool){
         case WALL_TOOL:
@@ -101,12 +134,10 @@ function clearGrid() {
 
 function rebuildGrid() {
     var
-        radius = parseInt(document.getElementById('radius').value),
-        columns = parseInt(document.getElementById('columns').value),
-        rows = parseInt(document.getElementById('rows').value),
-        cssClass = 'hexfield';//If you change this, change it in hexClick() too
+    columns = parseInt(document.getElementById('columns').value),
+    rows = parseInt(document.getElementById('rows').value);    
     clearGrid();
-    createGrid(radius, columns, rows, cssClass);
+    createGrid(rows, columns);
 };
 
 function setTool(newTool){
@@ -114,18 +145,32 @@ function setTool(newTool){
     document.getElementById("current-tool").innerText = `Current Tool: ${newTool}`;
 }
 
-function exportMap(){
-    var game = {
-        spaces: {}
+async function initializePage(){
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("id")){
+        var map = await loadMap(urlParams.get("id"));
+        MAP = map;
+        createGrid(map.rows, map.cols);
+        drawMapOnPage();
+    }else{
+        rebuildGrid();
+    }
+}
+
+async function exportMap(){
+    var map = {
+        id: MAP?.id ?? '',
+        spaces: {},
+        cols: parseInt(document.getElementById('columns')?.value ?? 0),
+        rows: parseInt(document.getElementById('rows')?.value ?? 0)
     };
     var polycontainer = document.getElementById("polycontainer")
-    console.log('exporting', polycontainer.children)
 
     for(child of polycontainer.children){
         var row = child.getAttribute('hex-row')
             col = child.getAttribute('hex-column')
             type = child.getAttribute('hex-type')
-        game.spaces[`${row},${col}`] = {
+        map.spaces[`${row},${col}`] = {
             row: parseInt(row),
             col: parseInt(col),
             type: parseInt(type)
@@ -134,6 +179,16 @@ function exportMap(){
 
     fetch('/api/map', {
         method: "POST",
-        body: JSON.stringify(game)
+        body: JSON.stringify(map)
     }).then(resp => resp.json()).then(apiObj => console.log(apiObj))
+}
+
+async function loadMap(id){
+    var map = null;
+    await fetch(`/api/map?id=${id}`)
+    .then(resp => resp.json())
+    .then(apiObj => {
+        map = apiObj;
+    })
+    return map;
 }
