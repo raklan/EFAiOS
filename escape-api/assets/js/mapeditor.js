@@ -63,7 +63,6 @@ function createGrid(rows, columns) {
             poly.setAttribute('hex-column', column);
             poly.setAttribute('hex-type', SpaceTypes.Safe);
             poly.setAttribute('id', `hex-${row}-${column}`)
-            poly.innerHTML = "h"
             svgParent.appendChild(poly);
         }
     }

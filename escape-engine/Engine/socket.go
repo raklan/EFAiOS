@@ -69,16 +69,16 @@ var upgrader = websocket.Upgrader{
 // The lobby (which contains the Room Code used for other people to join) is then passed back into the websocket.
 func HostLobby(w http.ResponseWriter, r *http.Request) {
 	log.Println("Starting hostLobby")
-	gameDefId := r.URL.Query().Get("gameId")
+	mapId := r.URL.Query().Get("mapId")
 	playerName := r.URL.Query().Get("playerName")
 
-	if gameDefId == "" || playerName == "" {
-		log.Println("Missing gameId or playerName in request")
-		http.Error(w, "Missing gameId or playerName in request", http.StatusBadRequest)
+	if mapId == "" || playerName == "" {
+		log.Println("Missing mapId or playerName in request")
+		http.Error(w, "Missing mapId or playerName in request", http.StatusBadRequest)
 		return
 	}
 
-	roomCode, err := CreateRoom(gameDefId) // Assuming Engine.CreateRoom initializes room in DB
+	roomCode, err := CreateRoom(mapId) // Assuming Engine.CreateRoom initializes room in DB
 	if err != nil {
 		http.Error(w, "Unable to create room", http.StatusInternalServerError)
 		return

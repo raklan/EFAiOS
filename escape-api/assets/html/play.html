@@ -1,0 +1,92 @@
+{{define "styling"}}
+{{end}}
+
+{{define "body"}}
+<div id="lobby">
+    Lobby
+</div>
+<div id="gameplay">
+    Gameplay
+</div>
+{{end}}
+
+{{define "scripts"}}
+<script>
+    var ws = null;
+    function openSocket(){
+        urlParams = new URLSearchParams(window.location.search)
+        
+        var playerName = urlParams.get("playerName")
+        if(!playerName?.length > 0){
+            console.error("no player name found")
+            return
+        }
+        if (urlParams.has("mapId") && !urlParams.has("roomCode")){
+            var mapId = urlParams.get("mapId")
+
+            var urlToConnect = `ws://${window.location.host}/lobby/host?mapId=${mapId}&playerName=${playerName}`
+        }else if(urlParams.has("roomCode") && !urlParams.has("mapId")){
+            var roomCode = urlParams.get("roomCode")
+
+            var urlToConnect = `ws://${window.location.host}/lobby/join?roomCode=${roomCode}&playerName=${playerName}`
+        }else{
+            console.error("Something went wrong trying to detect mode")
+            return;
+        }
+
+        ws = new WebSocket(urlToConnect)
+
+        ws.addEventListener('message', (wsMsg) => {
+            var message = JSON.parse(wsMsg.data)
+            handleWsMessage(message)
+        })
+    }
+
+    const WS_CLOSE = "Close"
+    const WS_ERROR = "Error"
+    const WS_GAMESTATE = "GameState"
+    const WS_GAMEOVER = "GameOver"
+    const WS_LOBBYINFO = "LobbyInfo"
+
+    function handleWsMessage(message){
+        switch (message.type){
+            case WS_CLOSE:
+                handleCloseMessage(message.data);
+                break;
+            case WS_ERROR:
+                handleErrorMessage(message.data);
+                break;
+            case WS_GAMESTATE:
+                handleGameStateMessage(message.data);
+                break;
+            case WS_GAMEOVER:
+                handleGameOverMessage(message.data);
+                break;
+            case WS_LOBBYINFO:
+                handleLobbyInfoMessage(message.data);
+                break;
+        }
+    }
+
+    function handleCloseMessage(messageData){
+
+    }
+
+    function handleErrorMessage(messageData){
+
+    }
+
+    function handleGameOverMessage(messageData){
+
+    }
+
+    function handleGameStateMessage(messageData){
+
+    }
+
+    function handleLobbyInfoMessage(messageData){
+        
+    }
+    openSocket();
+</script>
+{{end}}

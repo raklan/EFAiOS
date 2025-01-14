@@ -1,12 +1,14 @@
 {{define "styling"}}
 <style>
-    #list-container{
+    #list-container {
+        width: 100%;
+        height: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
     }
 
-    .map-entry{
+    .map-entry {
         border: 4px solid orange;
         padding: 1%;
         margin: 1%;
@@ -15,9 +17,21 @@
     .map-entry .button-container {
         display: flex;
         justify-content: space-between;
+
         button {
             cursor: pointer;
         }
+    }
+
+    #name-popup {
+        position: absolute;
+        top: 40%;
+        left: 40%;
+        width: 20%;
+        border: 5px solid green;
+
+        display: none;
+        flex-direction: column;
     }
 </style>
 {{end}}
@@ -25,18 +39,43 @@
 {{define "body"}}
 <div id="list-container">
     {{range .}}
-        <div class="map-entry">
-            <h4>{{.}}</h4>
-            <div class="button-container">
-                <button type="button" href="/play?map={{StripMapId .}}">Play</button>
-                <button type="button"><a href="/mapeditor?id={{StripMapId .}}">Edit</a></button> 
-            </div>
+    <div class="map-entry">
+        <h4>{{.}}</h4>
+        <div class="button-container">
+            <button type="button" onclick="hostMap('{{StripMapId .}}')">Play</button>
+            <button type="button"><a href="/mapeditor?id={{StripMapId .}}">Edit</a></button>
         </div>
+    </div>
     {{end}}
+</div>
+<div id="name-popup">
+    <input id="name-input" type="text" placeholder="Enter Your Name" />
+    <button onclick="playMap()">Play</button>
 </div>
 {{end}}
 
 {{define "scripts"}}
 <script>
+    var selectedMapId = '';
+    function hostMap(mapId) {
+        document.getElementById("name-popup").style.display = "flex";
+        selectedMapId = mapId;
+    }
+
+    function playMap() {
+        var name = document.getElementById("name-input")?.value;
+        
+        if(!name?.length > 0){
+            console.error("no name given")
+            return;
+        }
+
+        if(!selectedMapId?.length > 0){
+            console.error("no map selected")
+            return;
+        }
+
+        window.open(`/play?mapId=${selectedMapId}&playerName=${name}`, '_self')
+    }
 </script>
 {{end}}
