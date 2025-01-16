@@ -1,9 +1,33 @@
 {{define "styling"}}
+<style>
+    #join-box{
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+</style>
 {{end}}
 
 {{define "body"}}
-<h1>Index</h1>
+<div id="join-box">
+    <input id="name-input" type="text" placeholder="Enter Your Name" />
+    <input id="roomcode-input" type="text" maxlength="4" placeholder="Enter Room Code" />
+    <button onclick="play()">Play</button>
+</div>
 {{end}}
 
 {{define "scripts"}}
+<script>
+    function play(){
+        var name = document.getElementById("name-input")?.value;
+        var roomCode = document.getElementById("roomcode-input")?.value;
+
+        if(!(name?.length > 0 && roomCode?.length > 0)){
+            console.error("Missing data");
+            return;
+        }
+
+        window.open(`/play?roomCode=${roomCode}&playerName=${name}`, '_self')
+    }
+</script>
 {{end}}

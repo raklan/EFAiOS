@@ -1,6 +1,6 @@
 {{define "layout"}}
 	<!doctype html>
-	<html style="height: 98%; width: 98%;">
+	<html>
 
 	<head>
 		<meta charset="utf-8">
@@ -10,8 +10,15 @@
 	</head>
 
 	<body style="height: 100%; width: 100%;">
-		{{template "body" .}}
+		<header>
+			<nav>
+				<a href="/">Home</a>
+				<a href="/mapeditor">Map Editor</a>
+				<a href="/maps">Maps</a>
+			</nav>
+		</header>
 		<!--IMPORTANT: The '.' sends the data passed in during execution of this template to the nested template being executed into these-->
+		{{template "body" .}}
 	</body>
 	{{template "scripts" .}}
 
