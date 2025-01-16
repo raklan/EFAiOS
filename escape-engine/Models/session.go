@@ -40,10 +40,24 @@ type GameState struct {
 	Id string `json:"id"`
 	//The ID of the map that this game state uses
 	MapId string `json:"mapId"`
+	//GameState-specific config as defined by the Host
+	GameConfig GameConfig `json:"gameConfig"`
 	//A list of the states of each Player in the game.
 	Players []Player `json:"players"`
 	//Id of the Player whose turn it currently is
 	CurrentPlayer string `json:"currentPlayer"`
+}
+
+// GameState-specific config as defined by the Host
+type GameConfig struct {
+	//Number of Humans currently in the Game. The Game automatically ends when this number hits 0.
+	NumHumans int `json:"numHumans"`
+	//Number of Aliens currently in the Game
+	NumAliens int `json:"numAliens"`
+	//Number of Working Escape Pods left. The Game automatically ends when this number hits 0.
+	NumWorkingPods int `json:"numWorkingPods"`
+	//Number of Broken Escape Pods left
+	NumBrokenPods int `json:"numBrokenPods"`
 }
 
 type Player struct {
