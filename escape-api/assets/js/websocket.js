@@ -51,6 +51,7 @@ async function handleGameOverMessage(messageData) {
 }
 
 async function handleGameStateMessage(gameState) {
+    thisPlayer = gameState.players?.find(p => p.id == thisPlayer.id)
     if (!thisGameStateId) {
         await initializeMap(gameState.mapId)
         thisGameStateId = gameState.id
@@ -67,7 +68,7 @@ async function handleGameStateMessage(gameState) {
 
 async function handleLobbyInfoMessage(messageData) {
     if (!thisPlayer) {
-        thisPlayer = messageData.playerID
+        thisPlayer = messageData.lobbyInfo?.players?.find(p => p.id == messageData.playerID)
         console.log(thisPlayer)
     }
     document.getElementById("lobby-roomCode").innerText = `Room Code: ${messageData.lobbyInfo.roomCode}`
@@ -86,7 +87,7 @@ async function handleLobbyInfoMessage(messageData) {
     //#endregion
 
     //#region Start Game Button
-    if (thisPlayer?.length > 0 && thisPlayer == messageData.lobbyInfo?.host?.id) {
+    if (thisPlayer?.id?.length > 0 && thisPlayer.id == messageData.lobbyInfo?.host?.id) {
         var startButton = document.getElementById("lobby-startButton")
         startButton.style.display = '';
         startButton.onclick = () => {

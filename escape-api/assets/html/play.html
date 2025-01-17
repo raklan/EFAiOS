@@ -74,6 +74,7 @@
 </div>
 <div id="gameplay">
     <div id="gameplay-gridParent"></div>
+    <button type="button" onclick="attack()">Attack</button>
 </div>
 {{end}}
 
@@ -84,6 +85,22 @@
     var ws = null;
     var thisPlayer = null;
     var thisGameStateId = null;
+
+    function attack(){
+        var actionToSend = {
+            gameId: thisGameStateId,
+            action: {
+                type: "Attack",
+                turn: {
+                    row: thisPlayer.row,
+                    col: thisPlayer.col
+                }
+            }
+        }
+
+        sendWsMessage(ws, 'submitAction', actionToSend)
+    }
+
     function openSocket() {
         urlParams = new URLSearchParams(window.location.search)
 

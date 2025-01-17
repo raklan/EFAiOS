@@ -5,6 +5,7 @@ const (
 	WebsocketMessage_Changelog = "Changelog"
 	WebsocketMessage_Close     = "Close"
 	WebsocketMessage_Error     = "Error"
+	WebsocketMessage_GameEvent = "GameEvent"
 	WebsocketMessage_GameOver  = "GameOver"
 	WebsocketMessage_GameState = "GameState"
 	WebsocketMessage_LobbyInfo = "LobbyInfo"

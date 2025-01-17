@@ -104,7 +104,7 @@ func EndGame(roomCode string, playerId string) error {
 	return err
 }
 
-func SubmitAction(gameId string, action Models.SubmittedAction) (Models.GameState, error) {
+func SubmitAction(gameId string, action Models.SubmittedAction) (Models.GameState, *Models.GameEvent, error) {
 	funcLogPrefix := "==GetInitialGameState=="
 	defer LogUtil.EnsureLogPrefixIsReset()
 	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
@@ -112,7 +112,7 @@ func SubmitAction(gameId string, action Models.SubmittedAction) (Models.GameStat
 	gameState, err := GetCachedGameStateFromRedis(gameId)
 	if err != nil {
 		LogError(funcLogPrefix, err)
-		return Models.GameState{}, err
+		return Models.GameState{}, nil, err
 	}
 
 	gameMap, err := GetMapFromDB(gameState.MapId)
@@ -122,32 +122,33 @@ func SubmitAction(gameId string, action Models.SubmittedAction) (Models.GameStat
 
 	//TODO: Add turn enforcement
 
+	var gameEvent *Models.GameEvent = nil
 	switch action.Type {
 	case Models.Action_Movement:
 		turn := Models.Movement{}
 		err := json.Unmarshal(action.Turn, &turn)
 		if err != nil {
 			LogError(funcLogPrefix, err)
-			return gameState, err
+			return gameState, nil, err
 		}
 
-		err = turn.Execute(&gameState, gameMap, action.PlayerId)
+		gameEvent, err = turn.Execute(&gameState, gameMap, action.PlayerId)
 		if err != nil {
 			LogError(funcLogPrefix, err)
-			return gameState, err
+			return gameState, nil, err
 		}
 	case Models.Action_Attack:
 		turn := Models.Attack{}
 		err := json.Unmarshal(action.Turn, &turn)
 		if err != nil {
 			LogError(funcLogPrefix, err)
-			return gameState, err
+			return gameState, nil, err
 		}
 
-		err = turn.Execute(&gameState, gameMap, action.PlayerId)
+		gameEvent, err = turn.Execute(&gameState, gameMap, action.PlayerId)
 		if err != nil {
 			LogError(funcLogPrefix, err)
-			return gameState, err
+			return gameState, nil, err
 		}
 	}
 
@@ -155,10 +156,10 @@ func SubmitAction(gameId string, action Models.SubmittedAction) (Models.GameStat
 	saved, err := CacheGameStateInRedis(gameState)
 	if err != nil {
 		LogError(funcLogPrefix, err)
-		return gameState, err
+		return gameState, nil, err
 	}
 
-	return saved, nil
+	return saved, gameEvent, nil
 }
 
 // #region Helper Functions
@@ -190,14 +191,7 @@ func assignTeams(gameState *Models.GameState) {
 // Assigns a random valid starting position to each Player from the pool of start spaces assigned to each team
 func assignStartingPositions(gameState *Models.GameState, gameMap *Models.GameMap) {
 	log.Println("Assigning starting postitions")
-	humanStarts, alienStarts := []Models.Space{}, []Models.Space{}
-	for _, space := range gameMap.Spaces {
-		if space.Type == Models.Space_AlienStart {
-			alienStarts = append(alienStarts, space)
-		} else if space.Type == Models.Space_HumanStart {
-			humanStarts = append(humanStarts, space)
-		}
-	}
+	humanStarts, alienStarts := gameMap.GetSpacesOfType(Models.Space_HumanStart), gameMap.GetSpacesOfType(Models.Space_AlienStart)
 
 	for index, player := range gameState.Players {
 		if player.Team == Models.PlayerTeam_Human {

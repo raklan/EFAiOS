@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"math/rand/v2"
 	"slices"
 )
 
@@ -35,14 +36,15 @@ type Attack struct {
 	Col int `json:"col"`
 }
 
-func (move Movement) Execute(gameState *GameState, gameMap GameMap, playerId string) error {
-	if gameState.CurrentPlayer != playerId {
-		return fmt.Errorf("player trying to execute turn is not current player")
-	}
+func (move Movement) Execute(gameState *GameState, gameMap GameMap, playerId string) (*GameEvent, error) {
+	var gameEvent *GameEvent = nil
+	// if gameState.CurrentPlayer != playerId {
+	// 	return nil, fmt.Errorf("player trying to execute turn is not current player")
+	// }
 
 	actingPlayerIndex := slices.IndexFunc(gameState.Players, func(p Player) bool { return playerId == p.Id })
 	if actingPlayerIndex == -1 {
-		return fmt.Errorf("could not find acting player with ID == {%s}", playerId)
+		return nil, fmt.Errorf("could not find acting player with ID == {%s}", playerId)
 	}
 
 	actingPlayer := &(gameState.Players[actingPlayerIndex])
@@ -58,7 +60,7 @@ func (move Movement) Execute(gameState *GameState, gameMap GameMap, playerId str
 			Space_Wall,
 		}
 		if slices.ContainsFunc(cantMoveInto, func(t int) bool { return space.Type == t }) {
-			return fmt.Errorf("space [%d,%d] is not allowed to be moved into", move.ToRow, move.ToCol)
+			return nil, fmt.Errorf("space [%d,%d] is not allowed to be moved into", move.ToRow, move.ToCol)
 		}
 
 		//Make sure it's close enough
@@ -74,10 +76,10 @@ func (move Movement) Execute(gameState *GameState, gameMap GameMap, playerId str
 		actingPlayer.Row = move.ToRow
 		actingPlayer.Col = move.ToCol
 	} else {
-		return fmt.Errorf("requested space [%d,%d] not found in map", move.ToRow, move.ToCol)
+		return nil, fmt.Errorf("requested space [%d,%d] not found in map", move.ToRow, move.ToCol)
 	}
 
-	return nil
+	return gameEvent, nil
 }
 
 func checkMovement(toRow int, fromRow int, toCol int, fromCol int, allowedMovement int) bool {
@@ -109,6 +111,31 @@ func checkMovement(toRow int, fromRow int, toCol int, fromCol int, allowedMoveme
 	}
 }
 
-func (attack Attack) Execute(gameState *GameState, gameMap GameMap, playerId string) error {
-	return nil
+func (attack Attack) Execute(gameState *GameState, gameMap GameMap, playerId string) (*GameEvent, error) {
+	actingPlayerIndex := slices.IndexFunc(gameState.Players, func(p Player) bool { return playerId == p.Id })
+	if actingPlayerIndex == -1 {
+		return nil, fmt.Errorf("could not find acting player with ID == {%s}", playerId)
+	}
+
+	actingPlayer := &(gameState.Players[actingPlayerIndex])
+
+	var gameEvent *GameEvent = &GameEvent{
+		Row:         attack.Row,
+		Col:         attack.Col,
+		Description: fmt.Sprintf("%s attacked (%d,%d)!\n", actingPlayer.Name, attack.Row, attack.Col),
+	}
+	alienStarts := gameMap.GetSpacesOfType(Space_AlienStart)
+
+	for index, player := range gameState.Players {
+		if player.Id == actingPlayer.Id { //Don't kill the player doing the attacking
+			continue
+		}
+		newSpaceForPlayer := alienStarts[rand.IntN(len(alienStarts))]
+
+		gameState.Players[index].Team = PlayerTeam_Alien
+		gameState.Players[index].Row, gameState.Players[index].Col = newSpaceForPlayer.Row, newSpaceForPlayer.Col
+		gameEvent.Description = string(fmt.Appendf([]byte(gameEvent.Description), "%s died!\n", gameState.Players[index].Name))
+	}
+
+	return gameEvent, nil
 }
