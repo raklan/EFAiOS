@@ -3,6 +3,7 @@ package Models
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"math"
 	"slices"
 )
@@ -65,11 +66,8 @@ func (move Movement) Execute(gameState *GameState, gameMap GameMap, playerId str
 		if actingPlayer.Team == PlayerTeam_Alien {
 			allowedSpaces = 2
 		}
-		//TODO: This allows one extra space of movement in the downward diagonal directions
-		totalMovementRows := int(math.Abs(float64(move.ToRow - actingPlayer.Row)))
-		totalMovementCols := int(math.Abs(float64(move.ToCol - actingPlayer.Col)))
-		if (totalMovementRows > allowedSpaces) || (totalMovementCols > allowedSpaces) || (totalMovementRows+totalMovementCols <= 0) {
-			return fmt.Errorf("player is trying to move %d rows and %d cols, which is not allowed", totalMovementRows, totalMovementCols)
+		if !checkMovement(move.ToRow, actingPlayer.Row, move.ToCol, actingPlayer.Col, allowedSpaces) {
+			//return fmt.Errorf("movement not allowed") TODO: Turned off for now because hex grids make counting spaces HARD
 		}
 
 		//At this point, player is allowed to execute the move
@@ -80,6 +78,35 @@ func (move Movement) Execute(gameState *GameState, gameMap GameMap, playerId str
 	}
 
 	return nil
+}
+
+func checkMovement(toRow int, fromRow int, toCol int, fromCol int, allowedMovement int) bool {
+	log.Printf("Row (%d->%d) Col(%d->%d), %d", fromRow, toRow, fromCol, toCol, allowedMovement)
+
+	if int(math.Abs(float64(toRow-fromRow))) > allowedMovement {
+		return false
+	}
+
+	allowedMovementOffset := allowedMovement - 1
+	if fromCol%2 == 0 { //Even column
+		log.Println("Even column")
+		if toRow-fromRow > 0 {
+			log.Println("Moving down")
+			return int(math.Abs(float64(toCol-fromCol))) <= allowedMovementOffset
+		} else {
+			log.Println("moving up")
+			return int(math.Abs(float64(toCol-fromCol))) <= allowedMovement
+		}
+	} else { //Odd column
+		log.Println("Odd column")
+		if toRow-fromRow < 0 { //Moving up
+			log.Println("Moving up")
+			return int(math.Abs(float64(toCol-fromCol))) <= allowedMovementOffset
+		} else {
+			log.Println("moving down")
+			return int(math.Abs(float64(toCol-fromCol))) <= allowedMovement
+		}
+	}
 }
 
 func (attack Attack) Execute(gameState *GameState, gameMap GameMap, playerId string) error {

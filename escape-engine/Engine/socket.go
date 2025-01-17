@@ -316,6 +316,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 
 	switch msg.JsonType {
 	case "startGame":
+		log.Println("Received request to start game")
 		config := Models.GameConfig{}
 		if err := json.Unmarshal(msg.Data, &config); err != nil {
 			log.Printf("error decoding startGame config: %s", err)
@@ -332,7 +333,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 		game, err := GetInitialGameState(roomCode, config)
 		if err != nil {
 			log.Printf("ERROR: GAME NOT STARTED, ABORTING...%s", err)
-			return
+			break
 		}
 
 		sendMessageToAllPlayers(room, WebsocketMessage{Type: WebsocketMessage_GameState, Data: game})

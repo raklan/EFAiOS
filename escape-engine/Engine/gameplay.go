@@ -5,6 +5,7 @@ import (
 	"escape-api/LogUtil"
 	"escape-engine/Models"
 	"fmt"
+	"log"
 	"math/rand"
 )
 
@@ -53,7 +54,6 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 
 	assignTeams(&gameState)
 	assignStartingPositions(&gameState, &mapDef)
-
 	gameState.CurrentPlayer = gameState.Players[rand.Intn(len(gameState.Players))].Id
 
 	gameState, err = CacheGameStateInRedis(gameState)
@@ -165,6 +165,7 @@ func SubmitAction(gameId string, action Models.SubmittedAction) (Models.GameStat
 
 // Assigns teams randomly to all players in the GameState. If a player cannot be assigned for any reason, they are assigned as a spectator
 func assignTeams(gameState *Models.GameState) {
+	log.Println("Assigning teams")
 	humansToAssign, aliensToAssign := gameState.GameConfig.NumHumans, gameState.GameConfig.NumAliens
 	for index := range gameState.Players {
 		if humansToAssign == 0 && aliensToAssign != 0 { //No human slots left, must be human
@@ -188,6 +189,7 @@ func assignTeams(gameState *Models.GameState) {
 
 // Assigns a random valid starting position to each Player from the pool of start spaces assigned to each team
 func assignStartingPositions(gameState *Models.GameState, gameMap *Models.GameMap) {
+	log.Println("Assigning starting postitions")
 	humanStarts, alienStarts := []Models.Space{}, []Models.Space{}
 	for _, space := range gameMap.Spaces {
 		if space.Type == Models.Space_AlienStart {
@@ -203,7 +205,7 @@ func assignStartingPositions(gameState *Models.GameState, gameMap *Models.GameMa
 
 			gameState.Players[index].Row, gameState.Players[index].Col = startingSpace.Row, startingSpace.Col
 		} else if player.Team == Models.PlayerTeam_Alien {
-			startingSpace := alienStarts[rand.Intn(len(humanStarts))]
+			startingSpace := alienStarts[rand.Intn(len(alienStarts))]
 
 			gameState.Players[index].Row, gameState.Players[index].Col = startingSpace.Row, startingSpace.Col
 		} else if player.Team == Models.PlayerTeam_Spectator {
