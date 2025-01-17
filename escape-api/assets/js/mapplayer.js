@@ -93,35 +93,21 @@ function drawMapOnPage(){
 }
 
 function hexClick(event) {
-    event.target.classList = [cssClass]
-    event.target.removeAttribute('hex-type')
-    switch(currentTool){
-        case WALL_TOOL:
-            event.target.classList.add('wall');
-            event.target.setAttribute('hex-type', SpaceTypes.Wall);
-            break;
-        case POD_TOOL:
-            event.target.classList.add('pod');
-            event.target.setAttribute('hex-type', SpaceTypes.Pod);
-            break;
-        case SAFE_TOOL:
-            event.target.classList.add('safe');
-            event.target.setAttribute('hex-type', SpaceTypes.Safe);
-            break;
-        case DANGER_TOOL:
-            event.target.classList.add('dangerous');
-            event.target.setAttribute('hex-type', SpaceTypes.Dangerous);
-            break;
-        case ALIEN_TOOL:
-            event.target.classList.add('alienstart')
-            event.target.setAttribute('hex-type', SpaceTypes.AlienStart);
-            break;
-        case HUMAN_TOOL:
-            event.target.classList.add('humanstart')
-            event.target.setAttribute('hex-type', SpaceTypes.HumanStart);
-            break;
+    var row = parseInt(event.target.getAttribute('hex-row') ?? -99);
+    var col = parseInt(event.target.getAttribute('hex-column') ?? -99);
+
+    var actionToSend = {
+        gameId: thisGameStateId,
+        action: {
+            type: 'Movement',
+            turn: {
+                toRow: row,
+                toCol: col
+            }
+        }
     }
-    event.target.classList.add('hexfield')
+    
+    sendWsMessage(ws, 'submitAction', actionToSend);
 }
 
 function clearGrid() {

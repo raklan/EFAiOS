@@ -1,16 +1,16 @@
 package Engine
 
 import (
+	"encoding/json"
 	"escape-api/LogUtil"
 	"escape-engine/Models"
 	"fmt"
-	"log"
 	"math/rand"
 )
 
 // Given an id to a Game defition, constructs and returns an initial GameState for it. This is essentially
 // how to start the game
-func GetInitialGameState(roomCode string) (Models.GameState, error) {
+func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.GameState, error) {
 	funcLogPrefix := "==GetInitialGameState=="
 	defer LogUtil.EnsureLogPrefixIsReset()
 	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
@@ -37,6 +37,7 @@ func GetInitialGameState(roomCode string) (Models.GameState, error) {
 	}
 
 	gameState.MapId = mapDef.Id
+	gameState.GameConfig = gameConfig
 
 	gameState.Players = []Models.Player{}
 
@@ -103,27 +104,83 @@ func EndGame(roomCode string, playerId string) error {
 	return err
 }
 
+func SubmitAction(gameId string, action Models.SubmittedAction) (Models.GameState, error) {
+	funcLogPrefix := "==GetInitialGameState=="
+	defer LogUtil.EnsureLogPrefixIsReset()
+	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
+
+	gameState, err := GetCachedGameStateFromRedis(gameId)
+	if err != nil {
+		LogError(funcLogPrefix, err)
+		return Models.GameState{}, err
+	}
+
+	gameMap, err := GetMapFromDB(gameState.MapId)
+	if err != nil {
+		LogError(funcLogPrefix, err)
+	}
+
+	//TODO: Add turn enforcement
+
+	switch action.Type {
+	case Models.Action_Movement:
+		turn := Models.Movement{}
+		err := json.Unmarshal(action.Turn, &turn)
+		if err != nil {
+			LogError(funcLogPrefix, err)
+			return gameState, err
+		}
+
+		err = turn.Execute(&gameState, gameMap, action.PlayerId)
+		if err != nil {
+			LogError(funcLogPrefix, err)
+			return gameState, err
+		}
+	case Models.Action_Attack:
+		turn := Models.Attack{}
+		err := json.Unmarshal(action.Turn, &turn)
+		if err != nil {
+			LogError(funcLogPrefix, err)
+			return gameState, err
+		}
+
+		err = turn.Execute(&gameState, gameMap, action.PlayerId)
+		if err != nil {
+			LogError(funcLogPrefix, err)
+			return gameState, err
+		}
+	}
+
+	//Re-save gamestate
+	saved, err := CacheGameStateInRedis(gameState)
+	if err != nil {
+		LogError(funcLogPrefix, err)
+		return gameState, err
+	}
+
+	return saved, nil
+}
+
 // #region Helper Functions
 
 // Assigns teams randomly to all players in the GameState. If a player cannot be assigned for any reason, they are assigned as a spectator
 func assignTeams(gameState *Models.GameState) {
 	humansToAssign, aliensToAssign := gameState.GameConfig.NumHumans, gameState.GameConfig.NumAliens
 	for index := range gameState.Players {
-		if humansToAssign == 0 && aliensToAssign != 0 { //No alien slots left, must be human
-			gameState.Players[index].Team = Models.PlayerTeam_Human
-		} else if aliensToAssign == 0 && humansToAssign != 0 { //No human slots left, must be alien
+		if humansToAssign == 0 && aliensToAssign != 0 { //No human slots left, must be human
 			gameState.Players[index].Team = Models.PlayerTeam_Alien
+		} else if aliensToAssign == 0 && humansToAssign != 0 { //No alien slots left, must be alien
+			gameState.Players[index].Team = Models.PlayerTeam_Human
 		} else {
 			if humansToAssign == 0 && aliensToAssign == 0 {
-				log.Printf("assignTeams ERROR! No team slot left to assign to player %s! Assigning player as spectator!", gameState.Players[index].Name)
 				gameState.Players[index].Team = Models.PlayerTeam_Spectator
 			}
 			if rand.Intn(2) == 0 {
 				gameState.Players[index].Team = Models.PlayerTeam_Human
-				humansToAssign--
+				humansToAssign = humansToAssign - 1
 			} else {
 				gameState.Players[index].Team = Models.PlayerTeam_Alien
-				aliensToAssign--
+				aliensToAssign = aliensToAssign - 1
 			}
 		}
 	}

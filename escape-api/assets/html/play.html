@@ -52,6 +52,10 @@
     .hexfield:hover {
         fill: green;
     }
+
+    .hexfield.player{
+        fill: orange;
+    }
 </style>
 {{end}}
 
@@ -60,6 +64,12 @@
     <h3>Lobby</h3>
     <div id="lobby-roomCode"></div>
     <div id="lobby-playerList"></div>
+    <div id="lobby-gameConfig">
+        <input type="number" id="config-numHumans" placeholder="Human Players"/>
+        <input type="number" id="config-numAliens" placeholder="Alien Players"/>
+        <input type="number" id="config-numWorkingPods" placeholder="Working Pods"/>
+        <input type="number" id="config-numBrokenPods" placeholder="Broken Pods"/>
+    </div>
     <button id="lobby-startButton" style="display: none;">Start</button>
 </div>
 <div id="gameplay">
@@ -73,6 +83,7 @@
 <script>
     var ws = null;
     var thisPlayer = null;
+    var thisGameStateId = null;
     function openSocket() {
         urlParams = new URLSearchParams(window.location.search)
 
@@ -141,10 +152,19 @@
 
     }
 
-    async function handleGameStateMessage(messageData) {
-        await initializeMap(messageData.mapId)
+    async function handleGameStateMessage(gameState) {
+        if(!thisGameStateId){
+            await initializeMap(gameState.mapId)
+            thisGameStateId = gameState.id
+        }
         document.getElementById("lobby").style.display = 'none';
         document.getElementById('gameplay').style.display = 'flex';
+        
+        document.querySelectorAll('.player').forEach(x => x.classList.remove('player'))
+        for(let player of gameState.players){
+            var playerSpace = document.getElementById(`hex-${player.row}-${player.col}`)
+            playerSpace.classList = 'hexfield player'
+        }
     }
 
     async function handleLobbyInfoMessage(messageData) {
@@ -171,14 +191,25 @@
         if (thisPlayer?.length > 0 && thisPlayer == messageData.lobbyInfo?.host?.id) {
             var startButton = document.getElementById("lobby-startButton")
             startButton.style.display = '';
-            startButton.addEventListener('click', () => {
-                sendWsMessage(ws, 'startGame', {})
-            })
+            startButton.onclick = () => {
+                config = {
+                    numHumans: 0,
+                    numAliens: 0,
+                    numWorkingPods: 0,
+                    numBrokenPods: 0
+                }
+                config.numHumans = parseInt(document.getElementById("config-numHumans")?.value ?? 0)
+                config.numAliens = parseInt(document.getElementById("config-numAliens")?.value ?? 0)
+                config.numWorkingPods = parseInt(document.getElementById("config-numWorkingPods")?.value ?? 0)
+                config.numBrokenPods = parseInt(document.getElementById("config-numBrokenPods")?.value ?? 0)
+                sendWsMessage(ws, 'startGame', config)
+            }
 
 
         }
         //#endregion
     }
+
     openSocket();
     // var lobby = {"type":"LobbyInfo","data":{"playerID":"1736982926867JZTAZ5F8TB","lobbyInfo":{"roomCode":"TTWQ","mapId":"1736982914988TDU0HZGRU9","gameStateId":"","status":"Awaiting Start","numPlayers":1,"maxPlayers":12,"players":[{"id":"1736982926867JZTAZ5F8TB","name":"Ryan","team":"","role":"","row":0,"col":0}],"host":{"id":"1736982926867JZTAZ5F8TB","name":"Ryan","team":"","role":"","row":0,"col":0}}}}	
     // handleLobbyInfoMessage(lobby.data)

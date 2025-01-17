@@ -19,6 +19,6 @@ COPY --from=builder /app/escape-api/escapeserver /app/
 COPY ./escape-api/assets /escape-api/assets
 COPY --from=builder /logs /logs
 COPY --from=builder /maps /maps
-EXPOSE 10000
+EXPOSE 80
 
 ENTRYPOINT ["/app/escapeserver"]

@@ -316,7 +316,20 @@ func processMessage(roomCode string, playerId string, message []byte) {
 
 	switch msg.JsonType {
 	case "startGame":
-		game, err := GetInitialGameState(roomCode)
+		config := Models.GameConfig{}
+		if err := json.Unmarshal(msg.Data, &config); err != nil {
+			log.Printf("error decoding startGame config: %s", err)
+			socketError := WebsocketMessage{
+				Type: WebsocketMessage_Error,
+				Data: SocketError{
+					Message: err.Error(),
+				},
+			}
+			room[playerId].WriteJSON(socketError)
+			break
+		}
+
+		game, err := GetInitialGameState(roomCode, config)
 		if err != nil {
 			log.Printf("ERROR: GAME NOT STARTED, ABORTING...%s", err)
 			return
@@ -331,39 +344,39 @@ func processMessage(roomCode string, playerId string, message []byte) {
 		}
 		cleanUpRoom(room, roomCode)
 	case "submitAction":
-		// var action struct {
-		// 	GameId string                  `json:"gameId"`
-		// 	Action Session.SubmittedAction `json:"action"`
-		// }
-		// if err := json.Unmarshal(msg.Data, &action); err != nil {
-		// 	log.Printf("error decoding submitAction: {%s}", err)
-		// 	socketError := WebsocketMessage{
-		// 		Type: WebsocketMessage_Error,
-		// 		Data: SocketError{
-		// 			Message: err.Error(),
-		// 		},
-		// 	}
-		// 	room[playerId].WriteJSON(socketError)
-		// 	break
-		// }
+		var action struct {
+			GameId string                 `json:"gameId"`
+			Action Models.SubmittedAction `json:"action"`
+		}
+		if err := json.Unmarshal(msg.Data, &action); err != nil {
+			log.Printf("error decoding submitAction: {%s}", err)
+			socketError := WebsocketMessage{
+				Type: WebsocketMessage_Error,
+				Data: SocketError{
+					Message: err.Error(),
+				},
+			}
+			room[playerId].WriteJSON(socketError)
+			break
+		}
 
-		// //Supply PlayerId with the Id of the player belonging to this connection
-		// action.Action.PlayerId = playerId
+		//Supply PlayerId with the Id of the player belonging to this connection
+		action.Action.PlayerId = playerId
 
-		// changelog, err := SubmitAction(action.GameId, action.Action)
-		// if err != nil {
-		// 	log.Printf("error with submitAction: {%s}", err)
-		// 	socketError := WebsocketMessage{
-		// 		Type: WebsocketMessage_Error,
-		// 		Data: SocketError{
-		// 			Message: err.Error(),
-		// 		},
-		// 	}
-		// 	room[playerId].WriteJSON(socketError)
-		// 	break
-		// }
+		gameState, err := SubmitAction(action.GameId, action.Action)
+		if err != nil {
+			log.Printf("error with submitAction: {%s}", err)
+			socketError := WebsocketMessage{
+				Type: WebsocketMessage_Error,
+				Data: SocketError{
+					Message: err.Error(),
+				},
+			}
+			room[playerId].WriteJSON(socketError)
+			break
+		}
 
-		sendMessageToAllPlayers(room, WebsocketMessage{Type: WebsocketMessage_Changelog /*Data: changelog*/})
+		sendMessageToAllPlayers(room, WebsocketMessage{Type: WebsocketMessage_GameState, Data: gameState})
 	case "leaveLobby":
 		updatedLobby, err := endPlayerConnection(roomCode, playerId, room)
 

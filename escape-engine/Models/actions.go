@@ -3,7 +3,13 @@ package Models
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"slices"
+)
+
+const (
+	Action_Movement = "Movement"
+	Action_Attack   = "Attack"
 )
 
 // This is the way the frontend will send data to the backend during gameplay. They will
@@ -59,9 +65,11 @@ func (move Movement) Execute(gameState *GameState, gameMap GameMap, playerId str
 		if actingPlayer.Team == PlayerTeam_Alien {
 			allowedSpaces = 2
 		}
-		totalMovement := (move.ToRow - actingPlayer.Row) + (move.ToCol - actingPlayer.Col)
-		if !(totalMovement > 0 && totalMovement <= allowedSpaces) {
-			return fmt.Errorf("player is trying to move %d spaces, which is not allowed", totalMovement)
+		//TODO: This allows one extra space of movement in the downward diagonal directions
+		totalMovementRows := int(math.Abs(float64(move.ToRow - actingPlayer.Row)))
+		totalMovementCols := int(math.Abs(float64(move.ToCol - actingPlayer.Col)))
+		if (totalMovementRows > allowedSpaces) || (totalMovementCols > allowedSpaces) || (totalMovementRows+totalMovementCols <= 0) {
+			return fmt.Errorf("player is trying to move %d rows and %d cols, which is not allowed", totalMovementRows, totalMovementCols)
 		}
 
 		//At this point, player is allowed to execute the move
@@ -71,5 +79,9 @@ func (move Movement) Execute(gameState *GameState, gameMap GameMap, playerId str
 		return fmt.Errorf("requested space [%d,%d] not found in map", move.ToRow, move.ToCol)
 	}
 
+	return nil
+}
+
+func (attack Attack) Execute(gameState *GameState, gameMap GameMap, playerId string) error {
 	return nil
 }
