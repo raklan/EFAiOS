@@ -324,7 +324,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 		//Supply PlayerId with the Id of the player belonging to this connection
 		action.Action.PlayerId = playerId
 
-		gameState, gameEvent, err := SubmitAction(action.GameId, action.Action)
+		messageToSend, shouldBroadcast, err := SubmitAction(action.GameId, action.Action)
 		if err != nil {
 			log.Printf("error with submitAction: {%s}", err)
 			socketError := Models.WebsocketMessage{
@@ -337,11 +337,11 @@ func processMessage(roomCode string, playerId string, message []byte) {
 			break
 		}
 
-		if gameEvent != nil {
-			sendMessageToAllPlayers(room, Models.WebsocketMessage{Type: Models.WebsocketMessage_GameEvent, Data: *gameEvent})
+		if shouldBroadcast {
+			sendMessageToAllPlayers(room, messageToSend)
+		} else {
+			room[playerId].WriteJSON(messageToSend)
 		}
-
-		sendMessageToAllPlayers(room, Models.WebsocketMessage{Type: Models.WebsocketMessage_GameState, Data: gameState})
 	case "leaveLobby":
 		updatedLobby, err := endPlayerConnection(roomCode, playerId, room)
 
@@ -503,7 +503,7 @@ func sendMessageToAllPlayers(room map[string]*websocket.Conn, message Models.Web
 		err := conn.WriteJSON(message)
 		if err != nil {
 			log.Println("Error sending message, skipping meesage to ", playerId)
-			continue // I don't handle disconnection rn
+			continue
 		}
 	}
 }
@@ -511,7 +511,7 @@ func sendMessageToAllPlayers(room map[string]*websocket.Conn, message Models.Web
 // Defer this function whenever you try to read from a socket. If ReadMessage panics, this will kick in. Note: This must be set up (deferred) **BEFORE** calling ReadMessage
 func socketRecovery(room map[string]*websocket.Conn, playerId string) {
 	if r := recover(); r != nil {
-		log.Printf("Something went wrong trying to read from the connection of Player, likely due to an unexpected closing of the Websocket connection: {%s} -- %s", playerId, r)
+		log.Printf("Something went wrong trying to manage the connection of Player, likely due to an unexpected closing of the Websocket connection: {%s} -- %s", playerId, r)
 		//Disconnect client by closing connection and removing player from lobby
 		gamesClientsMutex.Lock()
 		//lobby[playerId].Close() Assume the socket is already closed if we're here

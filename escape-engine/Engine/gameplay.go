@@ -104,59 +104,108 @@ func EndGame(roomCode string, playerId string) error {
 	return err
 }
 
-func SubmitAction(gameId string, action Models.SubmittedAction) (Models.GameState, *Models.GameEvent, error) {
-	funcLogPrefix := "==GetInitialGameState=="
+func SubmitAction(gameId string, action Models.SubmittedAction) (Models.WebsocketMessage, bool, error) {
+	funcLogPrefix := "==SubmitAction=="
 	defer LogUtil.EnsureLogPrefixIsReset()
 	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
 
 	gameState, err := GetCachedGameStateFromRedis(gameId)
 	if err != nil {
 		LogError(funcLogPrefix, err)
-		return Models.GameState{}, nil, err
+		return Models.WebsocketMessage{}, false, err
 	}
 
 	//TODO: Add turn enforcement
 
-	var gameEvent *Models.GameEvent = nil
+	data := Models.WebsocketMessage{}
+	shouldBroadcast := false
 	switch action.Type {
-	case Models.Action_Movement:
-		turn := Models.Movement{}
-		err := json.Unmarshal(action.Turn, &turn)
-		if err != nil {
-			LogError(funcLogPrefix, err)
-			return gameState, nil, err
-		}
-
-		gameEvent, err = turn.Execute(&gameState, action.PlayerId)
-		if err != nil {
-			LogError(funcLogPrefix, err)
-			return gameState, nil, err
-		}
 	case Models.Action_Attack:
 		turn := Models.Attack{}
 		err := json.Unmarshal(action.Turn, &turn)
 		if err != nil {
 			LogError(funcLogPrefix, err)
-			return gameState, nil, err
+			return data, false, err
 		}
 
-		gameEvent, err = turn.Execute(&gameState, action.PlayerId)
+		var result any = nil
+		if turn.IsAttacking() {
+			result, err = turn.Execute(&gameState, action.PlayerId)
+			data.Type = Models.WebsocketMessage_GameEvent
+		} else {
+			result, err = Models.DrawCard(&gameState, action.PlayerId)
+			data.Type = Models.WebsocketMessage_Card
+		}
+
 		if err != nil {
 			LogError(funcLogPrefix, err)
-			return gameState, nil, err
+			return data, false, err
 		}
-	}
 
-	log.Println(gameState.GameMap.Spaces)
+		data.Data = result
+	case Models.Action_Movement:
+		turn := Models.Movement{}
+		err := json.Unmarshal(action.Turn, &turn)
+		if err != nil {
+			LogError(funcLogPrefix, err)
+			return data, false, err
+		}
+
+		result, err := turn.Execute(&gameState, action.PlayerId)
+		if err != nil {
+			LogError(funcLogPrefix, err)
+			return data, false, err
+		}
+		data = Models.WebsocketMessage{
+			Type: Models.WebsocketMessage_MovementResponse,
+			Data: result,
+		}
+	case Models.Action_Noise:
+		turn := Models.Noise{}
+		err := json.Unmarshal(action.Turn, &turn)
+		if err != nil {
+			LogError(funcLogPrefix, err)
+			return data, false, err
+		}
+
+		result, err := turn.Execute(&gameState, action.PlayerId)
+		if err != nil {
+			LogError(funcLogPrefix, err)
+			return data, false, err
+		}
+		shouldBroadcast = true
+		data = Models.WebsocketMessage{
+			Type: Models.WebsocketMessage_GameEvent,
+			Data: result,
+		}
+	case Models.Action_EndTurn:
+		turn := Models.EndTurn{}
+		err := json.Unmarshal(action.Turn, &turn)
+		if err != nil {
+			LogError(funcLogPrefix, err)
+			return data, false, err
+		}
+
+		result, _, err := turn.Execute(&gameState, action.PlayerId) //TODO: Figure out how to tell clients someone used a pod
+		if err != nil {
+			LogError(funcLogPrefix, err)
+			return data, false, err
+		}
+		data = Models.WebsocketMessage{
+			Type: Models.WebsocketMessage_GameEvent,
+			Data: result,
+		}
+		shouldBroadcast = true
+	}
 
 	//Re-save gamestate
-	saved, err := CacheGameStateInRedis(gameState)
+	_, err = CacheGameStateInRedis(gameState)
 	if err != nil {
 		LogError(funcLogPrefix, err)
-		return gameState, nil, err
+		return Models.WebsocketMessage{}, false, err
 	}
 
-	return saved, gameEvent, nil
+	return data, shouldBroadcast, nil
 }
 
 // #region Helper Functions

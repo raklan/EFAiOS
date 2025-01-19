@@ -2,13 +2,14 @@ package Models
 
 // The different types of messages the server might send to a client connected via websocket.
 const (
-	WebsocketMessage_Changelog = "Changelog"
-	WebsocketMessage_Close     = "Close"
-	WebsocketMessage_Error     = "Error"
-	WebsocketMessage_GameEvent = "GameEvent"
-	WebsocketMessage_GameOver  = "GameOver"
-	WebsocketMessage_GameState = "GameState"
-	WebsocketMessage_LobbyInfo = "LobbyInfo"
+	WebsocketMessage_Card             = "Card"
+	WebsocketMessage_Close            = "Close"
+	WebsocketMessage_Error            = "Error"
+	WebsocketMessage_GameEvent        = "GameEvent"
+	WebsocketMessage_GameOver         = "GameOver"
+	WebsocketMessage_GameState        = "GameState" //In this case, the [Data] field will be a GameState struct
+	WebsocketMessage_LobbyInfo        = "LobbyInfo"
+	WebsocketMessage_MovementResponse = "MovementResponse"
 )
 
 // A message sent from the server to a client. The frontend can check [Type] to determine how to parse the object in [Data]
@@ -25,8 +26,6 @@ type LobbyInfo struct {
 	PlayerID  string `json:"playerID"`
 	LobbyInfo Lobby  `json:"lobbyInfo"`
 }
-
-// I know SocketError and SocketClose have the same exact structure, but I've separated them for both clarity in the code and in case we end up wanting to put additional (unique) data in one or both
 
 // If some message from a client causes any error, one of these is sent back to the client
 type SocketError struct {
@@ -45,4 +44,19 @@ type GameEvent struct {
 	Description string `json:"description"`
 	Row         int    `json:"row"`
 	Col         int    `json:"col"`
+}
+
+const (
+	Card_Red   = "Red"
+	Card_Green = "Green"
+	Card_White = "White"
+)
+
+type CardEvent struct {
+	Type string `json:"type"`
+}
+
+type MovementEvent struct {
+	NewRow int `json:"newRow"`
+	NewCol int `json:"newCol"`
 }

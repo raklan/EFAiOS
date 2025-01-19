@@ -10,8 +10,10 @@ import (
 )
 
 const (
-	Action_Movement = "Movement"
 	Action_Attack   = "Attack"
+	Action_Movement = "Movement"
+	Action_Noise    = "Noise"
+	Action_EndTurn  = "EndTurn"
 )
 
 // This is the way the frontend will send data to the backend during gameplay. They will
@@ -31,20 +33,33 @@ type Movement struct {
 	ToCol int `json:"toCol"`
 }
 
+// Set Row & Col to -99 to indicate no attack
 type Attack struct {
 	Row int `json:"row"`
 	Col int `json:"col"`
 }
 
-func (move Movement) Execute(gameState *GameState, playerId string) (*GameEvent, error) {
-	var gameEvent *GameEvent = nil
+func (attack Attack) IsAttacking() bool {
+	return attack.Row != -99 && attack.Col != -99
+}
+
+type Noise struct {
+	Row int `json:"row"`
+	Col int `json:"col"`
+}
+
+type EndTurn struct {
+}
+
+func (move Movement) Execute(gameState *GameState, playerId string) (MovementEvent, error) {
+	movement := MovementEvent{}
 	// if gameState.CurrentPlayer != playerId {
 	// 	return nil, fmt.Errorf("player trying to execute turn is not current player")
 	// }
 
 	actingPlayerIndex := slices.IndexFunc(gameState.Players, func(p Player) bool { return playerId == p.Id })
 	if actingPlayerIndex == -1 {
-		return nil, fmt.Errorf("could not find acting player with ID == {%s}", playerId)
+		return movement, fmt.Errorf("could not find acting player with ID == {%s}", playerId)
 	}
 
 	actingPlayer := &(gameState.Players[actingPlayerIndex])
@@ -61,7 +76,7 @@ func (move Movement) Execute(gameState *GameState, playerId string) (*GameEvent,
 			Space_UsedPod,
 		}
 		if slices.ContainsFunc(cantMoveInto, func(t int) bool { return space.Type == t }) {
-			return nil, fmt.Errorf("space [%d,%d] is not allowed to be moved into", move.ToRow, move.ToCol)
+			return movement, fmt.Errorf("space [%d,%d] is not allowed to be moved into", move.ToRow, move.ToCol)
 		}
 
 		//Make sure it's close enough
@@ -73,64 +88,14 @@ func (move Movement) Execute(gameState *GameState, playerId string) (*GameEvent,
 			//return fmt.Errorf("movement not allowed") TODO: Turned off for now because hex grids make counting spaces HARD
 		}
 
-		if space.Type == Space_Pod {
-			if actingPlayer.Team == PlayerTeam_Alien {
-				return nil, fmt.Errorf("aliens are not allowed to enter pods")
-			}
-
-			totalPodCards := gameState.GameConfig.NumWorkingPods + gameState.GameConfig.NumBrokenPods
-			if totalPodCards == 0 {
-				return nil, fmt.Errorf("no pod cards left")
-			}
-			podCard := (rand.IntN(totalPodCards) + 1)
-			podIsWorking := podCard > gameState.GameConfig.NumWorkingPods
-			if gameState.GameConfig.NumBrokenPods == 0 { //0 broken pods is an edge case that will effectively make 1 "working" card act as a broken card
-				podIsWorking = true
-			}
-			if gameState.GameConfig.NumWorkingPods == 0 { //0 working pods is an edge case in the opposite direction
-				podIsWorking = false
-			}
-			if podIsWorking {
-				gameEvent = &GameEvent{
-					Row:         move.ToRow,
-					Col:         move.ToCol,
-					Description: fmt.Sprintf("Player %s escaped using the Pod at (%d,%d)!", actingPlayer.Name, move.ToRow, move.ToCol),
-				}
-				actingPlayer.Team = PlayerTeam_Spectator
-				actingPlayer.Row, actingPlayer.Col = -99, -99
-
-				gameState.GameConfig.NumWorkingPods -= 1
-				gameState.GameMap.Spaces[space.GetMapKey()] = Space{
-					Row:  space.Row,
-					Col:  space.Col,
-					Type: Space_UsedPod,
-				}
-
-				return gameEvent, nil
-			} else {
-				gameEvent = &GameEvent{
-					Row:         move.ToRow,
-					Col:         move.ToCol,
-					Description: fmt.Sprintf("Player %s tried the Pod at (%d,%d) but it didn't work!", actingPlayer.Name, move.ToRow, move.ToCol),
-				}
-
-				gameState.GameConfig.NumBrokenPods -= 1
-				gameState.GameMap.Spaces[space.GetMapKey()] = Space{
-					Row:  space.Row,
-					Col:  space.Col,
-					Type: Space_UsedPod,
-				}
-			}
-		}
-
 		//At this point, player is allowed to execute the move
-		actingPlayer.Row = move.ToRow
-		actingPlayer.Col = move.ToCol
+		actingPlayer.Row, actingPlayer.Col = move.ToRow, move.ToCol
+		movement.NewRow, movement.NewCol = actingPlayer.Row, actingPlayer.Col
 	} else {
-		return nil, fmt.Errorf("requested space [%d,%d] not found in map", move.ToRow, move.ToCol)
+		return movement, fmt.Errorf("requested space [%d,%d] not found in map", move.ToRow, move.ToCol)
 	}
 
-	return gameEvent, nil
+	return movement, nil
 }
 
 func checkMovement(toRow int, fromRow int, toCol int, fromCol int, allowedMovement int) bool {
@@ -189,4 +154,96 @@ func (attack Attack) Execute(gameState *GameState, playerId string) (*GameEvent,
 	}
 
 	return gameEvent, nil
+}
+
+func DrawCard(gameState *GameState, playerId string) (CardEvent, error) { //TODO: Full implementation
+	event := CardEvent{}
+	switch rand.IntN(3) {
+	case 0:
+		event.Type = Card_Green
+	case 1:
+		event.Type = Card_Red
+	case 2:
+		event.Type = Card_White
+	}
+	return event, nil
+}
+
+func (noise Noise) Execute(gameState *GameState, playerId string) (*GameEvent, error) {
+	actingPlayerIndex := slices.IndexFunc(gameState.Players, func(p Player) bool { return playerId == p.Id })
+	if actingPlayerIndex == -1 {
+		return nil, fmt.Errorf("could not find acting player with ID == {%s}", playerId)
+	}
+
+	actingPlayer := &(gameState.Players[actingPlayerIndex])
+
+	event := GameEvent{
+		Row:         noise.Row,
+		Col:         noise.Col,
+		Description: fmt.Sprintf("Player '%s' made noise at [%d,%d]!", actingPlayer.Name, noise.Row, noise.Col),
+	}
+	return &event, nil
+}
+
+func (endTurn EndTurn) Execute(gameState *GameState, playerId string) (*GameState, *GameEvent, error) {
+	var gameEvent *GameEvent = nil
+
+	actingPlayerIndex := slices.IndexFunc(gameState.Players, func(p Player) bool { return playerId == p.Id })
+	if actingPlayerIndex == -1 {
+		return gameState, nil, fmt.Errorf("could not find acting player with ID == {%s}", playerId)
+	}
+
+	actingPlayer := &(gameState.Players[actingPlayerIndex])
+
+	space := gameState.GameMap.Spaces[Space{Row: actingPlayer.Row, Col: actingPlayer.Col}.GetMapKey()]
+	if space.Type == Space_Pod {
+		if actingPlayer.Team == PlayerTeam_Alien {
+			return gameState, nil, fmt.Errorf("aliens are not allowed to enter pods")
+		}
+
+		totalPodCards := gameState.GameConfig.NumWorkingPods + gameState.GameConfig.NumBrokenPods
+		if totalPodCards == 0 {
+			return gameState, nil, fmt.Errorf("no pod cards left")
+		}
+		podCard := (rand.IntN(totalPodCards) + 1)
+		podIsWorking := podCard > gameState.GameConfig.NumWorkingPods
+		if gameState.GameConfig.NumBrokenPods == 0 { //0 broken pods is an edge case that will effectively make 1 "working" card act as a broken card
+			podIsWorking = true
+		}
+		if gameState.GameConfig.NumWorkingPods == 0 { //0 working pods is an edge case in the opposite direction
+			podIsWorking = false
+		}
+		if podIsWorking {
+			gameEvent = &GameEvent{
+				Row:         actingPlayer.Row,
+				Col:         actingPlayer.Col,
+				Description: fmt.Sprintf("Player %s escaped using the Pod at (%d,%d)!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
+			}
+			actingPlayer.Team = PlayerTeam_Spectator
+			actingPlayer.Row, actingPlayer.Col = -99, -99
+
+			gameState.GameConfig.NumWorkingPods -= 1
+			gameState.GameMap.Spaces[space.GetMapKey()] = Space{
+				Row:  space.Row,
+				Col:  space.Col,
+				Type: Space_UsedPod,
+			}
+
+			return gameState, gameEvent, nil
+		} else {
+			gameEvent = &GameEvent{
+				Row:         actingPlayer.Row,
+				Col:         actingPlayer.Col,
+				Description: fmt.Sprintf("Player %s tried the Pod at (%d,%d), but it didn't work!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
+			}
+
+			gameState.GameConfig.NumBrokenPods -= 1
+			gameState.GameMap.Spaces[space.GetMapKey()] = Space{
+				Row:  space.Row,
+				Col:  space.Col,
+				Type: Space_UsedPod,
+			}
+		}
+	}
+	return gameState, gameEvent, nil
 }
