@@ -52,15 +52,15 @@ async function handleGameOverMessage(messageData) {
 
 async function handleGameStateMessage(gameState) {
     thisPlayer = gameState.players?.find(p => p.id == thisPlayer.id)
+    drawMap(gameState.gameMap)
     if (!thisGameStateId) {
-        await initializeMap(gameState.mapId)
         thisGameStateId = gameState.id
     }
     document.getElementById("lobby").style.display = 'none';
     document.getElementById('gameplay').style.display = 'flex';
 
     document.querySelectorAll('.player').forEach(x => x.classList.remove('player'))
-    for (let player of gameState.players) {
+    for (let player of gameState.players.filter(p => p.team != PlayerTeams.Spectator)) {
         var playerSpace = document.getElementById(`hex-${player.row}-${player.col}`)
         playerSpace.classList = 'hexfield player'
     }

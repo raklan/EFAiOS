@@ -5,16 +5,18 @@ const SpaceTypes = {
     Safe: 1,
     Dangerous: 2,
     Pod: 3,
-    HumanStart: 4,
-    AlienStart: 5
+    UsedPod: 4,
+    HumanStart: 5,
+    AlienStart: 6
 }
 
-const WALL_TOOL = 'Walls';
-const POD_TOOL = 'Pods';
-const SAFE_TOOL = 'Safe Sector';
-const DANGER_TOOL = 'Dangerous Sector';
-const HUMAN_TOOL = 'Human Start';
-const ALIEN_TOOL = 'Alien Start';
+const PlayerTeams = {
+    Human: 'Human',
+    Alien: 'Alien',
+    Spectator: 'Spectator'
+}
+
+
 
 var currentTool = 'None';
 
@@ -81,6 +83,7 @@ function drawMapOnPage(){
                 case SpaceTypes.Wall: spaceClass = 'wall'; break;
                 case SpaceTypes.Safe: spaceClass = 'safe'; break;
                 case SpaceTypes.Pod: spaceClass = 'pod'; break;
+                case SpaceTypes.UsedPod: spaceClass = 'pod-used'; break;
                 case SpaceTypes.Dangerous: spaceClass = 'dangerous'; break;
                 case SpaceTypes.HumanStart: spaceClass = 'humanstart'; break;
                 case SpaceTypes.AlienStart: spaceClass = 'alienstart'; break;
@@ -90,6 +93,17 @@ function drawMapOnPage(){
             el.setAttribute('hex-type', space.type);
         }
     });
+}
+
+function drawMap(map){
+    if (map){
+        MAP = map;
+        clearGrid();
+        createGrid(MAP.rows, MAP.cols);
+        drawMapOnPage();
+    }else{
+        console.error("No map given")
+    }
 }
 
 function hexClick(event) {
@@ -113,26 +127,4 @@ function hexClick(event) {
 function clearGrid() {
     var polycontainer = document.getElementById("polycontainer")
     polycontainer?.remove();
-}
-
-async function initializeMap(mapId){
-    if (mapId){
-        var map = await loadMap(mapId);
-        MAP = map;
-        clearGrid();
-        createGrid(map.rows, map.cols);
-        drawMapOnPage();
-    }else{
-        console.error("No map id given")
-    }
-}
-
-async function loadMap(id){
-    var map = null;
-    await fetch(`/api/map?id=${id}`)
-    .then(resp => resp.json())
-    .then(apiObj => {
-        map = apiObj;
-    })
-    return map;
 }

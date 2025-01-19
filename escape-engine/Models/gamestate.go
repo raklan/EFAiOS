@@ -38,8 +38,8 @@ type Lobby struct {
 type GameState struct {
 	//This is solely for book-keeping. The front end should submit this Id along with SubmittedActions to update the GameState
 	Id string `json:"id"`
-	//The ID of the map that this game state uses
-	MapId string `json:"mapId"`
+	//The map used by this game
+	GameMap GameMap `json:"gameMap"`
 	//GameState-specific config as defined by the Host
 	GameConfig GameConfig `json:"gameConfig"`
 	//A list of the states of each Player in the game.

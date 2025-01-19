@@ -36,7 +36,7 @@ type Attack struct {
 	Col int `json:"col"`
 }
 
-func (move Movement) Execute(gameState *GameState, gameMap GameMap, playerId string) (*GameEvent, error) {
+func (move Movement) Execute(gameState *GameState, playerId string) (*GameEvent, error) {
 	var gameEvent *GameEvent = nil
 	// if gameState.CurrentPlayer != playerId {
 	// 	return nil, fmt.Errorf("player trying to execute turn is not current player")
@@ -52,12 +52,13 @@ func (move Movement) Execute(gameState *GameState, gameMap GameMap, playerId str
 	//Bounds check
 	spaceKey := fmt.Sprintf("%d,%d", move.ToRow, move.ToCol)
 
-	if space, exists := gameMap.Spaces[spaceKey]; exists {
+	if space, exists := gameState.GameMap.Spaces[spaceKey]; exists {
 		//Make sure it's an open space
 		cantMoveInto := []int{
 			Space_AlienStart,
 			Space_HumanStart,
 			Space_Wall,
+			Space_UsedPod,
 		}
 		if slices.ContainsFunc(cantMoveInto, func(t int) bool { return space.Type == t }) {
 			return nil, fmt.Errorf("space [%d,%d] is not allowed to be moved into", move.ToRow, move.ToCol)
@@ -70,6 +71,56 @@ func (move Movement) Execute(gameState *GameState, gameMap GameMap, playerId str
 		}
 		if !checkMovement(move.ToRow, actingPlayer.Row, move.ToCol, actingPlayer.Col, allowedSpaces) {
 			//return fmt.Errorf("movement not allowed") TODO: Turned off for now because hex grids make counting spaces HARD
+		}
+
+		if space.Type == Space_Pod {
+			if actingPlayer.Team == PlayerTeam_Alien {
+				return nil, fmt.Errorf("aliens are not allowed to enter pods")
+			}
+
+			totalPodCards := gameState.GameConfig.NumWorkingPods + gameState.GameConfig.NumBrokenPods
+			if totalPodCards == 0 {
+				return nil, fmt.Errorf("no pod cards left")
+			}
+			podCard := (rand.IntN(totalPodCards) + 1)
+			podIsWorking := podCard > gameState.GameConfig.NumWorkingPods
+			if gameState.GameConfig.NumBrokenPods == 0 { //0 broken pods is an edge case that will effectively make 1 "working" card act as a broken card
+				podIsWorking = true
+			}
+			if gameState.GameConfig.NumWorkingPods == 0 { //0 working pods is an edge case in the opposite direction
+				podIsWorking = false
+			}
+			if podIsWorking {
+				gameEvent = &GameEvent{
+					Row:         move.ToRow,
+					Col:         move.ToCol,
+					Description: fmt.Sprintf("Player %s escaped using the Pod at (%d,%d)!", actingPlayer.Name, move.ToRow, move.ToCol),
+				}
+				actingPlayer.Team = PlayerTeam_Spectator
+				actingPlayer.Row, actingPlayer.Col = -99, -99
+
+				gameState.GameConfig.NumWorkingPods -= 1
+				gameState.GameMap.Spaces[space.GetMapKey()] = Space{
+					Row:  space.Row,
+					Col:  space.Col,
+					Type: Space_UsedPod,
+				}
+
+				return gameEvent, nil
+			} else {
+				gameEvent = &GameEvent{
+					Row:         move.ToRow,
+					Col:         move.ToCol,
+					Description: fmt.Sprintf("Player %s tried the Pod at (%d,%d) but it didn't work!", actingPlayer.Name, move.ToRow, move.ToCol),
+				}
+
+				gameState.GameConfig.NumBrokenPods -= 1
+				gameState.GameMap.Spaces[space.GetMapKey()] = Space{
+					Row:  space.Row,
+					Col:  space.Col,
+					Type: Space_UsedPod,
+				}
+			}
 		}
 
 		//At this point, player is allowed to execute the move
@@ -111,7 +162,7 @@ func checkMovement(toRow int, fromRow int, toCol int, fromCol int, allowedMoveme
 	}
 }
 
-func (attack Attack) Execute(gameState *GameState, gameMap GameMap, playerId string) (*GameEvent, error) {
+func (attack Attack) Execute(gameState *GameState, playerId string) (*GameEvent, error) {
 	actingPlayerIndex := slices.IndexFunc(gameState.Players, func(p Player) bool { return playerId == p.Id })
 	if actingPlayerIndex == -1 {
 		return nil, fmt.Errorf("could not find acting player with ID == {%s}", playerId)
@@ -122,9 +173,9 @@ func (attack Attack) Execute(gameState *GameState, gameMap GameMap, playerId str
 	var gameEvent *GameEvent = &GameEvent{
 		Row:         attack.Row,
 		Col:         attack.Col,
-		Description: fmt.Sprintf("%s attacked (%d,%d)!\n", actingPlayer.Name, attack.Row, attack.Col),
+		Description: fmt.Sprintf("%s attacked [%d,%d]!\n", actingPlayer.Name, attack.Row, attack.Col),
 	}
-	alienStarts := gameMap.GetSpacesOfType(Space_AlienStart)
+	alienStarts := gameState.GameMap.GetSpacesOfType(Space_AlienStart)
 
 	for index, player := range gameState.Players {
 		if player.Id == actingPlayer.Id { //Don't kill the player doing the attacking

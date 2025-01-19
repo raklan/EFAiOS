@@ -5,8 +5,9 @@ const SpaceTypes = {
     Safe: 1,
     Dangerous: 2,
     Pod: 3,
-    HumanStart: 4,
-    AlienStart: 5
+    UsedPod: 4,
+    HumanStart: 5,
+    AlienStart: 6
 }
 
 const WALL_TOOL = 'Walls';

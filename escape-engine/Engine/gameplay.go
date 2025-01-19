@@ -37,7 +37,7 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 		return gameState, err
 	}
 
-	gameState.MapId = mapDef.Id
+	gameState.GameMap = mapDef
 	gameState.GameConfig = gameConfig
 
 	gameState.Players = []Models.Player{}
@@ -115,11 +115,6 @@ func SubmitAction(gameId string, action Models.SubmittedAction) (Models.GameStat
 		return Models.GameState{}, nil, err
 	}
 
-	gameMap, err := GetMapFromDB(gameState.MapId)
-	if err != nil {
-		LogError(funcLogPrefix, err)
-	}
-
 	//TODO: Add turn enforcement
 
 	var gameEvent *Models.GameEvent = nil
@@ -132,7 +127,7 @@ func SubmitAction(gameId string, action Models.SubmittedAction) (Models.GameStat
 			return gameState, nil, err
 		}
 
-		gameEvent, err = turn.Execute(&gameState, gameMap, action.PlayerId)
+		gameEvent, err = turn.Execute(&gameState, action.PlayerId)
 		if err != nil {
 			LogError(funcLogPrefix, err)
 			return gameState, nil, err
@@ -145,12 +140,14 @@ func SubmitAction(gameId string, action Models.SubmittedAction) (Models.GameStat
 			return gameState, nil, err
 		}
 
-		gameEvent, err = turn.Execute(&gameState, gameMap, action.PlayerId)
+		gameEvent, err = turn.Execute(&gameState, action.PlayerId)
 		if err != nil {
 			LogError(funcLogPrefix, err)
 			return gameState, nil, err
 		}
 	}
+
+	log.Println(gameState.GameMap.Spaces)
 
 	//Re-save gamestate
 	saved, err := CacheGameStateInRedis(gameState)
@@ -192,7 +189,7 @@ func assignTeams(gameState *Models.GameState) {
 func assignStartingPositions(gameState *Models.GameState, gameMap *Models.GameMap) {
 	log.Println("Assigning starting postitions")
 	humanStarts, alienStarts := gameMap.GetSpacesOfType(Models.Space_HumanStart), gameMap.GetSpacesOfType(Models.Space_AlienStart)
-
+	log.Println(humanStarts)
 	for index, player := range gameState.Players {
 		if player.Team == Models.PlayerTeam_Human {
 			startingSpace := humanStarts[rand.Intn(len(humanStarts))]

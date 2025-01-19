@@ -1,6 +1,8 @@
 package Models
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type GameMap struct {
 	Id     string           `json:"id"`
@@ -10,15 +12,13 @@ type GameMap struct {
 	Spaces map[string]Space `json:"spaces"`
 }
 
-func (gameMap GameMap) GetSpacesOfType(spaceType int) []Space {
+func (gameMap *GameMap) GetSpacesOfType(spaceType int) []Space {
 	spaces := []Space{}
-
 	for _, space := range gameMap.Spaces {
 		if space.Type == spaceType {
 			spaces = append(spaces, space)
 		}
 	}
-
 	return spaces
 }
 
@@ -27,6 +27,7 @@ const (
 	Space_Safe
 	Space_Dangerous
 	Space_Pod
+	Space_UsedPod
 	Space_HumanStart
 	Space_AlienStart
 )
