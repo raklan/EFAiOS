@@ -11,38 +11,62 @@ function sendWsMessage(ws, msgType, data) {
     }))
 }
 
+const WS_CARD = "Card"
 const WS_CLOSE = "Close"
 const WS_ERROR = "Error"
-const WS_GAMESTATE = "GameState"
+const WS_GAMEEVENT = "GameEvent"
 const WS_GAMEOVER = "GameOver"
+const WS_GAMESTATE = "GameState"
 const WS_LOBBYINFO = "LobbyInfo"
+const WS_MOVEMENTRESPONSE = "MovementResponse"
 
 function handleWsMessage(message) {
     console.info("Message inbound", message)
+    let handler = null;
     switch (message.type) {
+        case WS_CARD:
+            handler = handleCardMessage;
+            break;
         case WS_CLOSE:
-            handleCloseMessage(message.data);
+            handler = handleCloseMessage;
             break;
         case WS_ERROR:
-            handleErrorMessage(message.data);
+            handler = handleErrorMessage;
+            break;
+        case WS_GAMEEVENT:
+            handler = handleGameEventMessage;
             break;
         case WS_GAMESTATE:
-            handleGameStateMessage(message.data);
+            handler = handleGameStateMessage;
             break;
         case WS_GAMEOVER:
-            handleGameOverMessage(message.data);
+            handler = handleGameOverMessage;
             break;
         case WS_LOBBYINFO:
-            handleLobbyInfoMessage(message.data);
+            handler = handleLobbyInfoMessage;
             break;
+        case WS_MOVEMENTRESPONSE:
+            handler = handleMovementResponse;
     }
+
+    if (handler) {
+        handler(message.data)
+    }
+}
+
+async function handleCardMessage(cardEvent) {
+    showNotification(cardEvent.type, 'Card Drawn')
 }
 
 async function handleCloseMessage(messageData) {
 
 }
 
-async function handleErrorMessage(messageData) {
+async function handleErrorMessage(socketError) {
+    showNotification(socketError.message, 'Error')
+}
+
+async function handleGameEventMessage(gameEvent) {
 
 }
 
@@ -60,9 +84,14 @@ async function handleGameStateMessage(gameState) {
     document.getElementById('gameplay').style.display = 'flex';
 
     document.querySelectorAll('.player').forEach(x => x.classList.remove('player'))
-    for (let player of gameState.players.filter(p => p.team != PlayerTeams.Spectator)) {
-        var playerSpace = document.getElementById(`hex-${player.row}-${player.col}`)
-        playerSpace.classList = 'hexfield player'
+    if(thisPlayer.team != PlayerTeams.Spectator){
+        var playerSpace = document.getElementById(`hex-${thisPlayer.row}-${thisPlayer.col}`)
+        playerSpace.classList.add('player')
+    }else{
+        for (let player of gameState.players.filter(p => p.team != PlayerTeams.Spectator)) {
+            var playerSpace = document.getElementById(`hex-${player.row}-${player.col}`)
+            playerSpace.classList.add('player')
+        }
     }
 }
 
@@ -107,4 +136,31 @@ async function handleLobbyInfoMessage(messageData) {
 
     }
     //#endregion
-} 
+}
+
+async function handleMovementResponse(movementEvent) {
+    thisPlayer.row = movementEvent.newRow;
+    thisPlayer.col = movementEvent.newCol;
+
+    //If needed, this can be moved to before updating thisPlayer.row and just search for that row and col instead of querySelectorAll
+    document.querySelectorAll('.player').forEach(x => x.classList.remove('player'))
+
+    var playerSpace = document.getElementById(`hex-${thisPlayer.row}-${thisPlayer.col}`)
+    playerSpace.classList = 'hexfield player'
+
+    //For now, just automatically don't let humans do anything after moving. In the future, we'll pause here to let them choose whether to play cards
+    if(thisPlayer.team != PlayerTeams.Alien){
+        var actionToSend = {
+            gameId: thisGameStateId,
+            action: {
+                type: 'Attack',
+                turn: {
+                    row: -99,
+                    col: -99
+                }
+            }
+        }
+
+        sendWsMessage(ws, 'submitAction', actionToSend);
+    }
+}

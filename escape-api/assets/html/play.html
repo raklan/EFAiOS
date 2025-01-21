@@ -29,11 +29,11 @@
         fill: brown;
     }
 
-    .hexfield.safe{
+    .hexfield.safe {
         fill: white;
     }
 
-    .hexfield.dangerous{
+    .hexfield.dangerous {
         fill: gray;
     }
 
@@ -41,38 +41,68 @@
         fill: black;
     }
 
-    .hexfield.pod-used{
+    .hexfield.pod-used {
         fill: purple;
     }
 
-    .hexfield.alienstart{
+    .hexfield.alienstart {
         fill: red;
     }
 
-    .hexfield.humanstart{
+    .hexfield.humanstart {
         fill: blue;
     }
-    
+
     .hexfield:hover {
         fill: green;
     }
 
-    .hexfield.player{
+    .hexfield.player {
         fill: orange;
+    }
+
+    .notification-popup {
+        position: fixed;
+        top: 0;
+        left: 44%;
+        width: 10%;
+        background-color: black;
+        z-index: 5000;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        border: 2px solid rgb(0, 0, 155);
+        text-align: center;
+        transform: translateY(-50%);
+        transition: all 0.5s ease-in-out;
+        opacity: 0;
+    }
+
+    .notification-displayed {
+        transform: translateY(25%);
+        transition: all 0.5s ease-in-out;
+        opacity: 1;
     }
 </style>
 {{end}}
 
 {{define "body"}}
+<div id="notification-popup" class="notification-popup">
+    <div id="notification-header">
+        <span style="font-weight: bold; font-size: large" id="notification-title">Alert</span>
+        <span style="font-size: 20px; cursor: pointer; float: right;" onclick="hideNotification()">&times;</span>
+    </div>
+    <div id="notification-content"></div>
+</div>
 <div id="lobby">
     <h3>Lobby</h3>
     <div id="lobby-roomCode"></div>
     <div id="lobby-playerList"></div>
     <div id="lobby-gameConfig">
-        <input type="number" id="config-numHumans" placeholder="Human Players"/>
-        <input type="number" id="config-numAliens" placeholder="Alien Players"/>
-        <input type="number" id="config-numWorkingPods" placeholder="Working Pods"/>
-        <input type="number" id="config-numBrokenPods" placeholder="Broken Pods"/>
+        <input type="number" id="config-numHumans" placeholder="Human Players" />
+        <input type="number" id="config-numAliens" placeholder="Alien Players" />
+        <input type="number" id="config-numWorkingPods" placeholder="Working Pods" />
+        <input type="number" id="config-numBrokenPods" placeholder="Broken Pods" />
     </div>
     <button id="lobby-startButton" style="display: none;">Start</button>
 </div>
@@ -90,7 +120,7 @@
     var thisPlayer = null;
     var thisGameStateId = null;
 
-    function attack(){
+    function attack() {
         var actionToSend = {
             gameId: thisGameStateId,
             action: {
@@ -132,10 +162,25 @@
             var message = JSON.parse(wsMsg.data)
             handleWsMessage(message)
         })
-    }    
+    }
 
     openSocket();
     // var lobby = {"type":"LobbyInfo","data":{"playerID":"1736982926867JZTAZ5F8TB","lobbyInfo":{"roomCode":"TTWQ","mapId":"1736982914988TDU0HZGRU9","gameStateId":"","status":"Awaiting Start","numPlayers":1,"maxPlayers":12,"players":[{"id":"1736982926867JZTAZ5F8TB","name":"Ryan","team":"","role":"","row":0,"col":0}],"host":{"id":"1736982926867JZTAZ5F8TB","name":"Ryan","team":"","role":"","row":0,"col":0}}}}	
     // handleLobbyInfoMessage(lobby.data)
+
+    function showNotification(notificationContent, notificationType) {
+        var popup = document.getElementById("notification-popup");
+        var content = document.getElementById("notification-content");
+        var title = document.getElementById("notification-title");
+
+        content.innerText = notificationContent;
+        title.innerText = notificationType;
+        popup.classList.add('notification-displayed')
+    }
+
+    function hideNotification() {
+        var popup = document.getElementById("notification-popup");
+        popup.classList.remove('notification-displayed')
+    }
 </script>
 {{end}}
