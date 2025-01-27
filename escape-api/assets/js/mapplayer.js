@@ -65,9 +65,23 @@ function createGrid(rows, columns) {
             poly.setAttribute('hex-column', column);
             poly.setAttribute('hex-type', SpaceTypes.Safe);
             poly.setAttribute('id', `hex-${row}-${column}`)
+            poly.innerHTML = `<title>[${row},${column}]</title>`; //TODO: This won't work for mobile
             svgParent.appendChild(poly);
+
+            var polyText = document.createElementNS("http://www.w3.org/2000/svg", "text")
+            polyText.setAttribute('x', `${center.x}`)
+            polyText.setAttribute('y', `${center.y}`)
+            polyText.setAttribute('fill', '#303030')
+            polyText.setAttribute('text-anchor', 'middle')
+            polyText.setAttribute('font-size', 'small')
+            polyText.innerHTML = `[${row},${column}]`
+            polyText.style.pointerEvents = 'none'
+            svgParent.appendChild(polyText)
         }
     }
+
+    svgParent.style.display = 'none'
+    svgParent.style.display = 'block'
 }
 
 function drawMapOnPage(){
