@@ -59,7 +59,8 @@ async function handleCardMessage(cardEvent) {
 }
 
 async function handleCloseMessage(messageData) {
-
+    showNotification(messageData.message, 'Connection Lost')
+    ws.close();
 }
 
 async function handleErrorMessage(socketError) {
@@ -67,11 +68,11 @@ async function handleErrorMessage(socketError) {
 }
 
 async function handleGameEventMessage(gameEvent) {
-
+    showNotification(gameEvent.description, 'Something Happened!')
 }
 
 async function handleGameOverMessage(messageData) {
-
+    showNotification("The Game has ended", "Game Over!")
 }
 
 async function handleGameStateMessage(gameState) {
@@ -146,7 +147,7 @@ async function handleMovementResponse(movementEvent) {
     document.querySelectorAll('.player').forEach(x => x.classList.remove('player'))
 
     var playerSpace = document.getElementById(`hex-${thisPlayer.row}-${thisPlayer.col}`)
-    playerSpace.classList = 'hexfield player'
+    playerSpace.classList.add('player')
 
     //For now, just automatically don't let humans do anything after moving. In the future, we'll pause here to let them choose whether to play cards
     if(thisPlayer.team != PlayerTeams.Alien){
@@ -157,6 +158,19 @@ async function handleMovementResponse(movementEvent) {
                 turn: {
                     row: -99,
                     col: -99
+                }
+            }
+        }
+
+        sendWsMessage(ws, 'submitAction', actionToSend);
+    } else if(thisPlayer.team == PlayerTeams.Alien){
+        var actionToSend = {
+            gameId: thisGameStateId,
+            action: {
+                type: 'Attack',
+                turn: {
+                    row: thisPlayer.row,
+                    col: thisPlayer.col
                 }
             }
         }
