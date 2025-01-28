@@ -79,9 +79,6 @@ function createGrid(rows, columns) {
             svgParent.appendChild(polyText)
         }
     }
-
-    svgParent.style.display = 'none'
-    svgParent.style.display = 'block'
 }
 
 function drawMapOnPage(){
@@ -121,6 +118,10 @@ function drawMap(map){
 }
 
 function hexClick(event) {
+    if(thisPlayer.team == PlayerTeams.Spectator){
+        return
+    }
+
     var row = parseInt(event.target.getAttribute('hex-row') ?? -99);
     var col = parseInt(event.target.getAttribute('hex-column') ?? -99);
 

@@ -56,6 +56,19 @@ function handleWsMessage(message) {
 
 async function handleCardMessage(cardEvent) {
     showNotification(cardEvent.type, 'Card Drawn')
+    //TODO: Placeholder - always send a noise at the player's space
+    const actionToSend = {
+        gameId: thisGameStateId,
+        action: {
+            type: 'Noise',
+            turn: {
+                row: thisPlayer.row,
+                col: thisPlayer.col
+            }
+        }
+    }
+
+    sendWsMessage(ws, 'submitAction', actionToSend)
 }
 
 async function handleCloseMessage(messageData) {
@@ -69,6 +82,17 @@ async function handleErrorMessage(socketError) {
 
 async function handleGameEventMessage(gameEvent) {
     showNotification(gameEvent.description, 'Something Happened!')
+    //For now, a GameEvent always marks the end of a turn
+    if(isThisPlayersTurn){
+        const actionToSend = {
+            gameId: thisGameStateId,
+            action: {
+                type: 'EndTurn',
+                turn: {}
+            }
+        }
+        sendWsMessage(ws, 'submitAction', actionToSend)
+    }
 }
 
 async function handleGameOverMessage(messageData) {
@@ -77,6 +101,7 @@ async function handleGameOverMessage(messageData) {
 
 async function handleGameStateMessage(gameState) {
     thisPlayer = gameState.players?.find(p => p.id == thisPlayer.id)
+    isThisPlayersTurn = gameState.currentPlayer == thisPlayer?.id
     drawMap(gameState.gameMap)
     if (!thisGameStateId) {
         thisGameStateId = gameState.id

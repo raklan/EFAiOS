@@ -324,7 +324,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 		//Supply PlayerId with the Id of the player belonging to this connection
 		action.Action.PlayerId = playerId
 
-		messageToSend, shouldBroadcast, err := SubmitAction(action.GameId, action.Action)
+		messageList, err := SubmitAction(action.GameId, action.Action)
 		if err != nil {
 			log.Printf("error with submitAction: {%s}", err)
 			socketError := Models.WebsocketMessage{
@@ -337,11 +337,14 @@ func processMessage(roomCode string, playerId string, message []byte) {
 			break
 		}
 
-		if shouldBroadcast {
-			sendMessageToAllPlayers(room, messageToSend)
-		} else {
-			room[playerId].WriteJSON(messageToSend)
+		for _, messageToSend := range messageList {
+			if messageToSend.ShouldBroadcast {
+				sendMessageToAllPlayers(room, messageToSend.Message)
+			} else {
+				room[playerId].WriteJSON(messageToSend.Message)
+			}
 		}
+
 	case "leaveLobby":
 		updatedLobby, err := endPlayerConnection(roomCode, playerId, room)
 

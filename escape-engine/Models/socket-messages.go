@@ -12,6 +12,11 @@ const (
 	WebsocketMessage_MovementResponse = "MovementResponse"
 )
 
+type WebsocketMessageListItem struct {
+	Message         WebsocketMessage
+	ShouldBroadcast bool
+}
+
 // A message sent from the server to a client. The frontend can check [Type] to determine how to parse the object in [Data]
 type WebsocketMessage struct {
 	//One of the above constants. That constant will tell you which of the below structs is found in the [Data] field

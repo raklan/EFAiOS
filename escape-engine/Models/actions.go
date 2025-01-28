@@ -146,6 +146,9 @@ func (attack Attack) Execute(gameState *GameState, playerId string) (*GameEvent,
 		if player.Id == actingPlayer.Id { //Don't kill the player doing the attacking
 			continue
 		}
+		if player.Row != attack.Row || player.Col != attack.Col {
+			continue
+		}
 		newSpaceForPlayer := alienStarts[rand.IntN(len(alienStarts))]
 
 		gameState.Players[index].Team = PlayerTeam_Alien
@@ -245,5 +248,15 @@ func (endTurn EndTurn) Execute(gameState *GameState, playerId string) (*GameStat
 			}
 		}
 	}
+
+	gameState.CurrentPlayer = getNextPlayerId(gameState.Players, actingPlayerIndex)
 	return gameState, gameEvent, nil
+}
+
+func getNextPlayerId(players []Player, currentIndex int) string {
+	if currentIndex >= len(players)-1 {
+		return players[0].Id
+	} else {
+		return players[currentIndex+1].Id
+	}
 }
