@@ -55,7 +55,6 @@ function handleWsMessage(message) {
 }
 
 async function handleCardMessage(cardEvent) {
-    showNotification(cardEvent.type, 'Card Drawn')
     //TODO: Placeholder - always send a noise at the player's space
     const actionToSend = {
         gameId: thisGameStateId,
@@ -68,7 +67,17 @@ async function handleCardMessage(cardEvent) {
         }
     }
 
-    sendWsMessage(ws, 'submitAction', actionToSend)
+    if(cardEvent.type == "White"){
+        actionToSend.action.turn.row = -99
+        actionToSend.action.turn.col = -99
+        sendWsMessage(ws, 'submitAction', actionToSend)
+    } else if(cardEvent.type == "Green"){
+        clickMode = ClickModes.Noise
+        showPlayerChoicePopup('greenCard')
+    } else if(cardEvent.type == "Red"){
+        showPlayerChoicePopup('redCard')
+    }
+
 }
 
 async function handleCloseMessage(messageData) {
@@ -119,6 +128,12 @@ async function handleGameStateMessage(gameState) {
             playerSpace.classList.add('player')
         }
     }
+
+    if (gameState.currentPlayer == thisPlayer.id){
+        clickMode = ClickModes.Moving
+    } else{
+        clickMode = ClickModes.None
+    }
 }
 
 async function handleLobbyInfoMessage(messageData) {
@@ -141,7 +156,7 @@ async function handleLobbyInfoMessage(messageData) {
     }
     //#endregion
 
-    //#region Start Game Button
+    //#region Host Controls
     if (thisPlayer?.id?.length > 0 && thisPlayer.id == messageData.lobbyInfo?.host?.id) {
         var startButton = document.getElementById("lobby-startButton")
         startButton.style.display = '';
@@ -159,7 +174,8 @@ async function handleLobbyInfoMessage(messageData) {
             sendWsMessage(ws, 'startGame', config)
         }
 
-
+        var gameConfig = document.getElementById("lobby-gameConfig")
+        gameConfig.style.display = '';
     }
     //#endregion
 }
@@ -189,17 +205,6 @@ async function handleMovementResponse(movementEvent) {
 
         sendWsMessage(ws, 'submitAction', actionToSend);
     } else if(thisPlayer.team == PlayerTeams.Alien){
-        var actionToSend = {
-            gameId: thisGameStateId,
-            action: {
-                type: 'Attack',
-                turn: {
-                    row: thisPlayer.row,
-                    col: thisPlayer.col
-                }
-            }
-        }
-
-        sendWsMessage(ws, 'submitAction', actionToSend);
+        showPlayerChoicePopup('attack')
     }
 }

@@ -10,15 +10,24 @@ const SpaceTypes = {
     AlienStart: 6
 }
 
+var selectedSpace = {
+    row: -99,
+    col: -99
+}
+
 const PlayerTeams = {
     Human: 'Human',
     Alien: 'Alien',
     Spectator: 'Spectator'
 }
 
+const ClickModes = {
+    Moving: 'Moving',
+    Noise: 'Noise',
+    None: 'None'
+}
 
-
-var currentTool = 'None';
+var clickMode = ClickModes.None;
 
 var radius = 20;
 var cssClass = 'hexfield';//If you change this, change it in hexClick() too
@@ -118,28 +127,120 @@ function drawMap(map){
 }
 
 function hexClick(event) {
-    if(thisPlayer.team == PlayerTeams.Spectator){
+    if(thisPlayer.team == PlayerTeams.Spectator || !isThisPlayersTurn){
         return
     }
 
     var row = parseInt(event.target.getAttribute('hex-row') ?? -99);
     var col = parseInt(event.target.getAttribute('hex-column') ?? -99);
 
-    var actionToSend = {
-        gameId: thisGameStateId,
-        action: {
-            type: 'Movement',
-            turn: {
-                toRow: row,
-                toCol: col
+    var actionToSend = {}
+    if(clickMode == ClickModes.Moving){
+        actionToSend = {
+            gameId: thisGameStateId,
+            action: {
+                type: 'Movement',
+                turn: {
+                    toRow: row,
+                    toCol: col
+                }
             }
         }
-    }
-    
     sendWsMessage(ws, 'submitAction', actionToSend);
+    } else if(clickMode == ClickModes.Noise){
+        selectedSpace = {
+            row: row,
+            col: col
+        }
+        document.querySelectorAll('.hexfield.selected').forEach(x => x.classList.remove('selected'))
+        event.target.classList.add('selected')
+
+        document.getElementById("greenCard-confirm").style.display = ''
+    }
+
+    
+    
 }
 
 function clearGrid() {
     var polycontainer = document.getElementById("polycontainer")
     polycontainer?.remove();
+}
+
+function showPlayerChoicePopup(mode){
+    var popup = document.getElementById("playerChoice-popup");
+    var title = document.getElementById("playerChoice-title");
+    var content = document.getElementById("playerChoice-content")
+
+    for(let child of content.children){
+        child.style.display = 'none'
+    }
+
+    if(mode == 'greenCard'){
+        document.getElementById("greenCard-confirm").style.display = 'none'
+        document.getElementById("playerChoice-greenCard").style.display = '';
+    }else if(mode == 'redCard'){
+        document.getElementById("playerChoice-redCard").style.display = '';
+    }else if(mode == 'attack'){
+        document.getElementById("playerChoice-attack").style.display = '';
+    }
+
+    popup.classList.add('notification-displayed')
+}
+
+function hidePlayerChoicePopup(){
+    var popup = document.getElementById("playerChoice-popup");
+    popup.classList.remove('notification-displayed')
+}
+
+function redCardConfirm(){
+    const actionToSend = {
+        gameId: thisGameStateId,
+        action: {
+            type: 'Noise',
+            turn: {
+                row: thisPlayer.row,
+                col: thisPlayer.col
+            }
+        }
+    }
+    sendWsMessage(ws, 'submitAction', actionToSend)
+    hidePlayerChoicePopup();
+}
+
+function greenCardConfirm(){
+    document.querySelectorAll('.hexfield.selected').forEach(x => x.classList.remove('selected'))
+    clickMode = ClickModes.Moving
+    const actionToSend = {
+        gameId: thisGameStateId,
+        action: {
+            type: 'Noise',
+            turn: {
+                row: selectedSpace.row,
+                col: selectedSpace.col
+            }
+        }
+    }
+    sendWsMessage(ws, 'submitAction', actionToSend)
+    hidePlayerChoicePopup();
+    selectedSpace = {
+        row: thisPlayer.row,
+        col: thisPlayer.col
+    }
+}
+
+function attack(isAttacking){
+    var actionToSend = {
+        gameId: thisGameStateId,
+        action: {
+            type: 'Attack',
+            turn: {
+                row: isAttacking? thisPlayer.row : -99,
+                col: isAttacking? thisPlayer.col : -99
+            }
+        }
+    }
+
+    sendWsMessage(ws, 'submitAction', actionToSend);
+    hidePlayerChoicePopup();
 }

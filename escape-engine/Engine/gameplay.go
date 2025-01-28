@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"slices"
 )
 
 // Given an id to a Game defition, constructs and returns an initial GameState for it. This is essentially
@@ -137,9 +138,32 @@ func SubmitAction(gameId string, action Models.SubmittedAction) ([]Models.Websoc
 			data.Type = Models.WebsocketMessage_GameEvent
 			shouldBroadcast = true
 		} else {
-			result, err = Models.DrawCard(&gameState, action.PlayerId)
-			data.Type = Models.WebsocketMessage_Card
-			shouldBroadcast = false
+			// Cards are weird to deal with. You should only draw a card if you're in a dangerous sector,
+			// so DrawCard will check where you are and set the type to Card_NoCard if so. In that case,
+			// everyone should be told the player has moved into a safe sector, effectively skipping over
+			// the Noise phase of their turn
+			cardEvent, er := Models.DrawCard(&gameState, action.PlayerId)
+			err = er
+			if cardEvent.Type == Models.Card_NoCard {
+				actingPlayerIndex := slices.IndexFunc(gameState.Players, func(p Models.Player) bool { return action.PlayerId == p.Id })
+				if actingPlayerIndex == -1 {
+					err = fmt.Errorf("could not find acting player with ID == {%s}", action.PlayerId)
+				}
+
+				actingPlayer := &(gameState.Players[actingPlayerIndex])
+
+				data.Type = Models.WebsocketMessage_GameEvent
+				shouldBroadcast = true
+				result = Models.GameEvent{
+					Row:         -99,
+					Col:         -99,
+					Description: fmt.Sprintf("Player '%s' is in a safe sector", actingPlayer.Name),
+				}
+			} else {
+				data.Type = Models.WebsocketMessage_Card
+				shouldBroadcast = false
+				result = cardEvent
+			}
 		}
 
 		if err != nil {

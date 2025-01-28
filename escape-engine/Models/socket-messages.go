@@ -52,9 +52,10 @@ type GameEvent struct {
 }
 
 const (
-	Card_Red   = "Red"
-	Card_Green = "Green"
-	Card_White = "White"
+	Card_Red    = "Red"
+	Card_Green  = "Green"
+	Card_White  = "White"
+	Card_NoCard = "SilentSector"
 )
 
 type CardEvent struct {

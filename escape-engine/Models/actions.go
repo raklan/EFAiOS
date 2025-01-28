@@ -48,6 +48,10 @@ type Noise struct {
 	Col int `json:"col"`
 }
 
+func (noise Noise) IsNoisy() bool {
+	return noise.Row != -99 && noise.Col != -99
+}
+
 type EndTurn struct {
 }
 
@@ -161,14 +165,34 @@ func (attack Attack) Execute(gameState *GameState, playerId string) (*GameEvent,
 
 func DrawCard(gameState *GameState, playerId string) (CardEvent, error) { //TODO: Full implementation
 	event := CardEvent{}
-	switch rand.IntN(3) {
-	case 0:
-		event.Type = Card_Green
-	case 1:
-		event.Type = Card_Red
-	case 2:
-		event.Type = Card_White
+	actingPlayerIndex := slices.IndexFunc(gameState.Players, func(p Player) bool { return playerId == p.Id })
+	if actingPlayerIndex == -1 {
+		return event, fmt.Errorf("could not find acting player with ID == {%s}", playerId)
 	}
+
+	actingPlayer := &(gameState.Players[actingPlayerIndex])
+
+	currentSpace := Space{
+		Row: actingPlayer.Row,
+		Col: actingPlayer.Col,
+	}
+
+	log.Println("Player's Space:", currentSpace)
+	log.Println("Space in Map:", gameState.GameMap.Spaces[currentSpace.GetMapKey()])
+
+	if gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Space_Safe {
+		event.Type = Card_NoCard
+	} else {
+		switch rand.IntN(3) {
+		case 0:
+			event.Type = Card_Green
+		case 1:
+			event.Type = Card_Red
+		case 2:
+			event.Type = Card_White
+		}
+	}
+
 	return event, nil
 }
 
@@ -181,9 +205,13 @@ func (noise Noise) Execute(gameState *GameState, playerId string) (*GameEvent, e
 	actingPlayer := &(gameState.Players[actingPlayerIndex])
 
 	event := GameEvent{
-		Row:         noise.Row,
-		Col:         noise.Col,
-		Description: fmt.Sprintf("Player '%s' made noise at [%d,%d]!", actingPlayer.Name, noise.Row, noise.Col),
+		Row: noise.Row,
+		Col: noise.Col,
+	}
+	if noise.IsNoisy() {
+		event.Description = fmt.Sprintf("Player '%s' made noise at [%d,%d]!", actingPlayer.Name, noise.Row, noise.Col)
+	} else {
+		event.Description = fmt.Sprintf("Player '%s' avoided making noise", actingPlayer.Name)
 	}
 	return &event, nil
 }
@@ -250,13 +278,17 @@ func (endTurn EndTurn) Execute(gameState *GameState, playerId string) (*GameStat
 	}
 
 	gameState.CurrentPlayer = getNextPlayerId(gameState.Players, actingPlayerIndex)
-	return gameState, gameEvent, nil
+	return gameState, gameEvent, nil //TODO: End the game when no human players remain
 }
 
 func getNextPlayerId(players []Player, currentIndex int) string {
+	nextIndex := currentIndex + 1
 	if currentIndex >= len(players)-1 {
-		return players[0].Id
+		nextIndex = 0
+	}
+	if players[nextIndex].Team == PlayerTeam_Spectator {
+		return getNextPlayerId(players, nextIndex)
 	} else {
-		return players[currentIndex+1].Id
+		return players[nextIndex].Id
 	}
 }
