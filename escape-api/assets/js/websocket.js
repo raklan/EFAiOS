@@ -55,21 +55,17 @@ function handleWsMessage(message) {
 }
 
 async function handleCardMessage(cardEvent) {
-    //TODO: Placeholder - always send a noise at the player's space
-    const actionToSend = {
-        gameId: thisGameStateId,
-        action: {
-            type: 'Noise',
-            turn: {
-                row: thisPlayer.row,
-                col: thisPlayer.col
+    if(cardEvent.type == "White"){
+        const actionToSend = {
+            gameId: thisGameStateId,
+            action: {
+                type: 'Noise',
+                turn: {
+                    row: -99,
+                    col: -99
+                }
             }
         }
-    }
-
-    if(cardEvent.type == "White"){
-        actionToSend.action.turn.row = -99
-        actionToSend.action.turn.col = -99
         sendWsMessage(ws, 'submitAction', actionToSend)
     } else if(cardEvent.type == "Green"){
         clickMode = ClickModes.Noise

@@ -254,6 +254,24 @@ func SubmitAction(gameId string, action Models.SubmittedAction) ([]Models.Websoc
 		}
 	}
 
+	//Automatically end the game when there are no humans left
+	numHumansLeft := 0
+	for _, player := range gameState.Players {
+		if player.Team == Models.PlayerTeam_Human {
+			numHumansLeft++
+		}
+	}
+
+	if numHumansLeft == 0 {
+		messages = append(messages, Models.WebsocketMessageListItem{
+			Message: Models.WebsocketMessage{
+				Type: Models.WebsocketMessage_GameOver,
+				Data: Models.GameOver{},
+			},
+			ShouldBroadcast: true,
+		})
+	}
+
 	//Re-save gamestate
 	_, err = CacheGameStateInRedis(gameState)
 	if err != nil {

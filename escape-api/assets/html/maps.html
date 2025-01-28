@@ -43,7 +43,7 @@
         <h4>{{.}}</h4>
         <div class="button-container">
             <button type="button" onclick="hostMap('{{StripMapId .}}')">Play</button>
-            <button type="button"><a href="/mapeditor?id={{StripMapId .}}">Edit</a></button>
+            <button type="button" onclick="editMap('{{StripMapId .}}')">Edit</button>
         </div>
     </div>
     {{end}}
@@ -60,6 +60,10 @@
     function hostMap(mapId) {
         document.getElementById("name-popup").style.display = "flex";
         selectedMapId = mapId;
+    }
+
+    function editMap(mapId){
+        window.open(`/mapeditor?id=${mapId}`, '_self')
     }
 
     function playMap() {

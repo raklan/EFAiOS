@@ -1,0 +1,149 @@
+body {
+    background-color: black;
+    color: lime;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+a {
+    color: inherit;
+}
+a:hover {
+    color: rgb(1, 145, 1);
+}
+
+/* Inspired by component on Uiverse.io by 212004ALJI */ 
+button,button::after {
+    font-family: inherit;
+    padding: 10px 50px;
+    font-size: 20px;
+    border: none;
+    border-radius: 5px;
+    color: inherit;
+    background-color: transparent;
+    position: relative;
+  }
+  
+  button::after {
+    --move1: inset(50% 50% 50% 50%);
+    --move2: inset(31% 0 40% 0);
+    --move3: inset(39% 0 15% 0);
+    --move4: inset(45% 0 40% 0);
+    --move5: inset(45% 0 6% 0);
+    --move6: inset(14% 0 61% 0);
+    clip-path: var(--move1);
+    content: 'RUN';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* display: block; */
+  }
+  
+  button:hover::after {
+    animation: glitch_4011 1s;
+    text-shadow: 10 10px 10px rgb(255, 0, 0);
+    animation-timing-function: steps(2, end);
+    text-shadow: -3px -3px 0px #24f21d, 3px 3px 0px #27c200;
+    background-color: transparent;
+    border: 3px dotted lime;
+  }
+  
+  button:hover {
+    text-shadow: -1px -1px 0px #24f21d, 1px 1px 0px #27c200;
+  }
+  
+  button:hover {
+    background-color: transparent;
+    border: 1px dotted lime;
+    box-shadow: 0px 10px 10px -10px rgb(0, 141, 0);
+  }
+  
+  @keyframes glitch_4011 {
+    0% {
+      clip-path: var(--move1);
+      transform: translate(0px,-10px);
+    }
+  
+    10% {
+      clip-path: var(--move2);
+      transform: translate(-10px,10px);
+    }
+  
+    20% {
+      clip-path: var(--move3);
+      transform: translate(10px,0px);
+    }
+  
+    30% {
+      clip-path: var(--move4);
+      transform: translate(-10px,10px);
+    }
+  
+    40% {
+      clip-path: var(--move5);
+      transform: translate(10px,-10px);
+    }
+  
+    50% {
+      clip-path: var(--move6);
+      transform: translate(-10px,10px);
+    }
+  
+    60% {
+      clip-path: var(--move1);
+      transform: translate(10px,-10px);
+    }
+  
+    70% {
+      clip-path: var(--move3);
+      transform: translate(-10px,10px);
+    }
+  
+    80% {
+      clip-path: var(--move2);
+      transform: translate(10px,-10px);
+    }
+  
+    90% {
+      clip-path: var(--move4);
+      transform: translate(-10px,10px);
+    }
+  
+    100% {
+      clip-path: var(--move1);
+      transform: translate(0);
+    }
+  }
+
+  button:active {
+    transform: scale(0.95);
+   }
+
+   /* From Uiverse.io by Cornerstone-04 */ 
+.text-input {
+    color: rgb(0, 179, 0);
+    max-width: 190px;
+    height: 30px;
+    border: 2px solid transparent;
+    outline: none;
+    border-bottom: 2px solid #3f3f3f;
+    caret-color: #3f3f3f;
+    background-color: transparent;
+    padding: 5px;
+    transition: .5s linear;
+    font-family: inherit;
+    letter-spacing: 1px;
+    margin: 1%;
+  }
+  
+  .text-input:focus {
+    border: 1px dashed lime;
+    caret-color: lime;
+    color: lime;
+    box-shadow: 4px 4px 10px #070707;
+  }
+  
+  .text-input:focus::placeholder {
+    color: lime;
+  }
