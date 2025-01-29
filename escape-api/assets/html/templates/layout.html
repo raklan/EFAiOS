@@ -22,5 +22,22 @@
 	</body>
 	{{template "scripts" .}}
 
+	<script>
+		//On page load, give every button on the page some fun glitchy text for the hover effect. This attribute is then used to set the content of the after pseudo-element of each button
+		const glitchTextOptions = [
+			'RUN',
+			'HIDE',
+			'QUIET',
+			'ESCAPE',
+			'DEATH',
+			'MONSTERS',
+			'KILL',			
+		]
+		let buttons = document.querySelectorAll("button")
+
+		for(let button of buttons){
+			button.setAttribute("glitch-text", glitchTextOptions[Math.floor(Math.random() * glitchTextOptions.length)])
+		}
+	</script>
 	</html>
 {{end}}

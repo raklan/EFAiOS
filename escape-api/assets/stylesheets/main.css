@@ -31,13 +31,12 @@ button,button::after {
     --move5: inset(45% 0 6% 0);
     --move6: inset(14% 0 61% 0);
     clip-path: var(--move1);
-    content: 'RUN';
+    content: attr(glitch-text);
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    /* display: block; */
   }
   
   button:hover::after {
