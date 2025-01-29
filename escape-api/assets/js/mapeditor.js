@@ -19,7 +19,7 @@ const ALIEN_TOOL = 'Alien Start';
 
 var currentTool = 'None';
 
-var radius = 20;
+var radius = 25;
 var cssClass = 'hexfield';//If you change this, change it in hexClick() too
 
 var MAP = null
@@ -58,13 +58,23 @@ function createGrid(rows, columns) {
                     toPoint(-1 * radius / 2, height),
                     toPoint(-1 * radius, 0)
                 ].join(' '));
-            poly.setAttribute('class', [cssClass, 'safe'].join(' '));
+            poly.setAttribute('class', [cssClass, 'dangerous'].join(' '));
             poly.setAttribute('tabindex', 1);
             poly.setAttribute('hex-row', row);
             poly.setAttribute('hex-column', column);
-            poly.setAttribute('hex-type', SpaceTypes.Safe);
+            poly.setAttribute('hex-type', SpaceTypes.Dangerous);
             poly.setAttribute('id', `hex-${row}-${column}`)
             svgParent.appendChild(poly);
+
+            var polyText = document.createElementNS("http://www.w3.org/2000/svg", "text")
+            polyText.setAttribute('x', `${center.x}`)
+            polyText.setAttribute('y', `${center.y}`)
+            polyText.setAttribute('fill', 'black')
+            polyText.setAttribute('text-anchor', 'middle')
+            polyText.setAttribute('font-size', 'small')
+            polyText.innerHTML = `[${row},${column}]`
+            polyText.style.pointerEvents = 'none'
+            svgParent.appendChild(polyText)
         }
     }
 }
@@ -91,6 +101,11 @@ function drawMapOnPage(){
 
             el.classList = [cssClass, spaceClass].join(' ');
             el.setAttribute('hex-type', space.type);
+
+            el.nextElementSibling.setAttribute('fill', 'black')
+            if(spaceClass == 'wall'){
+                el.nextElementSibling.setAttribute('fill', 'white')
+            }
         }
     });
 }
@@ -98,10 +113,12 @@ function drawMapOnPage(){
 function hexClick(event) {
     event.target.classList = [cssClass]
     event.target.removeAttribute('hex-type')
+    event.target.nextElementSibling.setAttribute('fill', 'black')
     switch(currentTool){
         case WALL_TOOL:
             event.target.classList.add('wall');
             event.target.setAttribute('hex-type', SpaceTypes.Wall);
+            event.target.nextElementSibling.setAttribute('fill', 'white')
             break;
         case POD_TOOL:
             event.target.classList.add('pod');

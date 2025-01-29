@@ -86,7 +86,7 @@ async function handleErrorMessage(socketError) {
 }
 
 async function handleGameEventMessage(gameEvent) {
-    showNotification(gameEvent.description, 'Something Happened!')
+    showNotification(gameEvent.description, 'Alert')
     //For now, a GameEvent always marks the end of a turn
     if(isThisPlayersTurn){
         const actionToSend = {

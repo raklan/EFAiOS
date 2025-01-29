@@ -163,7 +163,7 @@ func (attack Attack) Execute(gameState *GameState, playerId string) (*GameEvent,
 	return gameEvent, nil
 }
 
-func DrawCard(gameState *GameState, playerId string) (CardEvent, error) { //TODO: Full implementation
+func DrawCard(gameState *GameState, playerId string) (CardEvent, error) {
 	event := CardEvent{}
 	actingPlayerIndex := slices.IndexFunc(gameState.Players, func(p Player) bool { return playerId == p.Id })
 	if actingPlayerIndex == -1 {
@@ -177,12 +177,9 @@ func DrawCard(gameState *GameState, playerId string) (CardEvent, error) { //TODO
 		Col: actingPlayer.Col,
 	}
 
-	log.Println("Player's Space:", currentSpace)
-	log.Println("Space in Map:", gameState.GameMap.Spaces[currentSpace.GetMapKey()])
-
-	if gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Space_Safe {
+	if gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Space_Safe || gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Space_Pod {
 		event.Type = Card_NoCard
-	} else {
+	} else { //TODO: Full implementation
 		switch rand.IntN(3) {
 		case 0:
 			event.Type = Card_Green
@@ -282,10 +279,15 @@ func (endTurn EndTurn) Execute(gameState *GameState, playerId string) (*GameStat
 }
 
 func getNextPlayerId(players []Player, currentIndex int) string {
+	if !slices.ContainsFunc(players, func(p Player) bool { return p.Team != PlayerTeam_Spectator }) {
+		return ""
+	}
+
 	nextIndex := currentIndex + 1
 	if currentIndex >= len(players)-1 {
 		nextIndex = 0
 	}
+
 	if players[nextIndex].Team == PlayerTeam_Spectator {
 		return getNextPlayerId(players, nextIndex)
 	} else {

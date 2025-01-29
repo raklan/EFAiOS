@@ -29,7 +29,7 @@ const ClickModes = {
 
 var clickMode = ClickModes.None;
 
-var radius = 20;
+var radius = 25;
 var cssClass = 'hexfield';//If you change this, change it in hexClick() too
 
 var MAP = null
@@ -80,7 +80,7 @@ function createGrid(rows, columns) {
             var polyText = document.createElementNS("http://www.w3.org/2000/svg", "text")
             polyText.setAttribute('x', `${center.x}`)
             polyText.setAttribute('y', `${center.y}`)
-            polyText.setAttribute('fill', '#303030')
+            polyText.setAttribute('fill', 'black')
             polyText.setAttribute('text-anchor', 'middle')
             polyText.setAttribute('font-size', 'small')
             polyText.innerHTML = `[${row},${column}]`
@@ -168,9 +168,11 @@ function clearGrid() {
 }
 
 function showPlayerChoicePopup(mode){
-    var popup = document.getElementById("playerChoice-popup");
-    var title = document.getElementById("playerChoice-title");
-    var content = document.getElementById("playerChoice-content")
+    let popup = document.getElementById("playerChoice-popup");
+    let title = document.getElementById("playerChoice-title");
+    let content = document.getElementById("playerChoice-content");
+
+    title.innerHTML = '';
 
     for(let child of content.children){
         child.style.display = 'none'
@@ -179,10 +181,37 @@ function showPlayerChoicePopup(mode){
     if(mode == 'greenCard'){
         document.getElementById("greenCard-confirm").style.display = 'none'
         document.getElementById("playerChoice-greenCard").style.display = '';
+
+        popup.style.color = 'lime'
+        popup.style.border = '2px solid lime'
+
+        let content_info = document.getElementById('playerChoice-greenCard-content')
+        content_info.innerHTML = ''
+
+        typeLetter(title, 'Green Card Drawn', 0)
+        typeLetter(content_info, 'Choose a space to make noise in', 0)
     }else if(mode == 'redCard'){
         document.getElementById("playerChoice-redCard").style.display = '';
+        typeLetter(title, 'Red Card Drawn', 0)
+
+        popup.style.color = 'red'
+        popup.style.border = '2px solid red'
+
+        let content_info = document.getElementById("playerChoice-redCard-content")
+        content_info.innerHTML = ''
+
+        typeLetter(content_info, "You're about to make noise in your space", 0)
     }else if(mode == 'attack'){
         document.getElementById("playerChoice-attack").style.display = '';
+        typeLetter(title, 'Attack Space?', 0)
+
+        popup.style.color = 'white'
+        popup.style.border = '2px solid white'
+
+        let content_info = document.getElementById("playerChoice-attack-content")
+        content_info.innerHTML = ''
+
+        typeLetter(content_info, 'Would you like to attack this space?', 0)
     }
 
     popup.classList.add('notification-displayed')
