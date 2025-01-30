@@ -58,6 +58,7 @@ func serveHtml(w http.ResponseWriter, r *http.Request) {
 
 	temp := template.New("layout.html").Funcs(template.FuncMap{
 		"StripMapId": Engine.StripMapId,
+		"GetMapName": Engine.GetMapName,
 	})
 
 	tmpl, err := temp.ParseFiles(layoutPath, requestedFilePath)

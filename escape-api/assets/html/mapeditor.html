@@ -21,11 +21,11 @@
         fill: black;
     }
 
-    .hexfield.safe{
+    .hexfield.safe {
         fill: white;
     }
 
-    .hexfield.dangerous{
+    .hexfield.dangerous {
         fill: gray;
     }
 
@@ -33,74 +33,67 @@
         fill: brown;
     }
 
-    .hexfield.alienstart{
+    .hexfield.alienstart {
         fill: red;
     }
 
-    .hexfield.humanstart{
+    .hexfield.humanstart {
         fill: cyan;
     }
-    
+
     .hexfield:hover {
         fill: lime;
     }
+
     #sidebar {
-        background-color: blue;
+        background-color: rgb(39, 39, 39);
+    }
+
+    #tools{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
     }
 </style>
 {{end}}
 
 {{define "body"}}
 <div id="page" style="height: 100%; width: 100%; display: flex;">
-    <div id="sidebar">
+    <div id="sidebar" style="display: flex; flex-direction: column;">
         <span id="current-tool">Current Tool: None</span>
-        <br/>
-        <button type="button" onclick="setTool('Walls')">Walls</button>
-        <button type="button" onclick="setTool('Pods')">Pods</button>
-        <button type="button" onclick="setTool('Safe Sector')">Safe Sector</button>
-        <button type="button" onclick="setTool('Dangerous Sector')">Dangerous Sector</button>
-        <button type="button" onclick="setTool('Human Start')">Human Start</button>
-        <button type="button" onclick="setTool('Alien Start')">Alien Start</button>
-        <br/>
+        <div id="tools">
+            <button type="button" onclick="setTool('Walls')">Walls</button>
+            <button type="button" onclick="setTool('Pods')">Pods</button>
+            <button type="button" onclick="setTool('Safe Sector')">Safe Sector</button>
+            <button type="button" onclick="setTool('Dangerous Sector')">Dangerous Sector</button>
+            <button type="button" onclick="setTool('Human Start')">Human Start</button>
+            <button type="button" onclick="setTool('Alien Start')">Alien Start</button>
+        </div>        
         <button type="button" onclick="exportMap()">Save</button>
-        <div class="row">
-            <div class="span6">
-                <form class="form-horizontal" id="rebuildform">
-                    <div class="control-group">
-                        <label class="control-label">Rows</label>
-                        <div class="controls">
-                            <input class="input" id="rows" placeholder="Rows" value="5" />
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Columns</label>
-                        <div class="controls">
-                            <input class="input" id="columns" placeholder="Columns" value="10" />
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <div class="controls">
-                            <button class="btn" id="rebuild">Clear & Rebuild</button>
-                        </div>
-                    </div>
-    
-                </form>
-            </div>
-            <hr />
+        <div>
+            <label class="control-label">
+                Name
+                <input class="text-input" id="name" placeholder="Name" />
+            </label>
+            <label class="control-label">
+                Rows
+                <input class="text-input" id="rows" placeholder="Rows" value="5" />
+            </label>
+            
+            <label class="control-label">
+                Columns
+                <input class="text-input" id="columns" placeholder="Columns" value="10" />
+            </label>
         </div>
+        
+        <button class="btn" id="rebuild" onclick="rebuildGrid()">Clear & Rebuild</button>
     </div>
     <div class="container" id="gridParent"></div>
-    
+
 </div>
 {{end}}
 {{define "scripts"}}
 <script src="/assets/js/mapeditor.js"></script>
 <script>
-    function rebuildFormSubmit(event) {
-        event.preventDefault();
-        rebuildGrid();
-    }
-    document.getElementById("rebuildform").addEventListener('submit', rebuildFormSubmit)
     initializePage();
 </script>
 {{end}}

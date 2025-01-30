@@ -84,6 +84,7 @@ function drawMapOnPage(){
         return;
     }
 
+    document.getElementById('name').value = MAP.name;
     document.getElementById('columns').value = MAP.cols;
     document.getElementById('rows').value = MAP.rows;
     Object.values(MAP.spaces).forEach(space => {
@@ -178,6 +179,7 @@ async function exportMap(){
     var map = {
         id: MAP?.id ?? '',
         spaces: {},
+        name: document.getElementById('name')?.value ?? 'No Name',
         cols: parseInt(document.getElementById('columns')?.value ?? 0),
         rows: parseInt(document.getElementById('rows')?.value ?? 0)
     };

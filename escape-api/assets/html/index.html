@@ -1,33 +1,76 @@
 {{define "styling"}}
 <style>
-    #join-box{
+    #join-box {
         display: flex;
         align-items: center;
         flex-direction: column;
     }
 </style>
+<style></style>
 {{end}}
 
 {{define "body"}}
+<h1 style="font-size: xxx-large; text-align: center; margin: 5%;" id="game-title">ESCAPE FROM ALIENS IN OUTER SPACE</h1>
 <div id="join-box">
-    <input class="text-input" id="name-input" type="text" placeholder="Enter Your Name" autocomplete="off" autocapitalize="off" />
-    <input class="text-input" id="roomcode-input" type="text" maxlength="4" placeholder="Enter Room Code" autocomplete="off" autocapitalize="off"/>
+    <input class="text-input" id="name-input" type="text" placeholder="Enter Your Name" autocomplete="off"
+        autocapitalize="off" />
+    <input class="text-input" id="roomcode-input" type="text" maxlength="4" placeholder="Enter Room Code"
+        autocomplete="off" autocapitalize="off" />
     <button onclick="play()">Join</button>
 </div>
 {{end}}
 
 {{define "scripts"}}
 <script>
-    function play(){
+    function play() {
         var name = document.getElementById("name-input")?.value;
         var roomCode = document.getElementById("roomcode-input")?.value;
 
-        if(!(name?.length > 0 && roomCode?.length > 0)){
+        if (!(name?.length > 0 && roomCode?.length > 0)) {
             console.error("Missing data");
             return;
         }
 
         window.open(`/play?roomCode=${roomCode}&playerName=${name}`, '_self')
     }
+
+    function initializeGlitchText(selector) {
+        const el = document.getElementById(selector)
+
+        changeRandomLetter(el.innerHTML, el)
+    }
+
+    const GLITCH_INTERVAL = 1000
+    function changeRandomLetter(originalText, el) {
+        let indexToChange = Math.floor(Math.random() * el.innerHTML.length)
+
+        let asArray = Array.from(el.innerHTML)
+        asArray.splice(indexToChange, 1, getRandomChar())
+
+        el.innerHTML = asArray.join('')
+        setTimeout(() => {
+            el.innerHTML = originalText
+        }, 100)
+
+        setTimeout(() => {
+            changeRandomLetter(originalText, el)
+        }, Math.floor(Math.random() * GLITCH_INTERVAL))
+    }
+
+    function getRandomChar() {
+        const englishAndSymbols = [
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+            'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+            'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/',
+            ':', ';', '=', '?', '@', '[', ']', '^', '_', '`', '{', '|', '}',
+            '~', ' ',
+        ];
+
+        return englishAndSymbols[Math.floor(Math.random() * englishAndSymbols.length)]
+    }
+
+    initializeGlitchText("game-title")
 </script>
 {{end}}
