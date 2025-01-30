@@ -10,7 +10,7 @@
 {{end}}
 
 {{define "body"}}
-<h1 style="font-size: xxx-large; text-align: center; margin: 5%;" id="game-title">ESCAPE FROM ALIENS IN OUTER SPACE</h1>
+<h1 style="font-size: xxx-large; text-align: center; margin: 5%;" id="game-title"></h1>
 <div id="join-box">
     <input class="text-input" id="name-input" type="text" placeholder="Enter Your Name" autocomplete="off"
         autocapitalize="off" />
@@ -34,10 +34,11 @@
         window.open(`/play?roomCode=${roomCode}&playerName=${name}`, '_self')
     }
 
-    function initializeGlitchText(selector) {
+    function initializeGlitchText(selector, text) {
         const el = document.getElementById(selector)
 
-        changeRandomLetter(el.innerHTML, el)
+        let interval = typeWord(el, text)
+        setTimeout(changeRandomLetter, interval, text, el)
     }
 
     const GLITCH_INTERVAL = 1000
@@ -71,6 +72,22 @@
         return englishAndSymbols[Math.floor(Math.random() * englishAndSymbols.length)]
     }
 
-    initializeGlitchText("game-title")
+    function typeWord(element, word){        
+        let finalInterval = 0;
+        for(let i = 0; i < word.length; i++){
+            setTimeout(typeLetter, (35 * i) + 35, element, word.charAt(i))
+            if(i == word.length - 1){
+                finalInterval = 35 + (35 * i)
+            }
+        }
+
+        return finalInterval + 35;
+    }
+
+    function typeLetter(element, letter){
+        element.innerHTML += letter        
+    }
+
+    initializeGlitchText("game-title", 'ESCAPE FROM ALIENS IN OUTER SPACE')
 </script>
 {{end}}
