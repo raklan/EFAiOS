@@ -21,7 +21,8 @@
 {{end}}
 
 {{define "scripts"}}
-<script>
+<script src="/assets/js/utils.js"></script>
+<script>    
     function play() {
         var name = document.getElementById("name-input")?.value;
         var roomCode = document.getElementById("roomcode-input")?.value;
@@ -70,22 +71,6 @@
         ];
 
         return englishAndSymbols[Math.floor(Math.random() * englishAndSymbols.length)]
-    }
-
-    function typeWord(element, word){        
-        let finalInterval = 0;
-        for(let i = 0; i < word.length; i++){
-            setTimeout(typeLetter, (35 * i) + 35, element, word.charAt(i))
-            if(i == word.length - 1){
-                finalInterval = 35 + (35 * i)
-            }
-        }
-
-        return finalInterval + 35;
-    }
-
-    function typeLetter(element, letter){
-        element.innerHTML += letter        
     }
 
     initializeGlitchText("game-title", 'ESCAPE FROM ALIENS IN OUTER SPACE')

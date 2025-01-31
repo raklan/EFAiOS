@@ -33,11 +33,11 @@ const (
 )
 
 type Space struct {
-	Row  int `json:"row"`
-	Col  int `json:"col"`
-	Type int `json:"type"`
+	Row  string `json:"row"`
+	Col  int    `json:"col"`
+	Type int    `json:"type"`
 }
 
 func (space Space) GetMapKey() string {
-	return fmt.Sprintf("%d,%d", space.Row, space.Col)
+	return fmt.Sprintf("%s-%d", space.Row, space.Col)
 }

@@ -48,7 +48,7 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 			Id:   element.Id,
 			Name: element.Name,
 			//Using -99 to avoid any weird cases where that player might be close enough to get onto the Map
-			Row: -99,
+			Row: "!",
 			Col: -99,
 		})
 	}
@@ -155,7 +155,7 @@ func SubmitAction(gameId string, action Models.SubmittedAction) ([]Models.Websoc
 				data.Type = Models.WebsocketMessage_GameEvent
 				shouldBroadcast = true
 				result = Models.GameEvent{
-					Row:         -99,
+					Row:         "!",
 					Col:         -99,
 					Description: fmt.Sprintf("Player '%s' is in a safe sector", actingPlayer.Name),
 				}
@@ -323,7 +323,7 @@ func assignStartingPositions(gameState *Models.GameState, gameMap *Models.GameMa
 
 			gameState.Players[index].Row, gameState.Players[index].Col = startingSpace.Row, startingSpace.Col
 		} else if player.Team == Models.PlayerTeam_Spectator {
-			gameState.Players[index].Row, gameState.Players[index].Col = -99, -99
+			gameState.Players[index].Row, gameState.Players[index].Col = "!", -99
 		}
 	}
 }

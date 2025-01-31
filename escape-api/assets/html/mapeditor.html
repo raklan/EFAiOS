@@ -72,7 +72,7 @@
         <div>
             <label class="control-label">
                 Name
-                <input class="text-input" id="name" placeholder="Name" />
+                <input class="text-input" id="name" placeholder="Name" autocomplete="off"/>
             </label>
             <label class="control-label">
                 Rows
@@ -92,6 +92,7 @@
 </div>
 {{end}}
 {{define "scripts"}}
+<script src="/assets/js/utils.js"></script>
 <script src="/assets/js/mapeditor.js"></script>
 <script>
     initializePage();

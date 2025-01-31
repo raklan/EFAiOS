@@ -65,6 +65,6 @@ type Player struct {
 	Name string `json:"name"`
 	Team string `json:"team"`
 	Role string `json:"role"`
-	Row  int    `json:"row"`
+	Row  string `json:"row"`
 	Col  int    `json:"col"`
 }

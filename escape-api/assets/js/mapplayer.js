@@ -11,7 +11,7 @@ const SpaceTypes = {
 }
 
 var selectedSpace = {
-    row: -99,
+    row: '!',
     col: -99
 }
 
@@ -70,11 +70,11 @@ function createGrid(rows, columns) {
                 ].join(' '));
             poly.setAttribute('class', [cssClass, 'safe'].join(' '));
             poly.setAttribute('tabindex', 1);
-            poly.setAttribute('hex-row', row);
+            poly.setAttribute('hex-row', numberToLetter(row));
             poly.setAttribute('hex-column', column);
             poly.setAttribute('hex-type', SpaceTypes.Safe);
-            poly.setAttribute('id', `hex-${row}-${column}`)
-            poly.innerHTML = `<title>[${row},${column}]</title>`; //TODO: This won't work for mobile
+            poly.setAttribute('id', `hex-${numberToLetter(row)}-${column}`)
+            poly.innerHTML = `<title>[${numberToLetter(row)}-${column}]</title>`; //TODO: This won't work for mobile
             svgParent.appendChild(poly);
 
             var polyText = document.createElementNS("http://www.w3.org/2000/svg", "text")
@@ -83,7 +83,7 @@ function createGrid(rows, columns) {
             polyText.setAttribute('fill', 'black')
             polyText.setAttribute('text-anchor', 'middle')
             polyText.setAttribute('font-size', 'small')
-            polyText.innerHTML = `[${row},${column}]`
+            polyText.innerHTML = `[${numberToLetter(row)}-${column}]`
             polyText.style.pointerEvents = 'none'
             svgParent.appendChild(polyText)
         }
@@ -131,7 +131,7 @@ function hexClick(event) {
         return
     }
 
-    var row = parseInt(event.target.getAttribute('hex-row') ?? -99);
+    var row = event.target.getAttribute('hex-row') ?? "!";
     var col = parseInt(event.target.getAttribute('hex-column') ?? -99);
 
     var actionToSend = {}
@@ -188,11 +188,11 @@ function showPlayerChoicePopup(mode){
         let content_info = document.getElementById('playerChoice-greenCard-content')
         content_info.innerHTML = ''
 
-        typeLetter(title, 'Green Card Drawn', 0)
-        typeLetter(content_info, 'Choose a space to make noise in', 0)
+        typeWord(title, 'Green Card Drawn')
+        typeWord(content_info, 'Choose a space to make noise in')
     }else if(mode == 'redCard'){
         document.getElementById("playerChoice-redCard").style.display = '';
-        typeLetter(title, 'Red Card Drawn', 0)
+        typeWord(title, 'Red Card Drawn')
 
         popup.style.color = 'red'
         popup.style.border = '2px solid red'
@@ -200,10 +200,10 @@ function showPlayerChoicePopup(mode){
         let content_info = document.getElementById("playerChoice-redCard-content")
         content_info.innerHTML = ''
 
-        typeLetter(content_info, "You're about to make noise in your space", 0)
+        typeWord(content_info, "You're about to make noise in your space")
     }else if(mode == 'attack'){
         document.getElementById("playerChoice-attack").style.display = '';
-        typeLetter(title, 'Attack Space?', 0)
+        typeWord(title, 'Attack Space?')
 
         popup.style.color = 'white'
         popup.style.border = '2px solid white'
@@ -211,7 +211,7 @@ function showPlayerChoicePopup(mode){
         let content_info = document.getElementById("playerChoice-attack-content")
         content_info.innerHTML = ''
 
-        typeLetter(content_info, 'Would you like to attack this space?', 0)
+        typeWord(content_info, 'Would you like to attack this space?')
     }
 
     popup.classList.add('notification-displayed')
@@ -264,7 +264,7 @@ function attack(isAttacking){
         action: {
             type: 'Attack',
             turn: {
-                row: isAttacking? thisPlayer.row : -99,
+                row: isAttacking? thisPlayer.row : "!",
                 col: isAttacking? thisPlayer.col : -99
             }
         }

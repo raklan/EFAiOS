@@ -61,7 +61,7 @@ async function handleCardMessage(cardEvent) {
             action: {
                 type: 'Noise',
                 turn: {
-                    row: -99,
+                    row: "!",
                     col: -99
                 }
             }
@@ -193,7 +193,7 @@ async function handleMovementResponse(movementEvent) {
             action: {
                 type: 'Attack',
                 turn: {
-                    row: -99,
+                    row: "!",
                     col: -99
                 }
             }

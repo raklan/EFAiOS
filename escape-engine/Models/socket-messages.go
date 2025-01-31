@@ -47,7 +47,7 @@ type GameOver struct {
 
 type GameEvent struct {
 	Description string `json:"description"`
-	Row         int    `json:"row"`
+	Row         string `json:"row"`
 	Col         int    `json:"col"`
 }
 
@@ -63,6 +63,6 @@ type CardEvent struct {
 }
 
 type MovementEvent struct {
-	NewRow int `json:"newRow"`
-	NewCol int `json:"newCol"`
+	NewRow string `json:"newRow"`
+	NewCol int    `json:"newCol"`
 }

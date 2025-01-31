@@ -29,27 +29,27 @@ type SubmittedAction struct {
 }
 
 type Movement struct {
-	ToRow int `json:"toRow"`
-	ToCol int `json:"toCol"`
+	ToRow string `json:"toRow"`
+	ToCol int    `json:"toCol"`
 }
 
-// Set Row & Col to -99 to indicate no attack
+// Set Row & Col to !, -99 to indicate no attack
 type Attack struct {
-	Row int `json:"row"`
-	Col int `json:"col"`
+	Row string `json:"row"`
+	Col int    `json:"col"`
 }
 
 func (attack Attack) IsAttacking() bool {
-	return attack.Row != -99 && attack.Col != -99
+	return attack.Row != "!" && attack.Col != -99
 }
 
 type Noise struct {
-	Row int `json:"row"`
-	Col int `json:"col"`
+	Row string `json:"row"`
+	Col int    `json:"col"`
 }
 
 func (noise Noise) IsNoisy() bool {
-	return noise.Row != -99 && noise.Col != -99
+	return noise.Row != "!" && noise.Col != -99
 }
 
 type EndTurn struct {
@@ -69,7 +69,7 @@ func (move Movement) Execute(gameState *GameState, playerId string) (MovementEve
 	actingPlayer := &(gameState.Players[actingPlayerIndex])
 
 	//Bounds check
-	spaceKey := fmt.Sprintf("%d,%d", move.ToRow, move.ToCol)
+	spaceKey := fmt.Sprintf("%s-%d", move.ToRow, move.ToCol)
 
 	if space, exists := gameState.GameMap.Spaces[spaceKey]; exists {
 		//Make sure it's an open space
@@ -80,23 +80,23 @@ func (move Movement) Execute(gameState *GameState, playerId string) (MovementEve
 			Space_UsedPod,
 		}
 		if slices.ContainsFunc(cantMoveInto, func(t int) bool { return space.Type == t }) {
-			return movement, fmt.Errorf("space [%d,%d] is not allowed to be moved into", move.ToRow, move.ToCol)
+			return movement, fmt.Errorf("space [%s,%d] is not allowed to be moved into", move.ToRow, move.ToCol)
 		}
 
 		//Make sure it's close enough
-		allowedSpaces := 1 //TODO: Figure out how to deal with aliens getting 3 spaces of movement after a kill
-		if actingPlayer.Team == PlayerTeam_Alien {
-			allowedSpaces = 2
-		}
-		if !checkMovement(move.ToRow, actingPlayer.Row, move.ToCol, actingPlayer.Col, allowedSpaces) {
-			//return fmt.Errorf("movement not allowed") TODO: Turned off for now because hex grids make counting spaces HARD
-		}
+		// allowedSpaces := 1 //TODO: Figure out how to deal with aliens getting 3 spaces of movement after a kill
+		// if actingPlayer.Team == PlayerTeam_Alien {
+		// 	allowedSpaces = 2
+		// }
+		// if !checkMovement(move.ToRow, actingPlayer.Row, move.ToCol, actingPlayer.Col, allowedSpaces) {
+		// 	return fmt.Errorf("movement not allowed") TODO: Turned off for now because hex grids make counting spaces HARD
+		// }
 
 		//At this point, player is allowed to execute the move
 		actingPlayer.Row, actingPlayer.Col = move.ToRow, move.ToCol
 		movement.NewRow, movement.NewCol = actingPlayer.Row, actingPlayer.Col
 	} else {
-		return movement, fmt.Errorf("requested space [%d,%d] not found in map", move.ToRow, move.ToCol)
+		return movement, fmt.Errorf("requested space [%s-%d] not found in map", move.ToRow, move.ToCol)
 	}
 
 	return movement, nil
@@ -142,7 +142,7 @@ func (attack Attack) Execute(gameState *GameState, playerId string) (*GameEvent,
 	var gameEvent *GameEvent = &GameEvent{
 		Row:         attack.Row,
 		Col:         attack.Col,
-		Description: fmt.Sprintf("%s attacked [%d,%d]!\n", actingPlayer.Name, attack.Row, attack.Col),
+		Description: fmt.Sprintf("%s attacked [%s-%d]!\n", actingPlayer.Name, attack.Row, attack.Col),
 	}
 	alienStarts := gameState.GameMap.GetSpacesOfType(Space_AlienStart)
 
@@ -206,7 +206,7 @@ func (noise Noise) Execute(gameState *GameState, playerId string) (*GameEvent, e
 		Col: noise.Col,
 	}
 	if noise.IsNoisy() {
-		event.Description = fmt.Sprintf("Player '%s' made noise at [%d,%d]!", actingPlayer.Name, noise.Row, noise.Col)
+		event.Description = fmt.Sprintf("Player '%s' made noise at [%s-%d]!", actingPlayer.Name, noise.Row, noise.Col)
 	} else {
 		event.Description = fmt.Sprintf("Player '%s' avoided making noise", actingPlayer.Name)
 	}
@@ -245,10 +245,10 @@ func (endTurn EndTurn) Execute(gameState *GameState, playerId string) (*GameStat
 			gameEvent = &GameEvent{
 				Row:         actingPlayer.Row,
 				Col:         actingPlayer.Col,
-				Description: fmt.Sprintf("Player %s escaped using the Pod at (%d,%d)!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
+				Description: fmt.Sprintf("Player %s escaped using the Pod at [%s-%d]!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
 			}
 			actingPlayer.Team = PlayerTeam_Spectator
-			actingPlayer.Row, actingPlayer.Col = -99, -99
+			actingPlayer.Row, actingPlayer.Col = "!", -99
 
 			gameState.GameConfig.NumWorkingPods -= 1
 			gameState.GameMap.Spaces[space.GetMapKey()] = Space{
@@ -262,7 +262,7 @@ func (endTurn EndTurn) Execute(gameState *GameState, playerId string) (*GameStat
 			gameEvent = &GameEvent{
 				Row:         actingPlayer.Row,
 				Col:         actingPlayer.Col,
-				Description: fmt.Sprintf("Player %s tried the Pod at (%d,%d), but it didn't work!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
+				Description: fmt.Sprintf("Player %s tried the Pod at [%s-%d], but it didn't work!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
 			}
 
 			gameState.GameConfig.NumBrokenPods -= 1

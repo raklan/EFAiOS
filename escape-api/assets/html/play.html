@@ -20,10 +20,6 @@
         outline: none;
     }
 
-    .hexfield.selected {
-        outline: solid hotpink;
-    }
-
     .hexfield.wall {
         fill: black;
     }
@@ -49,15 +45,19 @@
     }
 
     .hexfield.humanstart {
-        fill: blue;
-    }
-
-    .hexfield:hover {
-        fill: lime;
+        fill: cyan;
     }
 
     .hexfield.player {
         fill: orange;
+    }
+    
+    .hexfield.selected {
+        fill: hotpink;
+    }
+
+    .hexfield:hover {
+        fill: lime;
     }
 
     .notification-popup {
@@ -180,6 +180,7 @@
 {{end}}
 
 {{define "scripts"}}
+<script src="/assets/js/utils.js"></script>
 <script src="/assets/js/websocket.js"></script>
 <script src="/assets/js/mapplayer.js"></script>
 <script>
@@ -225,33 +226,6 @@
     // thisPlayer = {
     //     id: "1738108252473HQ6T4Q8E6K"
     // }
-    // handleGameStateMessage(test_gameState.data)
-
-    function showNotification(notificationContent, notificationType) {
-        var popup = document.getElementById("notification-popup");
-        var content = document.getElementById("notification-content");
-        var title = document.getElementById("notification-title");
-
-        title.innerText = '';
-        content.innerText = '';
-
-        typeLetter(title, notificationType, 0)
-        typeLetter(content, notificationContent, 0)
-
-        popup.classList.add('notification-displayed')
-    }
-
-    function hideNotification() {
-        var popup = document.getElementById("notification-popup");
-        popup.classList.remove('notification-displayed')
-    }
-
-    function typeLetter(element, word, index){
-        element.innerHTML += word.charAt(index)
-
-        if (element.innerHTML != word){
-            setTimeout(() => {typeLetter(element, word, index+1)}, 35)
-        }
-    }
+    // handleGameStateMessage(test_gameState.data)    
 </script>
 {{end}}
