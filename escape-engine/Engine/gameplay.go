@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"escape-api/LogUtil"
 	"escape-engine/Models"
+	"escape-engine/Models/Actions"
 	"fmt"
 	"log"
 	"math/rand"
-	"slices"
 )
 
 // Given an id to a Game defition, constructs and returns an initial GameState for it. This is essentially
@@ -105,7 +105,7 @@ func EndGame(roomCode string, playerId string) error {
 	return err
 }
 
-func SubmitAction(gameId string, action Models.SubmittedAction) ([]Models.WebsocketMessageListItem, error) {
+func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.WebsocketMessageListItem, error) {
 	funcLogPrefix := "==SubmitAction=="
 	defer LogUtil.EnsureLogPrefixIsReset()
 	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
@@ -121,8 +121,8 @@ func SubmitAction(gameId string, action Models.SubmittedAction) ([]Models.Websoc
 	messages := []Models.WebsocketMessageListItem{}
 
 	switch action.Type {
-	case Models.Action_Attack:
-		turn := Models.Attack{}
+	case Actions.Action_Attack:
+		turn := Actions.Attack{}
 		err := json.Unmarshal(action.Turn, &turn)
 		if err != nil {
 			LogError(funcLogPrefix, err)
@@ -142,15 +142,11 @@ func SubmitAction(gameId string, action Models.SubmittedAction) ([]Models.Websoc
 			// so DrawCard will check where you are and set the type to Card_NoCard if so. In that case,
 			// everyone should be told the player has moved into a safe sector, effectively skipping over
 			// the Noise phase of their turn
-			cardEvent, er := Models.DrawCard(&gameState, action.PlayerId)
+			cardEvent, er := Actions.DrawCard(&gameState, action.PlayerId)
 			err = er
 			if cardEvent.Type == Models.Card_NoCard {
-				actingPlayerIndex := slices.IndexFunc(gameState.Players, func(p Models.Player) bool { return action.PlayerId == p.Id })
-				if actingPlayerIndex == -1 {
-					err = fmt.Errorf("could not find acting player with ID == {%s}", action.PlayerId)
-				}
 
-				actingPlayer := &(gameState.Players[actingPlayerIndex])
+				actingPlayer := gameState.GetCurrentPlayer()
 
 				data.Type = Models.WebsocketMessage_GameEvent
 				shouldBroadcast = true
@@ -176,8 +172,8 @@ func SubmitAction(gameId string, action Models.SubmittedAction) ([]Models.Websoc
 			Message:         data,
 			ShouldBroadcast: shouldBroadcast,
 		})
-	case Models.Action_Movement:
-		turn := Models.Movement{}
+	case Actions.Action_Movement:
+		turn := Actions.Movement{}
 		err := json.Unmarshal(action.Turn, &turn)
 		if err != nil {
 			LogError(funcLogPrefix, err)
@@ -197,8 +193,8 @@ func SubmitAction(gameId string, action Models.SubmittedAction) ([]Models.Websoc
 			},
 			ShouldBroadcast: false,
 		})
-	case Models.Action_Noise:
-		turn := Models.Noise{}
+	case Actions.Action_Noise:
+		turn := Actions.Noise{}
 		err := json.Unmarshal(action.Turn, &turn)
 		if err != nil {
 			LogError(funcLogPrefix, err)
@@ -219,8 +215,8 @@ func SubmitAction(gameId string, action Models.SubmittedAction) ([]Models.Websoc
 			},
 		})
 
-	case Models.Action_EndTurn:
-		turn := Models.EndTurn{}
+	case Actions.Action_EndTurn:
+		turn := Actions.EndTurn{}
 		err := json.Unmarshal(action.Turn, &turn)
 		if err != nil {
 			LogError(funcLogPrefix, err)

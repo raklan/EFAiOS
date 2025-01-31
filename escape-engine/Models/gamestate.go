@@ -1,5 +1,9 @@
 package Models
 
+import (
+	"slices"
+)
+
 const (
 	LobbyStatus_AwaitingStart = "Awaiting Start"
 	LobbyStatus_InProgress    = "In Progress"
@@ -48,6 +52,14 @@ type GameState struct {
 	CurrentPlayer string `json:"currentPlayer"`
 }
 
+func (gameState *GameState) GetCurrentPlayer() *Player {
+	currentPlayerIndex := slices.IndexFunc(gameState.Players, func(p Player) bool { return gameState.CurrentPlayer == p.Id })
+	if currentPlayerIndex == -1 {
+		panic("Could not find current player in GameState's players!")
+	}
+	return &gameState.Players[currentPlayerIndex]
+}
+
 // GameState-specific config as defined by the Host
 type GameConfig struct {
 	//Number of Humans currently in the Game. The Game automatically ends when this number hits 0.
@@ -61,10 +73,30 @@ type GameConfig struct {
 }
 
 type Player struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-	Team string `json:"team"`
-	Role string `json:"role"`
-	Row  string `json:"row"`
-	Col  int    `json:"col"`
+	Id            string         `json:"id"`
+	Name          string         `json:"name"`
+	Team          string         `json:"team"`
+	Role          string         `json:"role"`
+	StatusEffects []StatusEffect `json:"statusEffects"`
+	Hand          []Card         `json:"hand"`
+	Row           string         `json:"row"`
+	Col           int            `json:"col"`
+}
+
+type Card interface {
+	GetName() string
+	GetDescription() string
+	Play(*GameState)
+}
+
+type StatusEffect interface {
+	//Returns the Name of this StatusEffect
+	GetName() string
+	GetDescription() string
+	//Returns the number of "Uses" left that this effect can activate. This StatusEffect should be removed from the Player's StatusEffects array when it hits 0
+	GetUsesLeft() int
+	//Adds one use to this StatusEffect
+	AddUse() int
+	//Uses this StatusEffect, reducing the UsesLeft by 1
+	Activate(*GameState)
 }

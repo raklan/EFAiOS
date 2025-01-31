@@ -3,6 +3,7 @@ package Engine
 import (
 	"encoding/json"
 	"escape-engine/Models"
+	"escape-engine/Models/Actions"
 	"log"
 	"net/http"
 	"slices"
@@ -306,8 +307,8 @@ func processMessage(roomCode string, playerId string, message []byte) {
 		cleanUpRoom(room, roomCode)
 	case "submitAction":
 		var action struct {
-			GameId string                 `json:"gameId"`
-			Action Models.SubmittedAction `json:"action"`
+			GameId string                  `json:"gameId"`
+			Action Actions.SubmittedAction `json:"action"`
 		}
 		if err := json.Unmarshal(msg.Data, &action); err != nil {
 			log.Printf("error decoding submitAction: {%s}", err)

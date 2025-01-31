@@ -1,0 +1,14 @@
+red
+green
+
+clone
+defence
+spotlight
+attack
+sensor
+adrenaline
+mutation
+cat
+teleport
+sedatives
+
