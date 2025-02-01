@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"math/rand/v2"
+	"math/rand"
 	"slices"
 )
 
@@ -144,7 +144,7 @@ func (attack Attack) Execute(gameState *Models.GameState, playerId string) (*Mod
 		if player.Row != attack.Row || player.Col != attack.Col {
 			continue
 		}
-		newSpaceForPlayer := alienStarts[rand.IntN(len(alienStarts))]
+		newSpaceForPlayer := alienStarts[rand.Intn(len(alienStarts))]
 
 		gameState.Players[index].Team = Models.PlayerTeam_Alien
 		gameState.Players[index].Row, gameState.Players[index].Col = newSpaceForPlayer.Row, newSpaceForPlayer.Col
@@ -167,14 +167,9 @@ func DrawCard(gameState *Models.GameState, playerId string) (Models.CardEvent, e
 	if gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Models.Space_Safe || gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Models.Space_Pod {
 		event.Type = Models.Card_NoCard
 	} else { //TODO: Full implementation
-		switch rand.IntN(3) {
-		case 0:
-			event.Type = Models.Card_Green
-		case 1:
-			event.Type = Models.Card_Red
-		case 2:
-			event.Type = Models.Card_White
-		}
+		drawnCard := *drawRandomCardFromDeck(gameState)
+		event.Card = drawnCard
+		event.Type = drawnCard.GetType()
 	}
 
 	return event, nil
@@ -215,7 +210,7 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 		if totalPodCards == 0 {
 			return gameState, nil, fmt.Errorf("no pod cards left")
 		}
-		podCard := (rand.IntN(totalPodCards) + 1)
+		podCard := (rand.Intn(totalPodCards) + 1)
 		podIsWorking := podCard > gameState.GameConfig.NumWorkingPods
 		if gameState.GameConfig.NumBrokenPods == 0 { //0 broken pods is an edge case that will effectively make 1 "working" card act as a broken card
 			podIsWorking = true
@@ -275,4 +270,23 @@ func getNextPlayerId(players []Models.Player, currentIndex int) string {
 	} else {
 		return players[nextIndex].Id
 	}
+}
+
+func drawRandomCardFromDeck(gameState *Models.GameState) *Models.Card {
+
+	//Auto reshuffle
+	if len(gameState.Deck) <= 0 {
+		gameState.Deck = gameState.DiscardPile
+		gameState.DiscardPile = []Models.Card{}
+	}
+
+	drawnCard := &(gameState.Deck[rand.Intn(len(gameState.Deck))])
+	//Important. Copy the card since slices.DeleteFunc will 0 out that location in memory
+	cardCopy := *drawnCard
+	//Remove the card from the deck
+	gameState.Deck = slices.DeleteFunc(gameState.Deck, func(c Models.Card) bool {
+		return c == cardCopy
+	})
+	//Return address to copy of deleted card
+	return &cardCopy
 }

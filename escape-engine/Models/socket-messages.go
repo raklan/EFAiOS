@@ -60,6 +60,7 @@ const (
 
 type CardEvent struct {
 	Type string `json:"type"`
+	Card any    `json:"card"` //This will be a Card object, but I can't call it that because it would cause an import cycle
 }
 
 type MovementEvent struct {

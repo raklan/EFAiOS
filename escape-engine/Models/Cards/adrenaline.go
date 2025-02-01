@@ -14,6 +14,10 @@ func (a *Adrenaline) GetName() string {
 	return a.Name
 }
 
+func (a *Adrenaline) GetType() string {
+	return a.Type
+}
+
 func (a *Adrenaline) GetDescription() string {
 	return a.Description
 }

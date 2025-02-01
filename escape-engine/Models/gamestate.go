@@ -42,10 +42,14 @@ type Lobby struct {
 type GameState struct {
 	//This is solely for book-keeping. The front end should submit this Id along with SubmittedActions to update the GameState
 	Id string `json:"id"`
-	//The map used by this game
+	//The map used by this Game
 	GameMap GameMap `json:"gameMap"`
 	//GameState-specific config as defined by the Host
 	GameConfig GameConfig `json:"gameConfig"`
+	//All cards used by this Game
+	Deck []Card `json:"deck"`
+	//Used cards. Will be automatically reshuffled into the deck when empty
+	DiscardPile []Card `json:"discardPile"`
 	//A list of the states of each Player in the game.
 	Players []Player `json:"players"`
 	//Id of the Player whose turn it currently is
@@ -85,6 +89,7 @@ type Player struct {
 
 type Card interface {
 	GetName() string
+	GetType() string
 	GetDescription() string
 	Play(*GameState)
 }

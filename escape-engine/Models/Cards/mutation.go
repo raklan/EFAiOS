@@ -6,15 +6,19 @@ type Mutation struct {
 	CardBase
 }
 
-func (m Mutation) GetName() string {
+func (m *Mutation) GetName() string {
 	return m.Name
 }
 
-func (m Mutation) GetDescription() string {
+func (m *Mutation) GetType() string {
+	return m.Type
+}
+
+func (m *Mutation) GetDescription() string {
 	return m.Description
 }
 
-func (m Mutation) Play(gameState *Models.GameState) {
+func (m *Mutation) Play(gameState *Models.GameState) {
 	activePlayer := gameState.GetCurrentPlayer()
 
 	activePlayer.Team = Models.PlayerTeam_Alien
