@@ -1,6 +1,7 @@
 package Models
 
 import (
+	"encoding/json"
 	"slices"
 )
 
@@ -47,9 +48,9 @@ type GameState struct {
 	//GameState-specific config as defined by the Host
 	GameConfig GameConfig `json:"gameConfig"`
 	//All cards used by this Game
-	Deck []Card `json:"deck"`
+	Deck CardCollection `json:"deck"`
 	//Used cards. Will be automatically reshuffled into the deck when empty
-	DiscardPile []Card `json:"discardPile"`
+	DiscardPile CardCollection `json:"discardPile"`
 	//A list of the states of each Player in the game.
 	Players []Player `json:"players"`
 	//Id of the Player whose turn it currently is
@@ -63,6 +64,69 @@ func (gameState *GameState) GetCurrentPlayer() *Player {
 	}
 	return &gameState.Players[currentPlayerIndex]
 }
+
+// func (gameState *GameState) UnmarshalJSON(data []byte) error {
+// 	intermediate := struct {
+// 		//This is solely for book-keeping. The front end should submit this Id along with SubmittedActions to update the GameState
+// 		Id string `json:"id"`
+// 		//The map used by this Game
+// 		GameMap GameMap `json:"gameMap"`
+// 		//GameState-specific config as defined by the Host
+// 		GameConfig GameConfig `json:"gameConfig"`
+// 		//All cards used by this Game
+// 		Deck CardCollection `json:"deck"`
+// 		//Used cards. Will be automatically reshuffled into the deck when empty
+// 		DiscardPile CardCollection `json:"discardPile"`
+// 		//A list of the states of each Player in the game.
+// 		Players []Player `json:"players"`
+// 		//Id of the Player whose turn it currently is
+// 		CurrentPlayer string `json:"currentPlayer"`
+// 	}{}
+
+// 	err := json.Unmarshal(data, &intermediate)
+
+// 	*gameState = GameState{
+// 		Id:            intermediate.Id,
+// 		GameMap:       intermediate.GameMap,
+// 		GameConfig:    intermediate.GameConfig,
+// 		Players:       intermediate.Players,
+// 		CurrentPlayer: intermediate.CurrentPlayer,
+// 		Deck:          make([]Card, len(intermediate.Deck)),
+// 		DiscardPile:   make([]Card, len(intermediate.DiscardPile)),
+// 	}
+
+// 	for i, card := range intermediate.Deck {
+// 		switch card["name"] {
+// 		case "Red Card":
+// 			gameState.Deck[i] = NewRedCard()
+// 		case "Green Card":
+// 			gameState.Deck[i] = NewGreenCard()
+// 		case "Mutation":
+// 			gameState.Deck[i] = NewMutation()
+// 		case "Adrenaline":
+// 			gameState.Deck[i] = NewAdrenaline()
+// 		case "Teleport":
+// 			gameState.Deck[i] = NewTeleport()
+// 		}
+// 	}
+
+// 	for i, card := range intermediate.DiscardPile {
+// 		switch card["name"] {
+// 		case "Red Card":
+// 			gameState.DiscardPile[i] = NewRedCard()
+// 		case "Green Card":
+// 			gameState.DiscardPile[i] = NewGreenCard()
+// 		case "Mutation":
+// 			gameState.DiscardPile[i] = NewMutation()
+// 		case "Adrenaline":
+// 			gameState.DiscardPile[i] = NewAdrenaline()
+// 		case "Teleport":
+// 			gameState.DiscardPile[i] = NewTeleport()
+// 		}
+// 	}
+
+// 	return err
+// }
 
 // GameState-specific config as defined by the Host
 type GameConfig struct {
@@ -82,9 +146,42 @@ type Player struct {
 	Team          string         `json:"team"`
 	Role          string         `json:"role"`
 	StatusEffects []StatusEffect `json:"statusEffects"`
-	Hand          []Card         `json:"hand"`
+	Hand          CardCollection `json:"hand"`
 	Row           string         `json:"row"`
 	Col           int            `json:"col"`
+}
+
+type CardCollection struct {
+	Cards []Card `json:"cards"`
+}
+
+func (c *CardCollection) UnmarshalJSON(data []byte) error {
+	intermediate := struct {
+		Cards []map[string]string
+	}{}
+
+	if err := json.Unmarshal(data, &intermediate); err != nil {
+		return err
+	}
+
+	c.Cards = make([]Card, len(intermediate.Cards))
+
+	for i, card := range intermediate.Cards {
+		switch card["name"] {
+		case "Red Card":
+			c.Cards[i] = NewRedCard()
+		case "Green Card":
+			c.Cards[i] = NewGreenCard()
+		case "Mutation":
+			c.Cards[i] = NewMutation()
+		case "Adrenaline":
+			c.Cards[i] = NewAdrenaline()
+		case "Teleport":
+			c.Cards[i] = NewTeleport()
+		}
+	}
+
+	return nil
 }
 
 type Card interface {

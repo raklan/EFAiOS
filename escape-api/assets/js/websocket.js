@@ -130,6 +130,17 @@ async function handleGameStateMessage(gameState) {
     } else{
         clickMode = ClickModes.None
     }
+
+    let hand = document.getElementById("cards")
+
+    for(let card of thisPlayer?.hand?.cards){
+        let node = document.createElement("div")
+        node.classList = 'card'
+        node.innerHTML = `${card.name}`
+        node.onclick = () => cardclick(card)
+
+        hand.appendChild(node)
+    }
 }
 
 async function handleLobbyInfoMessage(messageData) {

@@ -1,9 +1,16 @@
-package StatusEffects
+package Models
 
 import (
-	"escape-engine/Models"
 	"slices"
 )
+
+type StatusEffectBase struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	UsesLeft    int    `json:"usesLeft"`
+}
+
+// #region Adrenaline Surge
 
 type AdrenalineSurge struct {
 	StatusEffectBase
@@ -36,11 +43,13 @@ func (a *AdrenalineSurge) AddUse() int {
 	return a.GetUsesLeft()
 }
 
-func (a *AdrenalineSurge) Activate(gameState *Models.GameState) {
+func (a *AdrenalineSurge) Activate(gameState *GameState) {
 	a.UsesLeft--
 
 	if a.UsesLeft <= 0 {
 		activePlayer := gameState.GetCurrentPlayer()
-		activePlayer.StatusEffects = slices.DeleteFunc(activePlayer.StatusEffects, func(s Models.StatusEffect) bool { return s == a })
+		activePlayer.StatusEffects = slices.DeleteFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s == a })
 	}
 }
+
+// #region Cat

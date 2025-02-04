@@ -1,0 +1,78 @@
+{{define "styling"}}
+    <style>
+        #cards{
+            position: fixed;
+            bottom: -150px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            transition: all 0.4s ease-in-out;
+        }
+
+        #cards:hover{
+            transform: translateY(-35%);
+            transition: all 0.4s ease-in-out;
+        }
+
+        .card{
+            margin-right: 1px;
+            margin-left: 1px;
+            height: 200px;
+            width: 150px;
+            border: 2px solid white;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;    
+        }
+
+        .card:hover{
+            transform: translateY(-5%);       
+            transition: all 0.3s ease-in-out;     
+        }
+    </style>
+{{end}}
+
+{{define "body"}}
+<div id="container">
+    <div id="cards">
+        
+    </div>
+</div>
+{{end}}
+
+{{define "scripts"}}
+<script src="/assets/js/utils.js"></script>
+<script>
+    let cards = [
+        {
+            name: 'adrenaline'
+        },
+        {
+            name: 'mutation'
+        },
+        {
+            name: 'teleport'
+        }
+    ]
+
+    let hand = document.getElementById("cards")
+
+    for(let card of cards){
+        let node = document.createElement("div")
+        node.classList = 'card'
+        node.innerHTML = `${card.name}`
+        node.onclick = () => cardclick(card)
+
+        hand.appendChild(node)
+    }
+
+    function cardclick(card){
+        console.log(card)
+    }
+
+</script>
+
+{{end}}

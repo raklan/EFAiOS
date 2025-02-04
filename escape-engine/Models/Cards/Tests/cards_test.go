@@ -2,7 +2,6 @@ package CardTests
 
 import (
 	"escape-engine/Models"
-	CardConstructors "escape-engine/Models/Cards/Constructors"
 	"testing"
 )
 
@@ -16,7 +15,7 @@ func TestAdrenaline(t *testing.T) {
 		CurrentPlayer: player.Id,
 	}
 
-	card := CardConstructors.NewAdrenaline()
+	card := Models.NewAdrenaline()
 
 	card.Play(&gameState)
 
@@ -36,7 +35,7 @@ func TestMutation(t *testing.T) {
 		CurrentPlayer: player.Id,
 	}
 
-	card := CardConstructors.NewMutation()
+	card := Models.NewMutation()
 
 	card.Play(&gameState)
 
@@ -75,7 +74,7 @@ func TestTeleport(t *testing.T) {
 		CurrentPlayer: player.Id,
 	}
 
-	card := CardConstructors.NewTeleport()
+	card := Models.NewTeleport()
 
 	card.Play(&gameState)
 

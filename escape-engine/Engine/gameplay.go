@@ -53,6 +53,12 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 		})
 	}
 
+	gameState.Deck.Cards = []Models.Card{
+		Models.NewRedCard(),
+		Models.NewGreenCard(),
+		Models.NewTeleport(),
+	}
+
 	assignTeams(&gameState)
 	assignStartingPositions(&gameState, &mapDef)
 	gameState.CurrentPlayer = gameState.Players[rand.Intn(len(gameState.Players))].Id
