@@ -280,6 +280,35 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 				ShouldBroadcast: true,
 			})
 		}
+
+	case Actions.Action_PlayCard:
+		turn := Actions.PlayCard{}
+		if err := json.Unmarshal(action.Turn, &turn); err != nil {
+			LogError(funcLogPrefix, err)
+			return messages, err
+		}
+
+		event, err := turn.Execute(&gameState, action.PlayerId)
+		if err != nil {
+			LogError(funcLogPrefix, err)
+			return messages, err
+		}
+
+		messages = append(messages, Models.WebsocketMessageListItem{
+			Message: Models.WebsocketMessage{
+				Type: Models.WebsocketMessage_GameEvent,
+				Data: event,
+			},
+			ShouldBroadcast: true,
+		})
+
+		messages = append(messages, Models.WebsocketMessageListItem{
+			Message: Models.WebsocketMessage{
+				Type: Models.WebsocketMessage_GameState,
+				Data: gameState,
+			},
+			ShouldBroadcast: true,
+		})
 	}
 
 	//Automatically end the game when there are no humans left

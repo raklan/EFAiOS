@@ -15,6 +15,7 @@ const (
 	Action_Movement = "Movement"
 	Action_Noise    = "Noise"
 	Action_EndTurn  = "EndTurn"
+	Action_PlayCard = "PlayCard"
 )
 
 // This is the way the frontend will send data to the backend during gameplay. They will
@@ -54,6 +55,10 @@ func (noise Noise) IsNoisy() bool {
 }
 
 type EndTurn struct {
+}
+
+type PlayCard struct {
+	Name string `json:"name"`
 }
 
 func (move Movement) Execute(gameState *Models.GameState, playerId string) (Models.MovementEvent, error) {
@@ -259,6 +264,33 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 
 	gameState.CurrentPlayer = getNextPlayerId(gameState.Players, actingPlayerIndex)
 	return gameState, gameEvent, nil //TODO: End the game when no human players remain
+}
+
+func (play PlayCard) Execute(gameState *Models.GameState, playerId string) (Models.GameEvent, error) {
+	actingPlayer := gameState.GetCurrentPlayer()
+
+	playedCardIndex := slices.IndexFunc(actingPlayer.Hand.Cards, func(c Models.Card) bool { return c.GetName() == play.Name })
+	if playedCardIndex == -1 {
+		return Models.GameEvent{}, fmt.Errorf("could not find card '%s' in Player's hand", play.Name)
+	}
+
+	playedCard := &(actingPlayer.Hand.Cards[playedCardIndex])
+	//Important. Copy the card since slices.DeleteFunc will 0 out that location in memory
+	cardCopy := *playedCard
+	//Remove the card from the player's hand
+	actingPlayer.Hand.Cards = slices.DeleteFunc(actingPlayer.Hand.Cards, func(c Models.Card) bool {
+		return c == cardCopy
+	})
+
+	cardCopy.Play(gameState)
+
+	gameState.DiscardPile.Cards = append(gameState.DiscardPile.Cards, cardCopy)
+
+	return Models.GameEvent{
+		Description: fmt.Sprintf("Player '%s' used a '%s' card!", actingPlayer.Name, cardCopy.GetName()),
+		Row:         "!",
+		Col:         -99,
+	}, nil
 }
 
 func getNextPlayerId(players []Models.Player, currentIndex int) string {

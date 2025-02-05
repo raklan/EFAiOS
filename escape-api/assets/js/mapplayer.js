@@ -34,7 +34,7 @@ var cssClass = 'hexfield';//If you change this, change it in hexClick() too
 var MAP = null
 
 function createGrid(rows, columns) {
-    let radius = Math.min(rows * columns / (rows + columns) * (window.screen.width / 150), 55)
+    let radius = Math.min(rows * columns / (rows + columns) * (window.screen.width / 150), 50)
     var grid = document.getElementById("gameplay-gridParent");
 
     var createSVG = function (tag) {
@@ -275,9 +275,9 @@ function attack(isAttacking){
 
 function renderPlayerHand(){
     let hand = document.getElementById("cards")
+    hand.replaceChildren()
 
     if(thisPlayer?.hand?.cards?.length > 0){
-        hand.replaceChildren()
         for(let card of thisPlayer?.hand?.cards){
             let node = document.createElement("div")
             node.classList = 'card'
@@ -290,5 +290,14 @@ function renderPlayerHand(){
 }
 
 function cardClick(card){
-    console.log(card)
+    let toSend = {
+        gameId: thisGameStateId,
+        action: {
+            type: 'PlayCard',
+            turn: {
+                name: card.name
+            }
+        }
+    }
+    sendWsMessage(ws, 'submitAction', toSend)
 }
