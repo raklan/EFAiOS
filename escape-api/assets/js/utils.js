@@ -32,8 +32,8 @@ function showNotification(notificationContent, notificationType) {
     var content = document.getElementById("notification-content");
     var title = document.getElementById("notification-title");
 
-    title.innerText = '';
-    content.innerText = '';
+    title.innerHTML = '';
+    content.innerHTML = '';
 
     typeWord(title, notificationType)
     typeWord(content, notificationContent)

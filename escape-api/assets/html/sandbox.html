@@ -28,6 +28,27 @@
             transition: all 0.3s ease-in-out;    
         }
 
+        #role{
+            position: fixed;
+            right: -120px;
+            height: 200px;
+            width: 150px;
+            border: 2px solid white;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #role:hover{
+            transform: translateX(-82%);
+            border-color: var(--team-color);
+            color: var(--team-color);
+            transition: all 0.3s ease-in-out;
+        }
+
         .card:hover{
             transform: translateY(-5%);       
             transition: all 0.3s ease-in-out;     
@@ -40,6 +61,7 @@
     <div id="cards">
         
     </div>
+    <div id="role">Human</div>
 </div>
 {{end}}
 
@@ -72,6 +94,9 @@
     function cardclick(card){
         console.log(card)
     }
+
+    let role = document.getElementById("role")
+    role.style.setProperty('--team-color', 'red')
 
 </script>
 

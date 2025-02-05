@@ -139,6 +139,8 @@ async function handleGameStateMessage(gameState) {
         clickMode = ClickModes.None
     }
 
+    renderRoleCard();
+
     renderPlayerHand();
 }
 

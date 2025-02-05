@@ -301,3 +301,20 @@ function cardClick(card){
     }
     sendWsMessage(ws, 'submitAction', toSend)
 }
+
+function renderRoleCard(){
+    var roleCard = document.getElementById("role")
+    roleCard.innerHTML = `${thisPlayer.team}`
+    roleCard.style.setProperty('--team-color', getTeamColor())
+}
+
+function getTeamColor(){
+    switch(thisPlayer.team){
+        case PlayerTeams.Human:
+            return "deepskyblue"
+        case PlayerTeams.Alien:
+            return "red"
+        case PlayerTeams.Spectator:
+            return "white"
+    }
+}

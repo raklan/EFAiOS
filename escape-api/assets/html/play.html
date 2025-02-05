@@ -165,6 +165,28 @@
         transform: translateY(-5%);
         transition: all 0.3s ease-in-out;
     }
+
+    #role{
+            position: fixed;
+            right: -120px;
+            height: 200px;
+            width: 150px;
+            border: 2px solid white;
+            color: white;
+            background-color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #role:hover{
+            transform: translateX(-82%);
+            border-color: var(--team-color);
+            color: var(--team-color);
+            transition: all 0.3s ease-in-out;
+        }
 </style>
 {{end}}
 
@@ -213,9 +235,8 @@
 </div>
 <div id="gameplay">
     <div id="gameplay-gridParent"></div>
-    <div id="cards">
-
-    </div>
+    <div id="cards"></div>
+    <div id="role"></div>
 </div>
 {{end}}
 
