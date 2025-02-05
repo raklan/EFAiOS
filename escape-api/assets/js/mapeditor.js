@@ -19,13 +19,13 @@ const ALIEN_TOOL = 'Alien Start';
 
 var currentTool = 'None';
 
-var radius = 25;
+
 var cssClass = 'hexfield';//If you change this, change it in hexClick() too
 
 var MAP = null
 
 function createGrid(rows, columns) {
-
+    let radius = rows * columns / (rows + columns) * (window.screen.width / 150)
     var grid = document.getElementById("gridParent");
 
     var createSVG = function (tag) {

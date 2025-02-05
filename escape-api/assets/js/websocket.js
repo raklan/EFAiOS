@@ -19,6 +19,7 @@ const WS_GAMEOVER = "GameOver"
 const WS_GAMESTATE = "GameState"
 const WS_LOBBYINFO = "LobbyInfo"
 const WS_MOVEMENTRESPONSE = "MovementResponse"
+const WS_TURNEND = "TurnEnd"
 
 function handleWsMessage(message) {
     console.info("Message inbound", message)
@@ -47,6 +48,10 @@ function handleWsMessage(message) {
             break;
         case WS_MOVEMENTRESPONSE:
             handler = handleMovementResponse;
+            break;
+        case WS_TURNEND:
+            handler = handleTurnEnd;
+            break;
     }
 
     if (handler) {
@@ -55,7 +60,7 @@ function handleWsMessage(message) {
 }
 
 async function handleCardMessage(cardEvent) {
-    if(cardEvent.type == "White"){
+    if (cardEvent.type == "White") {
         const actionToSend = {
             gameId: thisGameStateId,
             action: {
@@ -67,10 +72,10 @@ async function handleCardMessage(cardEvent) {
             }
         }
         sendWsMessage(ws, 'submitAction', actionToSend)
-    } else if(cardEvent.type == "Green"){
+    } else if (cardEvent.type == "Green") {
         clickMode = ClickModes.Noise
         showPlayerChoicePopup('greenCard')
-    } else if(cardEvent.type == "Red"){
+    } else if (cardEvent.type == "Red") {
         showPlayerChoicePopup('redCard')
     }
 
@@ -87,8 +92,11 @@ async function handleErrorMessage(socketError) {
 
 async function handleGameEventMessage(gameEvent) {
     showNotification(gameEvent.description, 'Alert')
-    //For now, a GameEvent always marks the end of a turn
-    if(isThisPlayersTurn){
+}
+
+async function handleTurnEnd(turnEnd) {
+    //For now, a TurnEnd should immediately end the turn
+    if (isThisPlayersTurn) {
         const actionToSend = {
             gameId: thisGameStateId,
             action: {
@@ -115,32 +123,23 @@ async function handleGameStateMessage(gameState) {
     document.getElementById('gameplay').style.display = 'flex';
 
     document.querySelectorAll('.player').forEach(x => x.classList.remove('player'))
-    if(thisPlayer.team != PlayerTeams.Spectator){
+    if (thisPlayer.team != PlayerTeams.Spectator) {
         var playerSpace = document.getElementById(`hex-${thisPlayer.row}-${thisPlayer.col}`)
         playerSpace.classList.add('player')
-    }else{
+    } else {
         for (let player of gameState.players.filter(p => p.team != PlayerTeams.Spectator)) {
             var playerSpace = document.getElementById(`hex-${player.row}-${player.col}`)
             playerSpace.classList.add('player')
         }
     }
 
-    if (gameState.currentPlayer == thisPlayer.id){
+    if (gameState.currentPlayer == thisPlayer.id) {
         clickMode = ClickModes.Moving
-    } else{
+    } else {
         clickMode = ClickModes.None
     }
 
-    let hand = document.getElementById("cards")
-
-    for(let card of thisPlayer?.hand?.cards){
-        let node = document.createElement("div")
-        node.classList = 'card'
-        node.innerHTML = `${card.name}`
-        node.onclick = () => cardclick(card)
-
-        hand.appendChild(node)
-    }
+    renderPlayerHand();
 }
 
 async function handleLobbyInfoMessage(messageData) {
@@ -148,7 +147,7 @@ async function handleLobbyInfoMessage(messageData) {
         thisPlayer = messageData.lobbyInfo?.players?.find(p => p.id == messageData.playerID)
         console.log(thisPlayer)
     }
-    document.getElementById("lobby-roomCode").innerText = `Room Code: ${messageData.lobbyInfo.roomCode}`
+    document.getElementById("lobby-roomCode").innerHTML = `Room Code: ${messageData.lobbyInfo.roomCode}`
 
     //#region Player List Rendering
     var playerList = document.getElementById("lobby-playerList")
@@ -198,7 +197,7 @@ async function handleMovementResponse(movementEvent) {
     playerSpace.classList.add('player')
 
     //For now, just automatically don't let humans do anything after moving. In the future, we'll pause here to let them choose whether to play cards
-    if(thisPlayer.team != PlayerTeams.Alien){
+    if (thisPlayer.team != PlayerTeams.Alien) {
         var actionToSend = {
             gameId: thisGameStateId,
             action: {
@@ -211,7 +210,7 @@ async function handleMovementResponse(movementEvent) {
         }
 
         sendWsMessage(ws, 'submitAction', actionToSend);
-    } else if(thisPlayer.team == PlayerTeams.Alien){
+    } else if (thisPlayer.team == PlayerTeams.Alien) {
         showPlayerChoicePopup('attack')
     }
 }

@@ -173,6 +173,8 @@ func DrawCard(gameState *Models.GameState, playerId string) (Models.CardEvent, e
 		event.Type = drawnCard.GetType()
 		if drawnCard.GetType() == Models.Card_White {
 			actingPlayer.Hand.Cards = append(actingPlayer.Hand.Cards, drawnCard)
+		} else {
+			gameState.DiscardPile.Cards = append(gameState.DiscardPile.Cards, drawnCard)
 		}
 	}
 

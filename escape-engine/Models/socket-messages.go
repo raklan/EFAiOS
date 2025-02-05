@@ -10,6 +10,7 @@ const (
 	WebsocketMessage_GameState        = "GameState" //In this case, the [Data] field will be a GameState struct
 	WebsocketMessage_LobbyInfo        = "LobbyInfo"
 	WebsocketMessage_MovementResponse = "MovementResponse"
+	WebsocketMessage_TurnEnd          = "TurnEnd"
 )
 
 type WebsocketMessageListItem struct {
@@ -43,6 +44,9 @@ type SocketClose struct {
 }
 
 type GameOver struct {
+}
+
+type TurnEnd struct {
 }
 
 type GameEvent struct {

@@ -135,14 +135,23 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 			return messages, err
 		}
 
-		data := Models.WebsocketMessage{}
-		shouldBroadcast := false
-
 		var result any = nil
 		if turn.IsAttacking() {
 			result, err = turn.Execute(&gameState, action.PlayerId)
-			data.Type = Models.WebsocketMessage_GameEvent
-			shouldBroadcast = true
+			messages = append(messages, Models.WebsocketMessageListItem{
+				Message: Models.WebsocketMessage{
+					Type: Models.WebsocketMessage_GameEvent,
+					Data: result,
+				},
+				ShouldBroadcast: true,
+			})
+			messages = append(messages, Models.WebsocketMessageListItem{
+				Message: Models.WebsocketMessage{
+					Type: Models.WebsocketMessage_TurnEnd,
+					Data: Models.TurnEnd{},
+				},
+				ShouldBroadcast: false,
+			})
 		} else {
 			// Cards are weird to deal with. You should only draw a card if you're in a dangerous sector,
 			// so DrawCard will check where you are and set the type to Card_NoCard if so. In that case,
@@ -154,17 +163,32 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 
 				actingPlayer := gameState.GetCurrentPlayer()
 
-				data.Type = Models.WebsocketMessage_GameEvent
-				shouldBroadcast = true
-				result = Models.GameEvent{
-					Row:         "!",
-					Col:         -99,
-					Description: fmt.Sprintf("Player '%s' is in a safe sector", actingPlayer.Name),
-				}
+				messages = append(messages, Models.WebsocketMessageListItem{
+					Message: Models.WebsocketMessage{
+						Type: Models.WebsocketMessage_GameEvent,
+						Data: Models.GameEvent{
+							Row:         "!",
+							Col:         -99,
+							Description: fmt.Sprintf("Player '%s' is in a safe sector", actingPlayer.Name),
+						},
+					},
+					ShouldBroadcast: true,
+				})
+				messages = append(messages, Models.WebsocketMessageListItem{
+					Message: Models.WebsocketMessage{
+						Type: Models.WebsocketMessage_TurnEnd,
+						Data: Models.TurnEnd{},
+					},
+					ShouldBroadcast: false,
+				})
 			} else {
-				data.Type = Models.WebsocketMessage_Card
-				shouldBroadcast = false
-				result = cardEvent
+				messages = append(messages, Models.WebsocketMessageListItem{
+					Message: Models.WebsocketMessage{
+						Type: Models.WebsocketMessage_Card,
+						Data: cardEvent,
+					},
+					ShouldBroadcast: false,
+				})
 			}
 		}
 
@@ -172,12 +196,6 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 			LogError(funcLogPrefix, err)
 			return messages, err
 		}
-
-		data.Data = result
-		messages = append(messages, Models.WebsocketMessageListItem{
-			Message:         data,
-			ShouldBroadcast: shouldBroadcast,
-		})
 	case Actions.Action_Movement:
 		turn := Actions.Movement{}
 		err := json.Unmarshal(action.Turn, &turn)
@@ -219,6 +237,14 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 				Type: Models.WebsocketMessage_GameEvent,
 				Data: result,
 			},
+		})
+
+		messages = append(messages, Models.WebsocketMessageListItem{
+			Message: Models.WebsocketMessage{
+				Type: Models.WebsocketMessage_TurnEnd,
+				Data: Models.TurnEnd{},
+			},
+			ShouldBroadcast: false,
 		})
 
 	case Actions.Action_EndTurn:

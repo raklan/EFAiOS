@@ -29,13 +29,12 @@ const ClickModes = {
 
 var clickMode = ClickModes.None;
 
-var radius = 25;
 var cssClass = 'hexfield';//If you change this, change it in hexClick() too
 
 var MAP = null
 
 function createGrid(rows, columns) {
-
+    let radius = Math.min(rows * columns / (rows + columns) * (window.screen.width / 150), 55)
     var grid = document.getElementById("gameplay-gridParent");
 
     var createSVG = function (tag) {
@@ -272,4 +271,24 @@ function attack(isAttacking){
 
     sendWsMessage(ws, 'submitAction', actionToSend);
     hidePlayerChoicePopup();
+}
+
+function renderPlayerHand(){
+    let hand = document.getElementById("cards")
+
+    if(thisPlayer?.hand?.cards?.length > 0){
+        hand.replaceChildren()
+        for(let card of thisPlayer?.hand?.cards){
+            let node = document.createElement("div")
+            node.classList = 'card'
+            node.innerHTML = `${card.name}`
+            node.onclick = () => cardClick(card)
+    
+            hand.appendChild(node)
+        }
+    }
+}
+
+function cardClick(card){
+    console.log(card)
 }
