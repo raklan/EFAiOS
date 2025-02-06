@@ -166,27 +166,74 @@
         transition: all 0.3s ease-in-out;
     }
 
-    #role{
-            position: fixed;
-            right: -120px;
-            height: 200px;
-            width: 150px;
-            border: 2px solid white;
-            color: white;
-            background-color: black;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-        }
+    #role {
+        position: fixed;
+        right: -120px;
+        height: 200px;
+        width: 150px;
+        border: 2px solid white;
+        color: white;
+        background-color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+    }
 
-        #role:hover{
-            transform: translateX(-82%);
-            border-color: var(--team-color);
-            color: var(--team-color);
-            transition: all 0.3s ease-in-out;
-        }
+    #role:hover {
+        transform: translateX(-82%);
+        border-color: var(--team-color);
+        color: var(--team-color);
+        transition: all 0.3s ease-in-out;
+    }
+
+    #event-log {
+        position: fixed;
+        background-color: black;
+        overflow-y: auto;
+        scrollbar-color: white black;
+        max-height: 80%;
+        width: 20%;
+        left: -15%;
+        transition: all 0.3s ease-in-out;
+    }
+
+    #event-log:hover{
+        transform: translateX(75%);
+        transition: all 0.3s ease-in-out;
+    }
+
+    /* Style the tab */
+    .tab-list {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid white;
+    }
+
+    /* Style the buttons that are used to open the tab content */
+    .tab-list button {
+        max-width: 90%;
+        overflow: hidden;
+        background-color: inherit;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid white;
+        border-top: none;
+    }
+
+    .tabcontent p{
+        margin: 2%;
+    }
 </style>
 {{end}}
 
@@ -235,6 +282,10 @@
 </div>
 <div id="gameplay">
     <div id="gameplay-gridParent"></div>
+    <div id="event-log">
+        <div id="tab-list" class="tab-list">
+        </div>
+    </div>
     <div id="cards"></div>
     <div id="role"></div>
 </div>

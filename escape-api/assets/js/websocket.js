@@ -92,6 +92,11 @@ async function handleErrorMessage(socketError) {
 
 async function handleGameEventMessage(gameEvent) {
     showNotification(gameEvent.description, 'Alert')
+    let regRes = gameEvent.description.match(playerNameExtractor)
+
+    if(regRes?.groups?.PlayerName){
+        addEvent(regRes.groups.PlayerName, gameEvent.description)
+    }
 }
 
 async function handleTurnEnd(turnEnd) {
@@ -118,6 +123,7 @@ async function handleGameStateMessage(gameState) {
     drawMap(gameState.gameMap)
     if (!thisGameStateId) {
         thisGameStateId = gameState.id
+        initializeEventLog(gameState.players)
     }
     document.getElementById("lobby").style.display = 'none';
     document.getElementById('gameplay').style.display = 'flex';

@@ -27,6 +27,8 @@ const ClickModes = {
     None: 'None'
 }
 
+const playerNameExtractor = new RegExp(/Player \'(?<PlayerName>[^\']+)\'.+/);
+
 var clickMode = ClickModes.None;
 
 var cssClass = 'hexfield';//If you change this, change it in hexClick() too
@@ -317,4 +319,57 @@ function getTeamColor(){
         case PlayerTeams.Spectator:
             return "white"
     }
+}
+
+function initializeEventLog(players){
+    const tablist = document.getElementById('tab-list')
+    const eventLog = document.getElementById("event-log")
+
+    eventLog.onmouseleave = () => {
+        // Get all elements with class="tabcontent" and hide them
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+    }
+
+    for(let player of players){
+        let button = document.createElement("button")
+        button.classList.add("tablinks")
+        button.onclick = () => viewPlayerEvents(player.name)
+        button.innerHTML = `${player.name}`
+        tablist.appendChild(button)
+
+        let log = document.createElement("div")
+        log.id = `event-log-${player.name}`
+        log.classList.add("tabcontent")
+        eventLog.appendChild(log)
+    }        
+}
+
+function viewPlayerEvents(playerName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(`event-log-${playerName}`).style.display = "block";
+}
+
+function addEvent(playerName, event){
+    const eventLogContainer = document.getElementById(`event-log-${playerName}`)
+    let eventDesc = document.createElement("p")
+    eventDesc.innerHTML = event
+    eventLogContainer.appendChild(eventDesc)
 }
