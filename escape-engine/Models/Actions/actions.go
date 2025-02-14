@@ -58,7 +58,10 @@ type EndTurn struct {
 }
 
 type PlayCard struct {
-	Name string `json:"name"`
+	Name         string `json:"name"`
+	Row          string `json:"row"`
+	Col          int    `json:"col"`
+	TargetPlayer string `json:"targetPlayer"`
 }
 
 func (move Movement) Execute(gameState *Models.GameState, playerId string) (Models.MovementEvent, error) {
@@ -282,7 +285,11 @@ func (play PlayCard) Execute(gameState *Models.GameState, playerId string) (Mode
 		return c == cardCopy
 	})
 
-	cardCopy.Play(gameState)
+	cardCopy.Play(gameState, Models.CardPlayDetails{
+		TargetRow:    play.Row,
+		TargetCol:    play.Col,
+		TargetPlayer: play.TargetPlayer,
+	})
 
 	gameState.DiscardPile.Cards = append(gameState.DiscardPile.Cards, cardCopy)
 

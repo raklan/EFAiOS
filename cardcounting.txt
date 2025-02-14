@@ -1,14 +1,14 @@
-red
-green
+red 24
+green 26
+blank white 4
 
-clone
-defence
-spotlight
-attack
-sensor
-adrenaline
-mutation
-cat
-teleport
-sedatives
-
+clone 1
+defence 1
+spotlight 2
+attack 2
+sensor 1
+adrenaline 3
+mutation 1
+cat 2
+teleport 1
+sedatives 1

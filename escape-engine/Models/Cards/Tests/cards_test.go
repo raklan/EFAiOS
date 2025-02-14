@@ -14,10 +14,9 @@ func TestAdrenaline(t *testing.T) {
 		Players:       []Models.Player{player},
 		CurrentPlayer: player.Id,
 	}
-
 	card := Models.NewAdrenaline()
 
-	card.Play(&gameState)
+	card.Play(&gameState, Models.CardPlayDetails{})
 
 	if len(gameState.GetCurrentPlayer().StatusEffects) != 1 {
 		t.Fatal("Player does not have 1 status effect")
@@ -37,7 +36,7 @@ func TestMutation(t *testing.T) {
 
 	card := Models.NewMutation()
 
-	card.Play(&gameState)
+	card.Play(&gameState, Models.CardPlayDetails{})
 
 	if len(gameState.GetCurrentPlayer().StatusEffects) != 0 {
 		t.Fatal("Player does not have 0 status effects")
@@ -76,7 +75,7 @@ func TestTeleport(t *testing.T) {
 
 	card := Models.NewTeleport()
 
-	card.Play(&gameState)
+	card.Play(&gameState, Models.CardPlayDetails{})
 
 	if len(gameState.GetCurrentPlayer().StatusEffects) != 0 {
 		t.Fatal("Player does not have 0 status effects")

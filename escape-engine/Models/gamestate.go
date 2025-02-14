@@ -65,69 +65,6 @@ func (gameState *GameState) GetCurrentPlayer() *Player {
 	return &gameState.Players[currentPlayerIndex]
 }
 
-// func (gameState *GameState) UnmarshalJSON(data []byte) error {
-// 	intermediate := struct {
-// 		//This is solely for book-keeping. The front end should submit this Id along with SubmittedActions to update the GameState
-// 		Id string `json:"id"`
-// 		//The map used by this Game
-// 		GameMap GameMap `json:"gameMap"`
-// 		//GameState-specific config as defined by the Host
-// 		GameConfig GameConfig `json:"gameConfig"`
-// 		//All cards used by this Game
-// 		Deck CardCollection `json:"deck"`
-// 		//Used cards. Will be automatically reshuffled into the deck when empty
-// 		DiscardPile CardCollection `json:"discardPile"`
-// 		//A list of the states of each Player in the game.
-// 		Players []Player `json:"players"`
-// 		//Id of the Player whose turn it currently is
-// 		CurrentPlayer string `json:"currentPlayer"`
-// 	}{}
-
-// 	err := json.Unmarshal(data, &intermediate)
-
-// 	*gameState = GameState{
-// 		Id:            intermediate.Id,
-// 		GameMap:       intermediate.GameMap,
-// 		GameConfig:    intermediate.GameConfig,
-// 		Players:       intermediate.Players,
-// 		CurrentPlayer: intermediate.CurrentPlayer,
-// 		Deck:          make([]Card, len(intermediate.Deck)),
-// 		DiscardPile:   make([]Card, len(intermediate.DiscardPile)),
-// 	}
-
-// 	for i, card := range intermediate.Deck {
-// 		switch card["name"] {
-// 		case "Red Card":
-// 			gameState.Deck[i] = NewRedCard()
-// 		case "Green Card":
-// 			gameState.Deck[i] = NewGreenCard()
-// 		case "Mutation":
-// 			gameState.Deck[i] = NewMutation()
-// 		case "Adrenaline":
-// 			gameState.Deck[i] = NewAdrenaline()
-// 		case "Teleport":
-// 			gameState.Deck[i] = NewTeleport()
-// 		}
-// 	}
-
-// 	for i, card := range intermediate.DiscardPile {
-// 		switch card["name"] {
-// 		case "Red Card":
-// 			gameState.DiscardPile[i] = NewRedCard()
-// 		case "Green Card":
-// 			gameState.DiscardPile[i] = NewGreenCard()
-// 		case "Mutation":
-// 			gameState.DiscardPile[i] = NewMutation()
-// 		case "Adrenaline":
-// 			gameState.DiscardPile[i] = NewAdrenaline()
-// 		case "Teleport":
-// 			gameState.DiscardPile[i] = NewTeleport()
-// 		}
-// 	}
-
-// 	return err
-// }
-
 // GameState-specific config as defined by the Host
 type GameConfig struct {
 	//Number of Humans currently in the Game. The Game automatically ends when this number hits 0.
@@ -178,6 +115,12 @@ func (c *CardCollection) UnmarshalJSON(data []byte) error {
 			c.Cards[i] = NewAdrenaline()
 		case "Teleport":
 			c.Cards[i] = NewTeleport()
+		case "Clone":
+			c.Cards[i] = NewClone()
+		case "Defence":
+			c.Cards[i] = NewDefense()
+		case "Spotlight":
+			c.Cards[i] = NewSpotlight()
 		}
 	}
 
@@ -188,12 +131,13 @@ type Card interface {
 	GetName() string
 	GetType() string
 	GetDescription() string
-	Play(*GameState)
+	Play(*GameState, CardPlayDetails)
 }
 
 type StatusEffect interface {
 	//Returns the Name of this StatusEffect
 	GetName() string
+	//Returns the Description of this StatusEffect
 	GetDescription() string
 	//Returns the number of "Uses" left that this effect can activate. This StatusEffect should be removed from the Player's StatusEffects array when it hits 0
 	GetUsesLeft() int
