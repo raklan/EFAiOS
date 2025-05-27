@@ -129,6 +129,7 @@ function drawMap(map){
 
 function hexClick(event) {
     if(thisPlayer.team == PlayerTeams.Spectator || !isThisPlayersTurn){
+        showNotification('It\'s not your turn!', 'Error')
         return
     }
 
@@ -155,10 +156,10 @@ function hexClick(event) {
         }
         document.querySelectorAll('.hexfield.selected').forEach(x => x.classList.remove('selected'))
         event.target.classList.add('selected')
-
+        
         document.getElementById("greenCard-confirm").style.display = ''
     }
-
+    
     
     
 }

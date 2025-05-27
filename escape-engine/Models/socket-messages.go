@@ -2,15 +2,16 @@ package Models
 
 // The different types of messages the server might send to a client connected via websocket.
 const (
-	WebsocketMessage_Card             = "Card"
-	WebsocketMessage_Close            = "Close"
-	WebsocketMessage_Error            = "Error"
-	WebsocketMessage_GameEvent        = "GameEvent"
-	WebsocketMessage_GameOver         = "GameOver"
-	WebsocketMessage_GameState        = "GameState" //In this case, the [Data] field will be a GameState struct
-	WebsocketMessage_LobbyInfo        = "LobbyInfo"
-	WebsocketMessage_MovementResponse = "MovementResponse"
-	WebsocketMessage_TurnEnd          = "TurnEnd"
+	WebsocketMessage_AvailableMovement = "AvailableMovement"
+	WebsocketMessage_Card              = "Card"
+	WebsocketMessage_Close             = "Close"
+	WebsocketMessage_Error             = "Error"
+	WebsocketMessage_GameEvent         = "GameEvent"
+	WebsocketMessage_GameOver          = "GameOver"
+	WebsocketMessage_GameState         = "GameState" //In this case, the [Data] field will be a GameState struct
+	WebsocketMessage_LobbyInfo         = "LobbyInfo"
+	WebsocketMessage_MovementResponse  = "MovementResponse"
+	WebsocketMessage_TurnEnd           = "TurnEnd"
 )
 
 type WebsocketMessageListItem struct {
@@ -63,4 +64,8 @@ type CardEvent struct {
 type MovementEvent struct {
 	NewRow string `json:"newRow"`
 	NewCol int    `json:"newCol"`
+}
+
+type AvailableMovement struct {
+	Spaces []string `json:"spaces"`
 }

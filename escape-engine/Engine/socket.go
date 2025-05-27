@@ -345,7 +345,46 @@ func processMessage(roomCode string, playerId string, message []byte) {
 				room[playerId].WriteJSON(messageToSend.Message)
 			}
 		}
+	case "getAllowedMoves":
+		var action struct {
+			GameId   string `json:"gameId"`
+			PlayerId string `json:"playerId"`
+		}
+		if err := json.Unmarshal(msg.Data, &action); err != nil {
+			log.Printf("error decoding message: {%s}", err)
+			socketError := Models.WebsocketMessage{
+				Type: Models.WebsocketMessage_Error,
+				Data: Models.SocketError{
+					Message: err.Error(),
+				},
+			}
+			room[playerId].WriteJSON(socketError)
+			break
+		}
 
+		//Supply PlayerId with the Id of the player belonging to this connection
+		action.PlayerId = playerId
+		allowedMoves, err := GetPlayerAllowedMoves(action.GameId, action.PlayerId)
+		if err != nil {
+			log.Printf("error getting allowed moves: {%s}", err)
+			socketError := Models.WebsocketMessage{
+				Type: Models.WebsocketMessage_Error,
+				Data: Models.SocketError{
+					Message: err.Error(),
+				},
+			}
+			room[playerId].WriteJSON(socketError)
+			break
+		}
+
+		messageToSend := Models.WebsocketMessage{
+			Type: Models.WebsocketMessage_AvailableMovement,
+			Data: Models.AvailableMovement{
+				Spaces: allowedMoves,
+			},
+		}
+
+		room[playerId].WriteJSON(messageToSend)
 	case "leaveLobby":
 		updatedLobby, err := endPlayerConnection(roomCode, playerId, room)
 

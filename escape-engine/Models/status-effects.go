@@ -143,3 +143,46 @@ func (s *Armored) Activate(gameState *GameState) {
 		activePlayer.StatusEffects = slices.DeleteFunc(activePlayer.StatusEffects, func(s2 StatusEffect) bool { return s2 == s })
 	}
 }
+
+// #region Hyperphagic
+
+type Hyperphagic struct {
+	StatusEffectBase
+}
+
+func NewHyperphagic() *Armored {
+	return &Armored{
+		StatusEffectBase: StatusEffectBase{
+			Name:        "Hyperphagic",
+			Description: "This Alien has fed on a human, gaining strength. But they want more...",
+			UsesLeft:    1,
+		},
+	}
+}
+
+func (s *Hyperphagic) GetName() string {
+	return s.Name
+}
+
+func (s *Hyperphagic) GetDescription() string {
+	return s.Description
+}
+
+func (s *Hyperphagic) GetUsesLeft() int {
+	return s.UsesLeft
+}
+
+func (s *Hyperphagic) AddUse() int {
+	s.UsesLeft++
+	return s.GetUsesLeft()
+}
+
+func (s *Hyperphagic) Activate(gameState *GameState) {
+	//For now, don't subtract uses. It's a permanent bonus
+	// s.UsesLeft--
+	// activePlayer := gameState.GetCurrentPlayer()
+
+	// if s.UsesLeft <= 0 {
+	// 	activePlayer.StatusEffects = slices.DeleteFunc(activePlayer.StatusEffects, func(s2 StatusEffect) bool { return s2 == s })
+	// }
+}

@@ -20,6 +20,7 @@ const WS_GAMESTATE = "GameState"
 const WS_LOBBYINFO = "LobbyInfo"
 const WS_MOVEMENTRESPONSE = "MovementResponse"
 const WS_TURNEND = "TurnEnd"
+const WS_AVAILABLEMOVEMENT = "AvailableMovement"
 
 function handleWsMessage(message) {
     console.info("Message inbound", message)
@@ -51,6 +52,9 @@ function handleWsMessage(message) {
             break;
         case WS_TURNEND:
             handler = handleTurnEnd;
+            break;
+        case WS_AVAILABLEMOVEMENT:
+            handler = handleAvailableMovementMessage;
             break;
     }
 
@@ -141,6 +145,9 @@ async function handleGameStateMessage(gameState) {
 
     if (gameState.currentPlayer == thisPlayer.id) {
         clickMode = ClickModes.Moving
+        sendWsMessage(ws, 'getAllowedMoves', {
+            gameId: thisGameStateId
+        })
     } else {
         clickMode = ClickModes.None
     }
@@ -221,4 +228,13 @@ async function handleMovementResponse(movementEvent) {
     } else if (thisPlayer.team == PlayerTeams.Alien) {
         showPlayerChoicePopup('attack')
     }
+}
+
+async function handleAvailableMovementMessage(availableMovement){
+    availableMovement.spaces.forEach(space => {
+        let spaceElement = document.getElementById(`hex-${space}`)
+        if(spaceElement){
+            spaceElement.classList = [cssClass, 'potential-move'].join(' ');
+        }
+    })
 }

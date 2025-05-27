@@ -339,6 +339,21 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 	return messages, nil
 }
 
+func GetPlayerAllowedMoves(gameId string, playerId string) ([]string, error) {
+	funcLogPrefix := "==GetPlayerAllowedMoves=="
+	defer LogUtil.EnsureLogPrefixIsReset()
+	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
+
+	gameState, err := GetCachedGameStateFromRedis(gameId)
+	if err != nil {
+		LogError(funcLogPrefix, err)
+		return []string{}, err
+	}
+
+	allowedMoves := Actions.GetPotentialMoves(&gameState, gameState.CurrentPlayer)
+	return allowedMoves, nil
+}
+
 // #region Helper Functions
 
 // Assigns teams randomly to all players in the GameState. If a player cannot be assigned for any reason, they are assigned as a spectator

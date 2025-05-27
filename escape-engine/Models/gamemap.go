@@ -2,6 +2,7 @@ package Models
 
 import (
 	"fmt"
+	"math"
 )
 
 type GameMap struct {
@@ -40,4 +41,26 @@ type Space struct {
 
 func (space Space) GetMapKey() string {
 	return fmt.Sprintf("%s-%d", space.Row, space.Col)
+}
+
+// Gets the space's row as an int. A = 0, B = 1, ... Z = 25, AA = 26, etc
+func (space Space) GetRowAsInt() int {
+	row := 0
+
+	for i := range space.Row {
+		row += int(space.Row[i]) - 65 + (i * 26)
+	}
+
+	return row
+}
+
+func GetRowAsLetter(rowNum int) string {
+	letterCode := ""
+
+	for rowNum >= 0 {
+		letterCode += string(rune(65 + rowNum%26))
+		rowNum = int(math.Floor(float64(rowNum)/26)) - 1
+	}
+
+	return letterCode
 }
