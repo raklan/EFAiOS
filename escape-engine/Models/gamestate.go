@@ -88,6 +88,10 @@ type Player struct {
 	Col           int            `json:"col"`
 }
 
+func (p Player) HasStatusEffect(name string) bool {
+	return slices.ContainsFunc(p.StatusEffects, func(s StatusEffect) bool { return s.GetName() == name })
+}
+
 type CardCollection struct {
 	Cards []Card `json:"cards"`
 }
@@ -143,6 +147,6 @@ type StatusEffect interface {
 	GetUsesLeft() int
 	//Adds one use to this StatusEffect
 	AddUse() int
-	//Uses this StatusEffect, reducing the UsesLeft by 1
-	Activate(*GameState)
+	//Uses this StatusEffect, reducing the UsesLeft by 1. If there are zero uses left, it will remove itself from the Player's StatusEffects. Returns a boolean describing whether there are uses left in this StatusEffect
+	SubtractUse(*Player) bool
 }

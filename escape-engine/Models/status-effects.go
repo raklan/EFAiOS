@@ -1,7 +1,6 @@
 package Models
 
 import (
-	"math/rand"
 	"slices"
 )
 
@@ -13,6 +12,13 @@ type StatusEffectBase struct {
 
 // #region Adrenaline Surge
 
+const (
+	StatusEffect_AdrenalineSurge = "Adrenaline Surge"
+	StatusEffect_Cloned          = "Cloned"
+	StatusEffect_Armored         = "Armored"
+	StatusEffect_Hyperphagic     = "Hyperphagic"
+)
+
 type AdrenalineSurge struct {
 	StatusEffectBase
 }
@@ -20,7 +26,7 @@ type AdrenalineSurge struct {
 func NewAdrenalineSurge() *AdrenalineSurge {
 	return &AdrenalineSurge{
 		StatusEffectBase: StatusEffectBase{
-			Name:        "Adrenaline Surge",
+			Name:        StatusEffect_AdrenalineSurge,
 			Description: "The affected player may move 1 extra space",
 			UsesLeft:    1,
 		},
@@ -44,16 +50,16 @@ func (a *AdrenalineSurge) AddUse() int {
 	return a.GetUsesLeft()
 }
 
-func (a *AdrenalineSurge) Activate(gameState *GameState) {
+func (a *AdrenalineSurge) SubtractUse(player *Player) bool {
 	a.UsesLeft--
-	activePlayer := gameState.GetCurrentPlayer()
 
 	if a.UsesLeft <= 0 {
-		activePlayer.StatusEffects = slices.DeleteFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s == a })
+		player.StatusEffects = slices.DeleteFunc(player.StatusEffects, func(s StatusEffect) bool { return s == a })
+		return false
 	}
-}
 
-// #region Cat
+	return true
+}
 
 // #region Cloned
 
@@ -64,7 +70,7 @@ type Cloned struct {
 func NewCloned() *Cloned {
 	return &Cloned{
 		StatusEffectBase: StatusEffectBase{
-			Name:        "Cloned",
+			Name:        StatusEffect_Cloned,
 			Description: "This player has a clone that will automatically activate upon death",
 			UsesLeft:    1,
 		},
@@ -88,18 +94,15 @@ func (s *Cloned) AddUse() int {
 	return s.GetUsesLeft()
 }
 
-func (s *Cloned) Activate(gameState *GameState) {
+func (s *Cloned) SubtractUse(player *Player) bool {
 	s.UsesLeft--
-	activePlayer := gameState.GetCurrentPlayer()
-	humanStarts := gameState.GameMap.GetSpacesOfType(Space_HumanStart)
-
-	toMoveTo := humanStarts[rand.Intn(len(humanStarts))]
-
-	activePlayer.Row, activePlayer.Col = toMoveTo.Row, toMoveTo.Col
 
 	if s.UsesLeft <= 0 {
-		activePlayer.StatusEffects = slices.DeleteFunc(activePlayer.StatusEffects, func(s2 StatusEffect) bool { return s2 == s })
+		player.StatusEffects = slices.DeleteFunc(player.StatusEffects, func(s2 StatusEffect) bool { return s2 == s })
+		return false
 	}
+
+	return true
 }
 
 // #region Armored
@@ -111,7 +114,7 @@ type Armored struct {
 func NewArmored() *Armored {
 	return &Armored{
 		StatusEffectBase: StatusEffectBase{
-			Name:        "Armored",
+			Name:        StatusEffect_Armored,
 			Description: "This player is defended from the next attack that hits them",
 			UsesLeft:    1,
 		},
@@ -135,13 +138,15 @@ func (s *Armored) AddUse() int {
 	return s.GetUsesLeft()
 }
 
-func (s *Armored) Activate(gameState *GameState) {
+func (s *Armored) SubtractUse(player *Player) bool {
 	s.UsesLeft--
-	activePlayer := gameState.GetCurrentPlayer()
 
 	if s.UsesLeft <= 0 {
-		activePlayer.StatusEffects = slices.DeleteFunc(activePlayer.StatusEffects, func(s2 StatusEffect) bool { return s2 == s })
+		player.StatusEffects = slices.DeleteFunc(player.StatusEffects, func(s2 StatusEffect) bool { return s2 == s })
+		return false
 	}
+
+	return true
 }
 
 // #region Hyperphagic
@@ -153,7 +158,7 @@ type Hyperphagic struct {
 func NewHyperphagic() *Armored {
 	return &Armored{
 		StatusEffectBase: StatusEffectBase{
-			Name:        "Hyperphagic",
+			Name:        StatusEffect_Hyperphagic,
 			Description: "This Alien has fed on a human, gaining strength. But they want more...",
 			UsesLeft:    1,
 		},
@@ -177,12 +182,13 @@ func (s *Hyperphagic) AddUse() int {
 	return s.GetUsesLeft()
 }
 
-func (s *Hyperphagic) Activate(gameState *GameState) {
-	//For now, don't subtract uses. It's a permanent bonus
-	// s.UsesLeft--
-	// activePlayer := gameState.GetCurrentPlayer()
+func (s *Hyperphagic) SubtractUse(player *Player) bool {
+	s.UsesLeft--
 
-	// if s.UsesLeft <= 0 {
-	// 	activePlayer.StatusEffects = slices.DeleteFunc(activePlayer.StatusEffects, func(s2 StatusEffect) bool { return s2 == s })
-	// }
+	if s.UsesLeft <= 0 {
+		player.StatusEffects = slices.DeleteFunc(player.StatusEffects, func(s2 StatusEffect) bool { return s2 == s })
+		return false
+	}
+
+	return true
 }

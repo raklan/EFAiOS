@@ -125,7 +125,7 @@ func getAllowedSpaces(player *Models.Player, gameState *Models.GameState) int {
 
 	//Adrenaline
 	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s Models.StatusEffect) bool { return s.GetName() == Models.NewAdrenaline().GetName() }); indexOfEffect != -1 {
-		player.StatusEffects[indexOfEffect].Activate(gameState)
+		player.StatusEffects[indexOfEffect].SubtractUse(player)
 		allowedSpaces++
 	}
 
@@ -136,8 +136,8 @@ func getAllowedSpaces(player *Models.Player, gameState *Models.GameState) int {
 
 	//Hyperphagic
 	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s Models.StatusEffect) bool { return s.GetName() == Models.NewHyperphagic().GetName() }); indexOfEffect != -1 {
-		player.StatusEffects[indexOfEffect].Activate(gameState)
 		allowedSpaces++
+		//Hyperphagic is a permanent bonus, so don't subtract any uses
 	}
 
 	return allowedSpaces
@@ -159,6 +159,13 @@ func (attack Attack) Execute(gameState *Models.GameState, playerId string) (*Mod
 		}
 		if player.Row != attack.Row || player.Col != attack.Col {
 			continue
+		}
+
+		//TODO: Decide how to deal with a player that has both of these effects
+		if player.HasStatusEffect(Models.StatusEffect_Armored) {
+
+		} else if player.HasStatusEffect(Models.StatusEffect_Cloned) {
+
 		}
 
 		newSpaceForPlayer := alienStarts[rand.Intn(len(alienStarts))]
