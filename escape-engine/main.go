@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 // import (
 // 	"escape-engine/Models"
 // 	"escape-engine/Models/Actions"
@@ -119,5 +121,8 @@ package main
 // }
 
 func main() {
+	str := "Hello"
+	str += "World"
 
+	fmt.Println(str)
 }

@@ -83,7 +83,7 @@ func (move Movement) Execute(gameState *Models.GameState, playerId string) (Mode
 
 		//Make sure it's close enough
 		numAllowedSpaces := getAllowedSpaces(actingPlayer, gameState)
-		allowedSpacesToMoveTo := getSpacesWithinNthAdjacency(numAllowedSpaces, fmt.Sprintf("%s-%d", actingPlayer.Row, actingPlayer.Col), gameState.GameMap)
+		allowedSpacesToMoveTo := gameState.GameMap.GetSpacesWithinNthAdjacency(numAllowedSpaces, fmt.Sprintf("%s-%d", actingPlayer.Row, actingPlayer.Col))
 		if _, exists := allowedSpacesToMoveTo[space.GetMapKey()]; !exists {
 			return movement, fmt.Errorf("space [%s] is too far away", spaceKey)
 		}
@@ -101,104 +101,9 @@ func (move Movement) Execute(gameState *Models.GameState, playerId string) (Mode
 func GetPotentialMoves(gameState *Models.GameState, playerId string) []string {
 	actingPlayer := gameState.GetCurrentPlayer()
 	numAllowedSpaces := getAllowedSpaces(actingPlayer, gameState)
-	allowedSpacesToMoveTo := getSpacesWithinNthAdjacency(numAllowedSpaces, fmt.Sprintf("%s-%d", actingPlayer.Row, actingPlayer.Col), gameState.GameMap)
+	allowedSpacesToMoveTo := gameState.GameMap.GetSpacesWithinNthAdjacency(numAllowedSpaces, fmt.Sprintf("%s-%d", actingPlayer.Row, actingPlayer.Col))
 	maps.DeleteFunc(allowedSpacesToMoveTo, func(k string, v Models.Space) bool { return slices.Contains(getNonmovableSpaces(actingPlayer), v.Type) })
 	return slices.Collect(maps.Keys(allowedSpacesToMoveTo))
-}
-
-func getSpacesWithinNthAdjacency(n int, homeSpaceKey string, gameMap Models.GameMap) map[string]Models.Space {
-	spaces := map[string]Models.Space{}
-
-	homeSpace := gameMap.Spaces[homeSpaceKey]
-
-	rowNum, colNum := homeSpace.GetRowAsInt(), homeSpace.Col
-
-	//Get each of the 6 directions. Need to handle even/odd columns differently because of how hex maps line up
-
-	if colNum%2 == 0 { //Even column
-		//Up-Left
-		spaceKey := fmt.Sprintf("%s-%d", Models.GetRowAsLetter(rowNum-1), colNum-1)
-		if space, exists := gameMap.Spaces[spaceKey]; exists {
-			spaces[spaceKey] = space
-		}
-
-		//Up
-		spaceKey = fmt.Sprintf("%s-%d", Models.GetRowAsLetter(rowNum-1), colNum)
-		if space, exists := gameMap.Spaces[spaceKey]; exists {
-			spaces[spaceKey] = space
-		}
-
-		//Up-Right
-		spaceKey = fmt.Sprintf("%s-%d", Models.GetRowAsLetter(rowNum-1), colNum+1)
-		if space, exists := gameMap.Spaces[spaceKey]; exists {
-			spaces[spaceKey] = space
-		}
-
-		//Down-Left
-		spaceKey = fmt.Sprintf("%s-%d", Models.GetRowAsLetter(rowNum), colNum-1)
-		if space, exists := gameMap.Spaces[spaceKey]; exists {
-			spaces[spaceKey] = space
-		}
-
-		//Down
-		spaceKey = fmt.Sprintf("%s-%d", Models.GetRowAsLetter(rowNum+1), colNum)
-		if space, exists := gameMap.Spaces[spaceKey]; exists {
-			spaces[spaceKey] = space
-		}
-
-		//Down-Right
-		spaceKey = fmt.Sprintf("%s-%d", Models.GetRowAsLetter(rowNum), colNum+1)
-		if space, exists := gameMap.Spaces[spaceKey]; exists {
-			spaces[spaceKey] = space
-		}
-	} else {
-		//Up-Left
-		spaceKey := fmt.Sprintf("%s-%d", Models.GetRowAsLetter(rowNum), colNum-1)
-		if space, exists := gameMap.Spaces[spaceKey]; exists {
-			spaces[spaceKey] = space
-		}
-
-		//Up
-		spaceKey = fmt.Sprintf("%s-%d", Models.GetRowAsLetter(rowNum-1), colNum)
-		if space, exists := gameMap.Spaces[spaceKey]; exists {
-			spaces[spaceKey] = space
-		}
-
-		//Up-Right
-		spaceKey = fmt.Sprintf("%s-%d", Models.GetRowAsLetter(rowNum), colNum+1)
-		if space, exists := gameMap.Spaces[spaceKey]; exists {
-			spaces[spaceKey] = space
-		}
-
-		//Down-Left
-		spaceKey = fmt.Sprintf("%s-%d", Models.GetRowAsLetter(rowNum+1), colNum-1)
-		if space, exists := gameMap.Spaces[spaceKey]; exists {
-			spaces[spaceKey] = space
-		}
-
-		//Down
-		spaceKey = fmt.Sprintf("%s-%d", Models.GetRowAsLetter(rowNum+1), colNum)
-		if space, exists := gameMap.Spaces[spaceKey]; exists {
-			spaces[spaceKey] = space
-		}
-
-		//Down-Right
-		spaceKey = fmt.Sprintf("%s-%d", Models.GetRowAsLetter(rowNum+1), colNum+1)
-		if space, exists := gameMap.Spaces[spaceKey]; exists {
-			spaces[spaceKey] = space
-		}
-	}
-
-	neighbors := maps.Clone(spaces) //Make a clone to iterate over the neighbors to avoid the collection changing while iterating over it
-
-	if n > 1 {
-		for neighborKey := range neighbors {
-			maps.Copy(spaces, getSpacesWithinNthAdjacency(n-1, neighborKey, gameMap))
-			delete(spaces, homeSpaceKey)
-		}
-	}
-
-	return spaces
 }
 
 func getNonmovableSpaces(player *Models.Player) []int {
@@ -388,7 +293,7 @@ func (play PlayCard) Execute(gameState *Models.GameState, playerId string) (Mode
 		return c == cardCopy
 	})
 
-	cardCopy.Play(gameState, Models.CardPlayDetails{
+	cardMessage := cardCopy.Play(gameState, Models.CardPlayDetails{
 		TargetRow:    play.Row,
 		TargetCol:    play.Col,
 		TargetPlayer: play.TargetPlayer,
@@ -397,7 +302,7 @@ func (play PlayCard) Execute(gameState *Models.GameState, playerId string) (Mode
 	gameState.DiscardPile.Cards = append(gameState.DiscardPile.Cards, cardCopy)
 
 	return Models.GameEvent{
-		Description: fmt.Sprintf("Player '%s' used a '%s' card!", actingPlayer.Name, cardCopy.GetName()),
+		Description: cardMessage,
 		Row:         "!",
 		Col:         -99,
 	}, nil

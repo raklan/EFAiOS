@@ -1,6 +1,7 @@
 package Models
 
 import (
+	"fmt"
 	"math/rand"
 	"slices"
 )
@@ -42,8 +43,8 @@ func (r *RedCard) GetDescription() string {
 	return r.Description
 }
 
-func (r *RedCard) Play(gameState *GameState, details CardPlayDetails) {
-
+func (r *RedCard) Play(gameState *GameState, details CardPlayDetails) string {
+	return ""
 }
 
 func NewRedCard() *RedCard {
@@ -74,7 +75,8 @@ func (g *GreenCard) GetDescription() string {
 	return g.Description
 }
 
-func (g *GreenCard) Play(gameState *GameState, details CardPlayDetails) {
+func (g *GreenCard) Play(gameState *GameState, details CardPlayDetails) string {
+	return ""
 }
 
 func NewGreenCard() *GreenCard {
@@ -105,7 +107,7 @@ func (a *Adrenaline) GetDescription() string {
 	return a.Description
 }
 
-func (a *Adrenaline) Play(gameState *GameState, details CardPlayDetails) {
+func (a *Adrenaline) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
 	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == "Adrenaline Surge" }); indexOfEffect != -1 {
@@ -113,6 +115,8 @@ func (a *Adrenaline) Play(gameState *GameState, details CardPlayDetails) {
 	} else {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewAdrenalineSurge())
 	}
+
+	return fmt.Sprintf("Player %s played an Adrenaline card. They can move one space farther on their next turn!", activePlayer.Name)
 }
 
 func NewAdrenaline() *Adrenaline {
@@ -143,10 +147,12 @@ func (m *Mutation) GetDescription() string {
 	return m.Description
 }
 
-func (m *Mutation) Play(gameState *GameState, details CardPlayDetails) {
+func (m *Mutation) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
 	activePlayer.Team = PlayerTeam_Alien
+
+	return fmt.Sprintf("Player %s used a Mutation card! They've turned into an Alien!", activePlayer.Name)
 }
 
 func NewMutation() *Mutation {
@@ -177,7 +183,7 @@ func (t Teleport) GetDescription() string {
 	return t.Description
 }
 
-func (t Teleport) Play(gameState *GameState, details CardPlayDetails) {
+func (t Teleport) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
 	humanStarts := gameState.GameMap.GetSpacesOfType(Space_HumanStart)
@@ -185,6 +191,8 @@ func (t Teleport) Play(gameState *GameState, details CardPlayDetails) {
 	toMoveTo := humanStarts[rand.Intn(len(humanStarts))]
 
 	activePlayer.Row, activePlayer.Col = toMoveTo.Row, toMoveTo.Col
+
+	return fmt.Sprintf("Player %s used a Teleport card! They've been moved to a random Human starting sector!", activePlayer.Name)
 }
 
 func NewTeleport() *Teleport {
@@ -215,7 +223,7 @@ func (c Clone) GetDescription() string {
 	return c.Description
 }
 
-func (c Clone) Play(gameState *GameState, details CardPlayDetails) {
+func (c Clone) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
 	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == "Cloned" }); indexOfEffect != -1 {
@@ -223,6 +231,8 @@ func (c Clone) Play(gameState *GameState, details CardPlayDetails) {
 	} else {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewCloned())
 	}
+
+	return fmt.Sprintf("Player %s used a Clone card! They now have a clone ready in case they die!", activePlayer.Name)
 }
 
 func NewClone() *Clone {
@@ -253,7 +263,7 @@ func (c Defense) GetDescription() string {
 	return c.Description
 }
 
-func (c Defense) Play(gameState *GameState, details CardPlayDetails) {
+func (c Defense) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
 	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == "Armored" }); indexOfEffect != -1 {
@@ -261,6 +271,8 @@ func (c Defense) Play(gameState *GameState, details CardPlayDetails) {
 	} else {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewArmored())
 	}
+
+	return fmt.Sprintf("Player %s used a Defense card! They'll be protected from the next attack!", activePlayer.Name)
 }
 
 func NewDefense() *Defense {
@@ -291,13 +303,46 @@ func (c Spotlight) GetDescription() string {
 	return c.Description
 }
 
-func (c Spotlight) Play(gameState *GameState, details CardPlayDetails) {
+func (c Spotlight) Play(gameState *GameState, details CardPlayDetails) string {
 	if details.TargetRow == "" || details.TargetCol == -99 {
 		panic("No details provided for spotlight")
 	}
 
-	//TODO: Implement
+	activePlayer := gameState.GetCurrentPlayer()
 
+	descriptionString := fmt.Sprintf("Player %s used a Spotlight!", activePlayer.Name)
+
+	seenPlayers := []Player{}
+
+	adjacentSpaces := gameState.GameMap.GetSpacesWithinNthAdjacency(1, GetMapKey(details.TargetRow, details.TargetCol))
+
+	for spaceKey := range adjacentSpaces {
+		for _, player := range gameState.Players {
+			playerSpace := GetMapKey(player.Row, player.Col)
+			if spaceKey == playerSpace {
+				seenPlayers = append(seenPlayers, player)
+			}
+		}
+	}
+
+	//Check space spotlight was played on as well
+	for _, player := range gameState.Players {
+		playerSpace := GetMapKey(player.Row, player.Col)
+		spaceKey := GetMapKey(details.TargetRow, details.TargetCol)
+		if spaceKey == playerSpace {
+			seenPlayers = append(seenPlayers, player)
+		}
+	}
+
+	if len(seenPlayers) > 0 {
+		for _, player := range seenPlayers {
+			descriptionString += fmt.Sprintf("\nPlayer %s was seen at %s!", player.Name, GetMapKey(player.Row, player.Col))
+		}
+	} else {
+		descriptionString += " No players were found!"
+	}
+
+	return descriptionString
 }
 
 func NewSpotlight() *Spotlight {

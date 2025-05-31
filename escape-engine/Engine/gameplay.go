@@ -56,7 +56,7 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 	gameState.Deck.Cards = []Models.Card{
 		Models.NewRedCard(),
 		Models.NewGreenCard(),
-		Models.NewTeleport(),
+		Models.NewSpotlight(),
 	}
 
 	assignTeams(&gameState)

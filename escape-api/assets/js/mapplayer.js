@@ -24,6 +24,7 @@ const PlayerTeams = {
 const ClickModes = {
     Moving: 'Moving',
     Noise: 'Noise',
+    Spotlight: 'Spotlight',
     None: 'None'
 }
 
@@ -158,6 +159,15 @@ function hexClick(event) {
         event.target.classList.add('selected')
         
         document.getElementById("greenCard-confirm").style.display = ''
+    } else if(clickMode == ClickModes.Spotlight){
+        selectedSpace = {
+            row: row,
+            col: col
+        }
+        document.querySelectorAll('.hexfield.selected').forEach(x => x.classList.remove('selected'))
+        event.target.classList.add('selected')
+
+        document.getElementById("spotlight-confirm").style.display = ''
     }
     
     
@@ -214,6 +224,17 @@ function showPlayerChoicePopup(mode){
         content_info.innerHTML = ''
 
         typeWord(content_info, 'Would you like to attack this space?')
+    }else if(mode == 'Spotlight'){
+        document.getElementById("playerChoice-spotlight").style.display = '';
+        typeWord(title, 'Using Spotlight')
+
+        popup.style.color = 'white'
+        popup.style.border = '2px solid white'
+
+        let content_info = document.getElementById("playerChoice-spotlight-content")
+        content_info.innerHTML = ''
+
+        typeWord(content_info, 'Choose a space to reveal with the Spotlight')
     }
 
     popup.classList.add('notification-displayed')
@@ -260,6 +281,28 @@ function greenCardConfirm(){
     }
 }
 
+function spotlightConfirm(){
+    document.querySelectorAll('.hexfield.selected').forEach(x => x.classList.remove('selected'))
+    clickMode = ClickModes.Moving
+    const actionToSend = {
+        gameId: thisGameStateId,
+        action: {
+            type: 'PlayCard',
+            turn: {
+                name: 'Spotlight',
+                row: selectedSpace.row,
+                col: selectedSpace.col
+            }
+        }
+    }
+    sendWsMessage(ws, 'submitAction', actionToSend)
+    hidePlayerChoicePopup();
+    selectedSpace = {
+        row: thisPlayer.row,
+        col: thisPlayer.col
+    }
+}
+
 function attack(isAttacking){
     var actionToSend = {
         gameId: thisGameStateId,
@@ -293,6 +336,11 @@ function renderPlayerHand(){
 }
 
 function cardClick(card){
+    if(card.name === "Spotlight"){
+        clickMode = ClickModes.Spotlight;
+        showPlayerChoicePopup(card.name)
+        return;
+    }
     let toSend = {
         gameId: thisGameStateId,
         action: {

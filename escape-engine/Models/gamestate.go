@@ -131,7 +131,7 @@ type Card interface {
 	GetName() string
 	GetType() string
 	GetDescription() string
-	Play(*GameState, CardPlayDetails)
+	Play(*GameState, CardPlayDetails) string
 }
 
 type StatusEffect interface {
