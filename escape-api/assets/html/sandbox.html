@@ -1,115 +1,47 @@
 {{define "styling"}}
 <style>
-    #cards {
-        position: fixed;
-        bottom: -150px;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        transition: all 0.4s ease-in-out;
-    }
 
-    #cards:hover {
-        transform: translateY(-35%);
-        transition: all 0.4s ease-in-out;
-    }
-
-    .card {
-        margin-right: 1px;
-        margin-left: 1px;
-        height: 200px;
-        width: 150px;
-        border: 2px solid white;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-    }
-
-    #role {
-        position: fixed;
-        right: -120px;
-        height: 200px;
-        width: 150px;
-        border: 2px solid white;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-    }
-
-    #role:hover {
-        transform: translateX(-82%);
-        border-color: var(--team-color);
-        color: var(--team-color);
-        transition: all 0.3s ease-in-out;
-    }
-
-    .card:hover {
-        transform: translateY(-5%);
-        transition: all 0.3s ease-in-out;
-    }
-
-    #event-log {
-        position: fixed;
-        max-height: 80%;
-        width: 20%;
-        left: -15%;
-        transition: all 0.3s ease-in-out;
-    }
-
-    #event-log:hover{
-        transform: translateX(75%);
-        transition: all 0.3s ease-in-out;
-    }
-
-    /* Style the tab */
-    .tab-list {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 10px;
-        border: 1px solid white;
-    }
-
-    /* Style the buttons that are used to open the tab content */
-    .tab-list button {
-        max-width: 90%;
-        overflow: hidden;
-        background-color: inherit;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    /* Style the tab content */
-    .tabcontent {
-        display: none;
-        padding: 6px 12px;
-        border: 1px solid white;
-        border-top: none;
-    }
-
-    .tabcontent p{
-        margin: 2%;
-    }
 </style>
+<link rel="stylesheet" href="/assets/stylesheets/lobby.css">
 {{end}}
 
 {{define "body"}}
 <div id="container">
-    <div id="cards">
-
-    </div>
-    <div id="role">Human</div>
-    <div id="event-log">
-        <div id="tab-list" class="tab-list">
+    <button id="lobby-gameConfigButton" onclick="showConfig()">Game Settings</button>
+    <div class="config-popup">
+        <div id="config-header" style="display: flex; justify-content: center;">
+            <span style="font-weight: bold; font-size: large" id="config-title">Game Settings</span>
+            <span style="font-size: 20px; cursor: pointer; position: absolute; right: 5%; top: 5%"
+                onclick="hideConfig()">&times;</span>
         </div>
-
+        <form id="lobby-gameConfig" style="white-space: normal;">
+            <div style="display: flex; justify-content: space-around; border-bottom: 1px dashed lime;">
+                <button type="button" onclick="configTabSwitch('config-general')">General</button>
+                <button type="button" onclick="configTabSwitch('config-cards')">Cards</button>
+                <button type="button" onclick="configTabSwitch('config-roles')">Roles</button>
+            </div>
+            <div id="config-general">
+                <input type="number" class="text-input" id="config-numHumans" placeholder="Human Players" />
+                <input type="number" class="text-input" id="config-numAliens" placeholder="Alien Players" />
+                <input type="number" class="text-input" id="config-numWorkingPods" placeholder="Working Pods" />
+                <input type="number" class="text-input" id="config-numBrokenPods" placeholder="Broken Pods" />
+            </div>
+            <div id="config-cards" style="display: none;">
+                <input type="number" class="text-input" id="config-numRedCards" placeholder="Red Cards" />
+                <input type="number" class="text-input" id="config-numGreenCards" placeholder="Green Cards" />
+                <input type="number" class="text-input" id="config-numWhiteCards" placeholder="Silent Cards" />
+                <input type="number" class="text-input" id="config-numAdrenaline" placeholder="Adrenaline Cards" />
+                <input type="number" class="text-input" id="config-numClone" placeholder="Clone Cards" />
+                <input type="number" class="text-input" id="config-numRedCards" placeholder="Red Cards" />
+                <input type="number" class="text-input" id="config-numGreenCards" placeholder="Green Cards" />
+                <input type="number" class="text-input" id="config-numWhiteCards" placeholder="Silent Cards" />
+                <input type="number" class="text-input" id="config-numAdrenaline" placeholder="Adrenaline Cards" />
+                <input type="number" class="text-input" id="config-numClone" placeholder="Clone Cards" />
+            </div>
+            <div id="config-roles" style="display: none;">
+                Not yet implemented
+            </div>
+        </form>
     </div>
 </div>
 {{end}}
@@ -117,91 +49,47 @@
 {{define "scripts"}}
 <script src="/assets/js/utils.js"></script>
 <script>
-    let cards = [
-        {
-            name: 'adrenaline'
-        },
-        {
-            name: 'mutation'
-        },
-        {
-            name: 'teleport'
+    function hideConfig() {
+        var configpopup = document.querySelector(".config-popup-displayed")
+        configpopup.classList.remove("config-popup-displayed")
+        configpopup.classList.add("config-popup-hiding")
+        if (!configpopup.onanimationend) {
+            configpopup.onanimationend = () => {
+                configpopup.classList.remove("config-popup-hiding")
+            }
         }
-    ]
-
-    let players = [
-        {
-            name: 'Ryan'
-        },
-        {
-            name: 'Christina'
-        },
-        {
-            name: 'Blake'
-        }
-    ]
-
-    let hand = document.getElementById("cards")
-
-    for (let card of cards) {
-        let node = document.createElement("div")
-        node.classList = 'card'
-        node.innerHTML = `${card.name}`
-        node.onclick = () => cardclick(card)
-
-        hand.appendChild(node)
     }
 
-    function cardclick(card) {
-        console.log(card)
+    function showConfig() {
+        document.querySelector(".config-popup").classList.add("config-popup-displayed")
     }
 
-    let role = document.getElementById("role")
-    role.style.setProperty('--team-color', 'deepskyblue')
+    function configTabSwitch(newTab) {
+        let generalConfigId = "config-general"
+        let cardConfigId = "config-cards"
+        let roleConfigId = "config-roles"
 
-    function viewPlayerEvents(playerName) {
-        // Declare all variables
-        var i, tabcontent, tablinks;
+        let generalConfig = document.getElementById(generalConfigId)
+        let cardConfig = document.getElementById(cardConfigId)
+        let roleConfig = document.getElementById(roleConfigId)
 
-        // Get all elements with class="tabcontent" and hide them
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
+        switch (newTab) {
+            case generalConfigId:
+                generalConfig.style.display = ''
+                cardConfig.style.display = 'none';
+                roleConfig.style.display = 'none';
+                break;
+            case cardConfigId:
+                generalConfig.style.display = 'none'
+                cardConfig.style.display = '';
+                roleConfig.style.display = 'none';
+                break;
+            case roleConfigId:
+                generalConfig.style.display = 'none'
+                cardConfig.style.display = 'none';
+                roleConfig.style.display = '';
+                break;
         }
-
-        // Get all elements with class="tablinks" and remove the class "active"
-        tablinks = document.getElementsByClassName("tablinks");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-        }
-
-        // Show the current tab, and add an "active" class to the button that opened the tab
-        document.getElementById(`event-log-${playerName}`).style.display = "block";
-    }
-
-    function initializeEventLog(){
-        const tablist = document.getElementById('tab-list')
-        const eventLog = document.getElementById("event-log")
-
-        for(let player of players){
-            let button = document.createElement("button")
-            button.classList.add("tablinks")
-            button.onclick = () => viewPlayerEvents(player.name)
-            button.innerHTML = `${player.name}`
-            tablist.appendChild(button)
-
-            let log = document.createElement("div")
-            log.id = `event-log-${player.name}`
-            log.classList.add("tabcontent")
-            eventLog.appendChild(log)
-        }        
-    }
-
-    function addEvent(playerName, event){
-        const eventLogContainer = document.getElementById(`event-log-${playerName}`)
-        let eventDesc = document.createElement("p")
-        eventDesc.innerHTML = event
-        eventLogContainer.appendChild(eventDesc)
     }
 </script>
 

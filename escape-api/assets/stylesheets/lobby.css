@@ -1,0 +1,61 @@
+.config-popup {
+    position: fixed;
+    top: 0;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+    background-color: black;
+    z-index: 5000;
+    color: lime;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid lime;
+    text-align: center;
+    opacity: 0;
+    overflow-x: hidden;
+    white-space: nowrap;
+    transform: translateY(-100%);
+}
+
+.config-popup-displayed {
+    animation: config-show 1s;
+    transform: translateY(50%);
+    opacity: 1;
+}
+
+.config-popup-hiding{
+    animation: config-hide 1s;
+}
+
+@keyframes config-show {
+    0% {
+        transform: scaleX(0.0005) translateY(-100%);
+    }
+
+    50% {
+        transform: scaleX(0.0005) translateY(50%);
+        animation-timing-function: ease-out;
+    }
+
+    100% {
+        transform: scaleX(1) translateY(50%);
+        animation-timing-function: ease-in-out;
+    }
+}
+
+@keyframes config-hide {
+    0% {
+        transform: scaleX(1) translateY(50%);
+        opacity: 1;
+    }    
+    
+    50% {
+        transform: scaleX(0.0005) translateY(50%);
+        animation-timing-function: ease-out;
+    }    
+
+    100% {
+        transform: scaleX(0.0005) translateY(-100%);
+        opacity: 1;
+    }
+}

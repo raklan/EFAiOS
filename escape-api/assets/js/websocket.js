@@ -195,8 +195,11 @@ async function handleLobbyInfoMessage(messageData) {
             sendWsMessage(ws, 'startGame', config)
         }
 
-        var gameConfig = document.getElementById("lobby-gameConfig")
-        gameConfig.style.display = '';
+        var configButton = document.getElementById("lobby-gameConfigButton");
+        configButton.style.display = '';
+        configButton.onclick = () => {
+            showGameConfigMenu();
+        }
     }
     //#endregion
 }

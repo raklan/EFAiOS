@@ -32,7 +32,7 @@
     .hexfield.dangerous {
         fill: gray;
     }
-    
+
     .hexfield.potential-move {
         fill: pink;
     }
@@ -239,6 +239,7 @@
         margin: 2%;
     }
 </style>
+<link rel="stylesheet" href="/assets/stylesheets/lobby.css">
 {{end}}
 
 {{define "body"}}
@@ -280,16 +281,21 @@
     <h3>Lobby</h3>
     <div id="lobby-roomCode"></div>
     <div id="lobby-playerList"></div>
-    <div id="lobby-gameConfig" style="display: none;">
-        <input type="number" id="config-numHumans" placeholder="Human Players" />
-        <input type="number" id="config-numAliens" placeholder="Alien Players" />
-        <input type="number" id="config-numWorkingPods" placeholder="Working Pods" />
-        <input type="number" id="config-numBrokenPods" placeholder="Broken Pods" />
-    </div>
-    <form id="testform">
-        <input name="testinput" />
-    </form>
+    <button id="lobby-gameConfigButton" style="display: none;">Game Settings</button>
     <button id="lobby-startButton" style="display: none;">Start</button>
+    <div class="config-popup">
+        <div id="notification-header" style="display: flex; justify-content: center;">
+            <span style="font-weight: bold; font-size: large" id="notification-title">Game Settings</span>
+            <span style="font-size: 20px; cursor: pointer; position: absolute; right: 5%; top: 5%"
+                onclick="hideGameConfigMenu()">&times;</span>
+        </div>
+        <form id="lobby-gameConfig">
+            <input type="number" class="text-input" id="config-numHumans" placeholder="Human Players" />
+            <input type="number" class="text-input" id="config-numAliens" placeholder="Alien Players" />
+            <input type="number" class="text-input" id="config-numWorkingPods" placeholder="Working Pods" />
+            <input type="number" class="text-input" id="config-numBrokenPods" placeholder="Broken Pods" />
+        </form>
+    </div>
 </div>
 <div id="gameplay">
     <div id="gameplay-gridParent"></div>
