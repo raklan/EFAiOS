@@ -131,7 +131,7 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	lobbyInfo, err := LoadLobbyFromRedis(roomCode)
+	lobbyInfo, err := GetLobbyFromFs(roomCode)
 	if err != nil {
 		http.Error(w, "Could not find requested lobby", http.StatusNotFound)
 		return
@@ -191,7 +191,7 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 	//If the game has started, send a GameState
 	if lobbyInfo.Status == Models.LobbyStatus_InProgress {
 		log.Println("Game has been marked as 'In Progress' - Sending GameState...")
-		gameState, err := GetCachedGameStateFromRedis(lobbyInfo.GameStateId)
+		gameState, err := GetGameStateFromFs(lobbyInfo.GameStateId)
 		if err != nil {
 			conn.WriteJSON(Models.WebsocketMessage{
 				Type: Models.WebsocketMessage_Error,
@@ -218,7 +218,7 @@ func handShake(roomCode string, newPlayerId string) {
 	gamesClientsMutex.Lock()
 	room := gamesClients[roomCode]
 	gamesClientsMutex.Unlock()
-	jsonLobby, err := LoadLobbyFromRedis(roomCode)
+	jsonLobby, err := GetLobbyFromFs(roomCode)
 
 	msg := Models.WebsocketMessage{
 		Type: Models.WebsocketMessage_LobbyInfo,
@@ -416,7 +416,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 			break
 		}
 
-		dbLobby, err := LoadLobbyFromRedis(roomCode)
+		dbLobby, err := GetLobbyFromFs(roomCode)
 
 		if err != nil {
 			log.Printf("Error trying to find lobby")

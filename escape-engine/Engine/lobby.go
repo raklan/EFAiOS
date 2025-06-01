@@ -38,7 +38,7 @@ func CreateRoom(mapId string) (string, error) {
 	lobby.RoomCode = roomCode
 
 	log.Printf("%s Saving Lobby to Redis", funcLogPrefix)
-	lobby, err = SaveLobbyInRedis(lobby)
+	lobby, err = SaveLobbyToFs(lobby)
 	if err != nil {
 		LogError(funcLogPrefix, err)
 		return "", err
@@ -57,7 +57,7 @@ func JoinRoom(roomCode string, playerName string) (Models.Lobby, string, error) 
 
 	log.Printf("%s Recieved request from Player {%s} to join lobby with RoomCode == {%s}", funcLogPrefix, playerName, roomCode)
 
-	lobby, err := LoadLobbyFromRedis(roomCode)
+	lobby, err := GetLobbyFromFs(roomCode)
 	if err != nil {
 		LogError(funcLogPrefix, err)
 		return Models.Lobby{}, "", err
@@ -94,9 +94,9 @@ func JoinRoom(roomCode string, playerName string) (Models.Lobby, string, error) 
 	updatedLobby.NumPlayers = len(updatedLobby.Players)
 
 	log.Printf("%s Player added. Caching new Lobby", funcLogPrefix)
-	saved, err := SaveLobbyInRedis(updatedLobby)
+	saved, err := SaveLobbyToFs(updatedLobby)
 	if err != nil { //If something goes wrong, re-save and return the version without any changes
-		SaveLobbyInRedis(lobby)
+		SaveLobbyToFs(lobby)
 		return Models.Lobby{}, "", err
 	}
 
@@ -111,7 +111,7 @@ func LeaveRoom(roomCode string, playerId string) (Models.Lobby, error) {
 
 	log.Printf("%s Recieved request to remove Player {%s} from lobby with RoomCode == {%s}", funcLogPrefix, playerId, roomCode)
 
-	lobby, err := LoadLobbyFromRedis(roomCode)
+	lobby, err := GetLobbyFromFs(roomCode)
 	if err != nil {
 		LogError(funcLogPrefix, err)
 		return Models.Lobby{}, err
@@ -135,16 +135,16 @@ func LeaveRoom(roomCode string, playerId string) (Models.Lobby, error) {
 	updatedLobby.NumPlayers = len(newPlayers)
 
 	log.Printf("%s Player Removed. Caching new Lobby", funcLogPrefix)
-	saved, err := SaveLobbyInRedis(updatedLobby)
+	saved, err := SaveLobbyToFs(updatedLobby)
 	if err != nil { //If something goes wrong, re-save and return the version without any changes
-		SaveLobbyInRedis(lobby)
+		SaveLobbyToFs(lobby)
 		return Models.Lobby{}, err
 	}
 
 	//If the game has started, we need to remove them from the GameState too
 	if saved.Status == Models.LobbyStatus_InProgress {
 		log.Println("Player is being removed from an in-progress game. Removing player from GameState...")
-		gameState, err := GetCachedGameStateFromRedis(saved.GameStateId)
+		gameState, err := GetGameStateFromFs(saved.GameStateId)
 		if err != nil {
 			LogError(funcLogPrefix, err)
 		}
@@ -168,7 +168,7 @@ func LeaveRoom(roomCode string, playerId string) (Models.Lobby, error) {
 		gameState.Players = newPlayers
 
 		log.Println("Player has been removed from GameState. Caching new GameState now...")
-		_, err = CacheGameStateInRedis(gameState)
+		_, err = SaveGameStateToFs(gameState)
 		if err != nil {
 			LogError(funcLogPrefix, err)
 		}

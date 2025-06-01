@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
-	"slices"
+	"os"
+	"time"
 )
 
 // func main() {
@@ -118,17 +118,17 @@ import (
 // }
 
 func main() {
-	StatusEffectPriorities := map[string]int{
-		"Armored": 0,
-		"Cloned":  1,
+	files, _ := os.ReadDir("./maps")
+	for _, file := range files {
+		stats, _ := os.Stat("./maps/" + file.Name())
+		expirationTime := stats.ModTime().AddDate(0, 1, 0)
+		if time.Now().After(expirationTime) {
+			os.Remove("./maps/" + file.Name())
+		}
 	}
-
-	list := []string{
-		"Armored",
-		"Cloned",
-	}
-
-	slices.SortFunc(list, func(s1 string, s2 string) int { return StatusEffectPriorities[s2] - StatusEffectPriorities[s1] })
-
-	fmt.Println(list)
+	// stats, _ := os.Stat("./maps/map_1738255395028DWVM9PW8T1.json")
+	// fmt.Println(time.Now())
+	// expirationTime := stats.ModTime().AddDate(0, 1, 0)
+	// fmt.Println(stats.ModTime(), expirationTime)
+	// fmt.Println(time.Now().Before(expirationTime))
 }

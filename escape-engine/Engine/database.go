@@ -8,12 +8,12 @@ import (
 	"log"
 	"os"
 	"time"
-
-	"github.com/go-redis/redis/v8"
 )
 
 // Yes, I know. I just REALLY didn't want to bring in an entire database JUST for this and Redis shouldn't be used for it
 func SaveMapToDB(m Models.GameMap) (Models.GameMap, error) {
+	os.Mkdir("./maps", 0666)
+
 	if m.Id == "" {
 		m.Id = GenerateId()
 	}
@@ -26,7 +26,7 @@ func SaveMapToDB(m Models.GameMap) (Models.GameMap, error) {
 	filename := "map_" + m.Id + ".json"
 	f, err := os.Create(fmt.Sprintf("./maps/%s", filename))
 	if err != nil {
-		fmt.Println("FML")
+		fmt.Println("Ran into unrecoverable error trying to save map")
 		f.Close()
 		return m, err
 	}
@@ -84,74 +84,63 @@ func GetAllMaps() ([]string, error) {
 	return toReturn, nil
 }
 
-func SaveLobbyInRedis(lobby Models.Lobby) (Models.Lobby, error) {
-	funcLogPrefix := "==SaveLobbyInRedis=="
+func SaveLobbyToFs(lobby Models.Lobby) (Models.Lobby, error) {
+	funcLogPrefix := "==SaveLobbyToFs=="
 	defer LogUtil.EnsureLogPrefixIsReset()
 	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
-
-	log.Printf("%s Recieved request to save lobby in Redis", funcLogPrefix)
-
 	asJson, err := json.Marshal(lobby)
 	if err != nil {
-		LogError(funcLogPrefix, err)
-		return Models.Lobby{}, err
+		return lobby, err
 	}
 
-	key := "lobby:" + lobby.RoomCode
-	expiry, _ := time.ParseDuration("168h")
-	err = RDB.Set(ctx, key, asJson, expiry).Err()
+	filename := "lobby_" + lobby.RoomCode + ".json"
+	os.Mkdir("./lobbies", 0666)
+	f, err := os.Create(fmt.Sprintf("./lobbies/%s", filename))
+	if err != nil {
+		log.Printf("%s Ran into unrecoverable error trying to save lobby to filesystem", funcLogPrefix)
+		f.Close()
+		return lobby, err
+	}
+	_, err = f.Write(asJson)
+	f.Close()
+	if err != nil {
+		return lobby, err
+	}
+
+	//Kick off goroutine clearing out unused lobbies
+	go clearOutOldFiles("./lobbies/")
+
+	return lobby, nil
+}
+
+func GetLobbyFromFs(roomCode string) (Models.Lobby, error) {
+	funcLogPrefix := "==GetLobbyFromFs=="
+	defer LogUtil.EnsureLogPrefixIsReset()
+	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
+
+	log.Printf("%s Getting lobby from FS with RoomCode == {%s}", funcLogPrefix, roomCode)
+	data, err := os.ReadFile(fmt.Sprintf("./lobbies/lobby_%s.json", roomCode))
 	if err != nil {
 		LogError(funcLogPrefix, err)
 		return Models.Lobby{}, err
 	}
 
-	log.Printf("%s Lobby saved in Redis with key == {%s}", funcLogPrefix, key)
-	return lobby, nil
-}
+	parsed := Models.Lobby{}
 
-func LoadLobbyFromRedis(roomCode string) (Models.Lobby, error) {
-	defer LogUtil.EnsureLogPrefixIsReset()
-	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
-	funcLogPrefix := "==LoadLobbyFromRedis==:"
-
-	log.Printf("%s Retrieving Lobby with RoomCode=={%s} from Redis", funcLogPrefix, roomCode)
-
-	lobby := Models.Lobby{}
-
-	//Catch empty ID
-	if roomCode == "" {
-		log.Printf("%s ERROR! RoomCode cannot be empty. Returning empty Lobby", funcLogPrefix)
-		return lobby, fmt.Errorf("%s Id cannot be empty", funcLogPrefix)
-	}
-
-	//Try to get the Game from Redis. If it doesn't exist, give a specific error for that
-	def, err := RDB.Get(ctx, "lobby:"+roomCode).Result()
-	if err == redis.Nil {
-		log.Printf("%s Could not find cached lobby for roomCode \"%s\"...Returning Empty Lobby", funcLogPrefix, roomCode)
-		return lobby, fmt.Errorf("%s No game for Id=={%s} found", funcLogPrefix, roomCode)
-	} else if err != nil {
-		LogError(funcLogPrefix, err)
-		return lobby, err
-	}
-
-	//Result is just a JSON string, so we still need to deserialize/unmarshal it
-	err = json.Unmarshal([]byte(def), &lobby)
+	err = json.Unmarshal(data, &parsed)
 	if err != nil {
-		LogError(funcLogPrefix, err)
-		return lobby, err
+		return parsed, err
 	}
 
-	log.Printf("%s Found a lobby, returning result", funcLogPrefix)
-	return lobby, nil
+	return parsed, nil
 }
 
-// Caches the given [gameState] in redis. Returns nil for [error] if everything goes well
-func CacheGameStateInRedis(gameState Models.GameState) (Models.GameState, error) {
-	funcLogPrefix := "==CacheGameStateInRedis==:"
+func SaveGameStateToFs(gameState Models.GameState) (Models.GameState, error) {
+	funcLogPrefix := "==SaveGameStateToFs==:"
 	defer LogUtil.EnsureLogPrefixIsReset()
 	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
 
-	log.Printf("%s Received GameState to cache", funcLogPrefix)
+	log.Printf("%s Received GameState to save", funcLogPrefix)
 
 	//If the gameState doesn't have an ID yet,
 	//Generate one for it by simply using the Current UNIX time in milliseconds
@@ -163,58 +152,59 @@ func CacheGameStateInRedis(gameState Models.GameState) (Models.GameState, error)
 		gameState.Id = id
 	}
 
-	//Convert to string and save to Redis
 	asJson, err := json.Marshal(gameState)
 	if err != nil {
-		LogError(funcLogPrefix, err)
 		return gameState, err
 	}
 
-	key := "gameState:" + id
-	expiry, _ := time.ParseDuration("168h")
-	err = RDB.Set(ctx, key, asJson, expiry).Err()
+	filename := "gameState_" + gameState.Id + ".json"
+	os.Mkdir("./gameStates", 0666)
+	f, err := os.Create(fmt.Sprintf("./gameStates/%s", filename))
 	if err != nil {
-		LogError(funcLogPrefix, err)
+		log.Printf("%s Ran into unrecoverable error trying to save GameState to filesystem", funcLogPrefix)
+		f.Close()
+		return gameState, err
+	}
+	_, err = f.Write(asJson)
+	f.Close()
+	if err != nil {
 		return gameState, err
 	}
 
-	log.Printf("%s GameState cached with key=={%s}", funcLogPrefix, key)
+	//Kick off goroutine clearing out unused lobbies
+	go clearOutOldFiles("./gameStates/")
 	return gameState, nil
 }
 
-// Retrieves a gameState with an id == [id] from Redis. If everything goes well, then [error] is nil
-func GetCachedGameStateFromRedis(id string) (Models.GameState, error) {
-	funcLogPrefix := "==GetCachedGameStateFromRedis==:"
+func GetGameStateFromFs(id string) (Models.GameState, error) {
+	funcLogPrefix := "==GetGameStateFromFs=="
 	defer LogUtil.EnsureLogPrefixIsReset()
 	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
 
-	log.Printf("%s Received request to get cached GameState from Redis", funcLogPrefix)
-
-	gameState := Models.GameState{}
-
-	//Catch empty id string early
-	if id == "" {
-		log.Printf("%s ERROR! Id cannot be empty. Returning empty GameState", funcLogPrefix)
-		return gameState, fmt.Errorf("%s Id cannot be empty", funcLogPrefix)
-	}
-
-	//Try to get the game from Redis. If it doesn't exist, fail gracefully
-	game, err := RDB.Get(ctx, "gameState:"+id).Result()
-	if err == redis.Nil {
-		log.Printf("%s Could not find cached GameState for key \"%s\"...Returning Empty GameState", funcLogPrefix, id)
-		return gameState, fmt.Errorf("%s No game for Id=={%s} found", funcLogPrefix, id)
-	} else if err != nil {
-		LogError(funcLogPrefix, err)
-		return gameState, err
-	}
-
-	//game is a JSON string of a GameState, so unmarshal it
-	err = json.Unmarshal([]byte(game), &gameState)
+	log.Printf("%s Getting GameState from FS with ID == {%s}", funcLogPrefix, id)
+	data, err := os.ReadFile(fmt.Sprintf("./gameStates/gameState_%s.json", id))
 	if err != nil {
-		LogError(funcLogPrefix, err)
-		return gameState, err
+		return Models.GameState{}, err
 	}
 
-	log.Printf("%s Found a GameState, returning result", funcLogPrefix)
-	return gameState, nil
+	parsed := Models.GameState{}
+
+	err = json.Unmarshal(data, &parsed)
+	if err != nil {
+		return parsed, err
+	}
+
+	return parsed, nil
+}
+
+func clearOutOldFiles(directory string) {
+	files, _ := os.ReadDir(directory)
+	for _, file := range files {
+		fullFileName := directory + file.Name()
+		stats, _ := os.Stat(fullFileName)
+		expirationTime := stats.ModTime().AddDate(0, 1, 0)
+		if time.Now().After(expirationTime) {
+			os.Remove(fullFileName)
+		}
+	}
 }

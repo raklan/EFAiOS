@@ -19,7 +19,7 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 
 	gameState := Models.GameState{}
 
-	lobby, err := LoadLobbyFromRedis(roomCode)
+	lobby, err := GetLobbyFromFs(roomCode)
 	if err != nil {
 		LogError(funcLogPrefix, err)
 		return gameState, err
@@ -66,7 +66,7 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 	assignStartingPositions(&gameState, &mapDef)
 	gameState.CurrentPlayer = gameState.Players[rand.Intn(len(gameState.Players))].Id
 
-	gameState, err = CacheGameStateInRedis(gameState)
+	gameState, err = SaveGameStateToFs(gameState)
 	if err != nil {
 		LogError(funcLogPrefix, err)
 		return gameState, err
@@ -75,7 +75,7 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 	//Mark the lobby as started and fill in GameStateId
 	lobby.GameStateId = gameState.Id
 	lobby.Status = Models.LobbyStatus_InProgress
-	_, err = SaveLobbyInRedis(lobby)
+	_, err = SaveLobbyToFs(lobby)
 	if err != nil {
 		LogError(funcLogPrefix, err)
 		return gameState, err
@@ -89,7 +89,7 @@ func EndGame(roomCode string, playerId string) error {
 	defer LogUtil.EnsureLogPrefixIsReset()
 	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
 
-	lobby, err := LoadLobbyFromRedis(roomCode)
+	lobby, err := GetLobbyFromFs(roomCode)
 	if err != nil {
 		LogError(funcLogPrefix, err)
 		return err
@@ -108,7 +108,7 @@ func EndGame(roomCode string, playerId string) error {
 	//Mark Game as ended and resave
 	lobby.Status = Models.LobbyStatus_Ended
 
-	_, err = SaveLobbyInRedis(lobby)
+	_, err = SaveLobbyToFs(lobby)
 
 	//Return any error that occurred during saving, if any
 	return err
@@ -119,7 +119,7 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 	defer LogUtil.EnsureLogPrefixIsReset()
 	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
 
-	gameState, err := GetCachedGameStateFromRedis(gameId)
+	gameState, err := GetGameStateFromFs(gameId)
 	if err != nil {
 		LogError(funcLogPrefix, err)
 		return []Models.WebsocketMessageListItem{}, err
@@ -333,7 +333,7 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 	}
 
 	//Re-save gamestate
-	_, err = CacheGameStateInRedis(gameState)
+	_, err = SaveGameStateToFs(gameState)
 	if err != nil {
 		LogError(funcLogPrefix, err)
 		return messages, err
@@ -347,7 +347,7 @@ func GetPlayerAllowedMoves(gameId string, playerId string) ([]string, error) {
 	defer LogUtil.EnsureLogPrefixIsReset()
 	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
 
-	gameState, err := GetCachedGameStateFromRedis(gameId)
+	gameState, err := GetGameStateFromFs(gameId)
 	if err != nil {
 		LogError(funcLogPrefix, err)
 		return []string{}, err
