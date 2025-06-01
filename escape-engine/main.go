@@ -1,12 +1,9 @@
 package main
 
-import "fmt"
-
-// import (
-// 	"escape-engine/Models"
-// 	"escape-engine/Models/Actions"
-// 	"fmt"
-// )
+import (
+	"fmt"
+	"slices"
+)
 
 // func main() {
 // 	gameMap := Models.GameMap{
@@ -121,8 +118,17 @@ import "fmt"
 // }
 
 func main() {
-	str := "Hello"
-	str += "World"
+	StatusEffectPriorities := map[string]int{
+		"Armored": 0,
+		"Cloned":  1,
+	}
 
-	fmt.Println(str)
+	list := []string{
+		"Armored",
+		"Cloned",
+	}
+
+	slices.SortFunc(list, func(s1 string, s2 string) int { return StatusEffectPriorities[s2] - StatusEffectPriorities[s1] })
+
+	fmt.Println(list)
 }

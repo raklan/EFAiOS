@@ -89,6 +89,38 @@ func NewGreenCard() *GreenCard {
 	}
 }
 
+// #region White Card (No Item)
+
+type WhiteCard struct {
+	CardBase
+}
+
+func (w *WhiteCard) GetName() string {
+	return w.Name
+}
+
+func (w *WhiteCard) GetType() string {
+	return w.Type
+}
+
+func (w *WhiteCard) GetDescription() string {
+	return w.Description
+}
+
+func (w *WhiteCard) Play(gameState *GameState, details CardPlayDetails) string {
+	return ""
+}
+
+func NewWhiteCard() *WhiteCard {
+	return &WhiteCard{
+		CardBase: CardBase{
+			Name:        "White Card",
+			Description: "You make no noise in this sector",
+			Type:        Card_NoCard,
+		},
+	}
+}
+
 // #region Adrenaline
 
 type Adrenaline struct {

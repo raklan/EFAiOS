@@ -124,7 +124,7 @@ func getAllowedSpaces(player *Models.Player, gameState *Models.GameState) int {
 	allowedSpaces := 1
 
 	//Adrenaline
-	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s Models.StatusEffect) bool { return s.GetName() == Models.NewAdrenaline().GetName() }); indexOfEffect != -1 {
+	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s Models.StatusEffect) bool { return s.GetName() == Models.StatusEffect_AdrenalineSurge }); indexOfEffect != -1 {
 		player.StatusEffects[indexOfEffect].SubtractUse(player)
 		allowedSpaces++
 	}
@@ -135,7 +135,7 @@ func getAllowedSpaces(player *Models.Player, gameState *Models.GameState) int {
 	}
 
 	//Hyperphagic
-	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s Models.StatusEffect) bool { return s.GetName() == Models.NewHyperphagic().GetName() }); indexOfEffect != -1 {
+	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s Models.StatusEffect) bool { return s.GetName() == Models.StatusEffect_Hyperphagic }); indexOfEffect != -1 {
 		allowedSpaces++
 		//Hyperphagic is a permanent bonus, so don't subtract any uses
 	}
@@ -161,18 +161,40 @@ func (attack Attack) Execute(gameState *Models.GameState, playerId string) (*Mod
 			continue
 		}
 
-		//TODO: Decide how to deal with a player that has both of these effects
-		if player.HasStatusEffect(Models.StatusEffect_Armored) {
-
-		} else if player.HasStatusEffect(Models.StatusEffect_Cloned) {
-
+		//Check if the player has any status effects that will save them, apply in order of priority
+		defenseEffects := []string{
+			Models.StatusEffect_Armored,
+			Models.StatusEffect_Cloned,
 		}
 
-		newSpaceForPlayer := alienStarts[rand.Intn(len(alienStarts))]
+		slices.SortFunc(defenseEffects, func(s1 string, s2 string) int {
+			return gameState.StatusEffectPriorities[s2] - gameState.StatusEffectPriorities[s1]
+		})
 
-		gameState.Players[index].Team = Models.PlayerTeam_Alien
-		gameState.Players[index].Row, gameState.Players[index].Col = newSpaceForPlayer.Row, newSpaceForPlayer.Col
-		gameEvent.Description = string(fmt.Appendf([]byte(gameEvent.Description), "%s died!\n", gameState.Players[index].Name))
+		playerWasSaved := false
+		for _, se := range defenseEffects {
+			if player.HasStatusEffect(se) {
+				switch se {
+				case Models.StatusEffect_Armored:
+					playerWasSaved = true
+					gameEvent.Description += fmt.Sprintf("Player %s was saved by Armor!\n", player.Name)
+				case Models.StatusEffect_Cloned:
+					playerWasSaved = true
+					gameEvent.Description += fmt.Sprintf("Player %s activated their Emergency Clone!\n", player.Name)
+				}
+			}
+			if playerWasSaved {
+				break
+			}
+		}
+
+		if !playerWasSaved {
+			newSpaceForPlayer := alienStarts[rand.Intn(len(alienStarts))]
+
+			gameState.Players[index].Team = Models.PlayerTeam_Alien
+			gameState.Players[index].Row, gameState.Players[index].Col = newSpaceForPlayer.Row, newSpaceForPlayer.Col
+			gameEvent.Description += fmt.Sprintf("%s died!\n", player.Name)
+		}
 	}
 
 	return gameEvent, nil

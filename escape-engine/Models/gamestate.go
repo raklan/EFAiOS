@@ -55,6 +55,8 @@ type GameState struct {
 	Players []Player `json:"players"`
 	//Id of the Player whose turn it currently is
 	CurrentPlayer string `json:"currentPlayer"`
+	//Priority list of StatusEffects
+	StatusEffectPriorities map[string]int
 }
 
 func (gameState *GameState) GetCurrentPlayer() *Player {
@@ -75,6 +77,10 @@ type GameConfig struct {
 	NumWorkingPods int `json:"numWorkingPods"`
 	//Number of Broken Escape Pods left
 	NumBrokenPods int `json:"numBrokenPods"`
+	//Which cards should be active, as well as how many of each
+	ActiveCards map[string]int `json:"activeCards"`
+	//Which StatusEffects should be active, as well as their priority
+	ActiveStatusEffects map[string]int `json:"activeStatusEffects"`
 }
 
 type Player struct {
@@ -90,6 +96,14 @@ type Player struct {
 
 func (p Player) HasStatusEffect(name string) bool {
 	return slices.ContainsFunc(p.StatusEffects, func(s StatusEffect) bool { return s.GetName() == name })
+}
+
+func (player *Player) SubtractStatusEffect(name string) bool {
+	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s StatusEffect) bool { return s.GetName() == NewAdrenaline().GetName() }); indexOfEffect != -1 {
+		player.StatusEffects[indexOfEffect].SubtractUse(player)
+		return true
+	}
+	return false
 }
 
 type CardCollection struct {

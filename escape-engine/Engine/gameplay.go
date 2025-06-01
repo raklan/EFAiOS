@@ -59,6 +59,9 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 		Models.NewSpotlight(),
 	}
 
+	gameState.GameConfig.ActiveStatusEffects = gameConfig.ActiveStatusEffects
+
+	assignCards(&gameState, gameConfig.ActiveCards)
 	assignTeams(&gameState)
 	assignStartingPositions(&gameState, &mapDef)
 	gameState.CurrentPlayer = gameState.Players[rand.Intn(len(gameState.Players))].Id
@@ -397,6 +400,50 @@ func assignStartingPositions(gameState *Models.GameState, gameMap *Models.GameMa
 		} else if player.Team == Models.PlayerTeam_Spectator {
 			gameState.Players[index].Row, gameState.Players[index].Col = "!", -99
 		}
+	}
+}
+
+func assignCards(gameState *Models.GameState, activeCards map[string]int) {
+	for card, num := range activeCards {
+		switch card {
+		case "Red Card":
+			for range num {
+				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewRedCard())
+			}
+		case "Green Card":
+			for range num {
+				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewGreenCard())
+			}
+		case "White Card":
+			for range num {
+				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewWhiteCard())
+			}
+		case "Adrenaline":
+			for range num {
+				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewAdrenaline())
+			}
+		case "Mutation":
+			for range num {
+				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewMutation())
+			}
+		case "Teleport":
+			for range num {
+				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewTeleport())
+			}
+		case "Clone":
+			for range num {
+				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewClone())
+			}
+		case "Defense":
+			for range num {
+				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewDefense())
+			}
+		case "Spotlight":
+			for range num {
+				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewSpotlight())
+			}
+		}
+
 	}
 }
 
