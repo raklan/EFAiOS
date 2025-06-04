@@ -21,22 +21,91 @@
                 <button type="button" onclick="configTabSwitch('config-roles')">Roles</button>
             </div>
             <div id="config-general">
-                <input type="number" class="text-input" id="config-numHumans" placeholder="Human Players" />
-                <input type="number" class="text-input" id="config-numAliens" placeholder="Alien Players" />
-                <input type="number" class="text-input" id="config-numWorkingPods" placeholder="Working Pods" />
-                <input type="number" class="text-input" id="config-numBrokenPods" placeholder="Broken Pods" />
+                <h2>General Settings</h2>
+                <div style="display: flex; justify-content: space-evenly;">
+                    <label class="text-input-label">
+                        <span>Humans</span>
+                        <input type="number" class="text-input" name="config-numHumans" placeholder="# Players" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Aliens</span>
+                        <input type="number" class="text-input" name="config-numAliens" placeholder="# Players" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Working Pods</span>
+                        <input type="number" class="text-input" name="config-numWorkingPods" placeholder="# Cards" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Broken Pods</span>
+                        <input type="number" class="text-input" name="config-numBrokenPods" placeholder="# Cards" />
+                    </label>
+                </div>
             </div>
             <div id="config-cards" style="display: none;">
-                <input type="number" class="text-input" id="config-numRedCards" placeholder="Red Cards" />
-                <input type="number" class="text-input" id="config-numGreenCards" placeholder="Green Cards" />
-                <input type="number" class="text-input" id="config-numWhiteCards" placeholder="Silent Cards" />
-                <input type="number" class="text-input" id="config-numAdrenaline" placeholder="Adrenaline Cards" />
-                <input type="number" class="text-input" id="config-numClone" placeholder="Clone Cards" />
-                <input type="number" class="text-input" id="config-numRedCards" placeholder="Red Cards" />
-                <input type="number" class="text-input" id="config-numGreenCards" placeholder="Green Cards" />
-                <input type="number" class="text-input" id="config-numWhiteCards" placeholder="Silent Cards" />
-                <input type="number" class="text-input" id="config-numAdrenaline" placeholder="Adrenaline Cards" />
-                <input type="number" class="text-input" id="config-numClone" placeholder="Clone Cards" />
+                <h2>Noise</h2>
+                <div style="display: flex; justify-content: space-evenly;">
+                    <label class="text-input-label">
+                        <span>Red Cards</span>
+                        <input type="number" class="text-input" name="config-numRedCards" placeholder="# of Cards" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Green Cards</span>
+                        <input type="number" class="text-input" name="config-numGreenCards" placeholder="# of Cards" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Silent Cards</span>
+                        <input type="number" class="text-input" name="config-numWhiteCards" placeholder="# of Cards" />
+                    </label>
+                </div>
+                <h2>Defensive</h2>
+                <div style="display: flex; justify-content: space-evenly;">
+                    <label class="text-input-label">
+                        <span>Teleport</span>
+                        <input type="number" class="text-input" name="config-numTeleport" placeholder="# of Cards" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Clone</span>
+                        <input type="number" class="text-input" name="config-numClone" placeholder="# of Cards" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Defense</span>
+                        <input type="number" class="text-input" name="config-numDefense" placeholder="# of Cards" />
+                    </label>
+                </div>
+                <h2>Targeted</h2>
+                <div style="display: flex; justify-content: space-evenly;">
+                    <label class="text-input-label">
+                        <span>Spotlight</span>
+                        <input type="number" class="text-input" name="config-numSpotlight" placeholder="# of Cards" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Attack</span>
+                        <input type="number" class="text-input" name="config-numAttack" placeholder="# of Cards" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Sensor</span>
+                        <input type="number" class="text-input" name="config-numSensor" placeholder="# of Cards" />
+                    </label>
+                </div>
+                <h2>Utility</h2>
+                <div style="display: flex; justify-content: space-evenly;">
+                    <label class="text-input-label">
+                        <span>Adrenaline</span>
+                        <input type="number" class="text-input" name="config-numAdrenaline" placeholder="# of Cards" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Sedatives</span>
+                        <input type="number" class="text-input" name="config-numSedative" placeholder="# of Cards" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Cat</span>
+                        <input type="number" class="text-input" name="config-numCat" placeholder="# of Cards" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Mutation</span>
+                        <input type="number" class="text-input" name="config-numMutation" placeholder="# of Cards" />
+                    </label>
+                </div>
             </div>
             <div id="config-roles" style="display: none;">
                 Not yet implemented

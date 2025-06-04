@@ -160,7 +160,6 @@ async function handleGameStateMessage(gameState) {
 async function handleLobbyInfoMessage(messageData) {
     if (!thisPlayer) {
         thisPlayer = messageData.lobbyInfo?.players?.find(p => p.id == messageData.playerID)
-        console.log(thisPlayer)
     }
     document.getElementById("lobby-roomCode").innerHTML = `Room Code: ${messageData.lobbyInfo.roomCode}`
 
@@ -182,24 +181,21 @@ async function handleLobbyInfoMessage(messageData) {
         var startButton = document.getElementById("lobby-startButton")
         startButton.style.display = '';
         startButton.onclick = () => {
-            config = {
-                numHumans: 0,
-                numAliens: 0,
-                numWorkingPods: 0,
-                numBrokenPods: 0
+            let gameConfig = getGameConfig()
+            console.info('starting game with config', gameConfig);
+            if (gameConfig.numHumans + gameConfig.numAliens != messageData.lobbyInfo.players.length){
+                showNotification("# of Humans + # of Aliens must add up to # of Players in lobby!", "Error")
+                return;
             }
-            config.numHumans = parseInt(document.getElementById("config-numHumans")?.value ?? 0)
-            config.numAliens = parseInt(document.getElementById("config-numAliens")?.value ?? 0)
-            config.numWorkingPods = parseInt(document.getElementById("config-numWorkingPods")?.value ?? 0)
-            config.numBrokenPods = parseInt(document.getElementById("config-numBrokenPods")?.value ?? 0)
-            sendWsMessage(ws, 'startGame', config)
+            sendWsMessage(ws, 'startGame', getGameConfig())
         }
 
         var configButton = document.getElementById("lobby-gameConfigButton");
         configButton.style.display = '';
         configButton.onclick = () => {
-            showGameConfigMenu();
+            showConfig();
         }
+        setConfigForm(GAME_CONFIG_DEFAULT)
     }
     //#endregion
 }

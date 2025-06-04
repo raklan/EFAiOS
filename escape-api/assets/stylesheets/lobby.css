@@ -1,7 +1,6 @@
 .config-popup {
     position: fixed;
     top: 0;
-    left: 25%;
     width: 50%;
     height: 50%;
     background-color: black;
@@ -18,13 +17,13 @@
 }
 
 .config-popup-displayed {
-    animation: config-show 1s;
+    animation: config-show 0.5s;
     transform: translateY(50%);
     opacity: 1;
 }
 
 .config-popup-hiding{
-    animation: config-hide 1s;
+    animation: config-hide 0.5s;
 }
 
 @keyframes config-show {

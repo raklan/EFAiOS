@@ -11,28 +11,20 @@
 
 {{define "body"}}
 <h1 style="font-size: xxx-large; text-align: center; margin: 5%;" id="game-title"></h1>
-<div id="join-box">
-    <input class="text-input" id="name-input" type="text" placeholder="Enter Your Name" autocomplete="off"
+<form id="join-box" method="get" action="/play" onsubmit="joinFormValidate(event)">
+    <input class="text-input" id="name-input" name="playerName" type="text" placeholder="Enter Your Name" autocomplete="off"
         autocapitalize="off" />
-    <input class="text-input" id="roomcode-input" type="text" maxlength="4" placeholder="Enter Room Code"
-        autocomplete="off" autocapitalize="off" />
-    <button onclick="play()">Join</button>
-</div>
+    <input class="text-input" id="roomcode-input" name="roomCode" type="text" maxlength="4" placeholder="Enter Room Code"
+        autocomplete="off" style="text-transform: uppercase;" />
+    <button>Join</button>
+</form>
 {{end}}
 
 {{define "scripts"}}
 <script src="/assets/js/utils.js"></script>
-<script>    
-    function play() {
-        var name = document.getElementById("name-input")?.value;
-        var roomCode = document.getElementById("roomcode-input")?.value;
-
-        if (!(name?.length > 0 && roomCode?.length > 0)) {
-            console.error("Missing data");
-            return;
-        }
-
-        window.open(`/play?roomCode=${roomCode}&playerName=${name}`, '_self')
+<script> 
+    function joinFormValidate(event){
+        event.target['roomCode'].value = event.target['roomCode'].value.toUpperCase();
     }
 
     function initializeGlitchText(selector, text) {

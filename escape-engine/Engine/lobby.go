@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"slices"
+	"strings"
 )
 
 // Given a GameDefinition's ID and a player name, creates and saves a new lobby for that player's game, returning the Lobby's room code.
@@ -57,7 +58,7 @@ func JoinRoom(roomCode string, playerName string) (Models.Lobby, string, error) 
 
 	log.Printf("%s Recieved request from Player {%s} to join lobby with RoomCode == {%s}", funcLogPrefix, playerName, roomCode)
 
-	lobby, err := GetLobbyFromFs(roomCode)
+	lobby, err := GetLobbyFromFs(strings.ToUpper(roomCode))
 	if err != nil {
 		LogError(funcLogPrefix, err)
 		return Models.Lobby{}, "", err

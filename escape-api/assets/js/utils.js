@@ -46,17 +46,45 @@ function hideNotification() {
     popup.classList.remove('notification-displayed')
 }
 
-function hideGameConfigMenu() {
+function hideConfig() {
     var configpopup = document.querySelector(".config-popup-displayed")
     configpopup.classList.remove("config-popup-displayed")
     configpopup.classList.add("config-popup-hiding")
-    if(!configpopup.onanimationend){
+    if (!configpopup.onanimationend) {
         configpopup.onanimationend = () => {
             configpopup.classList.remove("config-popup-hiding")
         }
     }
 }
 
-function showGameConfigMenu() {
+function showConfig() {
     document.querySelector(".config-popup").classList.add("config-popup-displayed")
+}
+
+function configTabSwitch(newTab) {
+    let generalConfigId = "config-general"
+    let cardConfigId = "config-cards"
+    let roleConfigId = "config-roles"
+
+    let generalConfig = document.getElementById(generalConfigId)
+    let cardConfig = document.getElementById(cardConfigId)
+    let roleConfig = document.getElementById(roleConfigId)
+
+    switch (newTab) {
+        case generalConfigId:
+            generalConfig.style.display = ''
+            cardConfig.style.display = 'none';
+            roleConfig.style.display = 'none';
+            break;
+        case cardConfigId:
+            generalConfig.style.display = 'none'
+            cardConfig.style.display = '';
+            roleConfig.style.display = 'none';
+            break;
+        case roleConfigId:
+            generalConfig.style.display = 'none'
+            cardConfig.style.display = 'none';
+            roleConfig.style.display = '';
+            break;
+    }
 }

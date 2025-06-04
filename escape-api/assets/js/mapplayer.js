@@ -1,5 +1,23 @@
 //Heavily inspired by https://github.com/gojko/hexgridwidget, but altered to not require JQuery
 
+const GAME_CONFIG_DEFAULT = {
+    workingPods: 4,
+    brokenPods: 1,
+    red: 24,
+    green: 26,
+    silent: 4,
+    adrenaline: 3,
+    attack: 1,
+    cat: 2,
+    clone: 1,
+    defense: 1,
+    mutation: 1,
+    sedatives: 1,
+    sensor: 1,
+    spotlight: 2,
+    teleport: 1
+}
+
 const SpaceTypes = {
     Wall: 0,
     Safe: 1,
@@ -421,4 +439,67 @@ function addEvent(playerName, event){
     let eventDesc = document.createElement("p")
     eventDesc.innerHTML = event
     eventLogContainer.appendChild(eventDesc)
+}
+
+function setConfigForm(configObject){
+    let configForm = document.getElementById("lobby-gameConfig")
+
+    configForm['config-numHumans'].value = 0;
+    configForm['config-numAliens'].value = 0;
+
+    configForm['config-numWorkingPods'].value = configObject.workingPods;
+    configForm['config-numBrokenPods'].value = configObject.brokenPods;
+
+    configForm['config-numRedCards'].value = configObject.red;
+    configForm['config-numGreenCards'].value = configObject.green;
+    configForm['config-numWhiteCards'].value = configObject.silent;
+
+    configForm['config-numTeleport'].value = configObject.teleport;
+    configForm['config-numClone'].value = configObject.clone;
+    configForm['config-numDefense'].value = configObject.defense;
+
+    configForm['config-numSpotlight'].value = configObject.spotlight;
+    configForm['config-numAttack'].value = configObject.attack;
+    configForm['config-numSensor'].value = configObject.sensor;
+
+    configForm['config-numAdrenaline'].value = configObject.adrenaline;
+    configForm['config-numSedatives'].value = configObject.sedatives;
+    configForm['config-numCat'].value = configObject.cat;
+    configForm['config-numMutation'].value = configObject.mutation;
+}
+
+function getGameConfig(){
+    let configForm = document.getElementById("lobby-gameConfig")
+    let config = {};
+    
+    config.numHumans = getConfigValue("config-numHumans")
+    config.numAliens = getConfigValue("config-numAliens")
+    
+    config.numWorkingPods = getConfigValue('config-numWorkingPods')
+    config.numBrokenPods = getConfigValue('config-numBrokenPods')
+
+    config.activeCards = {
+        "Red Card": getConfigValue('config-numRedCards'),
+        "Green Card": getConfigValue('config-numGreenCards'),
+        "White Card": getConfigValue('config-numWhiteCards'),
+        "Teleport": getConfigValue('config-numTeleport'),
+        "Clone": getConfigValue('config-numClone'),
+        "Defense": getConfigValue('config-numDefense'),
+        "Spotlight": getConfigValue('config-numSpotlight'),
+        "Adrenaline": getConfigValue('config-numAdrenaline'),
+        "Sedatives": getConfigValue('config-numSedatives'),
+        "Cat": getConfigValue('config-numCat'),
+        "Mutation": getConfigValue('config-numMutation')
+    }
+
+    config.activeStatusEffects = {
+        "Armored": 2,
+        "Cloned": 1
+    }
+
+    function getConfigValue(inputKey){
+        return configForm[inputKey]?.value?.length > 0? parseInt(configForm[inputKey].value) : 0;
+    }
+
+    return config;
 }
