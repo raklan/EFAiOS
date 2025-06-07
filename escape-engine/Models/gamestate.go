@@ -139,6 +139,8 @@ func (c *CardCollection) UnmarshalJSON(data []byte) error {
 			c.Cards[i] = NewDefense()
 		case "Spotlight":
 			c.Cards[i] = NewSpotlight()
+		case "Attack":
+			c.Cards[i] = NewAttackCard()
 		}
 	}
 
