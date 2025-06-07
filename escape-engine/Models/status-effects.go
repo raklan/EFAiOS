@@ -54,7 +54,7 @@ func (a *AdrenalineSurge) SubtractUse(player *Player) bool {
 	a.UsesLeft--
 
 	if a.UsesLeft <= 0 {
-		player.StatusEffects = slices.DeleteFunc(player.StatusEffects, func(s StatusEffect) bool { return s == a })
+		player.StatusEffects.Effects = slices.DeleteFunc(player.StatusEffects.Effects, func(s StatusEffect) bool { return s == a })
 		return false
 	}
 
@@ -98,7 +98,7 @@ func (s *Cloned) SubtractUse(player *Player) bool {
 	s.UsesLeft--
 
 	if s.UsesLeft <= 0 {
-		player.StatusEffects = slices.DeleteFunc(player.StatusEffects, func(s2 StatusEffect) bool { return s2 == s })
+		player.StatusEffects.Effects = slices.DeleteFunc(player.StatusEffects.Effects, func(s2 StatusEffect) bool { return s2 == s })
 		return false
 	}
 
@@ -142,7 +142,7 @@ func (s *Armored) SubtractUse(player *Player) bool {
 	s.UsesLeft--
 
 	if s.UsesLeft <= 0 {
-		player.StatusEffects = slices.DeleteFunc(player.StatusEffects, func(s2 StatusEffect) bool { return s2 == s })
+		player.StatusEffects.Effects = slices.DeleteFunc(player.StatusEffects.Effects, func(s2 StatusEffect) bool { return s2 == s })
 		return false
 	}
 
@@ -186,7 +186,7 @@ func (s *Hyperphagic) SubtractUse(player *Player) bool {
 	s.UsesLeft--
 
 	if s.UsesLeft <= 0 {
-		player.StatusEffects = slices.DeleteFunc(player.StatusEffects, func(s2 StatusEffect) bool { return s2 == s })
+		player.StatusEffects.Effects = slices.DeleteFunc(player.StatusEffects.Effects, func(s2 StatusEffect) bool { return s2 == s })
 		return false
 	}
 

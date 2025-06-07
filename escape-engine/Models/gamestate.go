@@ -84,23 +84,23 @@ type GameConfig struct {
 }
 
 type Player struct {
-	Id            string         `json:"id"`
-	Name          string         `json:"name"`
-	Team          string         `json:"team"`
-	Role          string         `json:"role"`
-	StatusEffects []StatusEffect `json:"statusEffects"`
-	Hand          CardCollection `json:"hand"`
-	Row           string         `json:"row"`
-	Col           int            `json:"col"`
+	Id            string                 `json:"id"`
+	Name          string                 `json:"name"`
+	Team          string                 `json:"team"`
+	Role          string                 `json:"role"`
+	StatusEffects StatusEffectCollection `json:"statusEffects"`
+	Hand          CardCollection         `json:"hand"`
+	Row           string                 `json:"row"`
+	Col           int                    `json:"col"`
 }
 
 func (p Player) HasStatusEffect(name string) bool {
-	return slices.ContainsFunc(p.StatusEffects, func(s StatusEffect) bool { return s.GetName() == name })
+	return slices.ContainsFunc(p.StatusEffects.Effects, func(s StatusEffect) bool { return s.GetName() == name })
 }
 
 func (player *Player) SubtractStatusEffect(name string) bool {
-	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s StatusEffect) bool { return s.GetName() == NewAdrenaline().GetName() }); indexOfEffect != -1 {
-		player.StatusEffects[indexOfEffect].SubtractUse(player)
+	if indexOfEffect := slices.IndexFunc(player.StatusEffects.Effects, func(s StatusEffect) bool { return s.GetName() == NewAdrenaline().GetName() }); indexOfEffect != -1 {
+		player.StatusEffects.Effects[indexOfEffect].SubtractUse(player)
 		return true
 	}
 	return false
@@ -152,6 +152,36 @@ type Card interface {
 	GetType() string
 	GetDescription() string
 	Play(*GameState, CardPlayDetails) string
+}
+
+type StatusEffectCollection struct {
+	Effects []StatusEffect `json:"effects"`
+}
+
+func (s *StatusEffectCollection) UnmarshalJSON(data []byte) error {
+	intermediate := struct {
+		Effects []map[string]string
+	}{}
+
+	if err := json.Unmarshal(data, &intermediate); err != nil {
+		return err
+	}
+
+	s.Effects = make([]StatusEffect, len(intermediate.Effects))
+
+	for i, card := range intermediate.Effects {
+		switch card["name"] {
+		case StatusEffect_AdrenalineSurge:
+			s.Effects[i] = NewAdrenalineSurge()
+		case StatusEffect_Armored:
+			s.Effects[i] = NewArmored()
+		case StatusEffect_Cloned:
+			s.Effects[i] = NewCloned()
+		case StatusEffect_Hyperphagic:
+			s.Effects[i] = NewHyperphagic()
+		}
+	}
+	return nil
 }
 
 type StatusEffect interface {

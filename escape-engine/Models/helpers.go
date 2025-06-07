@@ -10,8 +10,8 @@ func GetAllowedSpaces(player *Player, gameState *GameState) int {
 	allowedSpaces := 1
 
 	//Adrenaline
-	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_AdrenalineSurge }); indexOfEffect != -1 {
-		player.StatusEffects[indexOfEffect].SubtractUse(player)
+	if indexOfEffect := slices.IndexFunc(player.StatusEffects.Effects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_AdrenalineSurge }); indexOfEffect != -1 {
+		player.StatusEffects.Effects[indexOfEffect].SubtractUse(player)
 		allowedSpaces++
 	}
 
@@ -21,7 +21,7 @@ func GetAllowedSpaces(player *Player, gameState *GameState) int {
 	}
 
 	//Hyperphagic
-	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_Hyperphagic }); indexOfEffect != -1 {
+	if indexOfEffect := slices.IndexFunc(player.StatusEffects.Effects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_Hyperphagic }); indexOfEffect != -1 {
 		allowedSpaces++
 		//Hyperphagic is a permanent bonus, so don't subtract any uses
 	}
