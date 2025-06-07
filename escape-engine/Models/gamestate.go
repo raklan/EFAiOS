@@ -83,7 +83,7 @@ type GameConfig struct {
 	ActiveStatusEffects map[string]int `json:"activeStatusEffects"`
 }
 
-type Player struct {
+type Player struct { //TODO: Add custom unmarshaling for the Player instead of having wrapper structs for the hand and status effects
 	Id            string                 `json:"id"`
 	Name          string                 `json:"name"`
 	Team          string                 `json:"team"`
@@ -160,7 +160,11 @@ type StatusEffectCollection struct {
 
 func (s *StatusEffectCollection) UnmarshalJSON(data []byte) error {
 	intermediate := struct {
-		Effects []map[string]string
+		Effects []struct {
+			Name        string `json:"name"`
+			Description string `json:"description"`
+			UsesLeft    int    `json:"usesLeft"`
+		}
 	}{}
 
 	if err := json.Unmarshal(data, &intermediate); err != nil {
@@ -169,8 +173,8 @@ func (s *StatusEffectCollection) UnmarshalJSON(data []byte) error {
 
 	s.Effects = make([]StatusEffect, len(intermediate.Effects))
 
-	for i, card := range intermediate.Effects {
-		switch card["name"] {
+	for i, effect := range intermediate.Effects {
+		switch effect.Name {
 		case StatusEffect_AdrenalineSurge:
 			s.Effects[i] = NewAdrenalineSurge()
 		case StatusEffect_Armored:

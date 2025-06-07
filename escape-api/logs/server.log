@@ -1,0 +1,10 @@
+ESCAPE-API: 2025/06/07 17:07:01 =========================Starting Server========================
+ESCAPE-ENGINE/Engine: 2025/06/07 17:07:10 
+ESCAPE-ENGINE/Engine: 2025/06/07 17:07:10 ==GetApiData== Getting Api Data for path {/maps}
+ESCAPE-ENGINE/Engine: 2025/06/07 17:07:10 
+ESCAPE-ENGINE/Engine: 2025/06/07 17:07:10 ==GetAllMaps== Getting all maps from DB
+ESCAPE-ENGINE/Engine: 2025/06/07 17:07:10 
+ESCAPE-ENGINE/Engine: 2025/06/07 17:07:10 
+ESCAPE-ENGINE/Engine: 2025/06/07 17:07:10 
+ESCAPE-ENGINE/Engine: 2025/06/07 17:07:10 ==GetApiData== Getting Api Data for path {/.well-known/appspecific/com.chrome.devtools.json}
+ESCAPE-ENGINE/Engine: 2025/06/07 17:07:10 
