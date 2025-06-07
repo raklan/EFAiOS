@@ -386,3 +386,43 @@ func NewSpotlight() *Spotlight {
 		},
 	}
 }
+
+// #region Attack
+
+type AttackCard struct {
+	CardBase
+}
+
+func (c AttackCard) GetName() string {
+	return c.Name
+}
+
+func (c AttackCard) GetType() string {
+	return c.Type
+}
+
+func (c AttackCard) GetDescription() string {
+	return c.Description
+}
+
+func (c AttackCard) Play(gameState *GameState, details CardPlayDetails) string {
+	activePlayer := gameState.GetCurrentPlayer()
+
+	descriptionString := fmt.Sprintf("Player %s used an Attack Card!", activePlayer.Name)
+
+	gameEvent, _ := AttackSpace(activePlayer.Row, activePlayer.Col, *gameState)
+
+	descriptionString += gameEvent.Description
+
+	return descriptionString
+}
+
+func NewAttackCard() *AttackCard {
+	return &AttackCard{
+		CardBase: CardBase{
+			Name:        "Attack",
+			Description: "Attacks the space you are currently in",
+			Type:        Card_White,
+		},
+	}
+}
