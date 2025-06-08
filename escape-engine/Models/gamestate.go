@@ -2,6 +2,7 @@ package Models
 
 import (
 	"encoding/json"
+	"log"
 	"slices"
 )
 
@@ -48,15 +49,56 @@ type GameState struct {
 	//GameState-specific config as defined by the Host
 	GameConfig GameConfig `json:"gameConfig"`
 	//All cards used by this Game
-	Deck CardCollection `json:"deck"`
+	Deck []Card `json:"deck"`
 	//Used cards. Will be automatically reshuffled into the deck when empty
-	DiscardPile CardCollection `json:"discardPile"`
+	DiscardPile []Card `json:"discardPile"`
 	//A list of the states of each Player in the game.
 	Players []Player `json:"players"`
 	//Id of the Player whose turn it currently is
 	CurrentPlayer string `json:"currentPlayer"`
 	//Priority list of StatusEffects
 	StatusEffectPriorities map[string]int
+}
+
+func (g *GameState) UnmarshalJSON(data []byte) error {
+	intermediate := struct {
+		Id         string     `json:"id"`
+		GameMap    GameMap    `json:"gameMap"`
+		GameConfig GameConfig `json:"gameConfig"`
+		Deck       []struct {
+			Name        string `json:"name"`
+			Type        string `json:"type"`
+			Description string `json:"description"`
+		} `json:"deck"`
+		DiscardPile []struct {
+			Name        string `json:"name"`
+			Type        string `json:"type"`
+			Description string `json:"description"`
+		} `json:"discardPile"`
+		Players                []Player `json:"players"`
+		CurrentPlayer          string   `json:"currentPlayer"`
+		StatusEffectPriorities map[string]int
+	}{}
+
+	if err := json.Unmarshal(data, &intermediate); err != nil {
+		return err
+	}
+
+	g.Id = intermediate.Id
+	g.GameMap = intermediate.GameMap
+	g.GameConfig = intermediate.GameConfig
+	g.Players = intermediate.Players
+	g.CurrentPlayer = intermediate.CurrentPlayer
+	g.StatusEffectPriorities = intermediate.StatusEffectPriorities
+
+	//Copy Deck
+	g.Deck = GetUnmarshalledCardArray(intermediate.Deck)
+
+	//Copy Discard Pile
+	g.DiscardPile = GetUnmarshalledCardArray(intermediate.DiscardPile)
+
+	log.Println("Game State unmarshal", g)
+	return nil
 }
 
 func (gameState *GameState) GetCurrentPlayer() *Player {
@@ -84,67 +126,83 @@ type GameConfig struct {
 }
 
 type Player struct { //TODO: Add custom unmarshaling for the Player instead of having wrapper structs for the hand and status effects
-	Id            string                 `json:"id"`
-	Name          string                 `json:"name"`
-	Team          string                 `json:"team"`
-	Role          string                 `json:"role"`
-	StatusEffects StatusEffectCollection `json:"statusEffects"`
-	Hand          CardCollection         `json:"hand"`
-	Row           string                 `json:"row"`
-	Col           int                    `json:"col"`
+	Id            string         `json:"id"`
+	Name          string         `json:"name"`
+	Team          string         `json:"team"`
+	Role          string         `json:"role"`
+	StatusEffects []StatusEffect `json:"statusEffects"`
+	Hand          []Card         `json:"hand"`
+	Row           string         `json:"row"`
+	Col           int            `json:"col"`
 }
 
-func (p Player) HasStatusEffect(name string) bool {
-	return slices.ContainsFunc(p.StatusEffects.Effects, func(s StatusEffect) bool { return s.GetName() == name })
-}
-
-func (player *Player) SubtractStatusEffect(name string) bool {
-	if indexOfEffect := slices.IndexFunc(player.StatusEffects.Effects, func(s StatusEffect) bool { return s.GetName() == NewAdrenaline().GetName() }); indexOfEffect != -1 {
-		player.StatusEffects.Effects[indexOfEffect].SubtractUse(player)
-		return true
-	}
-	return false
-}
-
-type CardCollection struct {
-	Cards []Card `json:"cards"`
-}
-
-func (c *CardCollection) UnmarshalJSON(data []byte) error {
+func (p *Player) UnmarshalJSON(data []byte) error {
 	intermediate := struct {
-		Cards []map[string]string
+		Id   string `json:"id"`
+		Name string `json:"name"`
+		Team string `json:"team"`
+		Role string `json:"role"`
+		Hand []struct {
+			Name        string `json:"name"`
+			Type        string `json:"type"`
+			Description string `json:"description"`
+		} `json:"hand"`
+		StatusEffects []struct {
+			Name        string `json:"name"`
+			Description string `json:"description"`
+			UsesLeft    int    `json:"usesLeft"`
+		} `json:"statusEffects"`
+		Row string `json:"row"`
+		Col int    `json:"col"`
 	}{}
 
 	if err := json.Unmarshal(data, &intermediate); err != nil {
 		return err
 	}
 
-	c.Cards = make([]Card, len(intermediate.Cards))
+	//Copy the easy fields first
+	p.Id = intermediate.Id
+	p.Name = intermediate.Name
+	p.Team = intermediate.Team
+	p.Role = intermediate.Role
+	p.Row = intermediate.Row
+	p.Col = intermediate.Col
 
-	for i, card := range intermediate.Cards {
-		switch card["name"] {
-		case "Red Card":
-			c.Cards[i] = NewRedCard()
-		case "Green Card":
-			c.Cards[i] = NewGreenCard()
-		case "Mutation":
-			c.Cards[i] = NewMutation()
-		case "Adrenaline":
-			c.Cards[i] = NewAdrenaline()
-		case "Teleport":
-			c.Cards[i] = NewTeleport()
-		case "Clone":
-			c.Cards[i] = NewClone()
-		case "Defence":
-			c.Cards[i] = NewDefense()
-		case "Spotlight":
-			c.Cards[i] = NewSpotlight()
-		case "Attack":
-			c.Cards[i] = NewAttackCard()
+	//Copy hand
+	p.Hand = GetUnmarshalledCardArray(intermediate.Hand)
+
+	//Copy status effects
+	p.StatusEffects = make([]StatusEffect, len(intermediate.StatusEffects))
+
+	for i, effect := range intermediate.StatusEffects {
+		switch effect.Name {
+		case StatusEffect_AdrenalineSurge:
+			p.StatusEffects[i] = NewAdrenalineSurge()
+		case StatusEffect_Armored:
+			p.StatusEffects[i] = NewArmored()
+		case StatusEffect_Cloned:
+			p.StatusEffects[i] = NewCloned()
+		case StatusEffect_Hyperphagic:
+			p.StatusEffects[i] = NewHyperphagic()
+		}
+		for range effect.UsesLeft - 1 {
+			p.StatusEffects[i].AddUse()
 		}
 	}
-
+	log.Println("Player unmarshal", p)
 	return nil
+}
+
+func (p Player) HasStatusEffect(name string) bool {
+	return slices.ContainsFunc(p.StatusEffects, func(s StatusEffect) bool { return s.GetName() == name })
+}
+
+func (player *Player) SubtractStatusEffect(name string) bool {
+	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s StatusEffect) bool { return s.GetName() == NewAdrenaline().GetName() }); indexOfEffect != -1 {
+		player.StatusEffects[indexOfEffect].SubtractUse(player)
+		return true
+	}
+	return false
 }
 
 type Card interface {
@@ -152,40 +210,6 @@ type Card interface {
 	GetType() string
 	GetDescription() string
 	Play(*GameState, CardPlayDetails) string
-}
-
-type StatusEffectCollection struct {
-	Effects []StatusEffect `json:"effects"`
-}
-
-func (s *StatusEffectCollection) UnmarshalJSON(data []byte) error {
-	intermediate := struct {
-		Effects []struct {
-			Name        string `json:"name"`
-			Description string `json:"description"`
-			UsesLeft    int    `json:"usesLeft"`
-		}
-	}{}
-
-	if err := json.Unmarshal(data, &intermediate); err != nil {
-		return err
-	}
-
-	s.Effects = make([]StatusEffect, len(intermediate.Effects))
-
-	for i, effect := range intermediate.Effects {
-		switch effect.Name {
-		case StatusEffect_AdrenalineSurge:
-			s.Effects[i] = NewAdrenalineSurge()
-		case StatusEffect_Armored:
-			s.Effects[i] = NewArmored()
-		case StatusEffect_Cloned:
-			s.Effects[i] = NewCloned()
-		case StatusEffect_Hyperphagic:
-			s.Effects[i] = NewHyperphagic()
-		}
-	}
-	return nil
 }
 
 type StatusEffect interface {

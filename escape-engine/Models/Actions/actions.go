@@ -129,9 +129,9 @@ func DrawCard(gameState *Models.GameState, playerId string) (Models.CardEvent, e
 		event.Card = drawnCard
 		event.Type = drawnCard.GetType()
 		if drawnCard.GetType() == Models.Card_White {
-			actingPlayer.Hand.Cards = append(actingPlayer.Hand.Cards, drawnCard)
+			actingPlayer.Hand = append(actingPlayer.Hand, drawnCard)
 		} else {
-			gameState.DiscardPile.Cards = append(gameState.DiscardPile.Cards, drawnCard)
+			gameState.DiscardPile = append(gameState.DiscardPile, drawnCard)
 		}
 	}
 
@@ -221,16 +221,16 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 func (play PlayCard) Execute(gameState *Models.GameState, playerId string) (Models.GameEvent, error) {
 	actingPlayer := gameState.GetCurrentPlayer()
 
-	playedCardIndex := slices.IndexFunc(actingPlayer.Hand.Cards, func(c Models.Card) bool { return c.GetName() == play.Name })
+	playedCardIndex := slices.IndexFunc(actingPlayer.Hand, func(c Models.Card) bool { return c.GetName() == play.Name })
 	if playedCardIndex == -1 {
 		return Models.GameEvent{}, fmt.Errorf("could not find card '%s' in Player's hand", play.Name)
 	}
 
-	playedCard := &(actingPlayer.Hand.Cards[playedCardIndex])
+	playedCard := &(actingPlayer.Hand[playedCardIndex])
 	//Important. Copy the card since slices.DeleteFunc will 0 out that location in memory
 	cardCopy := *playedCard
 	//Remove the card from the player's hand
-	actingPlayer.Hand.Cards = slices.DeleteFunc(actingPlayer.Hand.Cards, func(c Models.Card) bool {
+	actingPlayer.Hand = slices.DeleteFunc(actingPlayer.Hand, func(c Models.Card) bool {
 		return c == cardCopy
 	})
 
@@ -240,7 +240,7 @@ func (play PlayCard) Execute(gameState *Models.GameState, playerId string) (Mode
 		TargetPlayer: play.TargetPlayer,
 	})
 
-	gameState.DiscardPile.Cards = append(gameState.DiscardPile.Cards, cardCopy)
+	gameState.DiscardPile = append(gameState.DiscardPile, cardCopy)
 
 	return Models.GameEvent{
 		Description: cardMessage,
@@ -269,16 +269,16 @@ func getNextPlayerId(players []Models.Player, currentIndex int) string {
 func drawRandomCardFromDeck(gameState *Models.GameState) *Models.Card {
 
 	//Auto reshuffle
-	if len(gameState.Deck.Cards) <= 0 {
-		gameState.Deck.Cards = gameState.DiscardPile.Cards
-		gameState.DiscardPile.Cards = []Models.Card{}
+	if len(gameState.Deck) <= 0 {
+		gameState.Deck = gameState.DiscardPile
+		gameState.DiscardPile = []Models.Card{}
 	}
 
-	drawnCard := &(gameState.Deck.Cards[rand.Intn(len(gameState.Deck.Cards))])
+	drawnCard := &(gameState.Deck[rand.Intn(len(gameState.Deck))])
 	//Important. Copy the card since slices.DeleteFunc will 0 out that location in memory
 	cardCopy := *drawnCard
 	//Remove the card from the deck
-	gameState.Deck.Cards = slices.DeleteFunc(gameState.Deck.Cards, func(c Models.Card) bool {
+	gameState.Deck = slices.DeleteFunc(gameState.Deck, func(c Models.Card) bool {
 		return c == cardCopy
 	})
 	//Return address to copy of deleted card

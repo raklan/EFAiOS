@@ -10,8 +10,8 @@ func GetAllowedSpaces(player *Player, gameState *GameState) int {
 	allowedSpaces := 1
 
 	//Adrenaline
-	if indexOfEffect := slices.IndexFunc(player.StatusEffects.Effects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_AdrenalineSurge }); indexOfEffect != -1 {
-		player.StatusEffects.Effects[indexOfEffect].SubtractUse(player)
+	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_AdrenalineSurge }); indexOfEffect != -1 {
+		player.StatusEffects[indexOfEffect].SubtractUse(player)
 		allowedSpaces++
 	}
 
@@ -21,7 +21,7 @@ func GetAllowedSpaces(player *Player, gameState *GameState) int {
 	}
 
 	//Hyperphagic
-	if indexOfEffect := slices.IndexFunc(player.StatusEffects.Effects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_Hyperphagic }); indexOfEffect != -1 {
+	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_Hyperphagic }); indexOfEffect != -1 {
 		allowedSpaces++
 		//Hyperphagic is a permanent bonus, so don't subtract any uses
 	}
@@ -98,4 +98,38 @@ func AttackSpace(row string, col int, gameState GameState) (*GameEvent, error) {
 	}
 
 	return gameEvent, nil
+}
+
+func GetUnmarshalledCardArray(intermediate []struct {
+	Name        string `json:"name"`
+	Type        string `json:"type"`
+	Description string `json:"description"`
+}) []Card {
+
+	cards := make([]Card, len(intermediate))
+
+	for i, card := range intermediate {
+		switch card.Name {
+		case "Red Card":
+			cards[i] = NewRedCard()
+		case "Green Card":
+			cards[i] = NewGreenCard()
+		case "Mutation":
+			cards[i] = NewMutation()
+		case "Adrenaline":
+			cards[i] = NewAdrenaline()
+		case "Teleport":
+			cards[i] = NewTeleport()
+		case "Clone":
+			cards[i] = NewClone()
+		case "Defence":
+			cards[i] = NewDefense()
+		case "Spotlight":
+			cards[i] = NewSpotlight()
+		case "Attack":
+			cards[i] = NewAttackCard()
+		}
+	}
+
+	return cards
 }

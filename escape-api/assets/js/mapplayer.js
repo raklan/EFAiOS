@@ -341,8 +341,8 @@ function renderPlayerHand(){
     let hand = document.getElementById("cards")
     hand.replaceChildren()
 
-    if(thisPlayer?.hand?.cards?.length > 0){
-        for(let card of thisPlayer?.hand?.cards){
+    if(thisPlayer?.hand?.length > 0){
+        for(let card of thisPlayer?.hand){
             let node = document.createElement("div")
             node.classList = 'card'
             node.innerHTML = `${card.name}`

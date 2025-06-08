@@ -53,11 +53,9 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 		})
 	}
 
-	gameState.Deck.Cards = []Models.Card{
-		Models.NewRedCard(),
-		Models.NewGreenCard(),
-		Models.NewSpotlight(),
-	}
+	log.Println("Player array", gameState.Players)
+
+	gameState.Deck = []Models.Card{}
 
 	gameState.GameConfig.ActiveStatusEffects = gameConfig.ActiveStatusEffects
 
@@ -408,39 +406,39 @@ func assignCards(gameState *Models.GameState, activeCards map[string]int) {
 		switch card {
 		case "Red Card":
 			for range num {
-				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewRedCard())
+				gameState.Deck = append(gameState.Deck, Models.NewRedCard())
 			}
 		case "Green Card":
 			for range num {
-				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewGreenCard())
+				gameState.Deck = append(gameState.Deck, Models.NewGreenCard())
 			}
 		case "White Card":
 			for range num {
-				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewWhiteCard())
+				gameState.Deck = append(gameState.Deck, Models.NewWhiteCard())
 			}
 		case "Adrenaline":
 			for range num {
-				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewAdrenaline())
+				gameState.Deck = append(gameState.Deck, Models.NewAdrenaline())
 			}
 		case "Mutation":
 			for range num {
-				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewMutation())
+				gameState.Deck = append(gameState.Deck, Models.NewMutation())
 			}
 		case "Teleport":
 			for range num {
-				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewTeleport())
+				gameState.Deck = append(gameState.Deck, Models.NewTeleport())
 			}
 		case "Clone":
 			for range num {
-				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewClone())
+				gameState.Deck = append(gameState.Deck, Models.NewClone())
 			}
 		case "Defense":
 			for range num {
-				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewDefense())
+				gameState.Deck = append(gameState.Deck, Models.NewDefense())
 			}
 		case "Spotlight":
 			for range num {
-				gameState.Deck.Cards = append(gameState.Deck.Cards, Models.NewSpotlight())
+				gameState.Deck = append(gameState.Deck, Models.NewSpotlight())
 			}
 		}
 

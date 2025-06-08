@@ -141,6 +141,7 @@ func SaveGameStateToFs(gameState Models.GameState) (Models.GameState, error) {
 	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
 
 	log.Printf("%s Received GameState to save", funcLogPrefix)
+	log.Println("gamestate is", gameState)
 
 	//If the gameState doesn't have an ID yet,
 	//Generate one for it by simply using the Current UNIX time in milliseconds

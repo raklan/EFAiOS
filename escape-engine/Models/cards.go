@@ -142,10 +142,10 @@ func (a *Adrenaline) GetDescription() string {
 func (a *Adrenaline) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
-	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects.Effects, func(s StatusEffect) bool { return s.GetName() == "Adrenaline Surge" }); indexOfEffect != -1 {
-		activePlayer.StatusEffects.Effects[indexOfEffect].AddUse()
+	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == "Adrenaline Surge" }); indexOfEffect != -1 {
+		activePlayer.StatusEffects[indexOfEffect].AddUse()
 	} else {
-		activePlayer.StatusEffects.Effects = append(activePlayer.StatusEffects.Effects, NewAdrenalineSurge())
+		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewAdrenalineSurge())
 	}
 
 	return fmt.Sprintf("Player %s played an Adrenaline card. They can move one space farther on their next turn!", activePlayer.Name)
@@ -258,10 +258,10 @@ func (c Clone) GetDescription() string {
 func (c Clone) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
-	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects.Effects, func(s StatusEffect) bool { return s.GetName() == "Cloned" }); indexOfEffect != -1 {
-		activePlayer.StatusEffects.Effects[indexOfEffect].AddUse()
+	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == "Cloned" }); indexOfEffect != -1 {
+		activePlayer.StatusEffects[indexOfEffect].AddUse()
 	} else {
-		activePlayer.StatusEffects.Effects = append(activePlayer.StatusEffects.Effects, NewCloned())
+		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewCloned())
 	}
 
 	return fmt.Sprintf("Player %s used a Clone card! They now have a clone ready in case they die!", activePlayer.Name)
@@ -298,10 +298,10 @@ func (c Defense) GetDescription() string {
 func (c Defense) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
-	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects.Effects, func(s StatusEffect) bool { return s.GetName() == "Armored" }); indexOfEffect != -1 {
-		activePlayer.StatusEffects.Effects[indexOfEffect].AddUse()
+	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == "Armored" }); indexOfEffect != -1 {
+		activePlayer.StatusEffects[indexOfEffect].AddUse()
 	} else {
-		activePlayer.StatusEffects.Effects = append(activePlayer.StatusEffects.Effects, NewArmored())
+		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewArmored())
 	}
 
 	return fmt.Sprintf("Player %s used a Defense card! They'll be protected from the next attack!", activePlayer.Name)
