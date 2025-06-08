@@ -142,7 +142,7 @@ func (a *Adrenaline) GetDescription() string {
 func (a *Adrenaline) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
-	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == "Adrenaline Surge" }); indexOfEffect != -1 {
+	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_AdrenalineSurge }); indexOfEffect != -1 {
 		activePlayer.StatusEffects[indexOfEffect].AddUse()
 	} else {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewAdrenalineSurge())
@@ -258,7 +258,7 @@ func (c Clone) GetDescription() string {
 func (c Clone) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
-	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == "Cloned" }); indexOfEffect != -1 {
+	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_Cloned }); indexOfEffect != -1 {
 		activePlayer.StatusEffects[indexOfEffect].AddUse()
 	} else {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewCloned())
@@ -298,7 +298,7 @@ func (c Defense) GetDescription() string {
 func (c Defense) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
-	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == "Armored" }); indexOfEffect != -1 {
+	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_Armored }); indexOfEffect != -1 {
 		activePlayer.StatusEffects[indexOfEffect].AddUse()
 	} else {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewArmored())
@@ -422,6 +422,46 @@ func NewAttackCard() *AttackCard {
 		CardBase: CardBase{
 			Name:        "Attack",
 			Description: "Attacks the space you are currently in",
+			Type:        Card_White,
+		},
+	}
+}
+
+// #region Sedatives
+
+type Sedatives struct {
+	CardBase
+}
+
+func (c Sedatives) GetName() string {
+	return c.Name
+}
+
+func (c Sedatives) GetType() string {
+	return c.Type
+}
+
+func (c Sedatives) GetDescription() string {
+	return c.Description
+}
+
+func (c Sedatives) Play(gameState *GameState, details CardPlayDetails) string {
+	activePlayer := gameState.GetCurrentPlayer()
+
+	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_Sedated }); indexOfEffect != -1 {
+		activePlayer.StatusEffects[indexOfEffect].AddUse()
+	} else {
+		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewSedated())
+	}
+
+	return fmt.Sprintf("Player %s used Sedatives!", activePlayer.Name)
+}
+
+func NewSedatives() *Sedatives {
+	return &Sedatives{
+		CardBase: CardBase{
+			Name:        "Sedatives",
+			Description: "Sedates the player, causing them to treat the next sector they enter as a Safe Sector",
 			Type:        Card_White,
 		},
 	}

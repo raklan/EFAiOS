@@ -128,6 +128,8 @@ func GetUnmarshalledCardArray(intermediate []struct {
 			cards[i] = NewSpotlight()
 		case "Attack":
 			cards[i] = NewAttackCard()
+		case "Sedatives":
+			cards[i] = NewSedatives()
 		}
 	}
 

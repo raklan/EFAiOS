@@ -17,6 +17,7 @@ const (
 	StatusEffect_Cloned          = "Cloned"
 	StatusEffect_Armored         = "Armored"
 	StatusEffect_Hyperphagic     = "Hyperphagic"
+	StatusEffect_Sedated         = "Sedated"
 )
 
 type AdrenalineSurge struct {
@@ -155,8 +156,8 @@ type Hyperphagic struct {
 	StatusEffectBase
 }
 
-func NewHyperphagic() *Armored {
-	return &Armored{
+func NewHyperphagic() *Hyperphagic {
+	return &Hyperphagic{
 		StatusEffectBase: StatusEffectBase{
 			Name:        StatusEffect_Hyperphagic,
 			Description: "This Alien has fed on a human, gaining strength. But they want more...",
@@ -183,6 +184,50 @@ func (s *Hyperphagic) AddUse() int {
 }
 
 func (s *Hyperphagic) SubtractUse(player *Player) bool {
+	s.UsesLeft--
+
+	if s.UsesLeft <= 0 {
+		player.StatusEffects = slices.DeleteFunc(player.StatusEffects, func(s2 StatusEffect) bool { return s2 == s })
+		return false
+	}
+
+	return true
+}
+
+// #region Sedated
+
+type Sedated struct {
+	StatusEffectBase
+}
+
+func NewSedated() *Sedated {
+	return &Sedated{
+		StatusEffectBase: StatusEffectBase{
+			Name:        StatusEffect_Sedated,
+			Description: "This player is sedated and will treat the next space they enter as a Safe Sector",
+			UsesLeft:    1,
+		},
+	}
+}
+
+func (s *Sedated) GetName() string {
+	return s.Name
+}
+
+func (s *Sedated) GetDescription() string {
+	return s.Description
+}
+
+func (s *Sedated) GetUsesLeft() int {
+	return s.UsesLeft
+}
+
+func (s *Sedated) AddUse() int {
+	s.UsesLeft++
+	return s.GetUsesLeft()
+}
+
+func (s *Sedated) SubtractUse(player *Player) bool {
 	s.UsesLeft--
 
 	if s.UsesLeft <= 0 {

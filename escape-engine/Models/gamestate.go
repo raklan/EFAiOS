@@ -2,7 +2,6 @@ package Models
 
 import (
 	"encoding/json"
-	"log"
 	"slices"
 )
 
@@ -97,7 +96,6 @@ func (g *GameState) UnmarshalJSON(data []byte) error {
 	//Copy Discard Pile
 	g.DiscardPile = GetUnmarshalledCardArray(intermediate.DiscardPile)
 
-	log.Println("Game State unmarshal", g)
 	return nil
 }
 
@@ -184,21 +182,24 @@ func (p *Player) UnmarshalJSON(data []byte) error {
 			p.StatusEffects[i] = NewCloned()
 		case StatusEffect_Hyperphagic:
 			p.StatusEffects[i] = NewHyperphagic()
+		case StatusEffect_Sedated:
+			p.StatusEffects[i] = NewSedated()
 		}
 		for range effect.UsesLeft - 1 {
 			p.StatusEffects[i].AddUse()
 		}
 	}
-	log.Println("Player unmarshal", p)
 	return nil
 }
 
+// Returns true if the player has a status effect with the given name
 func (p Player) HasStatusEffect(name string) bool {
 	return slices.ContainsFunc(p.StatusEffects, func(s StatusEffect) bool { return s.GetName() == name })
 }
 
+// Attempts to find a status effect on the player with the given name and subtracts a use if one is found. Returns a boolean indicating whether any status effect was found
 func (player *Player) SubtractStatusEffect(name string) bool {
-	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s StatusEffect) bool { return s.GetName() == NewAdrenaline().GetName() }); indexOfEffect != -1 {
+	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s StatusEffect) bool { return s.GetName() == name }); indexOfEffect != -1 {
 		player.StatusEffects[indexOfEffect].SubtractUse(player)
 		return true
 	}

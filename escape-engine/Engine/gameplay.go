@@ -53,8 +53,6 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 		})
 	}
 
-	log.Println("Player array", gameState.Players)
-
 	gameState.Deck = []Models.Card{}
 
 	gameState.GameConfig.ActiveStatusEffects = gameConfig.ActiveStatusEffects
@@ -440,8 +438,11 @@ func assignCards(gameState *Models.GameState, activeCards map[string]int) {
 			for range num {
 				gameState.Deck = append(gameState.Deck, Models.NewSpotlight())
 			}
+		case "Sedatives":
+			for range num {
+				gameState.Deck = append(gameState.Deck, Models.NewSedatives())
+			}
 		}
-
 	}
 }
 
