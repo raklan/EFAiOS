@@ -131,7 +131,7 @@ func DrawCard(gameState *Models.GameState, playerId string) (Models.CardEvent, e
 		drawnCard := *drawRandomCardFromDeck(gameState)
 		event.Card = drawnCard
 		event.Type = drawnCard.GetType()
-		if drawnCard.GetType() == Models.Card_White {
+		if drawnCard.GetType() == Models.Card_White && actingPlayer.Team == Models.PlayerTeam_Human { //May need tweaking. Currently discards item cards picked up by Aliens
 			actingPlayer.Hand = append(actingPlayer.Hand, drawnCard)
 		} else {
 			gameState.DiscardPile = append(gameState.DiscardPile, drawnCard)
