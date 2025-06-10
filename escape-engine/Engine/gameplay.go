@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"slices"
 )
 
 // Given an id to a Game defition, constructs and returns an initial GameState for it. This is essentially
@@ -59,6 +60,10 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 
 	assignCards(&gameState, gameConfig.ActiveCards)
 	assignTeams(&gameState)
+	if err := AssignRoles(&gameState, gameConfig.ActiveRoles, gameConfig.RequiredRoles); err != nil {
+		LogError(funcLogPrefix, err)
+		return gameState, err
+	}
 	assignStartingPositions(&gameState, &mapDef)
 	gameState.CurrentPlayer = gameState.Players[rand.Intn(len(gameState.Players))].Id
 
@@ -397,6 +402,80 @@ func assignStartingPositions(gameState *Models.GameState, gameMap *Models.GameMa
 			gameState.Players[index].Row, gameState.Players[index].Col = "!", -99
 		}
 	}
+}
+
+func AssignRoles(gameState *Models.GameState, activeRoles map[string]int, requiredRoles map[string]int) error {
+	log.Println("Assigning roles")
+	humanPlayers := gameState.GetHumanPlayers()
+	alienPlayers := gameState.GetAlienPlayers()
+
+	for (len(humanPlayers) > 0 || len(alienPlayers) > 0) && len(requiredRoles) > 0 {
+		for roleName := range requiredRoles {
+			var playerListToAssignFrom []Models.Player
+
+			if Models.RoleTeams[roleName] == Models.PlayerTeam_Human {
+				playerListToAssignFrom = humanPlayers
+			} else if Models.RoleTeams[roleName] == Models.PlayerTeam_Alien {
+				playerListToAssignFrom = alienPlayers
+			}
+
+			if len(playerListToAssignFrom) == 0 {
+				return fmt.Errorf("too many required roles for Team %s", Models.RoleTeams[roleName])
+			}
+
+			playerToAssign_Copy := playerListToAssignFrom[rand.Intn(len(playerListToAssignFrom))]
+
+			Models.RoleAssigners[roleName](&gameState.Players[slices.IndexFunc(gameState.Players, func(p Models.Player) bool { return p.Id == playerToAssign_Copy.Id })])
+
+			if Models.RoleTeams[roleName] == Models.PlayerTeam_Human {
+				humanPlayers = slices.DeleteFunc(playerListToAssignFrom, func(p Models.Player) bool { return p.Id == playerToAssign_Copy.Id })
+			} else if Models.RoleTeams[roleName] == Models.PlayerTeam_Alien {
+				alienPlayers = slices.DeleteFunc(playerListToAssignFrom, func(p Models.Player) bool { return p.Id == playerToAssign_Copy.Id })
+			}
+
+			requiredRoles[roleName]--
+			if requiredRoles[roleName] <= 0 {
+				delete(requiredRoles, roleName)
+			}
+			if _, exists := activeRoles[roleName]; exists {
+				activeRoles[roleName]--
+			}
+		}
+	}
+
+	for (len(humanPlayers) > 0 || len(alienPlayers) > 0) && len(activeRoles) > 0 {
+		roleName, _ := Models.GetRandomMapPair(activeRoles)
+
+		var playerListToAssignFrom []Models.Player
+
+		if Models.RoleTeams[roleName] == Models.PlayerTeam_Human {
+			playerListToAssignFrom = humanPlayers
+		} else if Models.RoleTeams[roleName] == Models.PlayerTeam_Alien {
+			playerListToAssignFrom = alienPlayers
+		}
+
+		if len(playerListToAssignFrom) == 0 { //If we can't assign this role, delete it so we don't keep checking it
+			delete(activeRoles, roleName)
+			continue
+		}
+
+		playerToAssign_Copy := playerListToAssignFrom[rand.Intn(len(playerListToAssignFrom))]
+
+		Models.RoleAssigners[roleName](&gameState.Players[slices.IndexFunc(gameState.Players, func(p Models.Player) bool { return p.Id == playerToAssign_Copy.Id })])
+
+		if Models.RoleTeams[roleName] == Models.PlayerTeam_Human {
+			humanPlayers = slices.DeleteFunc(playerListToAssignFrom, func(p Models.Player) bool { return p.Id == playerToAssign_Copy.Id })
+		} else if Models.RoleTeams[roleName] == Models.PlayerTeam_Alien {
+			alienPlayers = slices.DeleteFunc(playerListToAssignFrom, func(p Models.Player) bool { return p.Id == playerToAssign_Copy.Id })
+		}
+
+		activeRoles[roleName]--
+		if activeRoles[roleName] <= 0 {
+			delete(activeRoles, roleName)
+		}
+	}
+
+	return nil
 }
 
 func assignCards(gameState *Models.GameState, activeCards map[string]int) {

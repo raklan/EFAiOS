@@ -137,3 +137,17 @@ func GetUnmarshalledCardArray(intermediate []CardBase) []Card {
 
 	return cards
 }
+
+// Gets a pseudo-random (Key, Value) pair from the given map. Runs in O(len(theMap)) time
+func GetRandomMapPair[T1 comparable, T2 any](theMap map[T1]T2) (T1, T2) {
+	// Yeah, this is pretty janky, but it's simple and I don't need speed for maps that are guaranteed to be small. Sue me
+	randomIndex := rand.Intn(len(theMap))
+	index := 0
+	for k, v := range theMap {
+		if index == randomIndex {
+			return k, v
+		}
+		index++
+	}
+	panic("How did we get here?")
+}

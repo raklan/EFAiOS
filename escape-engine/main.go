@@ -1,8 +1,9 @@
 package main
 
 import (
-	"os"
-	"time"
+	"escape-engine/Engine"
+	"escape-engine/Models"
+	"fmt"
 )
 
 // func main() {
@@ -118,17 +119,47 @@ import (
 // }
 
 func main() {
-	files, _ := os.ReadDir("./maps")
-	for _, file := range files {
-		stats, _ := os.Stat("./maps/" + file.Name())
-		expirationTime := stats.ModTime().AddDate(0, 1, 0)
-		if time.Now().After(expirationTime) {
-			os.Remove("./maps/" + file.Name())
-		}
+	gameState := Models.GameState{
+		Players: []Models.Player{
+			{
+				Id:   "1",
+				Name: "Ryan",
+				Team: Models.PlayerTeam_Human,
+			},
+			{
+				Id:   "4",
+				Name: "Meghan",
+				Team: Models.PlayerTeam_Human,
+			},
+			{
+				Id:   "2",
+				Name: "Christina",
+				Team: Models.PlayerTeam_Alien,
+			},
+			{
+				Id:   "3",
+				Name: "Blake",
+				Team: Models.PlayerTeam_Alien,
+			},
+		},
+		GameConfig: Models.GameConfig{
+			NumHumans: 2,
+			NumAliens: 2,
+		},
 	}
-	// stats, _ := os.Stat("./maps/map_1738255395028DWVM9PW8T1.json")
-	// fmt.Println(time.Now())
-	// expirationTime := stats.ModTime().AddDate(0, 1, 0)
-	// fmt.Println(stats.ModTime(), expirationTime)
-	// fmt.Println(time.Now().Before(expirationTime))
+
+	activeRoles := map[string]int{
+		Models.Role_Captain:     2,
+		Models.Role_Pilot:       2,
+		Models.Role_Soldier:     2,
+		Models.Role_SpeedyAlien: 2,
+		Models.Role_BlinkAlien:  2,
+		Models.Role_SilentAlien: 2,
+	}
+
+	requiredRoles := map[string]int{}
+
+	Engine.AssignRoles(&gameState, activeRoles, requiredRoles)
+
+	fmt.Println(gameState)
 }

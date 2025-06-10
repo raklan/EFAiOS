@@ -99,6 +99,40 @@ func (gameState *GameState) GetCurrentPlayer() *Player {
 	return &gameState.Players[currentPlayerIndex]
 }
 
+func (gameState *GameState) GetHumanPlayers() []Player {
+	players := make([]Player, gameState.GameConfig.NumHumans)
+	indexToAssign := 0
+	for _, player := range gameState.Players {
+		if player.Team == PlayerTeam_Human {
+			players[indexToAssign] = player
+			indexToAssign++
+		}
+	}
+	return players
+}
+
+func (gameState *GameState) GetAlienPlayers() []Player {
+	players := make([]Player, gameState.GameConfig.NumAliens)
+	indexToAssign := 0
+	for _, player := range gameState.Players {
+		if player.Team == PlayerTeam_Alien {
+			players[indexToAssign] = player
+			indexToAssign++
+		}
+	}
+	return players
+}
+
+func (gameState *GameState) GetSpectatorPlayers() []Player {
+	players := []Player{}
+	for _, player := range gameState.Players {
+		if player.Team == PlayerTeam_Spectator {
+			players = append(players, player)
+		}
+	}
+	return players
+}
+
 // GameState-specific config as defined by the Host
 type GameConfig struct {
 	//Number of Humans currently in the Game. The Game automatically ends when this number hits 0.
@@ -111,6 +145,10 @@ type GameConfig struct {
 	NumBrokenPods int `json:"numBrokenPods"`
 	//Which cards should be active, as well as how many of each
 	ActiveCards map[string]int `json:"activeCards"`
+	//Which roles should be active, as well as the maximum number allowed to be present. Should be >= that role's presence in RequiredRoles, if it's required
+	ActiveRoles map[string]int `json:"activeRoles"`
+	//Which roles should be guaranteed to be in the game, as well as the number of players that should have that role
+	RequiredRoles map[string]int `json:"requiredRoles"`
 	//Which StatusEffects should be active, as well as their priority
 	ActiveStatusEffects map[string]int `json:"activeStatusEffects"`
 }
