@@ -268,6 +268,11 @@
             <div id="playerChoice-spotlight-content">Choose a space to use Spotlight on!</div>
             <button id="spotlight-confirm" style="display: none" onclick="spotlightConfirm()">Confirm</button>
         </div>
+        <div id="playerChoice-sensor">
+            <div id="playerChoice-sensor-content">Choose a Player to use Sensor on!</div>
+            <div id="playerChoice-sensor-playerList"></div>
+            <button id="sensor-confirm" style="display: none" onclick="sensorConfirm()">Confirm</button>
+        </div>
         <div id="playerChoice-attack">
             <div id="playerChoice-attack-content">Would you like to attack this space?</div>
             <div>
@@ -406,6 +411,7 @@
 <script>
     var ws = null;
     var thisPlayer = null;
+    var gamePlayerList = [];
     var thisGameStateId = null;
     var isThisPlayersTurn = false;
 
@@ -439,13 +445,5 @@
     }
 
     openSocket();
-    // var lobby = {"type":"LobbyInfo","data":{"playerID":"1736982926867JZTAZ5F8TB","lobbyInfo":{"roomCode":"TTWQ","mapId":"1736982914988TDU0HZGRU9","gameStateId":"","status":"Awaiting Start","numPlayers":1,"maxPlayers":12,"players":[{"id":"1736982926867JZTAZ5F8TB","name":"Ryan","team":"","role":"","row":0,"col":0}],"host":{"id":"1736982926867JZTAZ5F8TB","name":"Ryan","team":"","role":"","row":0,"col":0}}}}	
-    // handleLobbyInfoMessage(lobby.data)
-
-    // var test_gameState = { "type": "GameState", "data": { "id": "17381082543896ZEKRJ68BE", "gameMap": { "id": "1738108249082Z05NB28OQC", "name": "", "rows": 5, "cols": 10, "spaces": { "0,0": { "row": 0, "col": 0, "type": 2 }, "0,1": { "row": 0, "col": 1, "type": 2 }, "0,2": { "row": 0, "col": 2, "type": 2 }, "0,3": { "row": 0, "col": 3, "type": 2 }, "0,4": { "row": 0, "col": 4, "type": 2 }, "0,5": { "row": 0, "col": 5, "type": 2 }, "0,6": { "row": 0, "col": 6, "type": 2 }, "0,7": { "row": 0, "col": 7, "type": 2 }, "0,8": { "row": 0, "col": 8, "type": 2 }, "0,9": { "row": 0, "col": 9, "type": 2 }, "1,0": { "row": 1, "col": 0, "type": 2 }, "1,1": { "row": 1, "col": 1, "type": 2 }, "1,2": { "row": 1, "col": 2, "type": 2 }, "1,3": { "row": 1, "col": 3, "type": 2 }, "1,4": { "row": 1, "col": 4, "type": 2 }, "1,5": { "row": 1, "col": 5, "type": 2 }, "1,6": { "row": 1, "col": 6, "type": 2 }, "1,7": { "row": 1, "col": 7, "type": 2 }, "1,8": { "row": 1, "col": 8, "type": 2 }, "1,9": { "row": 1, "col": 9, "type": 2 }, "2,0": { "row": 2, "col": 0, "type": 2 }, "2,1": { "row": 2, "col": 1, "type": 2 }, "2,2": { "row": 2, "col": 2, "type": 5 }, "2,3": { "row": 2, "col": 3, "type": 2 }, "2,4": { "row": 2, "col": 4, "type": 2 }, "2,5": { "row": 2, "col": 5, "type": 2 }, "2,6": { "row": 2, "col": 6, "type": 2 }, "2,7": { "row": 2, "col": 7, "type": 2 }, "2,8": { "row": 2, "col": 8, "type": 2 }, "2,9": { "row": 2, "col": 9, "type": 2 }, "3,0": { "row": 3, "col": 0, "type": 2 }, "3,1": { "row": 3, "col": 1, "type": 2 }, "3,2": { "row": 3, "col": 2, "type": 2 }, "3,3": { "row": 3, "col": 3, "type": 2 }, "3,4": { "row": 3, "col": 4, "type": 2 }, "3,5": { "row": 3, "col": 5, "type": 2 }, "3,6": { "row": 3, "col": 6, "type": 2 }, "3,7": { "row": 3, "col": 7, "type": 2 }, "3,8": { "row": 3, "col": 8, "type": 2 }, "3,9": { "row": 3, "col": 9, "type": 2 }, "4,0": { "row": 4, "col": 0, "type": 2 }, "4,1": { "row": 4, "col": 1, "type": 2 }, "4,2": { "row": 4, "col": 2, "type": 2 }, "4,3": { "row": 4, "col": 3, "type": 2 }, "4,4": { "row": 4, "col": 4, "type": 2 }, "4,5": { "row": 4, "col": 5, "type": 2 }, "4,6": { "row": 4, "col": 6, "type": 2 }, "4,7": { "row": 4, "col": 7, "type": 2 }, "4,8": { "row": 4, "col": 8, "type": 2 }, "4,9": { "row": 4, "col": 9, "type": 2 }, "null,null": { "row": 0, "col": 0, "type": 0 } } }, "gameConfig": { "numHumans": 1, "numAliens": 0, "numWorkingPods": 0, "numBrokenPods": 0 }, "players": [{ "id": "1738108252473HQ6T4Q8E6K", "name": "R", "team": "Human", "role": "", "row": 2, "col": 2 }], "currentPlayer": "1738108252473HQ6T4Q8E6K" } }
-    // thisPlayer = {
-    //     id: "1738108252473HQ6T4Q8E6K"
-    // }
-    // handleGameStateMessage(test_gameState.data)    
 </script>
 {{end}}

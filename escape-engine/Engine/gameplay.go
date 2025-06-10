@@ -442,6 +442,10 @@ func assignCards(gameState *Models.GameState, activeCards map[string]int) {
 			for range num {
 				gameState.Deck = append(gameState.Deck, Models.NewSedatives())
 			}
+		case "Sensor":
+			for range num {
+				gameState.Deck = append(gameState.Deck, Models.NewSensor())
+			}
 		}
 	}
 }

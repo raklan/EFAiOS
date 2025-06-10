@@ -130,6 +130,8 @@ func GetUnmarshalledCardArray(intermediate []struct {
 			cards[i] = NewAttackCard()
 		case "Sedatives":
 			cards[i] = NewSedatives()
+		case "Sensor":
+			cards[i] = NewSensor()
 		}
 	}
 

@@ -61,6 +61,8 @@ type PlayCard struct {
 	Row          string `json:"row"`
 	Col          int    `json:"col"`
 	TargetPlayer string `json:"targetPlayer"`
+	SecondRow    string `json:"secondRow"`
+	SecondCol    int    `json:"secondCol"`
 }
 
 func (move Movement) Execute(gameState *Models.GameState, playerId string) (Models.MovementEvent, error) {
@@ -241,6 +243,8 @@ func (play PlayCard) Execute(gameState *Models.GameState, playerId string) (Mode
 		TargetRow:    play.Row,
 		TargetCol:    play.Col,
 		TargetPlayer: play.TargetPlayer,
+		SecondRow:    play.SecondRow,
+		SecondCol:    play.SecondCol,
 	})
 
 	gameState.DiscardPile = append(gameState.DiscardPile, cardCopy)

@@ -60,7 +60,7 @@ function createGrid(rows, columns) {
 
     var createSVG = function (tag) {
         var newElement = document.createElementNS('http://www.w3.org/2000/svg', tag || 'svg');
-        if(tag !== 'svg') //Only add to the polygons
+        if (tag !== 'svg') //Only add to the polygons
             newElement.addEventListener('click', hexClick);
         return newElement;
     };
@@ -81,13 +81,13 @@ function createGrid(rows, columns) {
             center = { x: Math.round((1 + 1.5 * column) * radius), y: Math.round(height * (1 + row * 2 + (column % 2))) };
             let poly = createSVG('polygon');
             poly.setAttribute('points', [
-                    toPoint(-1 * radius / 2, -1 * height),
-                    toPoint(radius / 2, -1 * height),
-                    toPoint(radius, 0),
-                    toPoint(radius / 2, height),
-                    toPoint(-1 * radius / 2, height),
-                    toPoint(-1 * radius, 0)
-                ].join(' '));
+                toPoint(-1 * radius / 2, -1 * height),
+                toPoint(radius / 2, -1 * height),
+                toPoint(radius, 0),
+                toPoint(radius / 2, height),
+                toPoint(-1 * radius / 2, height),
+                toPoint(-1 * radius, 0)
+            ].join(' '));
             poly.setAttribute('class', [cssClass, 'safe'].join(' '));
             poly.setAttribute('tabindex', 1);
             poly.setAttribute('hex-row', numberToLetter(row));
@@ -110,16 +110,16 @@ function createGrid(rows, columns) {
     }
 }
 
-function drawMapOnPage(){
-    if(!MAP){
+function drawMapOnPage() {
+    if (!MAP) {
         return;
     }
 
     Object.values(MAP.spaces).forEach(space => {
         var el = document.getElementById(`hex-${space.row}-${space.col}`)
-        if(el){
+        if (el) {
             var spaceClass = 'safe'
-            switch (space.type){
+            switch (space.type) {
                 case SpaceTypes.Wall: spaceClass = 'wall'; break;
                 case SpaceTypes.Safe: spaceClass = 'safe'; break;
                 case SpaceTypes.Pod: spaceClass = 'pod'; break;
@@ -135,19 +135,19 @@ function drawMapOnPage(){
     });
 }
 
-function drawMap(map){
-    if (map){
+function drawMap(map) {
+    if (map) {
         MAP = map;
         clearGrid();
         createGrid(MAP.rows, MAP.cols);
         drawMapOnPage();
-    }else{
+    } else {
         console.error("No map given")
     }
 }
 
 function hexClick(event) {
-    if(thisPlayer.team == PlayerTeams.Spectator || !isThisPlayersTurn){
+    if (thisPlayer.team == PlayerTeams.Spectator || !isThisPlayersTurn) {
         showNotification('It\'s not your turn!', 'Error')
         return
     }
@@ -156,7 +156,7 @@ function hexClick(event) {
     var col = parseInt(event.target.getAttribute('hex-column') ?? -99);
 
     var actionToSend = {}
-    if(clickMode == ClickModes.Moving){
+    if (clickMode == ClickModes.Moving) {
         actionToSend = {
             gameId: thisGameStateId,
             action: {
@@ -167,17 +167,17 @@ function hexClick(event) {
                 }
             }
         }
-    sendWsMessage(ws, 'submitAction', actionToSend);
-    } else if(clickMode == ClickModes.Noise){
+        sendWsMessage(ws, 'submitAction', actionToSend);
+    } else if (clickMode == ClickModes.Noise) {
         selectedSpace = {
             row: row,
             col: col
         }
         document.querySelectorAll('.hexfield.selected').forEach(x => x.classList.remove('selected'))
         event.target.classList.add('selected')
-        
+
         document.getElementById("greenCard-confirm").style.display = ''
-    } else if(clickMode == ClickModes.Spotlight){
+    } else if (clickMode == ClickModes.Spotlight) {
         selectedSpace = {
             row: row,
             col: col
@@ -187,9 +187,9 @@ function hexClick(event) {
 
         document.getElementById("spotlight-confirm").style.display = ''
     }
-    
-    
-    
+
+
+
 }
 
 function clearGrid() {
@@ -197,18 +197,18 @@ function clearGrid() {
     polycontainer?.remove();
 }
 
-function showPlayerChoicePopup(mode){
+function showPlayerChoicePopup(mode) {
     let popup = document.getElementById("playerChoice-popup");
     let title = document.getElementById("playerChoice-title");
     let content = document.getElementById("playerChoice-content");
 
     title.innerHTML = '';
 
-    for(let child of content.children){
+    for (let child of content.children) {
         child.style.display = 'none'
     }
 
-    if(mode == 'greenCard'){
+    if (mode == 'greenCard') {
         document.getElementById("greenCard-confirm").style.display = 'none'
         document.getElementById("playerChoice-greenCard").style.display = '';
 
@@ -220,7 +220,7 @@ function showPlayerChoicePopup(mode){
 
         typeWord(title, 'Green Card Drawn')
         typeWord(content_info, 'Choose a space to make noise in')
-    }else if(mode == 'redCard'){
+    } else if (mode == 'redCard') {
         document.getElementById("playerChoice-redCard").style.display = '';
         typeWord(title, 'Red Card Drawn')
 
@@ -231,7 +231,7 @@ function showPlayerChoicePopup(mode){
         content_info.innerHTML = ''
 
         typeWord(content_info, "You're about to make noise in your space")
-    }else if(mode == 'attack'){
+    } else if (mode == 'attack') {
         document.getElementById("playerChoice-attack").style.display = '';
         typeWord(title, 'Attack Space?')
 
@@ -242,7 +242,7 @@ function showPlayerChoicePopup(mode){
         content_info.innerHTML = ''
 
         typeWord(content_info, 'Would you like to attack this space?')
-    }else if(mode == 'Spotlight'){
+    } else if (mode == 'Spotlight') {
         document.getElementById("playerChoice-spotlight").style.display = '';
         typeWord(title, 'Using Spotlight')
 
@@ -253,17 +253,28 @@ function showPlayerChoicePopup(mode){
         content_info.innerHTML = ''
 
         typeWord(content_info, 'Choose a space to reveal with the Spotlight')
+    } else if (mode == 'Sensor') {
+        document.getElementById("playerChoice-sensor").style.display = '';
+        typeWord(title, 'Using Sensor')
+
+        popup.style.color = 'white'
+        popup.style.border = '2px solid white'
+
+        let content_info = document.getElementById("playerChoice-sensor-content")
+        content_info.innerHTML = ''
+
+        typeWord(content_info, 'Choose a player to reveal with the Sensor')
     }
 
     popup.classList.add('notification-displayed')
 }
 
-function hidePlayerChoicePopup(){
+function hidePlayerChoicePopup() {
     var popup = document.getElementById("playerChoice-popup");
     popup.classList.remove('notification-displayed')
 }
 
-function redCardConfirm(){
+function redCardConfirm() {
     const actionToSend = {
         gameId: thisGameStateId,
         action: {
@@ -278,7 +289,7 @@ function redCardConfirm(){
     hidePlayerChoicePopup();
 }
 
-function greenCardConfirm(){
+function greenCardConfirm() {
     document.querySelectorAll('.hexfield.selected').forEach(x => x.classList.remove('selected'))
     clickMode = ClickModes.Moving
     const actionToSend = {
@@ -299,7 +310,7 @@ function greenCardConfirm(){
     }
 }
 
-function spotlightConfirm(){
+function spotlightConfirm() {
     document.querySelectorAll('.hexfield.selected').forEach(x => x.classList.remove('selected'))
     clickMode = ClickModes.Moving
     const actionToSend = {
@@ -321,14 +332,32 @@ function spotlightConfirm(){
     }
 }
 
-function attack(isAttacking){
+function sensorConfirm(playerId) {
+    hidePlayerChoicePopup();
+    clickMode = ClickModes.Moving;
+
+    const actionToSend = {
+        gameId: thisGameStateId,
+        action: {
+            type: 'PlayCard',
+            turn: {
+                name: 'Sensor',
+                targetPlayer: playerId
+            }
+        }
+    }
+
+    sendWsMessage(ws, 'submitAction', actionToSend)
+}
+
+function attack(isAttacking) {
     var actionToSend = {
         gameId: thisGameStateId,
         action: {
             type: 'Attack',
             turn: {
-                row: isAttacking? thisPlayer.row : "!",
-                col: isAttacking? thisPlayer.col : -99
+                row: isAttacking ? thisPlayer.row : "!",
+                col: isAttacking ? thisPlayer.col : -99
             }
         }
     }
@@ -337,26 +366,46 @@ function attack(isAttacking){
     hidePlayerChoicePopup();
 }
 
-function renderPlayerHand(){
+function renderPlayerHand() {
     let hand = document.getElementById("cards")
     hand.replaceChildren()
 
-    if(thisPlayer?.hand?.length > 0){
-        for(let card of thisPlayer?.hand){
+    if (thisPlayer?.hand?.length > 0) {
+        for (let card of thisPlayer?.hand) {
             let node = document.createElement("div")
             node.classList = 'card'
             node.innerHTML = `${card.name}`
             node.onclick = () => cardClick(card)
-    
+
             hand.appendChild(node)
         }
     }
 }
 
-function cardClick(card){
-    if(card.name === "Spotlight"){
+function cardClick(card) {
+    if (card.name === "Spotlight") {
         clickMode = ClickModes.Spotlight;
         showPlayerChoicePopup(card.name)
+        return;
+    }
+    else if (card.name === 'Sensor') {
+        var playerList = document.getElementById("playerChoice-sensor-playerList")
+        playerList.replaceChildren() //Important: Clear the player list so new players joining don't cause duplicate rendering
+
+        for (let player of gamePlayerList) {
+            playerEntry = document.createElement("button")
+            playerEntry.innerText = player.name
+            playerEntry.classList = ['redCard-confirm']
+            playerEntry.style.color = 'red'
+            playerEntry.onclick = () => {
+                sensorConfirm(player.id)
+            }
+
+            playerList.appendChild(playerEntry)
+        }
+
+        showPlayerChoicePopup(card.name)
+
         return;
     }
     let toSend = {
@@ -371,14 +420,14 @@ function cardClick(card){
     sendWsMessage(ws, 'submitAction', toSend)
 }
 
-function renderRoleCard(){
+function renderRoleCard() {
     var roleCard = document.getElementById("role")
     roleCard.innerHTML = `${thisPlayer.team}`
     roleCard.style.setProperty('--team-color', getTeamColor())
 }
 
-function getTeamColor(){
-    switch(thisPlayer.team){
+function getTeamColor() {
+    switch (thisPlayer.team) {
         case PlayerTeams.Human:
             return "deepskyblue"
         case PlayerTeams.Alien:
@@ -388,7 +437,7 @@ function getTeamColor(){
     }
 }
 
-function initializeEventLog(players){
+function initializeEventLog(players) {
     const tablist = document.getElementById('tab-list')
     const eventLog = document.getElementById("event-log")
 
@@ -400,7 +449,7 @@ function initializeEventLog(players){
         }
     }
 
-    for(let player of players){
+    for (let player of players) {
         let button = document.createElement("button")
         button.classList.add("tablinks")
         button.onclick = () => viewPlayerEvents(player.name)
@@ -411,7 +460,7 @@ function initializeEventLog(players){
         log.id = `event-log-${player.name}`
         log.classList.add("tabcontent")
         eventLog.appendChild(log)
-    }        
+    }
 }
 
 function viewPlayerEvents(playerName) {
@@ -434,14 +483,14 @@ function viewPlayerEvents(playerName) {
     document.getElementById(`event-log-${playerName}`).style.display = "block";
 }
 
-function addEvent(playerName, event){
+function addEvent(playerName, event) {
     const eventLogContainer = document.getElementById(`event-log-${playerName}`)
     let eventDesc = document.createElement("p")
     eventDesc.innerHTML = event
     eventLogContainer.appendChild(eventDesc)
 }
 
-function setConfigForm(configObject){
+function setConfigForm(configObject) {
     let configForm = document.getElementById("lobby-gameConfig")
 
     configForm['config-numHumans'].value = 0;
@@ -468,13 +517,13 @@ function setConfigForm(configObject){
     configForm['config-numMutation'].value = configObject.mutation;
 }
 
-function getGameConfig(){
+function getGameConfig() {
     let configForm = document.getElementById("lobby-gameConfig")
     let config = {};
-    
+
     config.numHumans = getConfigValue("config-numHumans")
     config.numAliens = getConfigValue("config-numAliens")
-    
+
     config.numWorkingPods = getConfigValue('config-numWorkingPods')
     config.numBrokenPods = getConfigValue('config-numBrokenPods')
 
@@ -486,10 +535,12 @@ function getGameConfig(){
         "Clone": getConfigValue('config-numClone'),
         "Defense": getConfigValue('config-numDefense'),
         "Spotlight": getConfigValue('config-numSpotlight'),
+        "Attack": getConfigValue('config-numAttack'),
+        "Sensor": getConfigValue('config-numSensor'),
         "Adrenaline": getConfigValue('config-numAdrenaline'),
         "Sedatives": getConfigValue('config-numSedatives'),
         "Cat": getConfigValue('config-numCat'),
-        "Mutation": getConfigValue('config-numMutation')
+        "Mutation": getConfigValue('config-numMutation'),
     }
 
     config.activeStatusEffects = {
@@ -497,8 +548,8 @@ function getGameConfig(){
         "Cloned": 1
     }
 
-    function getConfigValue(inputKey){
-        return configForm[inputKey]?.value?.length > 0? parseInt(configForm[inputKey].value) : 0;
+    function getConfigValue(inputKey) {
+        return configForm[inputKey]?.value?.length > 0 ? parseInt(configForm[inputKey].value) : 0;
     }
 
     return config;

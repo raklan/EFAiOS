@@ -23,6 +23,8 @@ type CardPlayDetails struct {
 	TargetRow    string
 	TargetCol    int
 	TargetPlayer string
+	SecondRow    string
+	SecondCol    int
 }
 
 // #region Red Card
@@ -462,6 +464,41 @@ func NewSedatives() *Sedatives {
 		CardBase: CardBase{
 			Name:        "Sedatives",
 			Description: "Sedates the player, causing them to treat the next sector they enter as a Safe Sector",
+			Type:        Card_White,
+		},
+	}
+}
+
+// #region Sensor
+
+type Sensor struct {
+	CardBase
+}
+
+func (c Sensor) GetName() string {
+	return c.Name
+}
+
+func (c Sensor) GetType() string {
+	return c.Type
+}
+
+func (c Sensor) GetDescription() string {
+	return c.Description
+}
+
+func (c Sensor) Play(gameState *GameState, details CardPlayDetails) string {
+	activePlayer := gameState.GetCurrentPlayer()
+	targetedPlayer := gameState.Players[slices.IndexFunc(gameState.Players, func(p Player) bool { return p.Id == details.TargetPlayer })]
+
+	return fmt.Sprintf("Player %s used a Sensor on Player %s! Player %s is at [%s-%d]", activePlayer.Name, targetedPlayer.Name, targetedPlayer.Name, targetedPlayer.Row, targetedPlayer.Col)
+}
+
+func NewSensor() *Sensor {
+	return &Sensor{
+		CardBase: CardBase{
+			Name:        "Sensor",
+			Description: "Reveals the exact location of a player of your choice",
 			Type:        Card_White,
 		},
 	}

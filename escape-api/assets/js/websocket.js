@@ -124,6 +124,12 @@ async function handleGameOverMessage(messageData) {
 async function handleGameStateMessage(gameState) {
     thisPlayer = gameState.players?.find(p => p.id == thisPlayer.id)
     isThisPlayersTurn = gameState.currentPlayer == thisPlayer?.id
+    gamePlayerList = gameState.players.map(player => {
+        return {
+            id: player.id,
+            name: player.name,
+        }
+    })
     drawMap(gameState.gameMap)
     if (!thisGameStateId) {
         thisGameStateId = gameState.id
