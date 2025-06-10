@@ -19,10 +19,11 @@ var RoleTeams = map[string]string{
 	Role_Soldier:      PlayerTeam_Human,
 	Role_Psychologist: PlayerTeam_Human,
 
-	Role_SpeedyAlien: PlayerTeam_Alien,
-	Role_BlinkAlien:  PlayerTeam_Alien,
-	Role_SilentAlien: PlayerTeam_Alien,
-	Role_BruteAlien:  PlayerTeam_Alien,
+	Role_SpeedyAlien:    PlayerTeam_Alien,
+	Role_BlinkAlien:     PlayerTeam_Alien,
+	Role_SilentAlien:    PlayerTeam_Alien,
+	Role_BruteAlien:     PlayerTeam_Alien,
+	Role_InvisibleAlien: PlayerTeam_Alien,
 }
 
 const (
@@ -32,10 +33,11 @@ const (
 	Role_Soldier      = "Soldier"
 	Role_Psychologist = "Psychologist"
 
-	Role_SpeedyAlien = "Speedy Alien"
-	Role_BlinkAlien  = "Blink Alien"
-	Role_SilentAlien = "Silent Alien"
-	Role_BruteAlien  = "Brute Alien"
+	Role_SpeedyAlien    = "Speedy Alien"
+	Role_BlinkAlien     = "Blink Alien"
+	Role_SilentAlien    = "Silent Alien"
+	Role_BruteAlien     = "Brute Alien"
+	Role_InvisibleAlien = "Invisible Alien"
 )
 
 //#region Human Roles
@@ -86,4 +88,11 @@ func AssignBruteAlien(player *Player) {
 	playerArmor := NewArmored()
 	playerArmor.UsesLeft = 1000
 	player.StatusEffects = append(player.StatusEffects, playerArmor)
+}
+
+func AssignInvisibleAlien(player *Player) {
+	player.Role = Role_InvisibleAlien
+	invis := NewInvisible()
+	invis.UsesLeft = 1000
+	player.StatusEffects = append(player.StatusEffects, invis)
 }

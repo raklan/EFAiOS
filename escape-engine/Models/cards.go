@@ -349,7 +349,10 @@ func (c Spotlight) Play(gameState *GameState, details CardPlayDetails) string {
 	adjacentSpaces := gameState.GameMap.GetSpacesWithinNthAdjacency(1, GetMapKey(details.TargetRow, details.TargetCol))
 
 	for spaceKey := range adjacentSpaces {
-		for _, player := range gameState.Players {
+		for i, player := range gameState.Players {
+			if gameState.Players[i].SubtractStatusEffect(StatusEffect_Invisible) {
+				continue
+			}
 			playerSpace := GetMapKey(player.Row, player.Col)
 			if spaceKey == playerSpace {
 				seenPlayers = append(seenPlayers, player)
@@ -358,7 +361,10 @@ func (c Spotlight) Play(gameState *GameState, details CardPlayDetails) string {
 	}
 
 	//Check space spotlight was played on as well
-	for _, player := range gameState.Players {
+	for i, player := range gameState.Players {
+		if gameState.Players[i].SubtractStatusEffect(StatusEffect_Invisible) {
+			continue
+		}
 		playerSpace := GetMapKey(player.Row, player.Col)
 		spaceKey := GetMapKey(details.TargetRow, details.TargetCol)
 		if spaceKey == playerSpace {
@@ -487,9 +493,14 @@ func (c Sensor) GetDescription() string {
 
 func (c Sensor) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
-	targetedPlayer := gameState.Players[slices.IndexFunc(gameState.Players, func(p Player) bool { return p.Id == details.TargetPlayer })]
+	indexOfTargetedPlayer := slices.IndexFunc(gameState.Players, func(p Player) bool { return p.Id == details.TargetPlayer })
+	targetedPlayer := gameState.Players[indexOfTargetedPlayer]
 
-	return fmt.Sprintf("Player %s used a Sensor on Player %s! Player %s is at [%s-%d]", activePlayer.Name, targetedPlayer.Name, targetedPlayer.Name, targetedPlayer.Row, targetedPlayer.Col)
+	if gameState.Players[indexOfTargetedPlayer].SubtractStatusEffect(StatusEffect_Invisible) {
+		return fmt.Sprintf("Player '%s' used a Sensor on Player '%s' but Player '%s' is Invisible!", activePlayer.Name, targetedPlayer.Name, targetedPlayer.Name)
+	}
+
+	return fmt.Sprintf("Player '%s' used a Sensor on Player '%s'! Player '%s' is at [%s-%d]", activePlayer.Name, targetedPlayer.Name, targetedPlayer.Name, targetedPlayer.Row, targetedPlayer.Col)
 }
 
 func NewSensor() *Sensor {

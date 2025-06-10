@@ -19,6 +19,7 @@ const (
 	StatusEffect_Hyperphagic     = "Hyperphagic"
 	StatusEffect_Sedated         = "Sedated"
 	StatusEffect_Feline          = "Feline"
+	StatusEffect_Invisible       = "Invisible"
 )
 
 type AdrenalineSurge struct {
@@ -273,6 +274,50 @@ func (s *Feline) AddUse() int {
 }
 
 func (s *Feline) SubtractUse(player *Player) bool {
+	s.UsesLeft--
+
+	if s.UsesLeft <= 0 {
+		player.StatusEffects = slices.DeleteFunc(player.StatusEffects, func(s2 StatusEffect) bool { return s2 == s })
+		return false
+	}
+
+	return true
+}
+
+// #region Invisible
+
+type Invisible struct {
+	StatusEffectBase
+}
+
+func NewInvisible() *Invisible {
+	return &Invisible{
+		StatusEffectBase: StatusEffectBase{
+			Name:        StatusEffect_Invisible,
+			Description: "This player is immune to Spotlights and Sensors",
+			UsesLeft:    1,
+		},
+	}
+}
+
+func (s *Invisible) GetName() string {
+	return s.Name
+}
+
+func (s *Invisible) GetDescription() string {
+	return s.Description
+}
+
+func (s *Invisible) GetUsesLeft() int {
+	return s.UsesLeft
+}
+
+func (s *Invisible) AddUse() int {
+	s.UsesLeft++
+	return s.GetUsesLeft()
+}
+
+func (s *Invisible) SubtractUse(player *Player) bool {
 	s.UsesLeft--
 
 	if s.UsesLeft <= 0 {
