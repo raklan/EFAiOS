@@ -390,11 +390,11 @@ func assignStartingPositions(gameState *Models.GameState, gameMap *Models.GameMa
 	humanStarts, alienStarts := gameMap.GetSpacesOfType(Models.Space_HumanStart), gameMap.GetSpacesOfType(Models.Space_AlienStart)
 	log.Println(humanStarts)
 	for index, player := range gameState.Players {
-		if player.Team == Models.PlayerTeam_Human {
+		if player.Team == Models.PlayerTeam_Human && player.Role != Models.Role_Psychologist {
 			startingSpace := humanStarts[rand.Intn(len(humanStarts))]
 
 			gameState.Players[index].Row, gameState.Players[index].Col = startingSpace.Row, startingSpace.Col
-		} else if player.Team == Models.PlayerTeam_Alien {
+		} else if player.Team == Models.PlayerTeam_Alien || player.Role == Models.Role_Psychologist {
 			startingSpace := alienStarts[rand.Intn(len(alienStarts))]
 
 			gameState.Players[index].Row, gameState.Players[index].Col = startingSpace.Row, startingSpace.Col
