@@ -100,11 +100,7 @@ func AttackSpace(row string, col int, gameState GameState) (*GameEvent, error) {
 	return gameEvent, nil
 }
 
-func GetUnmarshalledCardArray(intermediate []struct {
-	Name        string `json:"name"`
-	Type        string `json:"type"`
-	Description string `json:"description"`
-}) []Card {
+func GetUnmarshalledCardArray(intermediate []CardBase) []Card {
 
 	cards := make([]Card, len(intermediate))
 
@@ -114,6 +110,8 @@ func GetUnmarshalledCardArray(intermediate []struct {
 			cards[i] = NewRedCard()
 		case "Green Card":
 			cards[i] = NewGreenCard()
+		case "White Card":
+			cards[i] = NewWhiteCard()
 		case "Mutation":
 			cards[i] = NewMutation()
 		case "Adrenaline":
@@ -122,7 +120,7 @@ func GetUnmarshalledCardArray(intermediate []struct {
 			cards[i] = NewTeleport()
 		case "Clone":
 			cards[i] = NewClone()
-		case "Defence":
+		case "Defense":
 			cards[i] = NewDefense()
 		case "Spotlight":
 			cards[i] = NewSpotlight()
@@ -132,6 +130,8 @@ func GetUnmarshalledCardArray(intermediate []struct {
 			cards[i] = NewSedatives()
 		case "Sensor":
 			cards[i] = NewSensor()
+		case "Cat":
+			cards[i] = NewCat()
 		}
 	}
 

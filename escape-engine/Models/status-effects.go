@@ -18,6 +18,7 @@ const (
 	StatusEffect_Armored         = "Armored"
 	StatusEffect_Hyperphagic     = "Hyperphagic"
 	StatusEffect_Sedated         = "Sedated"
+	StatusEffect_Feline          = "Feline"
 )
 
 type AdrenalineSurge struct {
@@ -228,6 +229,50 @@ func (s *Sedated) AddUse() int {
 }
 
 func (s *Sedated) SubtractUse(player *Player) bool {
+	s.UsesLeft--
+
+	if s.UsesLeft <= 0 {
+		player.StatusEffects = slices.DeleteFunc(player.StatusEffects, func(s2 StatusEffect) bool { return s2 == s })
+		return false
+	}
+
+	return true
+}
+
+// #region Feline
+
+type Feline struct {
+	StatusEffectBase
+}
+
+func NewFeline() *Feline {
+	return &Feline{
+		StatusEffectBase: StatusEffectBase{
+			Name:        StatusEffect_Feline,
+			Description: "This player can make 2 noises the next time they make a noise",
+			UsesLeft:    1,
+		},
+	}
+}
+
+func (s *Feline) GetName() string {
+	return s.Name
+}
+
+func (s *Feline) GetDescription() string {
+	return s.Description
+}
+
+func (s *Feline) GetUsesLeft() int {
+	return s.UsesLeft
+}
+
+func (s *Feline) AddUse() int {
+	s.UsesLeft++
+	return s.GetUsesLeft()
+}
+
+func (s *Feline) SubtractUse(player *Player) bool {
 	s.UsesLeft--
 
 	if s.UsesLeft <= 0 {

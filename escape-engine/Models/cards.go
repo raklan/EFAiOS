@@ -23,8 +23,6 @@ type CardPlayDetails struct {
 	TargetRow    string
 	TargetCol    int
 	TargetPlayer string
-	SecondRow    string
-	SecondCol    int
 }
 
 // #region Red Card
@@ -118,7 +116,7 @@ func NewWhiteCard() *WhiteCard {
 		CardBase: CardBase{
 			Name:        "White Card",
 			Description: "You make no noise in this sector",
-			Type:        Card_NoCard,
+			Type:        Card_White,
 		},
 	}
 }
@@ -410,7 +408,7 @@ func (c AttackCard) GetDescription() string {
 func (c AttackCard) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
-	descriptionString := fmt.Sprintf("Player %s used an Attack Card!", activePlayer.Name)
+	descriptionString := fmt.Sprintf("Player %s used an Attack Card! ", activePlayer.Name)
 
 	gameEvent, _ := AttackSpace(activePlayer.Row, activePlayer.Col, *gameState)
 
@@ -499,6 +497,45 @@ func NewSensor() *Sensor {
 		CardBase: CardBase{
 			Name:        "Sensor",
 			Description: "Reveals the exact location of a player of your choice",
+			Type:        Card_White,
+		},
+	}
+}
+
+// #region Cat
+
+type Cat struct {
+	CardBase
+}
+
+func (c Cat) GetName() string {
+	return c.Name
+}
+
+func (c Cat) GetType() string {
+	return c.Type
+}
+
+func (c Cat) GetDescription() string {
+	return c.Description
+}
+
+func (c Cat) Play(gameState *GameState, details CardPlayDetails) string {
+	activePlayer := gameState.GetCurrentPlayer()
+
+	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_Feline }); indexOfEffect != -1 {
+		activePlayer.StatusEffects[indexOfEffect].AddUse()
+	} else {
+		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewFeline())
+	}
+	return fmt.Sprintf("Player %s used a Cat!", activePlayer.Name)
+}
+
+func NewCat() *Cat {
+	return &Cat{
+		CardBase: CardBase{
+			Name:        "Cat",
+			Description: "Gives the Feline StatusEffect, allowing this player to make 2 noises the next time they make a noise",
 			Type:        Card_White,
 		},
 	}

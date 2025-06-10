@@ -77,10 +77,20 @@ async function handleCardMessage(cardEvent) {
         }
         sendWsMessage(ws, 'submitAction', actionToSend)
     } else if (cardEvent.type == "Green") {
-        clickMode = ClickModes.Noise
-        showPlayerChoicePopup('greenCard')
+        if (thisPlayer.statusEffects?.some(se => se.name === "Feline")) {
+            clickMode = ClickModes.CatGreen
+            showPlayerChoicePopup('cat-green')
+        } else {
+            clickMode = ClickModes.Noise
+            showPlayerChoicePopup('greenCard')
+        }
     } else if (cardEvent.type == "Red") {
-        showPlayerChoicePopup('redCard')
+        if (thisPlayer.statusEffects?.some(se => se.name === "Feline")) {
+            clickMode = ClickModes.CatRed
+            showPlayerChoicePopup('cat-red')
+        }else{
+            showPlayerChoicePopup('redCard')
+        }
     }
 
 }
@@ -98,7 +108,7 @@ async function handleGameEventMessage(gameEvent) {
     showNotification(gameEvent.description, 'Alert')
     let regRes = gameEvent.description.match(playerNameExtractor)
 
-    if(regRes?.groups?.PlayerName){
+    if (regRes?.groups?.PlayerName) {
         addEvent(regRes.groups.PlayerName, gameEvent.description)
     }
 }
@@ -189,7 +199,7 @@ async function handleLobbyInfoMessage(messageData) {
         startButton.onclick = () => {
             let gameConfig = getGameConfig()
             console.info('starting game with config', gameConfig);
-            if (gameConfig.numHumans + gameConfig.numAliens != messageData.lobbyInfo.players.length){
+            if (gameConfig.numHumans + gameConfig.numAliens != messageData.lobbyInfo.players.length) {
                 showNotification("# of Humans + # of Aliens must add up to # of Players in lobby!", "Error")
                 return;
             }
@@ -235,10 +245,10 @@ async function handleMovementResponse(movementEvent) {
     }
 }
 
-async function handleAvailableMovementMessage(availableMovement){
+async function handleAvailableMovementMessage(availableMovement) {
     availableMovement.spaces.forEach(space => {
         let spaceElement = document.getElementById(`hex-${space}`)
-        if(spaceElement){
+        if (spaceElement) {
             spaceElement.classList = [cssClass, 'potential-move'].join(' ');
         }
     })

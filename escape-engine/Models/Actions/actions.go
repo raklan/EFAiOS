@@ -45,12 +45,18 @@ func (attack Attack) IsAttacking() bool {
 }
 
 type Noise struct {
-	Row string `json:"row"`
-	Col int    `json:"col"`
+	Row  string `json:"row"`
+	Col  int    `json:"col"`
+	Row2 string `json:"row2"`
+	Col2 int    `json:"col2"`
 }
 
 func (noise Noise) IsNoisy() bool {
 	return noise.Row != "!" && noise.Col != -99
+}
+
+func (noise Noise) IsNoisy2() bool {
+	return noise.Row2 != "!" && noise.Col2 != -99
 }
 
 type EndTurn struct {
@@ -61,8 +67,6 @@ type PlayCard struct {
 	Row          string `json:"row"`
 	Col          int    `json:"col"`
 	TargetPlayer string `json:"targetPlayer"`
-	SecondRow    string `json:"secondRow"`
-	SecondCol    int    `json:"secondCol"`
 }
 
 func (move Movement) Execute(gameState *Models.GameState, playerId string) (Models.MovementEvent, error) {
@@ -151,7 +155,20 @@ func (noise Noise) Execute(gameState *Models.GameState, playerId string) (*Model
 		Col: noise.Col,
 	}
 	if noise.IsNoisy() {
-		event.Description = fmt.Sprintf("Player '%s' made noise at [%s-%d]!", actingPlayer.Name, noise.Row, noise.Col)
+		if noise.IsNoisy2() {
+			if !actingPlayer.SubtractStatusEffect(Models.StatusEffect_Feline) {
+				return &Models.GameEvent{}, fmt.Errorf("player '%s' does not have 'Feline' StatusEffect", actingPlayer.Name)
+			}
+
+			//Randomize which space appears first and which appears second as an extra layer of secrecy
+			if rand.Intn(11)%2 == 0 {
+				event.Description = fmt.Sprintf("Player '%s' made noise at [%s-%d] and [%s-%d]!", actingPlayer.Name, noise.Row, noise.Col, noise.Row2, noise.Col2)
+			} else {
+				event.Description = fmt.Sprintf("Player '%s' made noise at [%s-%d] and [%s-%d]!", actingPlayer.Name, noise.Row2, noise.Col2, noise.Row, noise.Col)
+			}
+		} else {
+			event.Description = fmt.Sprintf("Player '%s' made noise at [%s-%d]!", actingPlayer.Name, noise.Row, noise.Col)
+		}
 	} else {
 		event.Description = fmt.Sprintf("Player '%s' avoided making noise", actingPlayer.Name)
 	}
@@ -243,8 +260,6 @@ func (play PlayCard) Execute(gameState *Models.GameState, playerId string) (Mode
 		TargetRow:    play.Row,
 		TargetCol:    play.Col,
 		TargetPlayer: play.TargetPlayer,
-		SecondRow:    play.SecondRow,
-		SecondCol:    play.SecondCol,
 	})
 
 	gameState.DiscardPile = append(gameState.DiscardPile, cardCopy)

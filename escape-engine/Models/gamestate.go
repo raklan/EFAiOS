@@ -61,21 +61,13 @@ type GameState struct {
 
 func (g *GameState) UnmarshalJSON(data []byte) error {
 	intermediate := struct {
-		Id         string     `json:"id"`
-		GameMap    GameMap    `json:"gameMap"`
-		GameConfig GameConfig `json:"gameConfig"`
-		Deck       []struct {
-			Name        string `json:"name"`
-			Type        string `json:"type"`
-			Description string `json:"description"`
-		} `json:"deck"`
-		DiscardPile []struct {
-			Name        string `json:"name"`
-			Type        string `json:"type"`
-			Description string `json:"description"`
-		} `json:"discardPile"`
-		Players                []Player `json:"players"`
-		CurrentPlayer          string   `json:"currentPlayer"`
+		Id                     string     `json:"id"`
+		GameMap                GameMap    `json:"gameMap"`
+		GameConfig             GameConfig `json:"gameConfig"`
+		Deck                   []CardBase `json:"deck"`
+		DiscardPile            []CardBase `json:"discardPile"`
+		Players                []Player   `json:"players"`
+		CurrentPlayer          string     `json:"currentPlayer"`
 		StatusEffectPriorities map[string]int
 	}{}
 
@@ -136,22 +128,14 @@ type Player struct { //TODO: Add custom unmarshaling for the Player instead of h
 
 func (p *Player) UnmarshalJSON(data []byte) error {
 	intermediate := struct {
-		Id   string `json:"id"`
-		Name string `json:"name"`
-		Team string `json:"team"`
-		Role string `json:"role"`
-		Hand []struct {
-			Name        string `json:"name"`
-			Type        string `json:"type"`
-			Description string `json:"description"`
-		} `json:"hand"`
-		StatusEffects []struct {
-			Name        string `json:"name"`
-			Description string `json:"description"`
-			UsesLeft    int    `json:"usesLeft"`
-		} `json:"statusEffects"`
-		Row string `json:"row"`
-		Col int    `json:"col"`
+		Id            string             `json:"id"`
+		Name          string             `json:"name"`
+		Team          string             `json:"team"`
+		Role          string             `json:"role"`
+		Hand          []CardBase         `json:"hand"`
+		StatusEffects []StatusEffectBase `json:"statusEffects"`
+		Row           string             `json:"row"`
+		Col           int                `json:"col"`
 	}{}
 
 	if err := json.Unmarshal(data, &intermediate); err != nil {
@@ -184,6 +168,8 @@ func (p *Player) UnmarshalJSON(data []byte) error {
 			p.StatusEffects[i] = NewHyperphagic()
 		case StatusEffect_Sedated:
 			p.StatusEffects[i] = NewSedated()
+		case StatusEffect_Feline:
+			p.StatusEffects[i] = NewFeline()
 		}
 		for range effect.UsesLeft - 1 {
 			p.StatusEffects[i].AddUse()

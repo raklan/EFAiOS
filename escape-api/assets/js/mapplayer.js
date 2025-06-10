@@ -33,6 +33,11 @@ var selectedSpace = {
     col: -99
 }
 
+var selectedSpace2 = {
+    row: '!',
+    col: -99
+}
+
 const PlayerTeams = {
     Human: 'Human',
     Alien: 'Alien',
@@ -43,6 +48,8 @@ const ClickModes = {
     Moving: 'Moving',
     Noise: 'Noise',
     Spotlight: 'Spotlight',
+    CatGreen: 'CatGreen',
+    CatRed: 'CatRed',
     None: 'None'
 }
 
@@ -186,6 +193,37 @@ function hexClick(event) {
         event.target.classList.add('selected')
 
         document.getElementById("spotlight-confirm").style.display = ''
+    } else if (clickMode == ClickModes.CatRed) {
+        selectedSpace = {
+            row: thisPlayer.row,
+            col: thisPlayer.col
+        }
+        selectedSpace2 = {
+            row: row,
+            col: col
+        }
+        document.querySelectorAll('.hexfield.selected').forEach(x => x.classList.remove('selected'))
+        event.target.classList.add('selected')
+
+        document.getElementById("cat-confirm").style.display = ''
+    } else if (clickMode == ClickModes.CatGreen) {
+        var deselectedSpace = document.getElementById(`hex-${selectedSpace2.row}-${selectedSpace2.col}`)
+        if (deselectedSpace) {
+            deselectedSpace.classList.remove("selected")
+        }
+        selectedSpace2 = {
+            row: selectedSpace.row,
+            col: selectedSpace.col
+        }
+        selectedSpace = {
+            row: row,
+            col: col
+        }
+        event.target.classList.add('selected')
+
+        if (selectedSpace2.row != '!' && selectedSpace2.col != -99) {
+            document.getElementById("cat-confirm").style.display = ''
+        } 
     }
 
 
@@ -264,6 +302,30 @@ function showPlayerChoicePopup(mode) {
         content_info.innerHTML = ''
 
         typeWord(content_info, 'Choose a player to reveal with the Sensor')
+    } else if (mode === 'cat-green') {
+        document.getElementById("cat-confirm").style.display = 'none'
+        document.getElementById("playerChoice-cat").style.display = '';
+
+        popup.style.color = 'lime'
+        popup.style.border = '2px solid lime'
+
+        let content_info = document.getElementById('playerChoice-cat-content')
+        content_info.innerHTML = ''
+
+        typeWord(title, 'Green Card Drawn + Cat Activated')
+        typeWord(content_info, 'Choose 2 spaces to make noise in')
+    } else if (mode === 'cat-red') {
+        document.getElementById("cat-confirm").style.display = 'none'
+        document.getElementById("playerChoice-cat").style.display = '';
+
+        popup.style.color = 'red'
+        popup.style.border = '2px solid red'
+
+        let content_info = document.getElementById('playerChoice-cat-content')
+        content_info.innerHTML = ''
+
+        typeWord(title, 'Red Card Drawn + Cat Activated')
+        typeWord(content_info, 'Choose an extra space to make noise in')
     }
 
     popup.classList.add('notification-displayed')
@@ -281,7 +343,9 @@ function redCardConfirm() {
             type: 'Noise',
             turn: {
                 row: thisPlayer.row,
-                col: thisPlayer.col
+                col: thisPlayer.col,
+                row2: "!",
+                col2: -99,
             }
         }
     }
@@ -298,7 +362,32 @@ function greenCardConfirm() {
             type: 'Noise',
             turn: {
                 row: selectedSpace.row,
-                col: selectedSpace.col
+                col: selectedSpace.col,
+                row2: '!',
+                col2: -99
+            }
+        }
+    }
+    sendWsMessage(ws, 'submitAction', actionToSend)
+    hidePlayerChoicePopup();
+    selectedSpace = {
+        row: thisPlayer.row,
+        col: thisPlayer.col
+    }
+}
+
+function catConfirm() {
+    document.querySelectorAll('.hexfield.selected').forEach(x => x.classList.remove('selected'))
+    clickMode = ClickModes.Moving
+    const actionToSend = {
+        gameId: thisGameStateId,
+        action: {
+            type: 'Noise',
+            turn: {
+                row: selectedSpace.row,
+                col: selectedSpace.col,
+                row2: selectedSpace2.row,
+                col2: selectedSpace2.col
             }
         }
     }
@@ -383,6 +472,11 @@ function renderPlayerHand() {
 }
 
 function cardClick(card) {
+    if (thisPlayer.team == PlayerTeams.Spectator || !isThisPlayersTurn) {
+        showNotification('It\'s not your turn!', 'Error')
+        return
+    }
+
     if (card.name === "Spotlight") {
         clickMode = ClickModes.Spotlight;
         showPlayerChoicePopup(card.name)
