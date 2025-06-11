@@ -153,7 +153,7 @@ type GameConfig struct {
 	ActiveStatusEffects map[string]int `json:"activeStatusEffects"`
 }
 
-type Player struct { //TODO: Add custom unmarshaling for the Player instead of having wrapper structs for the hand and status effects
+type Player struct {
 	Id            string         `json:"id"`
 	Name          string         `json:"name"`
 	Team          string         `json:"team"`
@@ -166,14 +166,14 @@ type Player struct { //TODO: Add custom unmarshaling for the Player instead of h
 
 func (p *Player) UnmarshalJSON(data []byte) error {
 	intermediate := struct {
-		Id            string             `json:"id"`
-		Name          string             `json:"name"`
-		Team          string             `json:"team"`
-		Role          string             `json:"role"`
-		Hand          []CardBase         `json:"hand"`
-		StatusEffects []StatusEffectBase `json:"statusEffects"`
-		Row           string             `json:"row"`
-		Col           int                `json:"col"`
+		Id            string         `json:"id"`
+		Name          string         `json:"name"`
+		Team          string         `json:"team"`
+		Role          string         `json:"role"`
+		Hand          []CardBase     `json:"hand"`
+		StatusEffects []StatusEffect `json:"statusEffects"`
+		Row           string         `json:"row"`
+		Col           int            `json:"col"`
 	}{}
 
 	if err := json.Unmarshal(data, &intermediate); err != nil {
@@ -187,43 +187,22 @@ func (p *Player) UnmarshalJSON(data []byte) error {
 	p.Role = intermediate.Role
 	p.Row = intermediate.Row
 	p.Col = intermediate.Col
+	p.StatusEffects = intermediate.StatusEffects
 
 	//Copy hand
 	p.Hand = GetUnmarshalledCardArray(intermediate.Hand)
 
-	//Copy status effects
-	p.StatusEffects = make([]StatusEffect, len(intermediate.StatusEffects))
-
-	for i, effect := range intermediate.StatusEffects {
-		switch effect.Name {
-		case StatusEffect_AdrenalineSurge:
-			p.StatusEffects[i] = NewAdrenalineSurge()
-		case StatusEffect_Armored:
-			p.StatusEffects[i] = NewArmored()
-		case StatusEffect_Cloned:
-			p.StatusEffects[i] = NewCloned()
-		case StatusEffect_Hyperphagic:
-			p.StatusEffects[i] = NewHyperphagic()
-		case StatusEffect_Sedated:
-			p.StatusEffects[i] = NewSedated()
-		case StatusEffect_Feline:
-			p.StatusEffects[i] = NewFeline()
-		}
-		for range effect.UsesLeft - 1 {
-			p.StatusEffects[i].AddUse()
-		}
-	}
 	return nil
 }
 
 // Returns true if the player has a status effect with the given name
 func (p Player) HasStatusEffect(name string) bool {
-	return slices.ContainsFunc(p.StatusEffects, func(s StatusEffect) bool { return s.GetName() == name })
+	return slices.ContainsFunc(p.StatusEffects, func(s StatusEffect) bool { return s.Name == name })
 }
 
 // Attempts to find a status effect on the player with the given name and subtracts a use if one is found. Returns a boolean indicating whether any status effect was found
 func (player *Player) SubtractStatusEffect(name string) bool {
-	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s StatusEffect) bool { return s.GetName() == name }); indexOfEffect != -1 {
+	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s StatusEffect) bool { return s.Name == name }); indexOfEffect != -1 {
 		player.StatusEffects[indexOfEffect].SubtractUse(player)
 		return true
 	}
@@ -235,17 +214,4 @@ type Card interface {
 	GetType() string
 	GetDescription() string
 	Play(*GameState, CardPlayDetails) string
-}
-
-type StatusEffect interface {
-	//Returns the Name of this StatusEffect
-	GetName() string
-	//Returns the Description of this StatusEffect
-	GetDescription() string
-	//Returns the number of "Uses" left that this effect can activate. This StatusEffect should be removed from the Player's StatusEffects array when it hits 0
-	GetUsesLeft() int
-	//Adds one use to this StatusEffect
-	AddUse() int
-	//Uses this StatusEffect, reducing the UsesLeft by 1. If there are zero uses left, it will remove itself from the Player's StatusEffects. Returns a boolean describing whether there are uses left in this StatusEffect
-	SubtractUse(*Player) bool
 }

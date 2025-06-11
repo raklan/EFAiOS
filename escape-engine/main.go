@@ -1,7 +1,6 @@
 package main
 
 import (
-	"escape-engine/Engine"
 	"escape-engine/Models"
 	"fmt"
 )
@@ -119,47 +118,53 @@ import (
 // }
 
 func main() {
-	gameState := Models.GameState{
-		Players: []Models.Player{
-			{
-				Id:   "1",
-				Name: "Ryan",
-				Team: Models.PlayerTeam_Human,
-			},
-			{
-				Id:   "4",
-				Name: "Meghan",
-				Team: Models.PlayerTeam_Human,
-			},
-			{
-				Id:   "2",
-				Name: "Christina",
-				Team: Models.PlayerTeam_Alien,
-			},
-			{
-				Id:   "3",
-				Name: "Blake",
-				Team: Models.PlayerTeam_Alien,
-			},
-		},
-		GameConfig: Models.GameConfig{
-			NumHumans: 2,
-			NumAliens: 2,
-		},
-	}
+	// gameState := Models.GameState{
+	// 	Players: []Models.Player{
+	// 		{
+	// 			Id:   "1",
+	// 			Name: "Ryan",
+	// 			Team: Models.PlayerTeam_Human,
+	// 		},
+	// 		{
+	// 			Id:   "4",
+	// 			Name: "Meghan",
+	// 			Team: Models.PlayerTeam_Human,
+	// 		},
+	// 		{
+	// 			Id:   "2",
+	// 			Name: "Christina",
+	// 			Team: Models.PlayerTeam_Alien,
+	// 		},
+	// 		{
+	// 			Id:   "3",
+	// 			Name: "Blake",
+	// 			Team: Models.PlayerTeam_Alien,
+	// 		},
+	// 	},
+	// 	GameConfig: Models.GameConfig{
+	// 		NumHumans: 2,
+	// 		NumAliens: 2,
+	// 	},
+	// }
 
-	activeRoles := map[string]int{
-		Models.Role_Captain:     2,
-		Models.Role_Pilot:       2,
-		Models.Role_Soldier:     2,
-		Models.Role_SpeedyAlien: 2,
-		Models.Role_BlinkAlien:  2,
-		Models.Role_SilentAlien: 2,
-	}
+	// activeRoles := map[string]int{
+	// 	Models.Role_Captain:     2,
+	// 	Models.Role_Pilot:       2,
+	// 	Models.Role_Soldier:     2,
+	// 	Models.Role_SpeedyAlien: 2,
+	// 	Models.Role_BlinkAlien:  2,
+	// 	Models.Role_SilentAlien: 2,
+	// }
 
-	requiredRoles := map[string]int{}
+	// requiredRoles := map[string]int{}
 
-	Engine.AssignRoles(&gameState, activeRoles, requiredRoles)
+	// Engine.AssignRoles(&gameState, activeRoles, requiredRoles)
 
-	fmt.Println(gameState)
+	// fmt.Println(gameState)
+
+	se := Models.NewAdrenalineSurge()
+
+	se.AddUse()
+
+	fmt.Println(se)
 }

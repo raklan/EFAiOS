@@ -19,6 +19,18 @@ type CardBase struct {
 	Type        string `json:"type"`
 }
 
+func (r *CardBase) GetName() string {
+	return r.Name
+}
+
+func (r *CardBase) GetType() string {
+	return r.Type
+}
+
+func (r *CardBase) GetDescription() string {
+	return r.Description
+}
+
 type CardPlayDetails struct {
 	TargetRow    string
 	TargetCol    int
@@ -29,18 +41,6 @@ type CardPlayDetails struct {
 
 type RedCard struct {
 	CardBase
-}
-
-func (r *RedCard) GetName() string {
-	return r.Name
-}
-
-func (r *RedCard) GetType() string {
-	return r.Type
-}
-
-func (r *RedCard) GetDescription() string {
-	return r.Description
 }
 
 func (r *RedCard) Play(gameState *GameState, details CardPlayDetails) string {
@@ -63,18 +63,6 @@ type GreenCard struct {
 	CardBase
 }
 
-func (g *GreenCard) GetName() string {
-	return g.Name
-}
-
-func (g *GreenCard) GetType() string {
-	return g.Type
-}
-
-func (g *GreenCard) GetDescription() string {
-	return g.Description
-}
-
 func (g *GreenCard) Play(gameState *GameState, details CardPlayDetails) string {
 	return ""
 }
@@ -93,18 +81,6 @@ func NewGreenCard() *GreenCard {
 
 type WhiteCard struct {
 	CardBase
-}
-
-func (w *WhiteCard) GetName() string {
-	return w.Name
-}
-
-func (w *WhiteCard) GetType() string {
-	return w.Type
-}
-
-func (w *WhiteCard) GetDescription() string {
-	return w.Description
 }
 
 func (w *WhiteCard) Play(gameState *GameState, details CardPlayDetails) string {
@@ -127,22 +103,10 @@ type Adrenaline struct {
 	CardBase
 }
 
-func (a *Adrenaline) GetName() string {
-	return a.Name
-}
-
-func (a *Adrenaline) GetType() string {
-	return a.Type
-}
-
-func (a *Adrenaline) GetDescription() string {
-	return a.Description
-}
-
 func (a *Adrenaline) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
-	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_AdrenalineSurge }); indexOfEffect != -1 {
+	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.Name == StatusEffect_AdrenalineSurge }); indexOfEffect != -1 {
 		activePlayer.StatusEffects[indexOfEffect].AddUse()
 	} else {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewAdrenalineSurge())
@@ -167,18 +131,6 @@ type Mutation struct {
 	CardBase
 }
 
-func (m *Mutation) GetName() string {
-	return m.Name
-}
-
-func (m *Mutation) GetType() string {
-	return m.Type
-}
-
-func (m *Mutation) GetDescription() string {
-	return m.Description
-}
-
 func (m *Mutation) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
@@ -201,18 +153,6 @@ func NewMutation() *Mutation {
 
 type Teleport struct {
 	CardBase
-}
-
-func (t Teleport) GetName() string {
-	return t.Name
-}
-
-func (t Teleport) GetType() string {
-	return t.Type
-}
-
-func (t Teleport) GetDescription() string {
-	return t.Description
 }
 
 func (t Teleport) Play(gameState *GameState, details CardPlayDetails) string {
@@ -243,22 +183,10 @@ type Clone struct {
 	CardBase
 }
 
-func (c Clone) GetName() string {
-	return c.Name
-}
-
-func (c Clone) GetType() string {
-	return c.Type
-}
-
-func (c Clone) GetDescription() string {
-	return c.Description
-}
-
 func (c Clone) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
-	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_Cloned }); indexOfEffect != -1 {
+	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.Name == StatusEffect_Cloned }); indexOfEffect != -1 {
 		activePlayer.StatusEffects[indexOfEffect].AddUse()
 	} else {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewCloned())
@@ -283,22 +211,10 @@ type Defense struct {
 	CardBase
 }
 
-func (c Defense) GetName() string {
-	return c.Name
-}
-
-func (c Defense) GetType() string {
-	return c.Type
-}
-
-func (c Defense) GetDescription() string {
-	return c.Description
-}
-
 func (c Defense) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
-	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_Armored }); indexOfEffect != -1 {
+	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.Name == StatusEffect_Armored }); indexOfEffect != -1 {
 		activePlayer.StatusEffects[indexOfEffect].AddUse()
 	} else {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewArmored())
@@ -321,18 +237,6 @@ func NewDefense() *Defense {
 
 type Spotlight struct {
 	CardBase
-}
-
-func (c Spotlight) GetName() string {
-	return c.Name
-}
-
-func (c Spotlight) GetType() string {
-	return c.Type
-}
-
-func (c Spotlight) GetDescription() string {
-	return c.Description
 }
 
 func (c Spotlight) Play(gameState *GameState, details CardPlayDetails) string {
@@ -399,18 +303,6 @@ type AttackCard struct {
 	CardBase
 }
 
-func (c AttackCard) GetName() string {
-	return c.Name
-}
-
-func (c AttackCard) GetType() string {
-	return c.Type
-}
-
-func (c AttackCard) GetDescription() string {
-	return c.Description
-}
-
 func (c AttackCard) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
@@ -439,22 +331,10 @@ type Sedatives struct {
 	CardBase
 }
 
-func (c Sedatives) GetName() string {
-	return c.Name
-}
-
-func (c Sedatives) GetType() string {
-	return c.Type
-}
-
-func (c Sedatives) GetDescription() string {
-	return c.Description
-}
-
 func (c Sedatives) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
-	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_Sedated }); indexOfEffect != -1 {
+	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.Name == StatusEffect_Sedated }); indexOfEffect != -1 {
 		activePlayer.StatusEffects[indexOfEffect].AddUse()
 	} else {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewSedated())
@@ -477,18 +357,6 @@ func NewSedatives() *Sedatives {
 
 type Sensor struct {
 	CardBase
-}
-
-func (c Sensor) GetName() string {
-	return c.Name
-}
-
-func (c Sensor) GetType() string {
-	return c.Type
-}
-
-func (c Sensor) GetDescription() string {
-	return c.Description
 }
 
 func (c Sensor) Play(gameState *GameState, details CardPlayDetails) string {
@@ -519,22 +387,10 @@ type Cat struct {
 	CardBase
 }
 
-func (c Cat) GetName() string {
-	return c.Name
-}
-
-func (c Cat) GetType() string {
-	return c.Type
-}
-
-func (c Cat) GetDescription() string {
-	return c.Description
-}
-
 func (c Cat) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
-	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_Feline }); indexOfEffect != -1 {
+	if indexOfEffect := slices.IndexFunc(activePlayer.StatusEffects, func(s StatusEffect) bool { return s.Name == StatusEffect_Feline }); indexOfEffect != -1 {
 		activePlayer.StatusEffects[indexOfEffect].AddUse()
 	} else {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewFeline())

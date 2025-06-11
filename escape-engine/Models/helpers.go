@@ -2,16 +2,18 @@ package Models
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"slices"
 )
 
 func GetAllowedSpaces(player *Player, gameState *GameState) int {
+	log.Println("getting allowed spaces for player", player)
+
 	allowedSpaces := 1
 
 	//Adrenaline
-	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_AdrenalineSurge }); indexOfEffect != -1 {
-		player.StatusEffects[indexOfEffect].SubtractUse(player)
+	if player.SubtractStatusEffect(StatusEffect_AdrenalineSurge) {
 		allowedSpaces++
 	}
 
@@ -21,9 +23,9 @@ func GetAllowedSpaces(player *Player, gameState *GameState) int {
 	}
 
 	//Hyperphagic
-	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s StatusEffect) bool { return s.GetName() == StatusEffect_Hyperphagic }); indexOfEffect != -1 {
-		allowedSpaces++
+	if player.HasStatusEffect(StatusEffect_Hyperphagic) {
 		//Hyperphagic is a permanent bonus, so don't subtract any uses
+		allowedSpaces++
 	}
 
 	return allowedSpaces
@@ -73,7 +75,7 @@ func AttackSpace(row string, col int, gameState GameState) (*GameEvent, error) {
 
 		playerWasSaved := false
 		for _, se := range defenseEffects {
-			if player.HasStatusEffect(se) {
+			if player.SubtractStatusEffect(se) {
 				switch se {
 				case StatusEffect_Armored:
 					playerWasSaved = true
