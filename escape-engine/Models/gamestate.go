@@ -209,6 +209,10 @@ func (player *Player) SubtractStatusEffect(name string) bool {
 	return false
 }
 
+func (player Player) GetSpaceMapKey() string {
+	return GetMapKey(player.Row, player.Col)
+}
+
 type Card interface {
 	GetName() string
 	GetType() string

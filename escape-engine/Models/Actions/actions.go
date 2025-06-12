@@ -78,7 +78,7 @@ func (move Movement) Execute(gameState *Models.GameState, playerId string) (Mode
 	actingPlayer := gameState.GetCurrentPlayer()
 
 	//Bounds check
-	spaceKey := fmt.Sprintf("%s-%d", move.ToRow, move.ToCol)
+	spaceKey := Models.GetMapKey(move.ToRow, move.ToCol)
 
 	if space, exists := gameState.GameMap.Spaces[spaceKey]; exists {
 		//Make sure it's an open space
@@ -89,9 +89,17 @@ func (move Movement) Execute(gameState *Models.GameState, playerId string) (Mode
 
 		//Make sure it's close enough
 		numAllowedSpaces := Models.GetAllowedSpaces(actingPlayer, gameState)
-		allowedSpacesToMoveTo := gameState.GameMap.GetSpacesWithinNthAdjacency(numAllowedSpaces, fmt.Sprintf("%s-%d", actingPlayer.Row, actingPlayer.Col))
+		allowedSpacesToMoveTo := gameState.GameMap.GetSpacesWithinNthAdjacency(numAllowedSpaces, actingPlayer.GetSpaceMapKey())
+
 		if _, exists := allowedSpacesToMoveTo[space.GetMapKey()]; !exists {
-			return movement, fmt.Errorf("space [%s] is too far away", spaceKey)
+			if actingPlayer.GetSpaceMapKey() == space.GetMapKey() {
+				if !actingPlayer.SubtractStatusEffect(Models.StatusEffect_Lurking) {
+					return movement, fmt.Errorf("you cannot end your turn on the same space you started on")
+				}
+				//If they're not moving but have Lurking, it's ok
+			} else {
+				return movement, fmt.Errorf("space [%s] is too far away", spaceKey)
+			}
 		}
 
 		//At this point, player is allowed to execute the move
@@ -107,7 +115,10 @@ func (move Movement) Execute(gameState *Models.GameState, playerId string) (Mode
 func GetPotentialMoves(gameState *Models.GameState, playerId string) []string {
 	actingPlayer := gameState.GetCurrentPlayer()
 	numAllowedSpaces := Models.GetAllowedSpaces(actingPlayer, gameState)
-	allowedSpacesToMoveTo := gameState.GameMap.GetSpacesWithinNthAdjacency(numAllowedSpaces, fmt.Sprintf("%s-%d", actingPlayer.Row, actingPlayer.Col))
+	allowedSpacesToMoveTo := gameState.GameMap.GetSpacesWithinNthAdjacency(numAllowedSpaces, actingPlayer.GetSpaceMapKey())
+	if actingPlayer.HasStatusEffect(Models.StatusEffect_Lurking) {
+		allowedSpacesToMoveTo[actingPlayer.GetSpaceMapKey()] = gameState.GameMap.Spaces[actingPlayer.GetSpaceMapKey()]
+	}
 	maps.DeleteFunc(allowedSpacesToMoveTo, func(k string, v Models.Space) bool {
 		return slices.Contains(Models.GetNonmovableSpaces(actingPlayer), v.Type)
 	})

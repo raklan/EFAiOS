@@ -49,8 +49,11 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 			Id:   element.Id,
 			Name: element.Name,
 			//Using -99 to avoid any weird cases where that player might be close enough to get onto the Map
-			Row: "!",
-			Col: -99,
+			Row:           "!",
+			Col:           -99,
+			Role:          "",
+			StatusEffects: []Models.StatusEffect{},
+			Hand:          []Models.Card{},
 		})
 	}
 
@@ -408,6 +411,9 @@ func AssignRoles(gameState *Models.GameState, activeRoles map[string]int, requir
 	log.Println("Assigning roles")
 	humanPlayers := gameState.GetHumanPlayers()
 	alienPlayers := gameState.GetAlienPlayers()
+	requiredRoles = map[string]int{
+		Models.Role_ExecutiveOfficer: 1,
+	}
 
 	for (len(humanPlayers) > 0 || len(alienPlayers) > 0) && len(requiredRoles) > 0 {
 		for roleName := range requiredRoles {
@@ -424,6 +430,10 @@ func AssignRoles(gameState *Models.GameState, activeRoles map[string]int, requir
 			}
 
 			playerToAssign_Copy := playerListToAssignFrom[rand.Intn(len(playerListToAssignFrom))]
+
+			if Models.RoleAssigners[roleName] == nil {
+				LogError("AssignRoles", fmt.Errorf("ryan forgot to add the assigner for %s to the RoleAssigners", roleName))
+			}
 
 			Models.RoleAssigners[roleName](&gameState.Players[slices.IndexFunc(gameState.Players, func(p Models.Player) bool { return p.Id == playerToAssign_Copy.Id })])
 

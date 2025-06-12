@@ -249,7 +249,7 @@ async function handleAvailableMovementMessage(availableMovement) {
     availableMovement.spaces.forEach(space => {
         let spaceElement = document.getElementById(`hex-${space}`)
         if (spaceElement) {
-            spaceElement.classList = [cssClass, 'potential-move'].join(' ');
+            spaceElement.classList.add("potential-move")
         }
     })
 }

@@ -12,6 +12,7 @@ const (
 	StatusEffect_Sedated         = "Sedated"
 	StatusEffect_Feline          = "Feline"
 	StatusEffect_Invisible       = "Invisible"
+	StatusEffect_Lurking         = "Lurking"
 )
 
 type StatusEffect struct {
@@ -102,6 +103,14 @@ func NewInvisible() StatusEffect {
 	return StatusEffect{
 		Name:        StatusEffect_Invisible,
 		Description: "This player is immune to Spotlights and Sensors",
+		UsesLeft:    1,
+	}
+}
+
+func NewLurking() StatusEffect {
+	return StatusEffect{
+		Name:        StatusEffect_Lurking,
+		Description: "This player can end their turn on the same space they started on",
 		UsesLeft:    1,
 	}
 }

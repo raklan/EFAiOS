@@ -140,7 +140,7 @@ func GetMapKey(row string, col int) string {
 }
 
 func (space Space) GetMapKey() string {
-	return fmt.Sprintf("%s-%d", space.Row, space.Col)
+	return GetMapKey(space.Row, space.Col)
 }
 
 // Gets the space's row as an int. A = 0, B = 1, ... Z = 25, AA = 26, etc

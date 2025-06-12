@@ -1,43 +1,51 @@
 package Models
 
 var RoleAssigners = map[string]func(*Player){
-	Role_Captain:      AssignCaptain,
-	Role_Pilot:        AssignPilot,
-	Role_Copilot:      AssignCopilot,
-	Role_Soldier:      AssignSoldier,
-	Role_Psychologist: AssignPsychologist,
+	Role_Captain:          AssignCaptain,
+	Role_Pilot:            AssignPilot,
+	Role_Copilot:          AssignCopilot,
+	Role_Soldier:          AssignSoldier,
+	Role_Psychologist:     AssignPsychologist,
+	Role_ExecutiveOfficer: AssignExecutiveOfficer,
 
-	Role_SpeedyAlien: AssignSpeedyAlien,
-	Role_BlinkAlien:  AssignBlinkAlien,
-	Role_SilentAlien: AssignSilentAlien,
+	Role_SpeedyAlien:    AssignSpeedyAlien,
+	Role_BlinkAlien:     AssignBlinkAlien,
+	Role_SilentAlien:    AssignSilentAlien,
+	Role_BruteAlien:     AssignBruteAlien,
+	Role_InvisibleAlien: AssignInvisibleAlien,
+	Role_LurkingAlien:   AssignLurkingAlien,
 }
 
 var RoleTeams = map[string]string{
-	Role_Captain:      PlayerTeam_Human,
-	Role_Pilot:        PlayerTeam_Human,
-	Role_Copilot:      PlayerTeam_Human,
-	Role_Soldier:      PlayerTeam_Human,
-	Role_Psychologist: PlayerTeam_Human,
+	Role_Captain:          PlayerTeam_Human,
+	Role_Pilot:            PlayerTeam_Human,
+	Role_Copilot:          PlayerTeam_Human,
+	Role_Soldier:          PlayerTeam_Human,
+	Role_Psychologist:     PlayerTeam_Human,
+	Role_ExecutiveOfficer: PlayerTeam_Human,
 
 	Role_SpeedyAlien:    PlayerTeam_Alien,
 	Role_BlinkAlien:     PlayerTeam_Alien,
 	Role_SilentAlien:    PlayerTeam_Alien,
 	Role_BruteAlien:     PlayerTeam_Alien,
 	Role_InvisibleAlien: PlayerTeam_Alien,
+	Role_LurkingAlien:   PlayerTeam_Alien,
 }
 
 const (
-	Role_Captain      = "Captain"
-	Role_Pilot        = "Pilot"
-	Role_Copilot      = "Copilot"
-	Role_Soldier      = "Soldier"
-	Role_Psychologist = "Psychologist"
+	Role_Captain          = "Captain"
+	Role_Pilot            = "Pilot"
+	Role_Copilot          = "Copilot"
+	Role_Soldier          = "Soldier"
+	Role_Psychologist     = "Psychologist"
+	Role_ExecutiveOfficer = "Executive Officer"
 
 	Role_SpeedyAlien    = "Speedy Alien"
 	Role_BlinkAlien     = "Blink Alien"
 	Role_SilentAlien    = "Silent Alien"
 	Role_BruteAlien     = "Brute Alien"
 	Role_InvisibleAlien = "Invisible Alien"
+	Role_LurkingAlien   = "Lurking Alien"
 )
 
 //#region Human Roles
@@ -64,6 +72,11 @@ func AssignSoldier(player *Player) {
 
 func AssignPsychologist(player *Player) {
 	player.Role = Role_Psychologist
+}
+
+func AssignExecutiveOfficer(player *Player) {
+	player.Role = Role_ExecutiveOfficer
+	player.StatusEffects = append(player.StatusEffects, NewLurking())
 }
 
 //#region Alien Roles
@@ -95,4 +108,11 @@ func AssignInvisibleAlien(player *Player) {
 	invis := NewInvisible()
 	invis.UsesLeft = 1000
 	player.StatusEffects = append(player.StatusEffects, invis)
+}
+
+func AssignLurkingAlien(player *Player) {
+	player.Role = Role_LurkingAlien
+	lurk := NewLurking()
+	lurk.UsesLeft = 1000
+	player.StatusEffects = append(player.StatusEffects, lurk)
 }
