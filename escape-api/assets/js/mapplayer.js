@@ -223,7 +223,7 @@ function hexClick(event) {
 
         if (selectedSpace2.row != '!' && selectedSpace2.col != -99) {
             document.getElementById("cat-confirm").style.display = ''
-        } 
+        }
     }
 
 
@@ -292,16 +292,27 @@ function showPlayerChoicePopup(mode) {
 
         typeWord(content_info, 'Choose a space to reveal with the Spotlight')
     } else if (mode == 'Sensor') {
-        document.getElementById("playerChoice-sensor").style.display = '';
+        document.getElementById("playerChoice-targeted").style.display = '';
         typeWord(title, 'Using Sensor')
 
         popup.style.color = 'white'
         popup.style.border = '2px solid white'
 
-        let content_info = document.getElementById("playerChoice-sensor-content")
+        let content_info = document.getElementById("playerChoice-targeted-content")
         content_info.innerHTML = ''
 
         typeWord(content_info, 'Choose a player to reveal with the Sensor')
+    } else if (mode == 'Scanner') {
+        document.getElementById("playerChoice-targeted").style.display = '';
+        typeWord(title, 'Using Scanner')
+
+        popup.style.color = 'white'
+        popup.style.border = '2px solid white'
+
+        let content_info = document.getElementById("playerChoice-targeted-content")
+        content_info.innerHTML = ''
+
+        typeWord(content_info, 'Choose a player to reveal their Role/Team with the Scanner')
     } else if (mode === 'cat-green') {
         document.getElementById("cat-confirm").style.display = 'none'
         document.getElementById("playerChoice-cat").style.display = '';
@@ -439,6 +450,24 @@ function sensorConfirm(playerId) {
     sendWsMessage(ws, 'submitAction', actionToSend)
 }
 
+function scannerConfirm(playerId){
+    hidePlayerChoicePopup();
+    clickMode = ClickModes.Moving;
+
+    const actionToSend = {
+        gameId: thisGameStateId,
+        action: {
+            type: 'PlayCard',
+            turn: {
+                name: 'Scanner',
+                targetPlayer: playerId
+            }
+        }
+    }
+
+    sendWsMessage(ws, 'submitAction', actionToSend)
+}
+
 function attack(isAttacking) {
     var actionToSend = {
         gameId: thisGameStateId,
@@ -483,7 +512,7 @@ function cardClick(card) {
         return;
     }
     else if (card.name === 'Sensor') {
-        var playerList = document.getElementById("playerChoice-sensor-playerList")
+        var playerList = document.getElementById("playerChoice-targeted-playerList")
         playerList.replaceChildren() //Important: Clear the player list so new players joining don't cause duplicate rendering
 
         for (let player of gamePlayerList) {
@@ -493,6 +522,26 @@ function cardClick(card) {
             playerEntry.style.color = 'red'
             playerEntry.onclick = () => {
                 sensorConfirm(player.id)
+            }
+
+            playerList.appendChild(playerEntry)
+        }
+
+        showPlayerChoicePopup(card.name)
+
+        return;
+    }
+    else if (card.name === 'Scanner') {
+        var playerList = document.getElementById("playerChoice-targeted-playerList")
+        playerList.replaceChildren() //Important: Clear the player list so new players joining don't cause duplicate rendering
+
+        for (let player of gamePlayerList) {
+            playerEntry = document.createElement("button")
+            playerEntry.innerText = player.name
+            playerEntry.classList = ['redCard-confirm']
+            playerEntry.style.color = 'red'
+            playerEntry.onclick = () => {
+                scannerConfirm(player.id)
             }
 
             playerList.appendChild(playerEntry)

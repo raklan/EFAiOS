@@ -14,9 +14,14 @@ const (
 )
 
 type CardBase struct {
-	Name        string `json:"name"`
+	//Name of the Card
+	Name string `json:"name"`
+	//A Description of what this card does
 	Description string `json:"description"`
-	Type        string `json:"type"`
+	//One of the Card_* constants
+	Type string `json:"type"`
+	//A boolean describing whether this card should be completely discarded after a player plays it (true) or if it can go back into the discard pile (false)
+	DestroyOnUse bool `json:"destroyOnUse"`
 }
 
 func (r *CardBase) GetName() string {
@@ -29,6 +34,14 @@ func (r *CardBase) GetType() string {
 
 func (r *CardBase) GetDescription() string {
 	return r.Description
+}
+
+func (r *CardBase) GetDestroyOnUse() bool {
+	return r.DestroyOnUse
+}
+
+func (r *CardBase) SetDestroyOnUse(destroyOnUse bool) {
+	r.DestroyOnUse = destroyOnUse
 }
 
 type CardPlayDetails struct {
@@ -375,7 +388,7 @@ func NewSensor() *Sensor {
 	return &Sensor{
 		CardBase: CardBase{
 			Name:        "Sensor",
-			Description: "Reveals the exact location of a player of your choice",
+			Description: "Publicly reveals the exact location of a player of your choice",
 			Type:        Card_White,
 		},
 	}
@@ -403,6 +416,30 @@ func NewCat() *Cat {
 		CardBase: CardBase{
 			Name:        "Cat",
 			Description: "Gives the Feline StatusEffect, allowing this player to make 2 noises the next time they make a noise",
+			Type:        Card_White,
+		},
+	}
+}
+
+// #region Scanner
+
+type Scanner struct {
+	CardBase
+}
+
+func (s Scanner) Play(gameState *GameState, details CardPlayDetails) string {
+	activePlayer := gameState.GetCurrentPlayer()
+	indexOfTargetedPlayer := slices.IndexFunc(gameState.Players, func(p Player) bool { return p.Id == details.TargetPlayer })
+	targetedPlayer := gameState.Players[indexOfTargetedPlayer]
+
+	return fmt.Sprintf("Player '%s' used a Scanner on Player '%s'! Player '%s' is a %s %s!", activePlayer.Name, targetedPlayer.Name, targetedPlayer.Name, targetedPlayer.Role, targetedPlayer.Team)
+}
+
+func NewScanner() *Scanner {
+	return &Scanner{
+		CardBase: CardBase{
+			Name:        "Scanner",
+			Description: "Publicly reveals the Team & Role of a Player of your choice",
 			Type:        Card_White,
 		},
 	}

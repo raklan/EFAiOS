@@ -134,7 +134,10 @@ func GetUnmarshalledCardArray(intermediate []CardBase) []Card {
 			cards[i] = NewSensor()
 		case "Cat":
 			cards[i] = NewCat()
+		case "Scanner":
+			cards[i] = NewScanner()
 		}
+		cards[i].SetDestroyOnUse(card.DestroyOnUse)
 	}
 
 	return cards

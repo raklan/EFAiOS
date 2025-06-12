@@ -412,7 +412,7 @@ func AssignRoles(gameState *Models.GameState, activeRoles map[string]int, requir
 	humanPlayers := gameState.GetHumanPlayers()
 	alienPlayers := gameState.GetAlienPlayers()
 	requiredRoles = map[string]int{
-		Models.Role_ExecutiveOfficer: 1,
+		Models.Role_Medic: 1,
 	}
 
 	for (len(humanPlayers) > 0 || len(alienPlayers) > 0) && len(requiredRoles) > 0 {

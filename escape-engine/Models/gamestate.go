@@ -217,5 +217,7 @@ type Card interface {
 	GetName() string
 	GetType() string
 	GetDescription() string
+	GetDestroyOnUse() bool
+	SetDestroyOnUse(bool)
 	Play(*GameState, CardPlayDetails) string
 }

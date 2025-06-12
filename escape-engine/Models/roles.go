@@ -7,6 +7,7 @@ var RoleAssigners = map[string]func(*Player){
 	Role_Soldier:          AssignSoldier,
 	Role_Psychologist:     AssignPsychologist,
 	Role_ExecutiveOfficer: AssignExecutiveOfficer,
+	Role_Medic:            AssignMedic,
 
 	Role_SpeedyAlien:    AssignSpeedyAlien,
 	Role_BlinkAlien:     AssignBlinkAlien,
@@ -23,6 +24,7 @@ var RoleTeams = map[string]string{
 	Role_Soldier:          PlayerTeam_Human,
 	Role_Psychologist:     PlayerTeam_Human,
 	Role_ExecutiveOfficer: PlayerTeam_Human,
+	Role_Medic:            PlayerTeam_Human,
 
 	Role_SpeedyAlien:    PlayerTeam_Alien,
 	Role_BlinkAlien:     PlayerTeam_Alien,
@@ -39,13 +41,14 @@ const (
 	Role_Soldier          = "Soldier"
 	Role_Psychologist     = "Psychologist"
 	Role_ExecutiveOfficer = "Executive Officer"
+	Role_Medic            = "Medic"
 
-	Role_SpeedyAlien    = "Speedy Alien"
-	Role_BlinkAlien     = "Blink Alien"
-	Role_SilentAlien    = "Silent Alien"
-	Role_BruteAlien     = "Brute Alien"
-	Role_InvisibleAlien = "Invisible Alien"
-	Role_LurkingAlien   = "Lurking Alien"
+	Role_SpeedyAlien    = "Speedy"
+	Role_BlinkAlien     = "Blink"
+	Role_SilentAlien    = "Silent"
+	Role_BruteAlien     = "Brute"
+	Role_InvisibleAlien = "Invisible"
+	Role_LurkingAlien   = "Lurking"
 )
 
 //#region Human Roles
@@ -57,17 +60,23 @@ func AssignCaptain(player *Player) {
 
 func AssignPilot(player *Player) {
 	player.Role = Role_Pilot
-	player.Hand = append(player.Hand, NewCat())
+	cat := NewCat()
+	cat.DestroyOnUse = true
+	player.Hand = append(player.Hand, cat)
 }
 
 func AssignCopilot(player *Player) {
 	player.Role = Role_Copilot
-	player.Hand = append(player.Hand, NewTeleport())
+	tp := NewTeleport()
+	tp.DestroyOnUse = true
+	player.Hand = append(player.Hand, tp)
 }
 
 func AssignSoldier(player *Player) {
 	player.Role = Role_Soldier
-	player.Hand = append(player.Hand, NewAttackCard())
+	attack := NewAttackCard()
+	attack.DestroyOnUse = true
+	player.Hand = append(player.Hand, attack)
 }
 
 func AssignPsychologist(player *Player) {
@@ -79,6 +88,13 @@ func AssignExecutiveOfficer(player *Player) {
 	player.StatusEffects = append(player.StatusEffects, NewLurking())
 }
 
+func AssignMedic(player *Player) {
+	player.Role = Role_Medic
+	scanner := NewScanner()
+	scanner.DestroyOnUse = true
+	player.Hand = append(player.Hand, scanner)
+}
+
 //#region Alien Roles
 
 func AssignSpeedyAlien(player *Player) {
@@ -88,12 +104,16 @@ func AssignSpeedyAlien(player *Player) {
 
 func AssignBlinkAlien(player *Player) { //TODO: This can allow the blink alien to instantly get to the human sector
 	player.Role = Role_BlinkAlien
-	player.Hand = append(player.Hand, NewTeleport())
+	tp := NewTeleport()
+	tp.DestroyOnUse = true
+	player.Hand = append(player.Hand, tp)
 }
 
 func AssignSilentAlien(player *Player) {
 	player.Role = Role_SilentAlien
-	player.Hand = append(player.Hand, NewSedatives())
+	sed := NewSedatives()
+	sed.DestroyOnUse = true
+	player.Hand = append(player.Hand, sed)
 }
 
 func AssignBruteAlien(player *Player) {
