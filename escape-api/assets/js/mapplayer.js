@@ -67,7 +67,9 @@ var cssClass = 'hexfield';//If you change this, change it in hexClick() too
 var MAP = null
 
 function createGrid(rows, columns) {
-    let radius = Math.min(rows * columns / (rows + columns) * (window.screen.width / 150), 50)
+    const byMap = 700/(columns * 0.5 + rows * 0.5);
+    const byWindow = window.innerWidth/35;
+    let radius = Math.min(byMap, byWindow)
     var grid = document.getElementById("gameplay-gridParent");
 
     var createSVG = function (tag) {
@@ -114,7 +116,7 @@ function createGrid(rows, columns) {
             polyText.setAttribute('y', `${center.y}`)
             polyText.setAttribute('fill', 'black')
             polyText.setAttribute('text-anchor', 'middle')
-            polyText.setAttribute('font-size', 'small')
+            polyText.setAttribute('font-size', `${radius/2.25}px`)
             polyText.innerHTML = `[${numberToLetter(row)}-${column}]`
             polyText.style.pointerEvents = 'none'
             svgParent.appendChild(polyText)
