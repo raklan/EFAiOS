@@ -14,6 +14,7 @@ const (
 	StatusEffect_Invisible       = "Invisible"
 	StatusEffect_Lurking         = "Lurking"
 	StatusEffect_Knowhow         = "Knowhow"
+	StatusEffect_Deceptive       = "Deceptive"
 )
 
 type StatusEffect struct {
@@ -122,6 +123,15 @@ func NewKnowhow() StatusEffect {
 	return StatusEffect{
 		Name:        StatusEffect_Knowhow,
 		Description: "This player draws 2 Escape Pod cards upon arriving at an escape pod",
+		UsesLeft:    1,
+	}
+}
+
+// #region Deceptive
+func NewDeceptive() StatusEffect {
+	return StatusEffect{
+		Name:        StatusEffect_Deceptive,
+		Description: "This player may make a noise in any sector upon drawing a White Card",
 		UsesLeft:    1,
 	}
 }

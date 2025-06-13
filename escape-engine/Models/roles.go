@@ -8,13 +8,16 @@ var RoleAssigners = map[string]func(*Player){
 	Role_Psychologist:     AssignPsychologist,
 	Role_ExecutiveOfficer: AssignExecutiveOfficer,
 	Role_Medic:            AssignMedic,
+	Role_Engineer:         AssignEngineer,
 
-	Role_FastAlien:      AssignSpeedyAlien,
+	Role_FastAlien:      AssignFastAlien,
+	Role_SurgeAlien:     AssignSurgeAlien,
 	Role_BlinkAlien:     AssignBlinkAlien,
 	Role_SilentAlien:    AssignSilentAlien,
 	Role_BruteAlien:     AssignBruteAlien,
 	Role_InvisibleAlien: AssignInvisibleAlien,
 	Role_LurkingAlien:   AssignLurkingAlien,
+	Role_PsychicAlien:   AssignPsychicAlien,
 }
 
 var RoleTeams = map[string]string{
@@ -25,6 +28,7 @@ var RoleTeams = map[string]string{
 	Role_Psychologist:     PlayerTeam_Human,
 	Role_ExecutiveOfficer: PlayerTeam_Human,
 	Role_Medic:            PlayerTeam_Human,
+	Role_Engineer:         PlayerTeam_Human,
 
 	Role_FastAlien:      PlayerTeam_Alien,
 	Role_SurgeAlien:     PlayerTeam_Alien,
@@ -33,6 +37,7 @@ var RoleTeams = map[string]string{
 	Role_BruteAlien:     PlayerTeam_Alien,
 	Role_InvisibleAlien: PlayerTeam_Alien,
 	Role_LurkingAlien:   PlayerTeam_Alien,
+	Role_PsychicAlien:   PlayerTeam_Alien,
 }
 
 const (
@@ -43,6 +48,7 @@ const (
 	Role_Psychologist     = "Psychologist"
 	Role_ExecutiveOfficer = "Executive Officer"
 	Role_Medic            = "Medic"
+	Role_Engineer         = "Engineer"
 
 	Role_FastAlien      = "Fast"
 	Role_SurgeAlien     = "Surge"
@@ -51,6 +57,7 @@ const (
 	Role_BruteAlien     = "Brute"
 	Role_InvisibleAlien = "Invisible"
 	Role_LurkingAlien   = "Lurking"
+	Role_PsychicAlien   = "Psychic"
 )
 
 //#region Human Roles
@@ -97,9 +104,16 @@ func AssignMedic(player *Player) {
 	player.Hand = append(player.Hand, scanner)
 }
 
+func AssignEngineer(player *Player) {
+	player.Role = Role_Engineer
+	knowhow := NewKnowhow()
+	knowhow.UsesLeft = 1000
+	player.StatusEffects = append(player.StatusEffects, knowhow)
+}
+
 //#region Alien Roles
 
-func AssignSpeedyAlien(player *Player) {
+func AssignFastAlien(player *Player) {
 	player.Role = Role_FastAlien
 	player.StatusEffects = append(player.StatusEffects, NewAdrenalineSurge())
 }
@@ -144,4 +158,11 @@ func AssignLurkingAlien(player *Player) {
 	lurk := NewLurking()
 	lurk.UsesLeft = 1000
 	player.StatusEffects = append(player.StatusEffects, lurk)
+}
+
+func AssignPsychicAlien(player *Player) {
+	player.Role = Role_PsychicAlien
+	dec := NewDeceptive()
+	dec.UsesLeft = 1000
+	player.StatusEffects = append(player.StatusEffects, dec)
 }

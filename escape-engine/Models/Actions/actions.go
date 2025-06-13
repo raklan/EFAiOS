@@ -148,8 +148,15 @@ func DrawCard(gameState *Models.GameState, playerId string) (Models.CardEvent, e
 		drawnCard := *drawRandomCardFromDeck(gameState)
 		event.Card = drawnCard
 		event.Type = drawnCard.GetType()
-		if drawnCard.GetType() == Models.Card_White && actingPlayer.Team == Models.PlayerTeam_Human { //May need tweaking. Currently discards item cards picked up by Aliens
-			actingPlayer.Hand = append(actingPlayer.Hand, drawnCard)
+		if drawnCard.GetType() == Models.Card_White {
+			if actingPlayer.Team == Models.PlayerTeam_Human { //May need tweaking. Currently discards item cards picked up by Aliens
+				actingPlayer.Hand = append(actingPlayer.Hand, drawnCard)
+			}
+
+			if actingPlayer.SubtractStatusEffect(Models.StatusEffect_Deceptive) {
+				event.Type = Models.Card_Green
+				gameState.DiscardPile = append(gameState.DiscardPile, drawnCard)
+			}
 		} else {
 			//Don't need to check if the card needs to be destroyed in this case because it'll only ever be Red/Green/NoItem cards at this point
 			gameState.DiscardPile = append(gameState.DiscardPile, drawnCard)

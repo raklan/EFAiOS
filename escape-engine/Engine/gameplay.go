@@ -409,9 +409,10 @@ func AssignRoles(gameState *Models.GameState, activeRoles map[string]int, requir
 	log.Println("Assigning roles")
 	humanPlayers := gameState.GetHumanPlayers()
 	alienPlayers := gameState.GetAlienPlayers()
-	// requiredRoles = map[string]int{
-	// 	Models.Role_Medic: 1,
-	// }
+	requiredRoles = map[string]int{
+		Models.Role_PsychicAlien: 1,
+		Models.Role_Captain:      1,
+	}
 
 	for (len(humanPlayers) > 0 || len(alienPlayers) > 0) && len(requiredRoles) > 0 {
 		for roleName := range requiredRoles {
