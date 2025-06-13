@@ -1,7 +1,14 @@
+typingQueue = {}
+
 function typeWord(element, word) {
+    if(!typingQueue[element.id]){
+        typingQueue[element.id] = []
+    }else{
+        typingQueue[element.id].forEach(timeoutId => clearTimeout(timeoutId))
+    }
     let finalInterval = 0;
-    for (let i = 0; i < word.length; i++) {
-        setTimeout(typeLetter, (35 * i) + 35, element, word.charAt(i))
+    for (let i = 0; i < word.length; i++) {        
+        typingQueue[element.id].push(setTimeout(typeLetter, (35 * i) + 35, element, word.charAt(i)))
         if (i == word.length - 1) {
             finalInterval = 35 + (35 * i)
         }
@@ -39,6 +46,12 @@ function showNotification(notificationContent, notificationType) {
     typeWord(content, notificationContent)
 
     popup.classList.add('notification-displayed')
+}
+
+function showGameOver(){
+    var gameOverMsg = document.getElementById("gameover-notification");
+    gameOverMsg.style.display = '';
+    typeWord(gameOverMsg, "The Game has ended!")
 }
 
 function hideNotification() {

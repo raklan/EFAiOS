@@ -170,17 +170,19 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 
 				actingPlayer := gameState.GetCurrentPlayer()
 
-				messages = append(messages, Models.WebsocketMessageListItem{
-					Message: Models.WebsocketMessage{
-						Type: Models.WebsocketMessage_GameEvent,
-						Data: Models.GameEvent{
-							Row:         "!",
-							Col:         -99,
-							Description: fmt.Sprintf("Player '%s' is in a safe sector", actingPlayer.Name),
+				if gameState.GameMap.Spaces[actingPlayer.GetSpaceMapKey()].Type != Models.Space_Pod {
+					messages = append(messages, Models.WebsocketMessageListItem{
+						Message: Models.WebsocketMessage{
+							Type: Models.WebsocketMessage_GameEvent,
+							Data: Models.GameEvent{
+								Row:         "!",
+								Col:         -99,
+								Description: fmt.Sprintf("Player '%s' is in a safe sector", actingPlayer.Name),
+							},
 						},
-					},
-					ShouldBroadcast: true,
-				})
+						ShouldBroadcast: true,
+					})
+				}
 				messages = append(messages, Models.WebsocketMessageListItem{
 					Message: Models.WebsocketMessage{
 						Type: Models.WebsocketMessage_TurnEnd,
@@ -409,10 +411,6 @@ func AssignRoles(gameState *Models.GameState, activeRoles map[string]int, requir
 	log.Println("Assigning roles")
 	humanPlayers := gameState.GetHumanPlayers()
 	alienPlayers := gameState.GetAlienPlayers()
-	requiredRoles = map[string]int{
-		Models.Role_PsychicAlien: 1,
-		Models.Role_Captain:      1,
-	}
 
 	for (len(humanPlayers) > 0 || len(alienPlayers) > 0) && len(requiredRoles) > 0 {
 		for roleName := range requiredRoles {

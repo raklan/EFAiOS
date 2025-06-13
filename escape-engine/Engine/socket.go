@@ -345,6 +345,12 @@ func processMessage(roomCode string, playerId string, message []byte) {
 				room[playerId].WriteJSON(messageToSend.Message)
 			}
 		}
+
+		if slices.ContainsFunc(messageList, func(li Models.WebsocketMessageListItem) bool {
+			return li.Message.Type == Models.WebsocketMessage_GameOver
+		}) {
+			cleanUpRoom(room, roomCode)
+		}
 	case "getAllowedMoves":
 		var action struct {
 			GameId   string `json:"gameId"`
@@ -504,10 +510,6 @@ func endPlayerConnection(roomCode string, playerId string, room map[string]*webs
 }
 
 func cleanUpRoom(room map[string]*websocket.Conn, roomCode string) {
-	gameOverMessage := Models.WebsocketMessage{
-		Type: Models.WebsocketMessage_GameOver,
-		Data: Models.GameOver{}, //Maybe put the final GameState here?
-	}
 	closeMessage := Models.WebsocketMessage{
 		Type: Models.WebsocketMessage_Close,
 		Data: Models.SocketClose{
@@ -517,11 +519,7 @@ func cleanUpRoom(room map[string]*websocket.Conn, roomCode string) {
 
 	//Send the messages to every player
 	for playerId, conn := range room {
-		err := conn.WriteJSON(gameOverMessage)
-		if err != nil {
-			log.Printf("Error sending GameOver Message to %s. Aborting message, but closing connection anyways", playerId)
-		}
-		err = conn.WriteJSON(closeMessage)
+		err := conn.WriteJSON(closeMessage)
 		if err != nil {
 			log.Printf("Error sending Close Message to %s. Aborting message, but closing connection anyways", playerId)
 		}

@@ -96,7 +96,9 @@ async function handleCardMessage(cardEvent) {
 }
 
 async function handleCloseMessage(messageData) {
-    showNotification(messageData.message, 'Connection Lost')
+    if(!gameHasEnded){
+        showNotification(messageData.message, 'Connection Lost')
+    }
     ws.close();
 }
 
@@ -128,7 +130,8 @@ async function handleTurnEnd(turnEnd) {
 }
 
 async function handleGameOverMessage(messageData) {
-    showNotification("The Game has ended", "Game Over!")
+    gameHasEnded = true;
+    showGameOver();
 }
 
 async function handleGameStateMessage(gameState) {

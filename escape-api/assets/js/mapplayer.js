@@ -53,6 +53,8 @@ const ClickModes = {
     None: 'None'
 }
 
+let gameHasEnded = false;
+
 const playerNameExtractor = new RegExp(/Player \'(?<PlayerName>[^\']+)\'.+/);
 
 var clickMode = ClickModes.None;
@@ -154,6 +156,11 @@ function drawMap(map) {
 }
 
 function hexClick(event) {
+    if(gameHasEnded){
+        showNotification('The Game has ended', 'Error')
+        return
+    }
+
     if (thisPlayer.team == PlayerTeams.Spectator || !isThisPlayersTurn) {
         showNotification('It\'s not your turn!', 'Error')
         return
