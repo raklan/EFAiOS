@@ -187,34 +187,28 @@ func (noise Noise) Execute(gameState *Models.GameState, playerId string) (*Model
 	return &event, nil
 }
 
-func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*Models.GameState, *Models.GameEvent, error) {
+func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*Models.GameEvent, error) {
 	var gameEvent *Models.GameEvent = nil
 
-	actingPlayerIndex := slices.IndexFunc(gameState.Players, func(p Models.Player) bool { return playerId == p.Id })
-	if actingPlayerIndex == -1 {
-		return gameState, nil, fmt.Errorf("could not find acting player with ID == {%s}", playerId)
-	}
+	actingPlayer := gameState.GetCurrentPlayer()
 
-	actingPlayer := &(gameState.Players[actingPlayerIndex])
-
-	space := gameState.GameMap.Spaces[Models.Space{Row: actingPlayer.Row, Col: actingPlayer.Col}.GetMapKey()]
+	space := gameState.GameMap.Spaces[actingPlayer.GetSpaceMapKey()]
 	if space.Type == Models.Space_Pod {
 		if actingPlayer.Team == Models.PlayerTeam_Alien {
-			return gameState, nil, fmt.Errorf("aliens are not allowed to enter pods")
+			return nil, fmt.Errorf("aliens are not allowed to enter pods")
 		}
 
 		totalPodCards := gameState.GameConfig.NumWorkingPods + gameState.GameConfig.NumBrokenPods
 		if totalPodCards == 0 {
-			return gameState, nil, fmt.Errorf("no pod cards left")
+			return nil, fmt.Errorf("no pod cards left")
 		}
-		podCard := (rand.Intn(totalPodCards) + 1)
-		podIsWorking := podCard > gameState.GameConfig.NumWorkingPods
-		if gameState.GameConfig.NumBrokenPods == 0 { //0 broken pods is an edge case that will effectively make 1 "working" card act as a broken card
-			podIsWorking = true
-		}
-		if gameState.GameConfig.NumWorkingPods == 0 { //0 working pods is an edge case in the opposite direction
-			podIsWorking = false
-		}
+		workingPods := slices.Repeat([]bool{true}, gameState.GameConfig.NumWorkingPods)
+		brokenPods := slices.Repeat([]bool{false}, gameState.GameConfig.NumBrokenPods)
+
+		allPods := slices.Concat(workingPods, brokenPods)
+		drawnPod := rand.Intn(len(allPods))
+
+		podIsWorking := allPods[drawnPod]
 		if podIsWorking {
 			gameEvent = &Models.GameEvent{
 				Row:         actingPlayer.Row,
@@ -225,31 +219,41 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 			actingPlayer.Row, actingPlayer.Col = "!", -99
 
 			gameState.GameConfig.NumWorkingPods -= 1
-			gameState.GameMap.Spaces[space.GetMapKey()] = Models.Space{
-				Row:  space.Row,
-				Col:  space.Col,
-				Type: Models.Space_UsedPod,
-			}
 
-			return gameState, gameEvent, nil
 		} else {
-			gameEvent = &Models.GameEvent{
-				Row:         actingPlayer.Row,
-				Col:         actingPlayer.Col,
-				Description: fmt.Sprintf("Player %s tried the Pod at [%s-%d], but it didn't work!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
-			}
+			if len(allPods) > 1 && actingPlayer.SubtractStatusEffect(Models.StatusEffect_Knowhow) {
+				secondDrawnPod := Models.RandExclusive(len(allPods), drawnPod)
+				if allPods[secondDrawnPod] {
+					gameEvent = &Models.GameEvent{
+						Row:         actingPlayer.Row,
+						Col:         actingPlayer.Col,
+						Description: fmt.Sprintf("Player %s escaped using the Pod at [%s-%d]!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
+					}
+					actingPlayer.Team = Models.PlayerTeam_Spectator
+					actingPlayer.Row, actingPlayer.Col = "!", -99
 
-			gameState.GameConfig.NumBrokenPods -= 1
-			gameState.GameMap.Spaces[space.GetMapKey()] = Models.Space{
-				Row:  space.Row,
-				Col:  space.Col,
-				Type: Models.Space_UsedPod,
+					gameState.GameConfig.NumWorkingPods -= 1
+
+				}
+			} else {
+				gameEvent = &Models.GameEvent{
+					Row:         actingPlayer.Row,
+					Col:         actingPlayer.Col,
+					Description: fmt.Sprintf("Player %s tried the Pod at [%s-%d], but it didn't work!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
+				}
+
+				gameState.GameConfig.NumBrokenPods -= 1
 			}
+		}
+		gameState.GameMap.Spaces[space.GetMapKey()] = Models.Space{
+			Row:  space.Row,
+			Col:  space.Col,
+			Type: Models.Space_UsedPod,
 		}
 	}
 
-	gameState.CurrentPlayer = getNextPlayerId(gameState.Players, actingPlayerIndex)
-	return gameState, gameEvent, nil //TODO: End the game when no human players remain
+	gameState.CurrentPlayer = getNextPlayerId(gameState.Players, slices.IndexFunc(gameState.Players, func(p Models.Player) bool { return p.Id == actingPlayer.Id }))
+	return gameEvent, nil
 }
 
 func (play PlayCard) Execute(gameState *Models.GameState, playerId string) (Models.GameEvent, error) {

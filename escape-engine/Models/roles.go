@@ -9,7 +9,7 @@ var RoleAssigners = map[string]func(*Player){
 	Role_ExecutiveOfficer: AssignExecutiveOfficer,
 	Role_Medic:            AssignMedic,
 
-	Role_SpeedyAlien:    AssignSpeedyAlien,
+	Role_FastAlien:      AssignSpeedyAlien,
 	Role_BlinkAlien:     AssignBlinkAlien,
 	Role_SilentAlien:    AssignSilentAlien,
 	Role_BruteAlien:     AssignBruteAlien,
@@ -26,7 +26,8 @@ var RoleTeams = map[string]string{
 	Role_ExecutiveOfficer: PlayerTeam_Human,
 	Role_Medic:            PlayerTeam_Human,
 
-	Role_SpeedyAlien:    PlayerTeam_Alien,
+	Role_FastAlien:      PlayerTeam_Alien,
+	Role_SurgeAlien:     PlayerTeam_Alien,
 	Role_BlinkAlien:     PlayerTeam_Alien,
 	Role_SilentAlien:    PlayerTeam_Alien,
 	Role_BruteAlien:     PlayerTeam_Alien,
@@ -43,7 +44,8 @@ const (
 	Role_ExecutiveOfficer = "Executive Officer"
 	Role_Medic            = "Medic"
 
-	Role_SpeedyAlien    = "Speedy"
+	Role_FastAlien      = "Fast"
+	Role_SurgeAlien     = "Surge"
 	Role_BlinkAlien     = "Blink"
 	Role_SilentAlien    = "Silent"
 	Role_BruteAlien     = "Brute"
@@ -98,8 +100,15 @@ func AssignMedic(player *Player) {
 //#region Alien Roles
 
 func AssignSpeedyAlien(player *Player) {
-	player.Role = Role_SpeedyAlien
+	player.Role = Role_FastAlien
 	player.StatusEffects = append(player.StatusEffects, NewAdrenalineSurge())
+}
+
+func AssignSurgeAlien(player *Player) {
+	player.Role = Role_SurgeAlien
+	adr := NewAdrenaline()
+	adr.DestroyOnUse = true
+	player.Hand = append(player.Hand, adr)
 }
 
 func AssignBlinkAlien(player *Player) { //TODO: This can allow the blink alien to instantly get to the human sector

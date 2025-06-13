@@ -156,3 +156,13 @@ func GetRandomMapPair[T1 comparable, T2 any](theMap map[T1]T2) (T1, T2) {
 	}
 	panic("How did we get here?")
 }
+
+// Randomly generates a number in the range [0,n), ensuring the number is not equal to [exclude]
+func RandExclusive(n int, exclude int) int {
+	//Janky but good enough here
+	numPicked := rand.Intn(n)
+	for numPicked == exclude {
+		numPicked = rand.Intn(n)
+	}
+	return numPicked
+}

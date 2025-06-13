@@ -262,7 +262,7 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 			return messages, err
 		}
 
-		result, event, err := turn.Execute(&gameState, action.PlayerId) //TODO: Figure out how to tell clients someone used a pod
+		event, err := turn.Execute(&gameState, action.PlayerId)
 		if err != nil {
 			LogError(funcLogPrefix, err)
 			return messages, err
@@ -278,15 +278,13 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 			})
 		}
 
-		if result != nil {
-			messages = append(messages, Models.WebsocketMessageListItem{
-				Message: Models.WebsocketMessage{
-					Type: Models.WebsocketMessage_GameState,
-					Data: result,
-				},
-				ShouldBroadcast: true,
-			})
-		}
+		messages = append(messages, Models.WebsocketMessageListItem{
+			Message: Models.WebsocketMessage{
+				Type: Models.WebsocketMessage_GameState,
+				Data: gameState,
+			},
+			ShouldBroadcast: true,
+		})
 
 	case Actions.Action_PlayCard:
 		turn := Actions.PlayCard{}
@@ -411,9 +409,9 @@ func AssignRoles(gameState *Models.GameState, activeRoles map[string]int, requir
 	log.Println("Assigning roles")
 	humanPlayers := gameState.GetHumanPlayers()
 	alienPlayers := gameState.GetAlienPlayers()
-	requiredRoles = map[string]int{
-		Models.Role_Medic: 1,
-	}
+	// requiredRoles = map[string]int{
+	// 	Models.Role_Medic: 1,
+	// }
 
 	for (len(humanPlayers) > 0 || len(alienPlayers) > 0) && len(requiredRoles) > 0 {
 		for roleName := range requiredRoles {

@@ -13,6 +13,7 @@ const (
 	StatusEffect_Feline          = "Feline"
 	StatusEffect_Invisible       = "Invisible"
 	StatusEffect_Lurking         = "Lurking"
+	StatusEffect_Knowhow         = "Knowhow"
 )
 
 type StatusEffect struct {
@@ -107,10 +108,20 @@ func NewInvisible() StatusEffect {
 	}
 }
 
+// #region Lurking
 func NewLurking() StatusEffect {
 	return StatusEffect{
 		Name:        StatusEffect_Lurking,
 		Description: "This player can end their turn on the same space they started on",
+		UsesLeft:    1,
+	}
+}
+
+// #region Knowhow
+func NewKnowhow() StatusEffect {
+	return StatusEffect{
+		Name:        StatusEffect_Knowhow,
+		Description: "This player draws 2 Escape Pod cards upon arriving at an escape pod",
 		UsesLeft:    1,
 	}
 }
