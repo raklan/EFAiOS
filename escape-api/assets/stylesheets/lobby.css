@@ -14,6 +14,8 @@
     overflow-x: hidden;
     white-space: nowrap;
     transform: translateY(-100%);
+    scrollbar-color: lime black;
+    scrollbar-width: thin;
 }
 
 .config-popup-displayed {

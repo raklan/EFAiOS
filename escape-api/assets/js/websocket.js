@@ -214,7 +214,7 @@ async function handleLobbyInfoMessage(messageData) {
         configButton.onclick = () => {
             showConfig();
         }
-        setConfigForm(GAME_CONFIG_DEFAULT)
+        setAllConfigAsDefault();
     }
     //#endregion
 }

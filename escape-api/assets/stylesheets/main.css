@@ -127,11 +127,12 @@ button,button::after {
     height: 30px;
     border: 2px solid transparent;
     outline: none;
-    border-bottom: 2px solid #3f3f3f;
+    border: 1px solid transparent;
+    border-bottom: 1px solid #3f3f3f;
     caret-color: #3f3f3f;
     background-color: transparent;
     padding: 5px;
-    transition: .5s linear;
+    transition: .25s linear;
     font-family: inherit;
     letter-spacing: 1px;
     margin: 1%;
@@ -141,7 +142,6 @@ button,button::after {
     border: 1px dashed lime;
     caret-color: lime;
     color: lime;
-    box-shadow: 4px 4px 10px #070707;
   }
   
   .text-input:focus::placeholder {
@@ -154,6 +154,7 @@ button,button::after {
     width: fit-content;
     max-width: 240px;
     span{
+      color: rgb(0, 179, 0);
       font-size: 0.75rem;
       position: relative;
       top: 0.5rem;

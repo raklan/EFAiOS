@@ -7,6 +7,7 @@ import (
 	"escape-engine/Models/Actions"
 	"fmt"
 	"log"
+	"maps"
 	"math/rand"
 	"slices"
 )
@@ -413,6 +414,7 @@ func AssignRoles(gameState *Models.GameState, activeRoles map[string]int, requir
 	alienPlayers := gameState.GetAlienPlayers()
 
 	for (len(humanPlayers) > 0 || len(alienPlayers) > 0) && len(requiredRoles) > 0 {
+		maps.DeleteFunc(requiredRoles, func(name string, num int) bool { return num == 0 })
 		for roleName := range requiredRoles {
 			var playerListToAssignFrom []Models.Player
 
@@ -451,6 +453,7 @@ func AssignRoles(gameState *Models.GameState, activeRoles map[string]int, requir
 	}
 
 	for (len(humanPlayers) > 0 || len(alienPlayers) > 0) && len(activeRoles) > 0 {
+		maps.DeleteFunc(activeRoles, func(name string, num int) bool { return num == 0 })
 		roleName, _ := Models.GetRandomMapPair(activeRoles)
 
 		var playerListToAssignFrom []Models.Player

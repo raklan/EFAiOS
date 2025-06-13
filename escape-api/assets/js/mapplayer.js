@@ -15,7 +15,10 @@ const GAME_CONFIG_DEFAULT = {
     sedatives: 1,
     sensor: 1,
     spotlight: 2,
-    teleport: 1
+    teleport: 1,
+
+    numVanillaRolePossible: 1,
+    numVanillaRoleRequired: 0,
 }
 
 const SpaceTypes = {
@@ -156,7 +159,7 @@ function drawMap(map) {
 }
 
 function hexClick(event) {
-    if(gameHasEnded){
+    if (gameHasEnded) {
         showNotification('The Game has ended', 'Error')
         return
     }
@@ -457,7 +460,7 @@ function sensorConfirm(playerId) {
     sendWsMessage(ws, 'submitAction', actionToSend)
 }
 
-function scannerConfirm(playerId){
+function scannerConfirm(playerId) {
     hidePlayerChoicePopup();
     clickMode = ClickModes.Moving;
 
@@ -640,7 +643,31 @@ function addEvent(playerName, event) {
     eventLogContainer.appendChild(eventDesc)
 }
 
+function setAllConfigAsDefault(){
+    setGeneralConfigAsDefault();
+    setCardConfigAsDefault();
+    setRoleConfigAsDefault();
+}
+
+function setGeneralConfigAsDefault(){
+    setGeneralConfig(GAME_CONFIG_DEFAULT)
+}
+
+function setCardConfigAsDefault(){
+    setCardConfig(GAME_CONFIG_DEFAULT)
+}
+
+function setRoleConfigAsDefault(){
+    setRoleConfig(GAME_CONFIG_DEFAULT)
+}
+
 function setConfigForm(configObject) {
+    setGeneralConfig(configObject);
+    setCardConfig(configObject);
+    setRoleConfig(configObject);
+}
+
+function setGeneralConfig(configObject){
     let configForm = document.getElementById("lobby-gameConfig")
 
     configForm['config-numHumans'].value = 0;
@@ -648,6 +675,10 @@ function setConfigForm(configObject) {
 
     configForm['config-numWorkingPods'].value = configObject.workingPods;
     configForm['config-numBrokenPods'].value = configObject.brokenPods;
+}
+
+function setCardConfig(configObject) {
+    let configForm = document.getElementById("lobby-gameConfig")
 
     configForm['config-numRedCards'].value = configObject.red;
     configForm['config-numGreenCards'].value = configObject.green;
@@ -665,6 +696,27 @@ function setConfigForm(configObject) {
     configForm['config-numSedatives'].value = configObject.sedatives;
     configForm['config-numCat'].value = configObject.cat;
     configForm['config-numMutation'].value = configObject.mutation;
+}
+
+function setRoleConfig(configObject) {
+    let configForm = document.getElementById("lobby-gameConfig")
+    configForm['config-numCaptain'].value = configObject.numVanillaRolePossible;
+    configForm['config-numPilot'].value = configObject.numVanillaRolePossible;
+    configForm['config-numCopilot'].value = configObject.numVanillaRolePossible;
+    configForm['config-numSoldier'].value = configObject.numVanillaRolePossible;
+    configForm['config-numEngineer'].value = configObject.numVanillaRolePossible;
+    configForm['config-numPsychologist'].value = configObject.numVanillaRolePossible;
+    configForm['config-numEO'].value = configObject.numVanillaRolePossible;
+    configForm['config-numMedic'].value = configObject.numVanillaRolePossible;
+
+    configForm['config-numFast'].value = configObject.numVanillaRolePossible;
+    configForm['config-numSurge'].value = configObject.numVanillaRolePossible;
+    configForm['config-numBlink'].value = configObject.numVanillaRolePossible;
+    configForm['config-numSilent'].value = configObject.numVanillaRolePossible;
+    configForm['config-numBrute'].value = configObject.numVanillaRolePossible;
+    configForm['config-numInvisible'].value = configObject.numVanillaRolePossible;
+    configForm['config-numLurking'].value = configObject.numVanillaRolePossible;
+    configForm['config-numPsychic'].value = configObject.numVanillaRolePossible;
 }
 
 function getGameConfig() {
@@ -698,9 +750,64 @@ function getGameConfig() {
         "Cloned": 1
     }
 
+    config.activeRoles = {
+        "Captain": getConfigValue('config-numCaptain'),
+        "Pilot": getConfigValue('config-numPilot'),
+        "Copilot": getConfigValue('config-numCopilot'),
+        "Soldier": getConfigValue('config-numSoldier'),
+        "Psychologist": getConfigValue('config-numPsychologist'),
+        "Executive Officer": getConfigValue('config-numEO'),
+        "Medic": getConfigValue('config-numMedic'),
+        "Engineer": getConfigValue('config-numEngineer'),
+
+        "Fast": getConfigValue('config-numFast'),
+        "Surge": getConfigValue('config-numSurge'),
+        "Blink": getConfigValue('config-numBlink'),
+        "Silent": getConfigValue('config-numSilent'),
+        "Brute": getConfigValue('config-numBrute'),
+        "Invisible": getConfigValue('config-numInvisible'),
+        "Lurking": getConfigValue('config-numLurking'),
+        "Psychic": getConfigValue('config-numPsychic'),
+    }
+
+    config.requiredRoles = {
+        "Captain": getConfigValue('config-numCaptainRequired'),
+        "Pilot": getConfigValue('config-numPilotRequired'),
+        "Copilot": getConfigValue('config-numCopilotRequired'),
+        "Soldier": getConfigValue('config-numSoldierRequired'),
+        "Psychologist": getConfigValue('config-numPsychologistRequired'),
+        "Executive Officer": getConfigValue('config-numEORequired'),
+        "Medic": getConfigValue('config-numMedicRequired'),
+        "Engineer": getConfigValue('config-numEngineerRequired'),
+
+        "Fast": getConfigValue('config-numFastRequired'),
+        "Surge": getConfigValue('config-numSurgeRequired'),
+        "Blink": getConfigValue('config-numBlinkRequired'),
+        "Silent": getConfigValue('config-numSilentRequired'),
+        "Brute": getConfigValue('config-numBruteRequired'),
+        "Invisible": getConfigValue('config-numInvisibleRequired'),
+        "Lurking": getConfigValue('config-numLurkingRequired'),
+        "Psychic": getConfigValue('config-numPsychicRequired'),
+    }
+
     function getConfigValue(inputKey) {
-        return configForm[inputKey]?.value?.length > 0 ? parseInt(configForm[inputKey].value) : 0;
+        return configForm[inputKey]?.value ? parseInt(configForm[inputKey].value) : 0;
     }
 
     return config;
+}
+
+function updatePossible(inputName) {
+    let configForm = document.getElementById("lobby-gameConfig")
+    let possible = configForm[`config-${inputName}`]
+    let required = configForm[`config-${inputName}Required`]
+
+    possible.min = required.value ? parseInt(required.value) : 0
+    possible.value = Math.max(possible.value ? parseInt(possible.value) : 0, possible.min ? parseInt(possible.min) : 0)
+}
+
+function checkPossible(inputName) {
+    let configForm = document.getElementById("lobby-gameConfig")
+    let possible = configForm[`config-${inputName}`]
+    possible.value = Math.max(possible.value ? parseInt(possible.value) : 0, possible.min ? parseInt(possible.min) : 0)
 }
