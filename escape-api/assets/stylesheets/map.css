@@ -1,0 +1,53 @@
+.hexfield {
+    fill: transparent;
+    stroke: black;
+    stroke-width: 1;
+}
+
+.hexfield:focus {
+    outline: none;
+}
+
+.hexfield.wall {
+    fill: black;
+}
+
+.hexfield.safe {
+    fill: white;
+}
+
+.hexfield.dangerous {
+    fill: gray;
+}
+
+.hexfield.potential-move {
+    fill: pink;
+}
+
+.hexfield.pod {
+    fill: forestgreen;
+}
+
+.hexfield.pod-used {
+    fill: brown;
+}
+
+.hexfield.alienstart {
+    fill: red;
+}
+
+.hexfield.humanstart {
+    fill: deepskyblue;
+}
+
+.hexfield.selected {
+    fill: orange;
+}
+
+.hexfield.player {
+    fill: mediumpurple;
+}
+
+.hexfield:hover {
+    fill: limegreen;
+}

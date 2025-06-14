@@ -1,0 +1,249 @@
+.notification-popup {
+    position: fixed;
+    top: 0;
+    left: 25%;
+    width: 50%;
+    background-color: black;
+    z-index: 5000;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid white;
+    text-align: center;
+    transform: translateY(-100%);
+    transition: all 0.5s ease-in-out;
+    opacity: 0;
+}
+
+.notification-displayed {
+    transform: translateY(25%);
+    transition: all 0.5s ease-in-out;
+    opacity: 1;
+}
+
+.redCard-confirm,
+#redCard-confirm::after {
+    font-family: inherit;
+    padding: 10px 50px;
+    font-size: 20px;
+    border: none;
+    border-radius: 5px;
+    color: inherit;
+    background-color: transparent;
+    position: relative;
+}
+
+.redCard-confirm::after {
+    --move1: inset(50% 50% 50% 50%);
+    --move2: inset(31% 0 40% 0);
+    --move3: inset(39% 0 15% 0);
+    --move4: inset(45% 0 40% 0);
+    --move5: inset(45% 0 6% 0);
+    --move6: inset(14% 0 61% 0);
+    clip-path: var(--move1);
+    content: 'RUN';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* display: block; */
+}
+
+.redCard-confirm:hover::after {
+    animation: glitch_4011 1s;
+    text-shadow: 10 10px 10px rgb(255, 0, 0);
+    animation-timing-function: steps(2, end);
+    text-shadow: -3px -3px 0px #ff2323, 3px 3px 0px #ca0000;
+    background-color: transparent;
+    border: 3px dotted red;
+}
+
+.redCard-confirm:hover {
+    text-shadow: -1px -1px 0px #ff2323, 1px 1px 0px #ca0000;
+}
+
+.redCard-confirm:hover {
+    background-color: transparent;
+    border: 1px dotted red;
+    box-shadow: 0px 10px 10px -10px rgb(141, 0, 0);
+}
+
+#cards {
+    position: fixed;
+    bottom: -150px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    transition: all 0.4s ease-in-out;
+}
+
+#cards:hover {
+    transform: translateY(-35%);
+    transition: all 0.4s ease-in-out;
+}
+
+.card {
+    margin-right: 1px;
+    margin-left: 1px;
+    height: 200px;
+    width: 150px;
+    border: 2px solid white;
+    color: white;
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    .tooltip{
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        background-color: black;
+        text-align: center;
+        border: 1px solid white;
+        bottom: 105%;
+        width: 150px;
+        transition: all 0.5s linear;
+    }
+}
+
+.card:hover {
+    transform: translateY(-5%);
+    transition: all 0.3s ease-in-out;
+    .tooltip{
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+#team{
+    top: 10px;
+}
+
+#role{
+    top: 100px;
+}
+
+#status-effects{
+    top: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    text-align: center;
+    height: 150px;
+    min-height: fit-content;
+    h5{
+        opacity: 0;
+        transition: all 0.3s linear;
+    }
+}
+
+#status-effects:hover{
+    h5{
+        opacity: 1;
+    }
+}
+
+.status-effect-entry{
+    position: relative;
+    width: 100%;
+    .tooltip{
+        visibility: hidden;
+        position: absolute;
+        opacity: 0;
+        right: 105%;
+        bottom: 15%;
+        width: 150px;
+        background-color: black;
+        text-align: center;
+        border: 1px solid white;
+        transition: all 0.5s linear;
+        padding: 5px;
+    }
+}
+
+.status-effect-entry:hover{
+    .tooltip{
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+.player-card {
+    position: fixed;
+    right: -120px;
+    height: 75px;
+    width: 150px;
+    border: 2px solid white;
+    color: white;
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    span{
+        text-align: center;
+        opacity: 0;
+        transition: all 0.3s linear;
+    }
+}
+
+.player-card:hover {
+    transform: translateX(-82%);
+    border-color: var(--team-color);
+    color: var(--team-color);
+    transition: all 0.3s ease-in-out;
+    span{
+        opacity: 1;
+    }
+}
+
+#event-log {
+    position: fixed;
+    background-color: black;
+    overflow-y: auto;
+    scrollbar-color: white black;
+    max-height: 80%;
+    width: 20%;
+    left: -15%;
+    transition: all 0.3s ease-in-out;
+}
+
+#event-log:hover {
+    transform: translateX(75%);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Style the tab */
+.tab-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid white;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab-list button {
+    max-width: 90%;
+    overflow: hidden;
+    background-color: inherit;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid white;
+    border-top: none;
+}
+
+.tabcontent p {
+    margin: 2%;
+}

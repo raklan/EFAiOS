@@ -171,8 +171,9 @@ async function handleGameStateMessage(gameState) {
         clickMode = ClickModes.None
     }
 
+    renderTeamCard();
     renderRoleCard();
-
+    renderStatusEffects();
     renderPlayerHand();
 }
 
