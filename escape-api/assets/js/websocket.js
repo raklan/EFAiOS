@@ -108,10 +108,12 @@ async function handleErrorMessage(socketError) {
 
 async function handleGameEventMessage(gameEvent) {
     showNotification(gameEvent.description, 'Alert')
-    let regRes = gameEvent.description.match(playerNameExtractor)
+    let matches = gameEvent.description.matchAll(playerNameExtractor)
 
-    if (regRes?.groups?.PlayerName) {
-        addEvent(regRes.groups.PlayerName, gameEvent.description)
+    if (matches?.length > 0){
+        for(let match of matches){
+            addEvent(match.groups.PlayerName, gameEvent.description)
+        }
     }
 }
 

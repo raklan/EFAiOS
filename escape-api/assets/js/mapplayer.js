@@ -58,7 +58,7 @@ const ClickModes = {
 
 let gameHasEnded = false;
 
-const playerNameExtractor = new RegExp(/Player \'(?<PlayerName>[^\']+)\'.+/);
+const playerNameExtractor = new RegExp(/Player \'(?<PlayerName>[^\']+)\'/g);
 
 var clickMode = ClickModes.None;
 
