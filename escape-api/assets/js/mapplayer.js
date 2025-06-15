@@ -507,6 +507,11 @@ function renderPlayerHand() {
             node.innerHTML = `${card.name}`
             node.onclick = () => cardClick(card)
 
+            let tooltip = document.createElement("div")
+            tooltip.classList.add("tooltip")
+            tooltip.innerText = card.description;
+            node.appendChild(tooltip)
+
             hand.appendChild(node)
         }
     }
@@ -575,10 +580,39 @@ function cardClick(card) {
     sendWsMessage(ws, 'submitAction', toSend)
 }
 
+function renderTeamCard(){
+    var teamCard = document.getElementById("team")
+    teamCard.innerHTML = `<span>${thisPlayer.team}</span>`;
+    teamCard.style.setProperty('--team-color', getTeamColor())
+}
+
 function renderRoleCard() {
     var roleCard = document.getElementById("role")
-    roleCard.innerHTML = `${thisPlayer.team}`
+    roleCard.innerHTML = `<span>${thisPlayer.role}</span>`;
     roleCard.style.setProperty('--team-color', getTeamColor())
+}
+
+function renderStatusEffects(){
+    var statusEffectList = document.getElementById("status-effects")
+    statusEffectList.replaceChildren()
+    statusEffectList.style.setProperty('--team-color', "white")
+
+    let title = document.createElement("h5")
+    title.innerText = thisPlayer?.statusEffects?.length > 0? "Current Status Effects" : "No Status Effects"
+    statusEffectList.appendChild(title)
+
+    for(let statusEffect of thisPlayer.statusEffects){
+        let entry = document.createElement("span")
+        entry.innerText = `${statusEffect.name} (${statusEffect.usesLeft})`
+        entry.classList.add('status-effect-entry')
+
+        let tooltip = document.createElement("div")
+        tooltip.classList.add("tooltip")
+        tooltip.innerText = statusEffect.description;
+        entry.appendChild(tooltip);
+
+        statusEffectList.appendChild(entry)
+    }
 }
 
 function getTeamColor() {
@@ -588,6 +622,8 @@ function getTeamColor() {
         case PlayerTeams.Alien:
             return "red"
         case PlayerTeams.Spectator:
+            return "white"
+        default:
             return "white"
     }
 }
