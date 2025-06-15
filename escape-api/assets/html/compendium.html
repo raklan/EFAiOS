@@ -15,13 +15,19 @@
     main {
         border: 1px solid yellow;
     }
-
-    h4{
-        margin-bottom: 1px;
-    }
-
-    p{
-        margin-top: 1px;
+    
+    #info-container {        
+        h1, h2{
+            text-decoration: underline;
+        }
+        h3{
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 1px;
+        }
+        p{
+            margin-top: 1px;
+        }
     }
 </style>
 {{end}}
@@ -43,14 +49,51 @@
             Roles
         </div>
         <div id="cards" style="display: none;">
-            <h2>Cards</h2>
+            <h1>Vanilla Cards</h1>
+            <p>These cards were ported more or less directly from the physical version of the game with minimal changes</p>
 
-            <h3>Noise Cards</h3>
-            <h4>Red Card</h4>
-            <p>This is a red card</p>
+            <h2>Noise Cards</h2>
+            <p>Noise Cards are immediately discarded upon being drawn, causing the Player to make noise depending on the card</p>
+            <h3>Red Card</h3>
+            <p>Make noise in the sector you just moved into</p>
 
-            <h4>Green Card</h4>
-            <p>This is a green card</p>
+            <h3>Green Card</h3>
+            <p>Make noise in any sector of your choosing</p>
+
+            <h3>White Card</h3>
+            <p>Make no noise</p>
+
+            <h2>Item Cards</h2>
+            <p>Item Cards are added to your hand upon being drawn. In addition to making no noise on this turn, you can also use the card at any point after drawing it, including on the turn you draw it</p>
+            <h3>Adrenaline</h3>
+            <p>Gives the "Adrenaline Surge"</p>
+
+            <h3>Attack</h3>
+            <p></p>
+
+            <h3>Cat</h3>
+            <p></p>
+
+            <h3>Clone</h3>
+            <p></p>
+
+            <h3>Defense</h3>
+            <p></p>
+
+            <h3>Mutation</h3>
+            <p></p>
+
+            <h3>Sedatives</h3>
+            <p></p>
+
+            <h3>Sensor</h3>
+            <p></p>
+
+            <h3>Spotlight</h3>
+            <p></p>
+
+            <h3>Teleport</h3>
+            <p></p>
         </div>
     </main>
 </div>
