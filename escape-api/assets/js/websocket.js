@@ -108,11 +108,15 @@ async function handleErrorMessage(socketError) {
 
 async function handleGameEventMessage(gameEvent) {
     showNotification(gameEvent.description, 'Alert')
-    let matches = gameEvent.description.matchAll(playerNameExtractor)
+    let matches = [...gameEvent.description.matchAll(playerNameExtractor)]
+    let playersMentionedInThisEvent = []
 
     if (matches?.length > 0){
         for(let match of matches){
-            addEvent(match.groups.PlayerName, gameEvent.description)
+            if(!playersMentionedInThisEvent.includes(match.groups.PlayerName)){ //Only add one entry if a player is mentioned multiple times
+                addEvent(match.groups.PlayerName, gameEvent.description)
+                playersMentionedInThisEvent.push(match.groups.PlayerName)
+            }
         }
     }
 }

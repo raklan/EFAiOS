@@ -220,7 +220,7 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 			gameEvent = &Models.GameEvent{
 				Row:         actingPlayer.Row,
 				Col:         actingPlayer.Col,
-				Description: fmt.Sprintf("Player %s escaped using the Pod at [%s-%d]!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
+				Description: fmt.Sprintf("Player '%s' escaped using the Pod at [%s-%d]!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
 			}
 			actingPlayer.Team = Models.PlayerTeam_Spectator
 			actingPlayer.Row, actingPlayer.Col = "!", -99
@@ -234,7 +234,7 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 					gameEvent = &Models.GameEvent{
 						Row:         actingPlayer.Row,
 						Col:         actingPlayer.Col,
-						Description: fmt.Sprintf("Player %s escaped using the Pod at [%s-%d]!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
+						Description: fmt.Sprintf("Player '%s' escaped using the Pod at [%s-%d]!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
 					}
 					actingPlayer.Team = Models.PlayerTeam_Spectator
 					actingPlayer.Row, actingPlayer.Col = "!", -99
@@ -246,7 +246,7 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 				gameEvent = &Models.GameEvent{
 					Row:         actingPlayer.Row,
 					Col:         actingPlayer.Col,
-					Description: fmt.Sprintf("Player %s tried the Pod at [%s-%d], but it didn't work!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
+					Description: fmt.Sprintf("Player '%s' tried the Pod at [%s-%d], but it didn't work!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
 				}
 
 				gameState.GameConfig.NumBrokenPods -= 1

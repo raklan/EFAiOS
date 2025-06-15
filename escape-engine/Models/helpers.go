@@ -51,7 +51,7 @@ func AttackSpace(row string, col int, gameState GameState) (*GameEvent, error) {
 	var gameEvent *GameEvent = &GameEvent{
 		Row:         row,
 		Col:         col,
-		Description: fmt.Sprintf("Player %s attacked [%s-%d]!\n", actingPlayer.Name, row, col),
+		Description: fmt.Sprintf("Player '%s' attacked [%s-%d]!\n", actingPlayer.Name, row, col),
 	}
 	alienStarts := gameState.GameMap.GetSpacesOfType(Space_AlienStart)
 
@@ -79,10 +79,10 @@ func AttackSpace(row string, col int, gameState GameState) (*GameEvent, error) {
 				switch se {
 				case StatusEffect_Armored:
 					playerWasSaved = true
-					gameEvent.Description += fmt.Sprintf("Player %s was saved by Armor!\n", player.Name)
+					gameEvent.Description += fmt.Sprintf("Player '%s' was saved by Armor!\n", player.Name)
 				case StatusEffect_Cloned:
 					playerWasSaved = true
-					gameEvent.Description += fmt.Sprintf("Player %s activated their Emergency Clone!\n", player.Name)
+					gameEvent.Description += fmt.Sprintf("Player '%s' activated their Emergency Clone!\n", player.Name)
 				}
 			}
 			if playerWasSaved {

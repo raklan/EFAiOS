@@ -125,7 +125,7 @@ func (a *Adrenaline) Play(gameState *GameState, details CardPlayDetails) string 
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewAdrenalineSurge())
 	}
 
-	return fmt.Sprintf("Player %s played an Adrenaline card. They can move one space farther on their next turn!", activePlayer.Name)
+	return fmt.Sprintf("Player '%s' played an Adrenaline card. They can move one space farther on their next turn!", activePlayer.Name)
 }
 
 func NewAdrenaline() *Adrenaline {
@@ -149,7 +149,7 @@ func (m *Mutation) Play(gameState *GameState, details CardPlayDetails) string {
 
 	activePlayer.Team = PlayerTeam_Alien
 
-	return fmt.Sprintf("Player %s used a Mutation card! They've turned into an Alien!", activePlayer.Name)
+	return fmt.Sprintf("Player '%s' used a Mutation card! They've turned into an Alien!", activePlayer.Name)
 }
 
 func NewMutation() *Mutation {
@@ -177,7 +177,7 @@ func (t Teleport) Play(gameState *GameState, details CardPlayDetails) string {
 
 	activePlayer.Row, activePlayer.Col = toMoveTo.Row, toMoveTo.Col
 
-	return fmt.Sprintf("Player %s used a Teleport card! They've been moved to a random Human starting sector!", activePlayer.Name)
+	return fmt.Sprintf("Player '%s' used a Teleport card! They've been moved to a random Human starting sector!", activePlayer.Name)
 }
 
 func NewTeleport() *Teleport {
@@ -205,7 +205,7 @@ func (c Clone) Play(gameState *GameState, details CardPlayDetails) string {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewCloned())
 	}
 
-	return fmt.Sprintf("Player %s used a Clone card! They now have a clone ready in case they die!", activePlayer.Name)
+	return fmt.Sprintf("Player '%s' used a Clone card! They now have a clone ready in case they die!", activePlayer.Name)
 }
 
 func NewClone() *Clone {
@@ -233,7 +233,7 @@ func (c Defense) Play(gameState *GameState, details CardPlayDetails) string {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewArmored())
 	}
 
-	return fmt.Sprintf("Player %s used a Defense card! They'll be protected from the next attack!", activePlayer.Name)
+	return fmt.Sprintf("Player '%s' used a Defense card! They'll be protected from the next attack!", activePlayer.Name)
 }
 
 func NewDefense() *Defense {
@@ -259,7 +259,7 @@ func (c Spotlight) Play(gameState *GameState, details CardPlayDetails) string {
 
 	activePlayer := gameState.GetCurrentPlayer()
 
-	descriptionString := fmt.Sprintf("Player %s used a Spotlight!", activePlayer.Name)
+	descriptionString := fmt.Sprintf("Player '%s' used a Spotlight!", activePlayer.Name)
 
 	seenPlayers := []Player{}
 
@@ -291,7 +291,7 @@ func (c Spotlight) Play(gameState *GameState, details CardPlayDetails) string {
 
 	if len(seenPlayers) > 0 {
 		for _, player := range seenPlayers {
-			descriptionString += fmt.Sprintf("\nPlayer %s was seen at %s!", player.Name, GetMapKey(player.Row, player.Col))
+			descriptionString += fmt.Sprintf("\nPlayer '%s' was seen at %s!", player.Name, GetMapKey(player.Row, player.Col))
 		}
 	} else {
 		descriptionString += " No players were found!"
@@ -319,7 +319,7 @@ type AttackCard struct {
 func (c AttackCard) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
-	descriptionString := fmt.Sprintf("Player %s used an Attack Card! ", activePlayer.Name)
+	descriptionString := fmt.Sprintf("Player '%s' used an Attack Card! ", activePlayer.Name)
 
 	gameEvent, _ := AttackSpace(activePlayer.Row, activePlayer.Col, *gameState)
 
@@ -353,7 +353,7 @@ func (c Sedatives) Play(gameState *GameState, details CardPlayDetails) string {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewSedated())
 	}
 
-	return fmt.Sprintf("Player %s used Sedatives!", activePlayer.Name)
+	return fmt.Sprintf("Player '%s' used Sedatives!", activePlayer.Name)
 }
 
 func NewSedatives() *Sedatives {
@@ -408,7 +408,7 @@ func (c Cat) Play(gameState *GameState, details CardPlayDetails) string {
 	} else {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewFeline())
 	}
-	return fmt.Sprintf("Player %s used a Cat!", activePlayer.Name)
+	return fmt.Sprintf("Player '%s' used a Cat!", activePlayer.Name)
 }
 
 func NewCat() *Cat {
