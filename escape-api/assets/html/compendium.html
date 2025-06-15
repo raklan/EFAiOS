@@ -1,0 +1,81 @@
+{{define "styling"}}
+<style>
+    #compendium-container {
+        display: grid;
+        grid-template-columns: 1fr 11fr;
+    }
+
+    #compendium-nav {
+        border: 1px solid red;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    main {
+        border: 1px solid yellow;
+    }
+
+    h4{
+        margin-bottom: 1px;
+    }
+
+    p{
+        margin-top: 1px;
+    }
+</style>
+{{end}}
+
+{{define "body"}}
+<div id="compendium-container">
+    <nav id="compendium-nav">
+        <a onclick="showTab('roles')">Roles</a>
+        <a onclick="showTab('cards')">Cards</a>
+        <a>link</a>
+        <a>link</a>
+        <a>link</a>
+    </nav>
+    <main id="info-container">
+        <div id="default">
+            Default
+        </div>
+        <div id="roles" style="display: none;">
+            Roles
+        </div>
+        <div id="cards" style="display: none;">
+            <h2>Cards</h2>
+
+            <h3>Noise Cards</h3>
+            <h4>Red Card</h4>
+            <p>This is a red card</p>
+
+            <h4>Green Card</h4>
+            <p>This is a green card</p>
+        </div>
+    </main>
+</div>
+{{end}}
+
+{{define "scripts"}}
+<script>
+    function showTab(tabName) {
+        const container = document.getElementById("info-container")
+
+        for (let child of container.children) {
+            child.style.display = 'none'
+        }
+
+        document.getElementById(tabName).style.display = ''
+    }
+
+    function pageLoad() {
+        let hash = window.location.hash;
+
+        if (hash?.length > 0) {
+            showTab(hash.slice(1))
+        }
+    }
+
+    pageLoad();
+</script>
+{{end}}

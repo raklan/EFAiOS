@@ -6,6 +6,7 @@ body {
 
 a {
     color: inherit;
+    cursor: pointer;
 }
 a:hover {
     color: rgb(1, 145, 1);
