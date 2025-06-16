@@ -1,0 +1,22 @@
+{{define "styling"}}
+<link rel="stylesheet" href="/assets/stylesheets/compendium.css">
+{{end}}
+
+{{define "body"}}
+<div id="compendium-container">
+    <nav id="compendium-nav">
+        <a href="/compendium/cards">Cards</a>
+        <a href="/compendium/roles">Roles</a>
+        <a href="/compendium/statusEffects">Status Effects</a>
+        <a href="/compendium/dictionary">Definitions</a>
+    </nav>
+    <main id="info-container">
+        {{template "info" .}}
+    </main>
+</div>
+{{end}}
+
+{{define "scripts"}}
+<script>
+</script>
+{{end}}

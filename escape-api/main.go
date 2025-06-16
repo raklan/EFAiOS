@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"strings"
 
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -61,7 +62,13 @@ func serveHtml(w http.ResponseWriter, r *http.Request) {
 		"GetMapName": Engine.GetMapName,
 	})
 
-	tmpl, err := temp.ParseFiles(layoutPath, requestedFilePath)
+	var tmpl *template.Template
+	if strings.Contains(strings.ToLower(r.URL.Path), "compendium") {
+		compendiumPath := filepath.Join("escape-api", "assets", "html", "templates", "layout_compendium.html")
+		tmpl, err = temp.ParseFiles(layoutPath, compendiumPath, requestedFilePath)
+	} else {
+		tmpl, err = temp.ParseFiles(layoutPath, requestedFilePath)
+	}
 	if err != nil {
 		tmpl, err = template.ParseFiles(layoutPath, filepath.Join("escape-api", "assets", "html", "index.html"))
 		if err != nil {

@@ -1,0 +1,63 @@
+{{define "info"}}
+<div id="compendium-statuseffects">
+    <h1>Status Effects</h1>
+    <p>Status Effects are a mechanic I've created for this version of the game for two reasons: First, for ease of
+        implementation for Cards & Roles that don't have immediate effects, and Second, for more possibilities for
+        interesting new mechanics I can add to the game. A Status Effect is given to a player by certain Items and
+        Roles, and their effect will automatically activate when their criteria is met. See below for details about each
+        one!</p>
+
+    <h2>French Vanilla</h2>
+    <p>These Status Effects are effects given by Vanilla <a href="/compendium/cards#vanilla-cards">Cards</a> & <a
+            href="/compendium/cards#vanilla-roles">Roles</a>.</p>
+
+    <h3 id="adrenaline-surge">Adrenaline Surge</h3>
+    <p>Received by playing an <a href="/compendium/cards#adrenaline">Adrenaline</a> card or being assigned the <a href="/compendium/roles#fast">Fast Alien</a> role. Allows you to move 1 space
+        farther.</p>
+
+    <h3 id="armored">Armored</h3>
+    <p>Received by playing a <a href="/compendium/cards#defense">Defense</a> card or being assigned the <a href="/compendium/roles#brute">Brute Alien</a> role. If you are attacked while having this
+        Status Effect, the Attack has no effect against you.</p>
+
+    <h3 id="cloned">Cloned</h3>
+    <p>Received by playing a <a href="/compendium/cards#clone">Clone</a> card. If you are attacked while having this
+        Status Effect, the attack will send you to a randomly selected Human Start sector.</p>
+
+    <h3 id="deceptive">Deceptive</h3>
+    <p>Received by being assigned the <a href="/compendium/roles#psychic">Psychic Alien</a> role. Upon drawing a White
+        Card (either Item cards or the White Noise card), instead of making no noise, you may make noise in any sector
+        as if you had drawn a <a href="/compendium/cards#green-card">Green Card</a>.</p>
+
+    <h3 id="feline">Feline</h3>
+    <p>Received by playing a <a href="/compendium/cards#cat">Cat</a> card. The next time you make a noise, you may
+        choose an extra
+        sector to make noise in. For example, if you draw a <a href="/compendium/cards#red-card">Red Card</a> and have
+        this
+        Status Effect, everyone else will see you make 2
+        noises - one where you are and one of your choosing. If you draw a <a href="/compendium/cards#green-card">Green
+            Card</a> and have this Status Effect, you can choose 2 sectors to make noise in. Drawing White (Item or
+        White Noise) cards will not trigger this effect.</p>
+
+    <h3 id="hyperphagic">Hyperphagic</h3>
+    <p>Received (only for Aliens) by killing a Human. You may permanently move 1 extra space on every turn.</p>
+
+    <h3 id="invisible">Invisible</h3>
+    <p>Received by being assigned the <a href="/compendium/roles#invisible">Invisible Alien</a> role. You are immune to
+        <a href="/compendium/cards#spotlight">Spotlight</a> and <a href="/compendium/cards#sensor">Sensor</a> cards, and
+        will not have your position revealed by those cards.
+    </p>
+
+    <h3 id="knowhow">Knowhow</h3>
+    <p>Received by being assigned the <a href="/compendium/roles#engineer">Engineer Human</a> role. You draw 2 Escape
+        Pod cards when you reach an escape pod.</p>
+
+    <h3 id="lurking">Lurking</h3>
+    <p>Received by being assigned the <a href="/compendium/roles#lurking">Lurking Alien</a> or <a
+            href="/compendium/roles#executiveofficer">Executive Officer Human</a> roles. You are allowed to end your
+        turn in the same <a href="/compendium/dictionary#sector">sector</a> you started in</p>
+
+    <h3 id="sedated">Sedated</h3>
+    <p>Received by playing a <a href="/compendium/cards#sedatives">Sedatives</a> card or being assigned the <a
+            href="/compendium/roles#captain">Captain Human</a> role. You will treat the next sector you move into as a Safe Sector, regardless of whether it's a Dangerous Sector or Safe Sector</p>
+</div>
+{{end}}
