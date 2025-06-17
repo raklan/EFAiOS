@@ -21,7 +21,7 @@
 }
 
 .hexfield.potential-move {
-    fill: pink;
+    fill: palegoldenrod;
 }
 
 .hexfield.pod {
@@ -45,7 +45,7 @@
 }
 
 .hexfield.player {
-    fill: mediumpurple;
+    fill: gold;
 }
 
 .hexfield:hover {

@@ -143,10 +143,11 @@ async function handleGameOverMessage(messageData) {
 async function handleGameStateMessage(gameState) {
     thisPlayer = gameState.players?.find(p => p.id == thisPlayer.id)
     isThisPlayersTurn = gameState.currentPlayer == thisPlayer?.id
-    gamePlayerList = gameState.players.map(player => {
+    gamePlayerList = gameState.players.filter(player => player.team != PlayerTeams.Spectator).map(player => {
         return {
             id: player.id,
             name: player.name,
+            isThisPlayersTurn: gameState.currentPlayer == player.id
         }
     })
     drawMap(gameState.gameMap)
@@ -181,6 +182,7 @@ async function handleGameStateMessage(gameState) {
     renderRoleCard();
     renderStatusEffects();
     renderPlayerHand();
+    renderTurnOrder();
 }
 
 async function handleLobbyInfoMessage(messageData) {

@@ -615,6 +615,29 @@ function renderStatusEffects(){
     }
 }
 
+function renderTurnOrder(){
+    var turnOrderList = document.getElementById('turn-order')
+    turnOrderList.replaceChildren();
+    turnOrderList.style.setProperty('--team-color', "white")
+
+    let title = document.createElement("h5")
+    title.innerText = "Turn Order"
+    turnOrderList.appendChild(title)
+
+    for (let player of gamePlayerList){
+        let entry = document.createElement("span")
+        entry.innerText = `${player.name}`
+        if(player.name === thisPlayer.name){
+            entry.innerText += ' (You)'
+        }
+        if(player.isThisPlayersTurn){
+            entry.classList.add("current-player-turn")
+        }
+
+        turnOrderList.appendChild(entry);
+    }
+}
+
 function getTeamColor() {
     switch (thisPlayer.team) {
         case PlayerTeams.Human:

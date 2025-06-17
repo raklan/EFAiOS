@@ -171,6 +171,29 @@
     }
 }
 
+#turn-order{
+    bottom: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    text-align: center;
+    min-height: fit-content;
+    padding-bottom: 1%;
+    h5{
+        opacity: 0;
+        transition: all 0.3s linear;
+    }
+    .current-player-turn{
+        color: lime;
+    }
+}
+
+#turn-order:hover{
+    h5{
+        opacity: 1;
+    }
+}
+
 .player-card {
     position: fixed;
     right: -120px;
@@ -192,7 +215,7 @@
 }
 
 .player-card:hover {
-    transform: translateX(-82%);
+    transform: translateX(-75%);
     border-color: var(--team-color);
     color: var(--team-color);
     transition: all 0.3s ease-in-out;
