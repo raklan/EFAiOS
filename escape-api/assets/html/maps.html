@@ -3,9 +3,8 @@
     #list-container {
         width: 100%;
         height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .map-entry {
@@ -28,10 +27,12 @@
         top: 40%;
         left: 40%;
         width: 20%;
-        border: 5px solid green;
+        border: 1px solid lime;
+        background-color: black;
 
         display: none;
         flex-direction: column;
+        padding: 5px;
     }
 </style>
 {{end}}
@@ -42,24 +43,33 @@
     <div class="map-entry">
         <h4>{{GetMapName .}}</h4>
         <div class="button-container">
-            <button type="button" onclick="hostMap('{{StripMapId .}}')">Play</button>
+            <button type="button" onclick="hostMap('{{StripMapId .}}', '{{GetMapName .}}')">Play</button>
             <button type="button" onclick="editMap('{{StripMapId .}}')">Edit</button>
         </div>
     </div>
     {{end}}
 </div>
 <div id="name-popup">
-    <input id="name-input" type="text" placeholder="Enter Your Name" autocomplete="off" autocapitalize="off" />
-    <button onclick="playMap()">Play</button>
+    <h4 id="name-popup-map-name-display">Host New Game</h4>
+    <input id="name-input" type="text" class="text-input" style="max-width: 100%" placeholder="Enter Your Name" autocomplete="off" autocapitalize="off" />
+    <div style="display: flex; justify-content: space-between;">
+        <button onclick="playMap()">Play</button>
+        <button onclick="cancel()">Cancel</button>
+    </div>
 </div>
 {{end}}
 
 {{define "scripts"}}
 <script>
     var selectedMapId = '';
-    function hostMap(mapId) {
+    function hostMap(mapId, mapName) {
         document.getElementById("name-popup").style.display = "flex";
+        document.getElementById("name-popup-map-name-display").innerText = `Host New Game: ${mapName}`
         selectedMapId = mapId;
+    }
+
+    function cancel(){
+        document.getElementById("name-popup").style.display = "none";
     }
 
     function editMap(mapId){
