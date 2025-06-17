@@ -172,7 +172,7 @@
 }
 
 #turn-order{
-    bottom: 300px;
+    bottom: 0px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;

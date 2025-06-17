@@ -48,6 +48,7 @@ type GameOver struct {
 }
 
 type TurnEnd struct {
+	PlayerCurrentState Player `json:"playerCurrentState"`
 }
 
 type GameEvent struct {

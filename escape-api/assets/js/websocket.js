@@ -122,16 +122,13 @@ async function handleGameEventMessage(gameEvent) {
 }
 
 async function handleTurnEnd(turnEnd) {
-    //For now, a TurnEnd should immediately end the turn
+    
     if (isThisPlayersTurn) {
-        const actionToSend = {
-            gameId: thisGameStateId,
-            action: {
-                type: 'EndTurn',
-                turn: {}
-            }
-        }
-        sendWsMessage(ws, 'submitAction', actionToSend)
+        thisPlayer = turnEnd.playerCurrentState;
+        renderPlayerHand();
+        renderStatusEffects();
+        clickMode = ClickModes.None;        
+        document.getElementById("endTurn-button").style.display = ''
     }
 }
 
@@ -169,7 +166,7 @@ async function handleGameStateMessage(gameState) {
         }
     }
 
-    if (gameState.currentPlayer == thisPlayer.id) {
+    if (isThisPlayersTurn && !playerHasMoved) {
         clickMode = ClickModes.Moving
         sendWsMessage(ws, 'getAllowedMoves', {
             gameId: thisGameStateId

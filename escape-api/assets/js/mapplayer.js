@@ -57,6 +57,7 @@ const ClickModes = {
 }
 
 let gameHasEnded = false;
+let playerHasMoved = false;
 
 const playerNameExtractor = new RegExp(/Player \'(?<PlayerName>[^\']+)\'/g);
 
@@ -67,8 +68,8 @@ var cssClass = 'hexfield';//If you change this, change it in hexClick() too
 var MAP = null
 
 function createGrid(rows, columns) {
-    const byMap = 700/(columns * 0.5 + rows * 0.5);
-    const byWindow = window.innerWidth/35;
+    const byMap = 700 / (columns * 0.5 + rows * 0.5);
+    const byWindow = window.innerWidth / 35;
     let radius = Math.min(byMap, byWindow)
     var grid = document.getElementById("gameplay-gridParent");
 
@@ -116,7 +117,7 @@ function createGrid(rows, columns) {
             polyText.setAttribute('y', `${center.y}`)
             polyText.setAttribute('fill', 'black')
             polyText.setAttribute('text-anchor', 'middle')
-            polyText.setAttribute('font-size', `${radius/2.25}px`)
+            polyText.setAttribute('font-size', `${radius / 2.25}px`)
             polyText.innerHTML = `[${numberToLetter(row)}-${column}]`
             polyText.style.pointerEvents = 'none'
             svgParent.appendChild(polyText)
@@ -176,6 +177,7 @@ function hexClick(event) {
 
     var actionToSend = {}
     if (clickMode == ClickModes.Moving) {
+        playerHasMoved = true;
         actionToSend = {
             gameId: thisGameStateId,
             action: {
@@ -187,6 +189,7 @@ function hexClick(event) {
             }
         }
         sendWsMessage(ws, 'submitAction', actionToSend);
+        document.querySelectorAll('.hexfield.potential-move').forEach(x => x.classList.remove('potential-move'))
     } else if (clickMode == ClickModes.Noise) {
         selectedSpace = {
             row: row,
@@ -580,7 +583,7 @@ function cardClick(card) {
     sendWsMessage(ws, 'submitAction', toSend)
 }
 
-function renderTeamCard(){
+function renderTeamCard() {
     var teamCard = document.getElementById("team")
     teamCard.innerHTML = `<span>${thisPlayer.team}</span>`;
     teamCard.style.setProperty('--team-color', getTeamColor())
@@ -592,16 +595,16 @@ function renderRoleCard() {
     roleCard.style.setProperty('--team-color', getTeamColor())
 }
 
-function renderStatusEffects(){
+function renderStatusEffects() {
     var statusEffectList = document.getElementById("status-effects")
     statusEffectList.replaceChildren()
     statusEffectList.style.setProperty('--team-color', "white")
 
     let title = document.createElement("h5")
-    title.innerText = thisPlayer?.statusEffects?.length > 0? "Current Status Effects" : "No Status Effects"
+    title.innerText = thisPlayer?.statusEffects?.length > 0 ? "Current Status Effects" : "No Status Effects"
     statusEffectList.appendChild(title)
 
-    for(let statusEffect of thisPlayer.statusEffects){
+    for (let statusEffect of thisPlayer.statusEffects) {
         let entry = document.createElement("span")
         entry.innerText = `${statusEffect.name} (${statusEffect.usesLeft})`
         entry.classList.add('status-effect-entry')
@@ -615,7 +618,7 @@ function renderStatusEffects(){
     }
 }
 
-function renderTurnOrder(){
+function renderTurnOrder() {
     var turnOrderList = document.getElementById('turn-order')
     turnOrderList.replaceChildren();
     turnOrderList.style.setProperty('--team-color', "white")
@@ -624,13 +627,13 @@ function renderTurnOrder(){
     title.innerText = "Turn Order"
     turnOrderList.appendChild(title)
 
-    for (let player of gamePlayerList){
+    for (let player of gamePlayerList) {
         let entry = document.createElement("span")
         entry.innerText = `${player.name}`
-        if(player.name === thisPlayer.name){
+        if (player.name === thisPlayer.name) {
             entry.innerText += ' (You)'
         }
-        if(player.isThisPlayersTurn){
+        if (player.isThisPlayersTurn) {
             entry.classList.add("current-player-turn")
         }
 
@@ -704,21 +707,21 @@ function addEvent(playerName, event) {
     eventLogContainer.appendChild(eventDesc)
 }
 
-function setAllConfigAsDefault(){
+function setAllConfigAsDefault() {
     setGeneralConfigAsDefault();
     setCardConfigAsDefault();
     setRoleConfigAsDefault();
 }
 
-function setGeneralConfigAsDefault(){
+function setGeneralConfigAsDefault() {
     setGeneralConfig(GAME_CONFIG_DEFAULT)
 }
 
-function setCardConfigAsDefault(){
+function setCardConfigAsDefault() {
     setCardConfig(GAME_CONFIG_DEFAULT)
 }
 
-function setRoleConfigAsDefault(){
+function setRoleConfigAsDefault() {
     setRoleConfig(GAME_CONFIG_DEFAULT)
 }
 
@@ -728,7 +731,7 @@ function setConfigForm(configObject) {
     setRoleConfig(configObject);
 }
 
-function setGeneralConfig(configObject){
+function setGeneralConfig(configObject) {
     let configForm = document.getElementById("lobby-gameConfig")
 
     configForm['config-numHumans'].value = 0;
@@ -871,4 +874,17 @@ function checkPossible(inputName) {
     let configForm = document.getElementById("lobby-gameConfig")
     let possible = configForm[`config-${inputName}`]
     possible.value = Math.max(possible.value ? parseInt(possible.value) : 0, possible.min ? parseInt(possible.min) : 0)
+}
+
+function endTurn() {
+    const actionToSend = {
+        gameId: thisGameStateId,
+        action: {
+            type: 'EndTurn',
+            turn: {}
+        }
+    }
+    sendWsMessage(ws, 'submitAction', actionToSend)
+    document.getElementById("endTurn-button").style.display = 'none'
+    playerHasMoved = false;
 }

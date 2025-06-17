@@ -156,7 +156,9 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 			messages = append(messages, Models.WebsocketMessageListItem{
 				Message: Models.WebsocketMessage{
 					Type: Models.WebsocketMessage_TurnEnd,
-					Data: Models.TurnEnd{},
+					Data: Models.TurnEnd{
+						PlayerCurrentState: *gameState.GetCurrentPlayer(),
+					},
 				},
 				ShouldBroadcast: false,
 			})
@@ -187,7 +189,9 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 				messages = append(messages, Models.WebsocketMessageListItem{
 					Message: Models.WebsocketMessage{
 						Type: Models.WebsocketMessage_TurnEnd,
-						Data: Models.TurnEnd{},
+						Data: Models.TurnEnd{
+							PlayerCurrentState: *gameState.GetCurrentPlayer(),
+						},
 					},
 					ShouldBroadcast: false,
 				})
@@ -252,7 +256,9 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 		messages = append(messages, Models.WebsocketMessageListItem{
 			Message: Models.WebsocketMessage{
 				Type: Models.WebsocketMessage_TurnEnd,
-				Data: Models.TurnEnd{},
+				Data: Models.TurnEnd{
+					PlayerCurrentState: *gameState.GetCurrentPlayer(),
+				},
 			},
 			ShouldBroadcast: false,
 		})
