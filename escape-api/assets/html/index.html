@@ -5,26 +5,68 @@
         align-items: center;
         flex-direction: column;
     }
+
+    #rejoin-box {
+        border: 1px solid lime;
+        background-color: black;
+        align-self: center;
+        position: fixed;
+        bottom: 5px;
+    }
 </style>
 <style></style>
 {{end}}
 
 {{define "body"}}
 <h1 style="font-size: xxx-large; text-align: center; margin: 5%;" id="game-title"></h1>
-<form id="join-box" method="get" action="/play" onsubmit="joinFormValidate(event)">
-    <input class="text-input" id="name-input" name="playerName" type="text" placeholder="Enter Your Name" autocomplete="off"
-        autocapitalize="off" />
-    <input class="text-input" id="roomcode-input" name="roomCode" type="text" maxlength="4" placeholder="Enter Room Code"
-        autocomplete="off" style="text-transform: uppercase;" />
+<form id="join-box" onsubmit="joinFormValidate(event)">
+    <input class="text-input" id="name-input" name="playerName" type="text" placeholder="Enter Your Name"
+        autocomplete="off" autocapitalize="off" />
+    <input class="text-input" id="roomcode-input" name="roomCode" type="text" maxlength="4"
+        placeholder="Enter Room Code" autocomplete="off" style="text-transform: uppercase;" />
     <button>Join</button>
 </form>
+<div id="rejoin-box" style="display: none;">
+    <h4 style="text-align: center;">Active Game Detected. Rejoin?</h4>
+    <button onclick="rejoinGame()">Rejoin</button>
+    <button onclick="dropGame()">Drop Game</button>
+</div>
 {{end}}
 
 {{define "scripts"}}
 <script src="/assets/js/utils.js"></script>
-<script> 
-    function joinFormValidate(event){
-        event.target['roomCode'].value = event.target['roomCode'].value.toUpperCase();
+<script>
+    function joinFormValidate(event) {
+        event.preventDefault();
+        let form = event.target
+        form['roomCode'].value = form['roomCode'].value.toUpperCase();
+
+        let connectionInfo = {
+            type: 'join',
+            roomCode: form['roomCode'].value,
+            playerName: form['playerName'].value,
+        }
+
+        window.localStorage.setItem('efaios-connectionInfo', JSON.stringify(connectionInfo))
+
+        window.open('/play', '_self')
+    }
+
+    function checkForActiveGame(){
+        const connectionInfo = JSON.parse(window.localStorage.getItem('efaios-connectionInfo'))
+
+        if(connectionInfo?.type === 'rejoin'){
+            document.getElementById('rejoin-box').style.display = '';
+        }
+    }
+
+    function rejoinGame(){
+        window.open('/play', '_self')
+    }
+
+    function dropGame(){
+        window.localStorage.removeItem('efaios-connectionInfo')
+        document.getElementById('rejoin-box').style.display = 'none';
     }
 
     function initializeGlitchText(selector, text) {
@@ -65,6 +107,7 @@
         return englishAndSymbols[Math.floor(Math.random() * englishAndSymbols.length)]
     }
 
-    initializeGlitchText("game-title", 'ESCAPE FROM ALIENS IN OUTER SPACE')
+    initializeGlitchText("game-title", 'ESCAPE FROM ALIENS IN OUTER SPACE');
+    checkForActiveGame();
 </script>
 {{end}}

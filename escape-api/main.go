@@ -30,6 +30,7 @@ func startServer() {
 
 	http.HandleFunc("/lobby/host", Engine.HostLobby)
 	http.HandleFunc("/lobby/join", Engine.HandleJoinLobby)
+	http.HandleFunc("/lobby/rejoin", Engine.HandleRejoinLobby)
 
 	log.Println("=========================Starting Server========================")
 

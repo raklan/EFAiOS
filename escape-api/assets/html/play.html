@@ -379,7 +379,7 @@
                 urlToConnect = `ws://${window.location.host}/lobby/join?roomCode=${connectionInfo.roomCode}&playerName=${connectionInfo.playerName}`
                 break;
             case "rejoin":
-                urlToConnect = `ws://${window.location.host}/lobby/rejoin?roomCode=${connectionInfo.roomCode}&playerName=${connectionInfo.playerId}`
+                urlToConnect = `ws://${window.location.host}/lobby/rejoin?roomCode=${connectionInfo.roomCode}&playerId=${connectionInfo.playerId}`
                 break;
             default:
                 console.error("Something went wrong trying to detect mode")

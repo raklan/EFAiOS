@@ -135,6 +135,7 @@ async function handleTurnEnd(turnEnd) {
 async function handleGameOverMessage(messageData) {
     gameHasEnded = true;
     showGameOver();
+    window.localStorage.removeItem('efaios-connectionInfo')
 }
 
 async function handleGameStateMessage(gameState) {
@@ -185,6 +186,12 @@ async function handleGameStateMessage(gameState) {
 async function handleLobbyInfoMessage(messageData) {
     if (!thisPlayer) {
         thisPlayer = messageData.lobbyInfo?.players?.find(p => p.id == messageData.playerID)
+        const connectionInfo = {
+            type: 'rejoin',
+            playerId: thisPlayer.id,
+            roomCode: messageData.lobbyInfo.roomCode
+        }
+        window.localStorage.setItem('efaios-connectionInfo', JSON.stringify(connectionInfo))
     }
     document.getElementById("lobby-roomCode").innerHTML = `Room Code: ${messageData.lobbyInfo.roomCode}`
 
