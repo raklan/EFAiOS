@@ -70,8 +70,8 @@ async function handleCardMessage(cardEvent) {
             action: {
                 type: 'Noise',
                 turn: {
-                    row: "!",
-                    col: -99
+                    row: -99,
+                    col: "!"
                 }
             }
         }
@@ -158,11 +158,11 @@ async function handleGameStateMessage(gameState) {
 
     document.querySelectorAll('.player').forEach(x => x.classList.remove('player'))
     if (thisPlayer.team != PlayerTeams.Spectator) {
-        var playerSpace = document.getElementById(`hex-${thisPlayer.row}-${thisPlayer.col}`)
+        var playerSpace = document.getElementById(`hex-${thisPlayer.col}-${thisPlayer.row}`)
         playerSpace.classList.add('player')
     } else {
         for (let player of gameState.players.filter(p => p.team != PlayerTeams.Spectator)) {
-            var playerSpace = document.getElementById(`hex-${player.row}-${player.col}`)
+            var playerSpace = document.getElementById(`hex-${player.col}-${player.row}`)
             playerSpace.classList.add('player')
         }
     }
@@ -239,7 +239,7 @@ async function handleMovementResponse(movementEvent) {
     //If needed, this can be moved to before updating thisPlayer.row and just search for that row and col instead of querySelectorAll
     document.querySelectorAll('.player').forEach(x => x.classList.remove('player'))
 
-    var playerSpace = document.getElementById(`hex-${thisPlayer.row}-${thisPlayer.col}`)
+    var playerSpace = document.getElementById(`hex-${thisPlayer.col}-${thisPlayer.row}`)
     playerSpace.classList.add('player')
 
     //For now, just automatically don't let humans do anything after moving. In the future, we'll pause here to let them choose whether to play cards
@@ -249,8 +249,8 @@ async function handleMovementResponse(movementEvent) {
             action: {
                 type: 'Attack',
                 turn: {
-                    row: "!",
-                    col: -99
+                    row: -99,
+                    col: "!"
                 }
             }
         }

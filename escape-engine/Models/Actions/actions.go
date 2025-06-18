@@ -30,33 +30,33 @@ type SubmittedAction struct {
 }
 
 type Movement struct {
-	ToRow string `json:"toRow"`
-	ToCol int    `json:"toCol"`
+	ToRow int    `json:"toRow"`
+	ToCol string `json:"toCol"`
 }
 
 // Set Row & Col to !, -99 to indicate no attack
 type Attack struct {
-	Row string `json:"row"`
-	Col int    `json:"col"`
+	Row int    `json:"row"`
+	Col string `json:"col"`
 }
 
 func (attack Attack) IsAttacking() bool {
-	return attack.Row != "!" && attack.Col != -99
+	return attack.Row != -99 && attack.Col != "!"
 }
 
 type Noise struct {
-	Row  string `json:"row"`
-	Col  int    `json:"col"`
-	Row2 string `json:"row2"`
-	Col2 int    `json:"col2"`
+	Row  int    `json:"row"`
+	Col  string `json:"col"`
+	Row2 int    `json:"row2"`
+	Col2 string `json:"col2"`
 }
 
 func (noise Noise) IsNoisy() bool {
-	return noise.Row != "!" && noise.Col != -99
+	return noise.Row != -99 && noise.Col != "!"
 }
 
 func (noise Noise) IsNoisy2() bool {
-	return noise.Row2 != "!" && noise.Col2 != -99
+	return noise.Row2 != -99 && noise.Col2 != "!"
 }
 
 type EndTurn struct {
@@ -64,8 +64,8 @@ type EndTurn struct {
 
 type PlayCard struct {
 	Name         string `json:"name"`
-	Row          string `json:"row"`
-	Col          int    `json:"col"`
+	Row          int    `json:"row"`
+	Col          string `json:"col"`
 	TargetPlayer string `json:"targetPlayer"`
 }
 
@@ -106,7 +106,7 @@ func (move Movement) Execute(gameState *Models.GameState, playerId string) (Mode
 		actingPlayer.Row, actingPlayer.Col = move.ToRow, move.ToCol
 		movement.NewRow, movement.NewCol = actingPlayer.Row, actingPlayer.Col
 	} else {
-		return movement, fmt.Errorf("requested space [%s-%d] not found in map", move.ToRow, move.ToCol)
+		return movement, fmt.Errorf("requested space [%s-%d] not found in map", move.ToCol, move.ToRow)
 	}
 
 	return movement, nil
@@ -181,12 +181,12 @@ func (noise Noise) Execute(gameState *Models.GameState, playerId string) (*Model
 
 			//Randomize which space appears first and which appears second as an extra layer of secrecy
 			if rand.Intn(11)%2 == 0 {
-				event.Description = fmt.Sprintf("Player '%s' made noise at [%s-%d] and [%s-%d]!", actingPlayer.Name, noise.Row, noise.Col, noise.Row2, noise.Col2)
+				event.Description = fmt.Sprintf("Player '%s' made noise at [%s-%d] and [%s-%d]!", actingPlayer.Name, noise.Col, noise.Row, noise.Col2, noise.Row2)
 			} else {
-				event.Description = fmt.Sprintf("Player '%s' made noise at [%s-%d] and [%s-%d]!", actingPlayer.Name, noise.Row2, noise.Col2, noise.Row, noise.Col)
+				event.Description = fmt.Sprintf("Player '%s' made noise at [%s-%d] and [%s-%d]!", actingPlayer.Name, noise.Col2, noise.Row2, noise.Col, noise.Row)
 			}
 		} else {
-			event.Description = fmt.Sprintf("Player '%s' made noise at [%s-%d]!", actingPlayer.Name, noise.Row, noise.Col)
+			event.Description = fmt.Sprintf("Player '%s' made noise at [%s-%d]!", actingPlayer.Name, noise.Col, noise.Row)
 		}
 	} else {
 		event.Description = fmt.Sprintf("Player '%s' avoided making noise", actingPlayer.Name)
@@ -220,10 +220,10 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 			gameEvent = &Models.GameEvent{
 				Row:         actingPlayer.Row,
 				Col:         actingPlayer.Col,
-				Description: fmt.Sprintf("Player '%s' escaped using the Pod at [%s-%d]!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
+				Description: fmt.Sprintf("Player '%s' escaped using the Pod at [%s-%d]!", actingPlayer.Name, actingPlayer.Col, actingPlayer.Row),
 			}
 			actingPlayer.Team = Models.PlayerTeam_Spectator
-			actingPlayer.Row, actingPlayer.Col = "!", -99
+			actingPlayer.Row, actingPlayer.Col = -99, "!"
 
 			gameState.GameConfig.NumWorkingPods -= 1
 
@@ -234,10 +234,10 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 					gameEvent = &Models.GameEvent{
 						Row:         actingPlayer.Row,
 						Col:         actingPlayer.Col,
-						Description: fmt.Sprintf("Player '%s' escaped using the Pod at [%s-%d]!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
+						Description: fmt.Sprintf("Player '%s' escaped using the Pod at [%s-%d]!", actingPlayer.Name, actingPlayer.Col, actingPlayer.Row),
 					}
 					actingPlayer.Team = Models.PlayerTeam_Spectator
-					actingPlayer.Row, actingPlayer.Col = "!", -99
+					actingPlayer.Row, actingPlayer.Col = -99, "!"
 
 					gameState.GameConfig.NumWorkingPods -= 1
 
@@ -246,7 +246,7 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 				gameEvent = &Models.GameEvent{
 					Row:         actingPlayer.Row,
 					Col:         actingPlayer.Col,
-					Description: fmt.Sprintf("Player '%s' tried the Pod at [%s-%d], but it didn't work!", actingPlayer.Name, actingPlayer.Row, actingPlayer.Col),
+					Description: fmt.Sprintf("Player '%s' tried the Pod at [%s-%d], but it didn't work!", actingPlayer.Name, actingPlayer.Col, actingPlayer.Row),
 				}
 
 				gameState.GameConfig.NumBrokenPods -= 1
@@ -291,8 +291,8 @@ func (play PlayCard) Execute(gameState *Models.GameState, playerId string) (Mode
 
 	return Models.GameEvent{
 		Description: cardMessage,
-		Row:         "!",
-		Col:         -99,
+		Row:         -99,
+		Col:         "!",
 	}, nil
 }
 

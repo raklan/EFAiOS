@@ -53,8 +53,8 @@ type TurnEnd struct {
 
 type GameEvent struct {
 	Description string `json:"description"`
-	Row         string `json:"row"`
-	Col         int    `json:"col"`
+	Row         int    `json:"row"`
+	Col         string `json:"col"`
 }
 
 type CardEvent struct {
@@ -63,8 +63,8 @@ type CardEvent struct {
 }
 
 type MovementEvent struct {
-	NewRow string `json:"newRow"`
-	NewCol int    `json:"newCol"`
+	NewRow int    `json:"newRow"`
+	NewCol string `json:"newCol"`
 }
 
 type AvailableMovement struct {

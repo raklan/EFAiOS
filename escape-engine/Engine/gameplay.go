@@ -45,13 +45,13 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 
 	gameState.Players = []Models.Player{}
 
-	for _, element := range lobby.Players { //TODO: Assign role
+	for _, element := range lobby.Players {
 		gameState.Players = append(gameState.Players, Models.Player{
 			Id:   element.Id,
 			Name: element.Name,
 			//Using -99 to avoid any weird cases where that player might be close enough to get onto the Map
-			Row:           "!",
-			Col:           -99,
+			Row:           -99,
+			Col:           "!",
 			Role:          "",
 			StatusEffects: []Models.StatusEffect{},
 			Hand:          []Models.Card{},
@@ -178,8 +178,8 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 						Message: Models.WebsocketMessage{
 							Type: Models.WebsocketMessage_GameEvent,
 							Data: Models.GameEvent{
-								Row:         "!",
-								Col:         -99,
+								Row:         -99,
+								Col:         "!",
 								Description: fmt.Sprintf("Player '%s' is in a safe sector", actingPlayer.Name),
 							},
 						},
@@ -409,7 +409,7 @@ func assignStartingPositions(gameState *Models.GameState, gameMap *Models.GameMa
 
 			gameState.Players[index].Row, gameState.Players[index].Col = startingSpace.Row, startingSpace.Col
 		} else if player.Team == Models.PlayerTeam_Spectator {
-			gameState.Players[index].Row, gameState.Players[index].Col = "!", -99
+			gameState.Players[index].Row, gameState.Players[index].Col = -99, "!"
 		}
 	}
 }

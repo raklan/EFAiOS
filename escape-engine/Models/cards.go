@@ -45,8 +45,8 @@ func (r *CardBase) SetDestroyOnUse(destroyOnUse bool) {
 }
 
 type CardPlayDetails struct {
-	TargetRow    string
-	TargetCol    int
+	TargetRow    int
+	TargetCol    string
 	TargetPlayer string
 }
 
@@ -253,7 +253,7 @@ type Spotlight struct {
 }
 
 func (c Spotlight) Play(gameState *GameState, details CardPlayDetails) string {
-	if details.TargetRow == "" || details.TargetCol == -99 {
+	if details.TargetRow == -99 || details.TargetCol == "" {
 		panic("No details provided for spotlight")
 	}
 
@@ -381,7 +381,7 @@ func (c Sensor) Play(gameState *GameState, details CardPlayDetails) string {
 		return fmt.Sprintf("Player '%s' used a Sensor on Player '%s' but Player '%s' is Invisible!", activePlayer.Name, targetedPlayer.Name, targetedPlayer.Name)
 	}
 
-	return fmt.Sprintf("Player '%s' used a Sensor on Player '%s'! Player '%s' is at [%s-%d]", activePlayer.Name, targetedPlayer.Name, targetedPlayer.Name, targetedPlayer.Row, targetedPlayer.Col)
+	return fmt.Sprintf("Player '%s' used a Sensor on Player '%s'! Player '%s' is at [%s-%d]", activePlayer.Name, targetedPlayer.Name, targetedPlayer.Name, targetedPlayer.Col, targetedPlayer.Row)
 }
 
 func NewSensor() *Sensor {

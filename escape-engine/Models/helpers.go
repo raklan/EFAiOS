@@ -45,13 +45,13 @@ func GetNonmovableSpaces(player *Player) []int {
 	return cantMoveInto
 }
 
-func AttackSpace(row string, col int, gameState GameState) (*GameEvent, error) {
+func AttackSpace(row int, col string, gameState GameState) (*GameEvent, error) {
 	actingPlayer := gameState.GetCurrentPlayer()
 
 	var gameEvent *GameEvent = &GameEvent{
 		Row:         row,
 		Col:         col,
-		Description: fmt.Sprintf("Player '%s' attacked [%s-%d]!\n", actingPlayer.Name, row, col),
+		Description: fmt.Sprintf("Player '%s' attacked [%s-%d]!\n", actingPlayer.Name, col, row),
 	}
 	alienStarts := gameState.GameMap.GetSpacesOfType(Space_AlienStart)
 

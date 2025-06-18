@@ -160,8 +160,8 @@ type Player struct {
 	Role          string         `json:"role"`
 	StatusEffects []StatusEffect `json:"statusEffects"`
 	Hand          []Card         `json:"hand"`
-	Row           string         `json:"row"`
-	Col           int            `json:"col"`
+	Row           int            `json:"row"`
+	Col           string         `json:"col"`
 }
 
 func (p *Player) UnmarshalJSON(data []byte) error {
@@ -172,8 +172,8 @@ func (p *Player) UnmarshalJSON(data []byte) error {
 		Role          string         `json:"role"`
 		Hand          []CardBase     `json:"hand"`
 		StatusEffects []StatusEffect `json:"statusEffects"`
-		Row           string         `json:"row"`
-		Col           int            `json:"col"`
+		Row           int            `json:"row"`
+		Col           string         `json:"col"`
 	}{}
 
 	if err := json.Unmarshal(data, &intermediate); err != nil {

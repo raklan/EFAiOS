@@ -51,20 +51,20 @@ func TestTeleport(t *testing.T) {
 	player := Models.Player{
 		StatusEffects: []Models.StatusEffect{},
 		Id:            "testPlayer",
-		Row:           "A",
-		Col:           0,
+		Row:           0,
+		Col:           "A",
 	}
 	gameState := Models.GameState{
 		GameMap: Models.GameMap{
 			Spaces: map[string]Models.Space{
 				"A-0": {
-					Row:  "A",
-					Col:  0,
+					Row:  0,
+					Col:  "A",
 					Type: Models.Space_Dangerous,
 				},
 				"A-1": {
-					Row:  "A",
-					Col:  1,
+					Row:  0,
+					Col:  "A",
 					Type: Models.Space_HumanStart,
 				},
 			},
@@ -81,7 +81,7 @@ func TestTeleport(t *testing.T) {
 		t.Fatal("Player does not have 0 status effects")
 	}
 
-	if gameState.GetCurrentPlayer().Row != "A" || gameState.GetCurrentPlayer().Col != 1 {
+	if gameState.GetCurrentPlayer().Row != 0 || gameState.GetCurrentPlayer().Col != "A" {
 		t.Fatal("Player is not at human start")
 	}
 }

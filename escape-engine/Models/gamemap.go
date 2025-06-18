@@ -29,79 +29,79 @@ func (gameMap GameMap) GetSpacesWithinNthAdjacency(n int, homeSpaceKey string) m
 
 	homeSpace := gameMap.Spaces[homeSpaceKey]
 
-	rowNum, colNum := homeSpace.GetRowAsInt(), homeSpace.Col
+	rowNum, colNum := homeSpace.Row, homeSpace.GetColAsInt()
 
 	//Get each of the 6 directions. Need to handle even/odd columns differently because of how hex maps line up
 
 	if colNum%2 == 0 { //Even column
 		//Up-Left
-		spaceKey := fmt.Sprintf("%s-%d", GetRowAsLetter(rowNum-1), colNum-1)
+		spaceKey := fmt.Sprintf("%s-%d", GetColAsLetter(colNum-1), rowNum-1)
 		if space, exists := gameMap.Spaces[spaceKey]; exists {
 			spaces[spaceKey] = space
 		}
 
 		//Up
-		spaceKey = fmt.Sprintf("%s-%d", GetRowAsLetter(rowNum-1), colNum)
+		spaceKey = fmt.Sprintf("%s-%d", GetColAsLetter(colNum), rowNum-1)
 		if space, exists := gameMap.Spaces[spaceKey]; exists {
 			spaces[spaceKey] = space
 		}
 
 		//Up-Right
-		spaceKey = fmt.Sprintf("%s-%d", GetRowAsLetter(rowNum-1), colNum+1)
+		spaceKey = fmt.Sprintf("%s-%d", GetColAsLetter(colNum+1), rowNum-1)
 		if space, exists := gameMap.Spaces[spaceKey]; exists {
 			spaces[spaceKey] = space
 		}
 
 		//Down-Left
-		spaceKey = fmt.Sprintf("%s-%d", GetRowAsLetter(rowNum), colNum-1)
+		spaceKey = fmt.Sprintf("%s-%d", GetColAsLetter(colNum-1), rowNum)
 		if space, exists := gameMap.Spaces[spaceKey]; exists {
 			spaces[spaceKey] = space
 		}
 
 		//Down
-		spaceKey = fmt.Sprintf("%s-%d", GetRowAsLetter(rowNum+1), colNum)
+		spaceKey = fmt.Sprintf("%s-%d", GetColAsLetter(colNum), rowNum+1)
 		if space, exists := gameMap.Spaces[spaceKey]; exists {
 			spaces[spaceKey] = space
 		}
 
 		//Down-Right
-		spaceKey = fmt.Sprintf("%s-%d", GetRowAsLetter(rowNum), colNum+1)
+		spaceKey = fmt.Sprintf("%s-%d", GetColAsLetter(colNum+1), rowNum)
 		if space, exists := gameMap.Spaces[spaceKey]; exists {
 			spaces[spaceKey] = space
 		}
 	} else {
 		//Up-Left
-		spaceKey := fmt.Sprintf("%s-%d", GetRowAsLetter(rowNum), colNum-1)
+		spaceKey := fmt.Sprintf("%s-%d", GetColAsLetter(colNum-1), rowNum)
 		if space, exists := gameMap.Spaces[spaceKey]; exists {
 			spaces[spaceKey] = space
 		}
 
 		//Up
-		spaceKey = fmt.Sprintf("%s-%d", GetRowAsLetter(rowNum-1), colNum)
+		spaceKey = fmt.Sprintf("%s-%d", GetColAsLetter(colNum), rowNum-1)
 		if space, exists := gameMap.Spaces[spaceKey]; exists {
 			spaces[spaceKey] = space
 		}
 
 		//Up-Right
-		spaceKey = fmt.Sprintf("%s-%d", GetRowAsLetter(rowNum), colNum+1)
+		spaceKey = fmt.Sprintf("%s-%d", GetColAsLetter(colNum+1), rowNum)
 		if space, exists := gameMap.Spaces[spaceKey]; exists {
 			spaces[spaceKey] = space
 		}
 
 		//Down-Left
-		spaceKey = fmt.Sprintf("%s-%d", GetRowAsLetter(rowNum+1), colNum-1)
+		spaceKey = fmt.Sprintf("%s-%d", GetColAsLetter(colNum-1), rowNum+1)
 		if space, exists := gameMap.Spaces[spaceKey]; exists {
 			spaces[spaceKey] = space
 		}
 
 		//Down
-		spaceKey = fmt.Sprintf("%s-%d", GetRowAsLetter(rowNum+1), colNum)
+		spaceKey = fmt.Sprintf("%s-%d", GetColAsLetter(colNum), rowNum+1)
 		if space, exists := gameMap.Spaces[spaceKey]; exists {
 			spaces[spaceKey] = space
 		}
 
 		//Down-Right
-		spaceKey = fmt.Sprintf("%s-%d", GetRowAsLetter(rowNum+1), colNum+1)
+		spaceKey = fmt.Sprintf("%s-%d", GetColAsLetter(colNum+1), rowNum+1)
 		if space, exists := gameMap.Spaces[spaceKey]; exists {
 			spaces[spaceKey] = space
 		}
@@ -130,31 +130,31 @@ const (
 )
 
 type Space struct {
-	Row  string `json:"row"`
-	Col  int    `json:"col"`
+	Row  int    `json:"row"`
+	Col  string `json:"col"`
 	Type int    `json:"type"`
 }
 
-func GetMapKey(row string, col int) string {
-	return fmt.Sprintf("%s-%d", row, col)
+func GetMapKey(row int, col string) string {
+	return fmt.Sprintf("%s-%d", col, row)
 }
 
 func (space Space) GetMapKey() string {
 	return GetMapKey(space.Row, space.Col)
 }
 
-// Gets the space's row as an int. A = 0, B = 1, ... Z = 25, AA = 26, etc
-func (space Space) GetRowAsInt() int {
+// Gets the space's column as an int. A = 0, B = 1, ... Z = 25, AA = 26, etc
+func (space Space) GetColAsInt() int {
 	row := 0
 
-	for i := range space.Row {
-		row += int(space.Row[i]) - 65 + (i * 26)
+	for i := range space.Col {
+		row += int(space.Col[i]) - 65 + (i * 26)
 	}
 
 	return row
 }
 
-func GetRowAsLetter(rowNum int) string {
+func GetColAsLetter(rowNum int) string {
 	letterCode := ""
 
 	for rowNum >= 0 {

@@ -32,13 +32,13 @@ const SpaceTypes = {
 }
 
 var selectedSpace = {
-    row: '!',
-    col: -99
+    row: -99,
+    col: '!'
 }
 
 var selectedSpace2 = {
-    row: '!',
-    col: -99
+    row: -99,
+    col: '!'
 }
 
 const PlayerTeams = {
@@ -105,11 +105,11 @@ function createGrid(rows, columns) {
             ].join(' '));
             poly.setAttribute('class', [cssClass, 'safe'].join(' '));
             poly.setAttribute('tabindex', 1);
-            poly.setAttribute('hex-row', numberToLetter(row));
-            poly.setAttribute('hex-column', column);
+            poly.setAttribute('hex-row', row);
+            poly.setAttribute('hex-column', numberToLetter(column));
             poly.setAttribute('hex-type', SpaceTypes.Safe);
-            poly.setAttribute('id', `hex-${numberToLetter(row)}-${column}`)
-            poly.innerHTML = `<title>[${numberToLetter(row)}-${column}]</title>`; //TODO: This won't work for mobile
+            poly.setAttribute('id', `hex-${numberToLetter(column)}-${row}`)
+            poly.innerHTML = `<title>[${numberToLetter(column)}-${row}]</title>`; //TODO: This won't work for mobile
             svgParent.appendChild(poly);
 
             var polyText = document.createElementNS("http://www.w3.org/2000/svg", "text")
@@ -118,7 +118,7 @@ function createGrid(rows, columns) {
             polyText.setAttribute('fill', 'black')
             polyText.setAttribute('text-anchor', 'middle')
             polyText.setAttribute('font-size', `${radius / 2.25}px`)
-            polyText.innerHTML = `[${numberToLetter(row)}-${column}]`
+            polyText.innerHTML = `[${numberToLetter(column)}-${row}]`
             polyText.style.pointerEvents = 'none'
             svgParent.appendChild(polyText)
         }
@@ -131,7 +131,7 @@ function drawMapOnPage() {
     }
 
     Object.values(MAP.spaces).forEach(space => {
-        var el = document.getElementById(`hex-${space.row}-${space.col}`)
+        var el = document.getElementById(`hex-${space.col}-${space.row}`)
         if (el) {
             var spaceClass = 'safe'
             switch (space.type) {
@@ -172,8 +172,8 @@ function hexClick(event) {
         return
     }
 
-    var row = event.target.getAttribute('hex-row') ?? "!";
-    var col = parseInt(event.target.getAttribute('hex-column') ?? -99);
+    var row = parseInt(event.target.getAttribute('hex-row') ?? -99);
+    var col = event.target.getAttribute('hex-column') ?? "!";
 
     var actionToSend = {}
     if (clickMode == ClickModes.Moving) {
@@ -222,7 +222,7 @@ function hexClick(event) {
 
         document.getElementById("cat-confirm").style.display = ''
     } else if (clickMode == ClickModes.CatGreen) {
-        var deselectedSpace = document.getElementById(`hex-${selectedSpace2.row}-${selectedSpace2.col}`)
+        var deselectedSpace = document.getElementById(`hex-${selectedSpace2.col}-${selectedSpace2.row}`)
         if (deselectedSpace) {
             deselectedSpace.classList.remove("selected")
         }
@@ -236,7 +236,7 @@ function hexClick(event) {
         }
         event.target.classList.add('selected')
 
-        if (selectedSpace2.row != '!' && selectedSpace2.col != -99) {
+        if (selectedSpace2.row != -99 && selectedSpace2.col != '!') {
             document.getElementById("cat-confirm").style.display = ''
         }
     }
@@ -370,8 +370,8 @@ function redCardConfirm() {
             turn: {
                 row: thisPlayer.row,
                 col: thisPlayer.col,
-                row2: "!",
-                col2: -99,
+                row2: -99,
+                col2: "!",
             }
         }
     }
@@ -389,8 +389,8 @@ function greenCardConfirm() {
             turn: {
                 row: selectedSpace.row,
                 col: selectedSpace.col,
-                row2: '!',
-                col2: -99
+                row2: -99,
+                col2: "!"
             }
         }
     }
@@ -489,8 +489,8 @@ function attack(isAttacking) {
         action: {
             type: 'Attack',
             turn: {
-                row: isAttacking ? thisPlayer.row : "!",
-                col: isAttacking ? thisPlayer.col : -99
+                row: isAttacking ? thisPlayer.row : -99,
+                col: isAttacking ? thisPlayer.col : "!"
             }
         }
     }

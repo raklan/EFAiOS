@@ -62,10 +62,10 @@ function createGrid(rows, columns) {
                 ].join(' '));
             poly.setAttribute('class', [cssClass, 'dangerous'].join(' '));
             poly.setAttribute('tabindex', 1);
-            poly.setAttribute('hex-row', numberToLetter(row));
-            poly.setAttribute('hex-column', column);
+            poly.setAttribute('hex-row', row);
+            poly.setAttribute('hex-column', numberToLetter(column));
             poly.setAttribute('hex-type', SpaceTypes.Dangerous);
-            poly.setAttribute('id', `hex-${numberToLetter(row)}-${column}`)
+            poly.setAttribute('id', `hex-${numberToLetter(column)}-${row}`)
             svgParent.appendChild(poly);
 
             var polyText = document.createElementNS("http://www.w3.org/2000/svg", "text")
@@ -74,7 +74,7 @@ function createGrid(rows, columns) {
             polyText.setAttribute('fill', 'black')
             polyText.setAttribute('text-anchor', 'middle')
             polyText.setAttribute('font-size', `${radius/2.25}px`)
-            polyText.innerHTML = `[${numberToLetter(row)}-${column}]`
+            polyText.innerHTML = `[${numberToLetter(column)}-${row}]`
             polyText.style.pointerEvents = 'none'
             svgParent.appendChild(polyText)
         }
@@ -191,9 +191,9 @@ async function exportMap(){
         var row = child.getAttribute('hex-row')
             col = child.getAttribute('hex-column')
             type = child.getAttribute('hex-type')
-        map.spaces[`${row}-${col}`] = {
-            row: row,
-            col: parseInt(col),
+        map.spaces[`${col}-${row}`] = {
+            row: parseInt(row),
+            col: col,
             type: parseInt(type)
         }
     }
