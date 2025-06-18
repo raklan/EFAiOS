@@ -31,7 +31,6 @@
         background-color: black;
 
         display: none;
-        flex-direction: column;
         padding: 5px;
     }
 </style>
@@ -50,12 +49,14 @@
     {{end}}
 </div>
 <div id="name-popup">
-    <h4 id="name-popup-map-name-display">Host New Game</h4>
-    <input id="name-input" type="text" class="text-input" style="max-width: 100%" placeholder="Enter Your Name" autocomplete="off" autocapitalize="off" />
-    <div style="display: flex; justify-content: space-between;">
-        <button onclick="playMap()">Play</button>
-        <button onclick="cancel()">Cancel</button>
-    </div>
+    <form id="name-popup-form" onsubmit="playMap(event)" style="display: flex; flex-direction: column; flex-grow: 1;">
+        <h4 id="name-popup-map-name-display">Host New Game</h4>
+        <input id="name-input" type="text" class="text-input" style="max-width: 100%" placeholder="Enter Your Name" autocomplete="off" autocapitalize="off" />
+        <div style="display: flex; justify-content: space-between;">
+            <button type="submit">Play</button>
+            <button type="button" onclick="cancel()">Cancel</button>
+        </div>
+    </form>
 </div>
 {{end}}
 
@@ -63,7 +64,7 @@
 <script>
     var selectedMapId = '';
     function hostMap(mapId, mapName) {
-        document.getElementById("name-popup").style.display = "flex";
+        document.getElementById("name-popup").style.display = "block";
         document.getElementById("name-popup-map-name-display").innerText = `Host New Game: ${mapName}`
         selectedMapId = mapId;
     }
@@ -76,7 +77,9 @@
         window.open(`/mapeditor?id=${mapId}`, '_self')
     }
 
-    function playMap() {
+    function playMap(event) {      
+        console.log(event)  
+        event.preventDefault();
         var name = document.getElementById("name-input")?.value;
         
         if(!name?.length > 0){
@@ -89,7 +92,15 @@
             return;
         }
 
-        window.open(`/play?mapId=${selectedMapId}&playerName=${name}`, '_self')
+        const connectionInfo = {
+            type: "host",
+            mapId: selectedMapId,
+            playerName: name,
+        }
+
+        window.localStorage.setItem('efaios-connectionInfo', JSON.stringify(connectionInfo))
+
+        window.open('/play', "_self")
     }
 </script>
 {{end}}

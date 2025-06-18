@@ -368,24 +368,22 @@
     var isThisPlayersTurn = false;
 
     function openSocket() {
-        urlParams = new URLSearchParams(window.location.search)
+        const connectionInfo = JSON.parse(window.localStorage.getItem("efaios-connectionInfo"))
+        let urlToConnect = "";
 
-        var playerName = urlParams.get("playerName")
-        if (!playerName?.length > 0) {
-            console.error("no player name found")
-            return
-        }
-        if (urlParams.has("mapId") && !urlParams.has("roomCode")) {
-            var mapId = urlParams.get("mapId")
-
-            var urlToConnect = `ws://${window.location.host}/lobby/host?mapId=${mapId}&playerName=${playerName}`
-        } else if (urlParams.has("roomCode") && !urlParams.has("mapId")) {
-            var roomCode = urlParams.get("roomCode")
-
-            var urlToConnect = `ws://${window.location.host}/lobby/join?roomCode=${roomCode}&playerName=${playerName}`
-        } else {
-            console.error("Something went wrong trying to detect mode")
-            return;
+        switch(connectionInfo.type){
+            case "host":
+                urlToConnect = `ws://${window.location.host}/lobby/host?mapId=${connectionInfo.mapId}&playerName=${connectionInfo.playerName}`
+                break;
+            case "join":
+                urlToConnect = `ws://${window.location.host}/lobby/join?roomCode=${connectionInfo.roomCode}&playerName=${connectionInfo.playerName}`
+                break;
+            case "rejoin":
+                urlToConnect = `ws://${window.location.host}/lobby/rejoin?roomCode=${connectionInfo.roomCode}&playerName=${connectionInfo.playerId}`
+                break;
+            default:
+                console.error("Something went wrong trying to detect mode")
+                return;
         }
 
         ws = new WebSocket(urlToConnect)
