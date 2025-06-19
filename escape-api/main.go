@@ -15,6 +15,7 @@ import (
 
 func main() {
 	setUpLogging()
+	Engine.PrepareFilesystem()
 	startServer()
 }
 
@@ -36,7 +37,6 @@ func startServer() {
 
 	fmt.Printf("Server has started listening on port 80. Connect to %s from a web browser to play!\n", GetLocalIP())
 	http.ListenAndServe(":80", nil)
-
 }
 
 // GetLocalIP returns the non loopback local IP of the host

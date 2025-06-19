@@ -10,10 +10,14 @@ import (
 	"time"
 )
 
+func PrepareFilesystem() {
+	os.Mkdir("./maps", 0666)
+	os.Mkdir("./lobbies", 0666)
+	os.Mkdir("./gameStates", 0666)
+}
+
 // Yes, I know. I just REALLY didn't want to bring in an entire database JUST for this and Redis shouldn't be used for it
 func SaveMapToDB(m Models.GameMap) (Models.GameMap, error) {
-	os.Mkdir("./maps", 0666)
-
 	if m.Id == "" {
 		m.Id = GenerateId()
 	}
@@ -94,7 +98,7 @@ func SaveLobbyToFs(lobby Models.Lobby) (Models.Lobby, error) {
 	}
 
 	filename := "lobby_" + lobby.RoomCode + ".json"
-	os.Mkdir("./lobbies", 0666)
+
 	f, err := os.Create(fmt.Sprintf("./lobbies/%s", filename))
 	if err != nil {
 		log.Printf("%s Ran into unrecoverable error trying to save lobby to filesystem", funcLogPrefix)
@@ -159,7 +163,6 @@ func SaveGameStateToFs(gameState Models.GameState) (Models.GameState, error) {
 	}
 
 	filename := "gameState_" + gameState.Id + ".json"
-	os.Mkdir("./gameStates", 0666)
 	f, err := os.Create(fmt.Sprintf("./gameStates/%s", filename))
 	if err != nil {
 		log.Printf("%s Ran into unrecoverable error trying to save GameState to filesystem", funcLogPrefix)
