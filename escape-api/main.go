@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"net"
 	"net/http"
 	"path/filepath"
 	"strings"
@@ -18,7 +19,8 @@ func main() {
 }
 
 func startServer() {
-
+	log.Println("=========================Starting Server========================")
+	fmt.Println("=========================Starting Server========================")
 	fs := http.FileServer(http.Dir("./escape-api/assets"))
 	http.Handle("/assets/", http.StripPrefix("/assets/", fs))
 	http.Handle("/favicon.ico", fs)
@@ -32,9 +34,26 @@ func startServer() {
 	http.HandleFunc("/lobby/join", Engine.HandleJoinLobby)
 	http.HandleFunc("/lobby/rejoin", Engine.HandleRejoinLobby)
 
-	log.Println("=========================Starting Server========================")
-
+	fmt.Printf("Server has started listening on port 80. Connect to %s from a web browser to play!\n", GetLocalIP())
 	http.ListenAndServe(":80", nil)
+
+}
+
+// GetLocalIP returns the non loopback local IP of the host
+func GetLocalIP() string {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return ""
+	}
+	for _, address := range addrs {
+		// check the address type and if it is not a loopback the display it
+		if ipnet, ok := address.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				return ipnet.IP.String()
+			}
+		}
+	}
+	return ""
 }
 
 func setUpLogging() {
