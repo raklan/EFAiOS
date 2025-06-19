@@ -1,6 +1,7 @@
 package Engine
 
 import (
+	"html/template"
 	"strings"
 )
 
@@ -21,4 +22,13 @@ func GetMapName(input string) string {
 	}
 
 	return gameMap.Name
+}
+
+func GetMapDescription(input string) template.HTML { //TODO: Sanitize description somehow to prevent XSS?
+	gameMap, err := GetMapFromDB(StripMapId(input))
+	if err != nil {
+		return "Error finding Map"
+	}
+
+	return template.HTML(gameMap.Description)
 }

@@ -7,11 +7,12 @@ import (
 )
 
 type GameMap struct {
-	Id     string           `json:"id"`
-	Name   string           `json:"name"`
-	Rows   int              `json:"rows"`
-	Cols   int              `json:"cols"`
-	Spaces map[string]Space `json:"spaces"`
+	Id          string           `json:"id"`
+	Name        string           `json:"name"`
+	Description string           `json:"description"`
+	Rows        int              `json:"rows"`
+	Cols        int              `json:"cols"`
+	Spaces      map[string]Space `json:"spaces"`
 }
 
 func (gameMap *GameMap) GetSpacesOfType(spaceType int) []Space {

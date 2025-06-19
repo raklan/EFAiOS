@@ -238,6 +238,7 @@ async function handleMovementResponse(movementEvent) {
 
     //If needed, this can be moved to before updating thisPlayer.row and just search for that row and col instead of querySelectorAll
     document.querySelectorAll('.player').forEach(x => x.classList.remove('player'))
+    document.querySelectorAll('.hexfield.potential-move').forEach(x => x.classList.remove('potential-move'))
 
     var playerSpace = document.getElementById(`hex-${thisPlayer.col}-${thisPlayer.row}`)
     playerSpace.classList.add('player')

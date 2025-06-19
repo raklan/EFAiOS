@@ -59,8 +59,9 @@ func serveHtml(w http.ResponseWriter, r *http.Request) {
 	}
 
 	temp := template.New("layout.html").Funcs(template.FuncMap{
-		"StripMapId": Engine.StripMapId,
-		"GetMapName": Engine.GetMapName,
+		"StripMapId":        Engine.StripMapId,
+		"GetMapName":        Engine.GetMapName,
+		"GetMapDescription": Engine.GetMapDescription,
 	})
 
 	var tmpl *template.Template

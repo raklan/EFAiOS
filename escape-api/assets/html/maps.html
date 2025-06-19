@@ -41,6 +41,7 @@
     {{range .}}
     <div class="map-entry">
         <h4>{{GetMapName .}}</h4>
+        <div style="color: rgb(0, 179, 0)">{{GetMapDescription .}}</div>
         <div class="button-container">
             <button type="button" onclick="hostMap('{{StripMapId .}}', '{{GetMapName .}}')">Play</button>
             <button type="button" onclick="editMap('{{StripMapId .}}')">Edit</button>

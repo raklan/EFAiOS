@@ -1,65 +1,27 @@
 {{define "styling"}}
 <style type="text/css">
-    svg {}
-
-    .hexfield {
-        fill: transparent;
-        stroke: black;
-        stroke-width: 1;
-    }
-
-    .hexfield:focus {
-        outline: none;
-    }
-    .hexfield.wall {
-        fill: black;
-    }
-
-    .hexfield.safe {
-        fill: white;
-    }
-
-    .hexfield.dangerous {
-        fill: gray;
-    }
-
-    .hexfield.pod {
-        fill: forestgreen;
-    }
-
-    .hexfield.alienstart {
-        fill: red;
-    }
-
-    .hexfield.humanstart {
-        fill: deepskyblue;
-    }
-
-    .hexfield.player {
-        fill: mediumpurple;
-    }
-
-    .hexfield.selected {
-        fill: orange;
-    }
-
-    .hexfield.potential-move{
-        fill: pink;
-    }
-
-    .hexfield:hover {
-        fill: limegreen;
-    }
-
     #sidebar {
         background-color: rgb(39, 39, 39);
+        max-width: 500px;
+    }
+
+    .text-input-label span{
+        background-color: rgb(39, 39, 39);
+        color: lime;
     }
 
     #tools{
         display: grid;
         grid-template-columns: 1fr 1fr;
     }
+
+    #map-details{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 </style>
+<link rel="stylesheet" href="/assets/stylesheets/map.css">
 {{end}}
 
 {{define "body"}}
@@ -75,19 +37,27 @@
             <button type="button" onclick="setTool('Alien Start')">Alien Start</button>
         </div>        
         <button type="button" onclick="exportMap()">Save</button>
-        <div>
-            <label class="control-label">
-                Name
+        <div id="map-details">
+
+            <label class="text-input-label">
+                <span>Name</span>
                 <input class="text-input" id="name" placeholder="Name" autocomplete="off"/>
             </label>
-            <label class="control-label">
-                Rows
-                <input class="text-input" id="rows" placeholder="Rows" value="5" />
-            </label>
-            
-            <label class="control-label">
-                Columns
-                <input class="text-input" id="columns" placeholder="Columns" value="10" />
+
+            <div style="width: 100%; display: flex; justify-content: space-around;">
+                <label class="text-input-label">
+                    <span>Rows</span>
+                    <input class="text-input" id="rows" placeholder="Rows" value="5" />
+                </label>
+                <label class="text-input-label">
+                    <span>Columns</span>
+                    <input class="text-input" id="columns" placeholder="Columns" value="10" />
+                </label>
+            </div>
+
+            <label class="text-input-label" style="min-width: 100%; max-width: 100%; max-height: none;">
+                <span>Description</span>
+                <textarea id="description" placeholder="Raw HTML is valid. Please don't XSS me :)" class="text-input" rows="15" style="max-width: 90%; max-height: none; min-height: fit-content;"></textarea>
             </label>
         </div>
         
@@ -99,6 +69,7 @@
 {{end}}
 {{define "scripts"}}
 <script src="/assets/js/utils.js"></script>
+<script src="/assets/js/mapdrawer.js"></script>
 <script src="/assets/js/mapeditor.js"></script>
 <script>
     initializePage();
