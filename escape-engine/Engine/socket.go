@@ -52,6 +52,7 @@ func HostLobby(w http.ResponseWriter, r *http.Request) {
 	}
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
+		log.Printf("Couldn't upgrade connection for player %s", playerName)
 		http.Error(w, "WebSocket upgrade failed", http.StatusInternalServerError)
 		return
 	}

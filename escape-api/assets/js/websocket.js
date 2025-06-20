@@ -233,6 +233,7 @@ async function handleLobbyInfoMessage(messageData) {
 }
 
 async function handleMovementResponse(movementEvent) {
+    clickMode = ClickModes.None
     thisPlayer.row = movementEvent.newRow;
     thisPlayer.col = movementEvent.newCol;
 
@@ -257,7 +258,7 @@ async function handleMovementResponse(movementEvent) {
         }
 
         sendWsMessage(ws, 'submitAction', actionToSend);
-    } else if (thisPlayer.team == PlayerTeams.Alien) {
+    } else if (thisPlayer.team == PlayerTeams.Alien) {        
         showPlayerChoicePopup('attack')
     }
 }
