@@ -91,11 +91,17 @@ func AttackSpace(row int, col string, gameState GameState) (*GameEvent, error) {
 		}
 
 		if !playerWasSaved {
-			newSpaceForPlayer := alienStarts[rand.Intn(len(alienStarts))]
+			if player.Team == PlayerTeam_Human || (player.Team == PlayerTeam_Alien && gameState.GameConfig.AliensRespawn) {
+				newSpaceForPlayer := alienStarts[rand.Intn(len(alienStarts))]
 
-			gameState.Players[index].Team = PlayerTeam_Alien
-			gameState.Players[index].Row, gameState.Players[index].Col = newSpaceForPlayer.Row, newSpaceForPlayer.Col
-			gameEvent.Description += fmt.Sprintf("%s died!\n", player.Name)
+				gameState.Players[index].Team = PlayerTeam_Alien
+				gameState.Players[index].Row, gameState.Players[index].Col = newSpaceForPlayer.Row, newSpaceForPlayer.Col
+			} else {
+				gameState.Players[index].Team = PlayerTeam_Spectator
+				gameState.Players[index].Row, gameState.Players[index].Col = -99, "!"
+			}
+
+			gameEvent.Description += fmt.Sprintf("Player '%s' died!\n", player.Name)
 		}
 	}
 

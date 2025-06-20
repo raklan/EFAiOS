@@ -149,6 +149,8 @@ type GameConfig struct {
 	NumBrokenPods int `json:"numBrokenPods"`
 	//Number of turns before the game should end
 	NumTurns int `json:"numTurns"`
+	//Whether Alien players should join the Spectators team upon death
+	AliensRespawn bool `json:"aliensRespawn"`
 	//Which cards should be active, as well as how many of each
 	ActiveCards map[string]int `json:"activeCards"`
 	//Which roles should be active, as well as the maximum number allowed to be present. Should be >= that role's presence in RequiredRoles, if it's required
