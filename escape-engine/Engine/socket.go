@@ -105,14 +105,6 @@ func HandleJoinLobby(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// msg := WebsocketMessage{
-	// 	Type: WebsocketMessage_LobbyInfo,
-	// 	Data: LobbyInfo{
-	// 		PlayerID:  playerID,
-	// 		LobbyInfo: lobbyInfo,
-	// 	},
-	// }
-	//conn.WriteJSON(msg)
 	gamesClients[roomCode][playerID] = conn
 	gamesClientsMutex.Unlock()
 	go handShake(roomCode, playerID)

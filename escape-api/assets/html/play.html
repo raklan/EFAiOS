@@ -116,6 +116,9 @@
                         <div class="checkmark"></div>
                     </label>
                 </div>
+                <div style="position: fixed; bottom: 10px; left: 0px; width: 100%;">
+                    <button type="button" onclick="setAllConfigAsDefault()" style="background-color: black; --button-color: white">Restore All Defaults</button>
+                </div>
             </div>
             <div id="config-cards" style="display: none;">
                 <h2>Noise</h2>
@@ -278,8 +281,8 @@
                     <label class="text-input-label" style="color: red;">
                         Fast
                         <span>Available</span>
-                        <input type="number" min="0" class="text-input" name="config-numFast"
-                            placeholder="# Possible" onchange="checkPossible('numFast')" />
+                        <input type="number" min="0" class="text-input" name="config-numFast" placeholder="# Possible"
+                            onchange="checkPossible('numFast')" />
                         <span>Required</span>
                         <input type="number" min="0" class="text-input" name="config-numFastRequired"
                             placeholder="# Required" onchange="updatePossible('numFast')" />
@@ -296,8 +299,8 @@
                     <label class="text-input-label" style="color: red;">
                         Blink
                         <span>Available</span>
-                        <input type="number" min="0" class="text-input" name="config-numBlink"
-                            placeholder="# Possible" onchange="checkPossible('numBlink')" />
+                        <input type="number" min="0" class="text-input" name="config-numBlink" placeholder="# Possible"
+                            onchange="checkPossible('numBlink')" />
                         <span>Required</span>
                         <input type="number" min="0" class="text-input" name="config-numBlinkRequired"
                             placeholder="# Required" onchange="updatePossible('numBlink')" />
@@ -305,8 +308,8 @@
                     <label class="text-input-label" style="color: red;">
                         Silent
                         <span>Available</span>
-                        <input type="number" min="0" class="text-input" name="config-numSilent"
-                            placeholder="# Possible" onchange="checkPossible('numSilent')" />
+                        <input type="number" min="0" class="text-input" name="config-numSilent" placeholder="# Possible"
+                            onchange="checkPossible('numSilent')" />
                         <span>Required</span>
                         <input type="number" min="0" class="text-input" name="config-numSilentRequired"
                             placeholder="# Required" onchange="updatePossible('numSilent')" />
@@ -316,8 +319,8 @@
                     <label class="text-input-label" style="color: red; margin-top: 15px;">
                         Brute
                         <span>Available</span>
-                        <input type="number" min="0" class="text-input" name="config-numBrute"
-                            placeholder="# Possible" onchange="checkPossible('numBrute')" />
+                        <input type="number" min="0" class="text-input" name="config-numBrute" placeholder="# Possible"
+                            onchange="checkPossible('numBrute')" />
                         <span>Required</span>
                         <input type="number" min="0" class="text-input" name="config-numBruteRequired"
                             placeholder="# Required" onchange="updatePossible('numBrute')" />
@@ -334,8 +337,8 @@
                     <label class="text-input-label" style="color: red; margin-top: 15px;">
                         Lurking
                         <span>Available</span>
-                        <input type="number" min="0" class="text-input" name="config-numLurking" placeholder="# Possible"
-                            onchange="checkPossible('numLurking')" />
+                        <input type="number" min="0" class="text-input" name="config-numLurking"
+                            placeholder="# Possible" onchange="checkPossible('numLurking')" />
                         <span>Required</span>
                         <input type="number" min="0" class="text-input" name="config-numLurkingRequired"
                             placeholder="# Required" onchange="updatePossible('numLurking')" />
@@ -343,8 +346,8 @@
                     <label class="text-input-label" style="color: red; margin-top: 15px;">
                         Psychic
                         <span>Available</span>
-                        <input type="number" min="0" class="text-input" name="config-numPsychic" placeholder="# Possible"
-                            onchange="checkPossible('numPsychic')" />
+                        <input type="number" min="0" class="text-input" name="config-numPsychic"
+                            placeholder="# Possible" onchange="checkPossible('numPsychic')" />
                         <span>Required</span>
                         <input type="number" min="0" class="text-input" name="config-numPsychicRequired"
                             placeholder="# Required" onchange="updatePossible('numPsychic')" />
@@ -365,7 +368,9 @@
     <div id="team" class="player-card"></div>
     <div id="role" class="player-card"></div>
     <div id="status-effects" class="player-card"></div>
-    <button id="endTurn-button" style="position: fixed; bottom: 0px; right: 50px; border: 1px solid lime; display: none;" onclick="endTurn()">End Turn</button>
+    <button id="endTurn-button"
+        style="position: fixed; bottom: 0px; right: 50px; border: 1px solid lime; display: none;"
+        onclick="endTurn()">End Turn</button>
     <div id="turn-order" class="player-card"></div>
     <div id="gameover-notification"
         style="display: none; position: fixed; bottom: 30px; background-color: black; padding: 10px"></div>
@@ -388,7 +393,7 @@
         const connectionInfo = JSON.parse(window.localStorage.getItem("efaios-connectionInfo"))
         let urlToConnect = "";
 
-        switch(connectionInfo.type){
+        switch (connectionInfo.type) {
             case "host":
                 urlToConnect = `http://${window.location.host}/lobby/host?mapId=${connectionInfo.mapId}&playerName=${connectionInfo.playerName}`
                 break;
@@ -409,7 +414,7 @@
             var message = JSON.parse(wsMsg.data)
             handleWsMessage(message)
         })
-        
+
         ws.addEventListener('error', (wsMsg) => {
             console.error('An error occurred with the WebSocket', wsMsg)
             showNotification('Something went wrong trying to establish a connection to the Lobby. Ensure you have the right Room Code and the Name you chose isn\'t taken and try again. If the issue persists, feel free to reach out to me on the Github repository. Sorry about that!', 'Error')

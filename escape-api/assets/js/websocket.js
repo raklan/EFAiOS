@@ -196,6 +196,7 @@ async function handleLobbyInfoMessage(messageData) {
             roomCode: messageData.lobbyInfo.roomCode
         }
         window.localStorage.setItem('efaios-connectionInfo', JSON.stringify(connectionInfo))
+        setAllConfigAsDefault();
     }
     document.getElementById("lobby-roomCode").innerHTML = `Room Code: ${messageData.lobbyInfo.roomCode}`
     document.getElementById('lobby-mapTitle').innerText = `Map: ${messageData.lobbyInfo.mapName}`
@@ -232,8 +233,7 @@ async function handleLobbyInfoMessage(messageData) {
         configButton.style.display = '';
         configButton.onclick = () => {
             showConfig();
-        }
-        setAllConfigAsDefault();
+        }        
     }
     //#endregion
 }
