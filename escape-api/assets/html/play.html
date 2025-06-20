@@ -390,13 +390,13 @@
 
         switch(connectionInfo.type){
             case "host":
-                urlToConnect = `ws://${window.location.host}/lobby/host?mapId=${connectionInfo.mapId}&playerName=${connectionInfo.playerName}`
+                urlToConnect = `http://${window.location.host}/lobby/host?mapId=${connectionInfo.mapId}&playerName=${connectionInfo.playerName}`
                 break;
             case "join":
-                urlToConnect = `ws://${window.location.host}/lobby/join?roomCode=${connectionInfo.roomCode}&playerName=${connectionInfo.playerName}`
+                urlToConnect = `http://${window.location.host}/lobby/join?roomCode=${connectionInfo.roomCode}&playerName=${connectionInfo.playerName}`
                 break;
             case "rejoin":
-                urlToConnect = `ws://${window.location.host}/lobby/rejoin?roomCode=${connectionInfo.roomCode}&playerId=${connectionInfo.playerId}`
+                urlToConnect = `http://${window.location.host}/lobby/rejoin?roomCode=${connectionInfo.roomCode}&playerId=${connectionInfo.playerId}`
                 break;
             default:
                 console.error("Something went wrong trying to detect mode")
@@ -408,6 +408,11 @@
         ws.addEventListener('message', (wsMsg) => {
             var message = JSON.parse(wsMsg.data)
             handleWsMessage(message)
+        })
+        
+        ws.addEventListener('error', (wsMsg) => {
+            console.error('An error occurred with the WebSocket', wsMsg)
+            showNotification('Something went wrong trying to establish a connection to the Lobby. Ensure you have the right Room Code and the Name you chose isn\'t taken and try again. If the issue persists, feel free to reach out to me on the Github repository. Sorry about that!', 'Error')
         })
     }
 
