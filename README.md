@@ -31,7 +31,7 @@ My goal with this is twofold: First, a lightweight version that's easy to set up
 ## How to Run
 I'll probably get it deployed in some fashion (and post the URL in this README when I do), but if for whatever reason that doesn't happen or you just want to run it yourself, you'll have three options:
   ### Recommended/Easiest
-  Check out the [Releases Page](https://github.com/raklan/EFAiOS/releases), which is the easiest way to get set up. Every release will have a ZIP folder included called EFAiOS-vX.Y.Z (replace X.Y.Z with the version number) that you can download and extract. There will be a .exe file inside called efaios.exe that you can run.
+  Check out the [Releases Page](https://github.com/raklan/EFAiOS/releases), which is the easiest way to get set up. Every release will have a ZIP folder included called EFAiOS-vX.Y.Z (replace X.Y.Z with the version number) that you can download and extract. There will be a .exe file inside called `efaios.exe` that you can run.
   ### Other Options
   - You can clone the repository, install Go on your machine, and simply run the command `go run ./escape-api` from the root directory. Be aware this option does not come with any premade maps.
   - I'll also probably push a docker image of the project that you can set up your own container for. Be aware that this option will not come with any premade maps.
