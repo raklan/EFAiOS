@@ -271,6 +271,17 @@ async function handleAvailableMovementMessage(availableMovement) {
         let spaceElement = document.getElementById(`hex-${space}`)
         if (spaceElement) {
             spaceElement.classList.add("potential-move")
+
+            //The gold stroke won't show up properly on the right and bottom edges because those spaces are later in the HTML
+            // and therefore rendered later than this one/on top of this one. To get around this, we'll remove the potential move spaces
+            // and then re-add them to the svg, which will put them at the end of the markup i.e. on top
+            let svgParent = document.getElementById("polycontainer")
+            let spaceText = spaceElement.nextSibling
+
+            svgParent.removeChild(spaceElement)
+            svgParent.appendChild(spaceElement)
+            svgParent.removeChild(spaceText)
+            svgParent.appendChild(spaceText)
         }
     })
 }
