@@ -80,3 +80,21 @@ func getMap(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(requestedMap)
 }
+
+func RoleDescription(w http.ResponseWriter, r *http.Request) {
+	roleName := r.URL.Query().Get("name")
+	if roleName == "" {
+		http.Error(w, "No role provided", http.StatusBadRequest)
+	}
+
+	response := struct {
+		RoleName        string `json:"roleName"`
+		RoleDescription string `json:"roleDescription"`
+	}{
+		RoleName:        roleName,
+		RoleDescription: Models.RoleDescriptions[roleName],
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}

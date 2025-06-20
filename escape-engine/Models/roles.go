@@ -40,6 +40,26 @@ var RoleTeams = map[string]string{
 	Role_PsychicAlien:   PlayerTeam_Alien,
 }
 
+var RoleDescriptions = map[string]string{
+	Role_Captain:          "You start with 1 stack of the Sedated Status Effect",
+	Role_Pilot:            "You start with 1 Cat card",
+	Role_Copilot:          "You start with 1 Teleport card",
+	Role_Soldier:          "You start with 1 Attack card",
+	Role_Psychologist:     "You start the game in a randomly selected Alien start sector",
+	Role_ExecutiveOfficer: "You start with 1 stack of the Lurking Status Effect",
+	Role_Medic:            "You start with 1 Scanner card",
+	Role_Engineer:         "You permanently gain the Knowhow Status Effect",
+
+	Role_FastAlien:      "You start with 1 stack of the Adrenaline Surge Status Effect",
+	Role_SurgeAlien:     "You start with 1 Adrenaline card",
+	Role_BlinkAlien:     "You start with 1 Teleport card",
+	Role_SilentAlien:    "You start with 1 Sedatives card",
+	Role_BruteAlien:     "You permanently gain the Armored Status Effect",
+	Role_InvisibleAlien: "You permanently gain the Invisible Status Effect",
+	Role_LurkingAlien:   "You permanently gain the Lurking Status Effect",
+	Role_PsychicAlien:   "You permanently gain the Deceptive Status Effect",
+}
+
 const (
 	Role_Captain          = "Captain"
 	Role_Pilot            = "Pilot"

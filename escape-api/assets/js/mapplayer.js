@@ -62,6 +62,7 @@ const ClickModes = {
 
 let gameHasEnded = false;
 let playerHasMoved = false;
+let roleDescription = '';
 
 const playerNameExtractor = new RegExp(/Player \'(?<PlayerName>[^\']+)\'/g);
 
@@ -132,7 +133,7 @@ function hexClick(event) {
                 }
             }
         }
-        sendWsMessage(ws, 'submitAction', actionToSend);        
+        sendWsMessage(ws, 'submitAction', actionToSend);
     } else if (clickMode == ClickModes.Noise) {
         selectedSpace = {
             row: row,
@@ -530,10 +531,15 @@ function renderTeamCard() {
     teamCard.style.setProperty('--team-color', getTeamColor())
 }
 
-function renderRoleCard() {
+async function renderRoleCard() {
     var roleCard = document.getElementById("role")
     roleCard.innerHTML = `<span>${thisPlayer.role}</span>`;
     roleCard.style.setProperty('--team-color', getTeamColor())
+
+    let tooltip = document.createElement("div")
+    tooltip.classList.add("tooltip")
+    tooltip.innerText = roleDescription;
+    roleCard.appendChild(tooltip);
 }
 
 function renderStatusEffects() {
@@ -582,7 +588,7 @@ function renderTurnOrder() {
     }
 }
 
-function renderTurnNumber(turnNum, maxTurns, mapName){
+function renderTurnNumber(turnNum, maxTurns, mapName) {
     var turnNumContainer = document.getElementById("turn-number")
     turnNumContainer.innerHTML = `<h4 style="margin-top: 5px">${mapName}</h4><div>Turn ${turnNum} / ${maxTurns}<div>`
 }

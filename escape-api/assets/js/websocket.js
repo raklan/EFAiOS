@@ -152,6 +152,9 @@ async function handleGameStateMessage(gameState) {
     if (!thisGameStateId) {
         thisGameStateId = gameState.id
         initializeEventLog(gameState.players)
+        await fetch(`/api/role?name=${thisPlayer.role}`).then(resp => resp.json()).then(apiObj => {
+            roleDescription = apiObj.roleDescription;
+        })
     }
     document.getElementById("lobby").style.display = 'none';
     document.getElementById('gameplay').style.display = 'flex';

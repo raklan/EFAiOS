@@ -31,6 +31,8 @@ func startServer() {
 	http.HandleFunc("/api/map", Engine.Map)
 	http.HandleFunc("/api/allMaps", Engine.AllMaps)
 
+	http.HandleFunc("/api/role", Engine.RoleDescription)
+
 	http.HandleFunc("/lobby/host", Engine.HostLobby)
 	http.HandleFunc("/lobby/join", Engine.HandleJoinLobby)
 	http.HandleFunc("/lobby/rejoin", Engine.HandleRejoinLobby)

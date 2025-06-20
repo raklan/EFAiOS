@@ -48,7 +48,8 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    .tooltip{
+
+    .tooltip {
         visibility: hidden;
         opacity: 0;
         position: absolute;
@@ -64,21 +65,43 @@
 .card:hover {
     transform: translateY(-5%);
     transition: all 0.3s ease-in-out;
-    .tooltip{
+
+    .tooltip {
         visibility: visible;
         opacity: 1;
     }
 }
 
-#team{
+#team {
     top: 10px;
 }
 
-#role{
-    top: 100px;
+#role {
+    top: 100px;    
+    .tooltip {
+        visibility: hidden;
+        position: absolute;
+        opacity: 0;
+        right: 105%;
+        bottom: 15%;
+        width: 150px;
+        background-color: black;
+        color: white;
+        text-align: center;
+        border: 1px solid white;
+        transition: all 0.5s linear;
+        padding: 5px;
+    }
 }
 
-#status-effects{
+#role:hover {
+    .tooltip {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+#status-effects {
     top: 200px;
     display: flex;
     flex-direction: column;
@@ -86,22 +109,24 @@
     text-align: center;
     height: 150px;
     min-height: fit-content;
-    h5{
+
+    h5 {
         opacity: 0;
         transition: all 0.3s linear;
     }
 }
 
-#status-effects:hover{
-    h5{
+#status-effects:hover {
+    h5 {
         opacity: 1;
     }
 }
 
-.status-effect-entry{
+.status-effect-entry {
     position: relative;
     width: 100%;
-    .tooltip{
+
+    .tooltip {
         visibility: hidden;
         position: absolute;
         opacity: 0;
@@ -116,14 +141,14 @@
     }
 }
 
-.status-effect-entry:hover{
-    .tooltip{
+.status-effect-entry:hover {
+    .tooltip {
         visibility: visible;
         opacity: 1;
     }
 }
 
-#turn-order{
+#turn-order {
     bottom: 0px;
     display: flex;
     flex-direction: column;
@@ -131,17 +156,19 @@
     text-align: center;
     min-height: fit-content;
     padding-bottom: 1%;
-    h5{
+
+    h5 {
         opacity: 0;
         transition: all 0.3s linear;
     }
-    .current-player-turn{
+
+    .current-player-turn {
         color: lime;
     }
 }
 
-#turn-order:hover{
-    h5{
+#turn-order:hover {
+    h5 {
         opacity: 1;
     }
 }
@@ -159,7 +186,8 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    span{
+
+    span {
         text-align: center;
         opacity: 0;
         transition: all 0.3s linear;
@@ -171,7 +199,8 @@
     border-color: var(--team-color);
     color: var(--team-color);
     transition: all 0.3s ease-in-out;
-    span{
+
+    span {
         opacity: 1;
     }
 }
