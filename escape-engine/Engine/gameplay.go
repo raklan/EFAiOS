@@ -58,8 +58,12 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 		})
 	}
 
-	gameState.Deck = []Models.Card{}
+	slices.SortFunc(gameState.Players, func(p1 Models.Player, p2 Models.Player) int { return rand.Intn(100) - rand.Intn(100) })
+	gameState.CurrentPlayer = gameState.Players[0].Id
 
+	gameState.Turn = 1
+	gameState.Deck = []Models.Card{}
+	gameState.DiscardPile = []Models.Card{}
 	gameState.GameConfig.ActiveStatusEffects = gameConfig.ActiveStatusEffects
 
 	assignCards(&gameState, gameConfig.ActiveCards)
@@ -69,7 +73,6 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 		return gameState, err
 	}
 	assignStartingPositions(&gameState, &mapDef)
-	gameState.CurrentPlayer = gameState.Players[rand.Intn(len(gameState.Players))].Id
 
 	gameState, err = SaveGameStateToFs(gameState)
 	if err != nil {

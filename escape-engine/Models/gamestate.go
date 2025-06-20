@@ -55,20 +55,23 @@ type GameState struct {
 	Players []Player `json:"players"`
 	//Id of the Player whose turn it currently is
 	CurrentPlayer string `json:"currentPlayer"`
+	//Number of turn the game is on. The config sets the point at which this number will end the game
+	Turn int `json:"turn"`
 	//Priority list of StatusEffects
-	StatusEffectPriorities map[string]int
+	StatusEffectPriorities map[string]int `json:"statusEffectPriorities"`
 }
 
 func (g *GameState) UnmarshalJSON(data []byte) error {
 	intermediate := struct {
-		Id                     string     `json:"id"`
-		GameMap                GameMap    `json:"gameMap"`
-		GameConfig             GameConfig `json:"gameConfig"`
-		Deck                   []CardBase `json:"deck"`
-		DiscardPile            []CardBase `json:"discardPile"`
-		Players                []Player   `json:"players"`
-		CurrentPlayer          string     `json:"currentPlayer"`
-		StatusEffectPriorities map[string]int
+		Id                     string         `json:"id"`
+		GameMap                GameMap        `json:"gameMap"`
+		GameConfig             GameConfig     `json:"gameConfig"`
+		Deck                   []CardBase     `json:"deck"`
+		DiscardPile            []CardBase     `json:"discardPile"`
+		Players                []Player       `json:"players"`
+		CurrentPlayer          string         `json:"currentPlayer"`
+		Turn                   int            `json:"turn"`
+		StatusEffectPriorities map[string]int `json:"statusEffectPriorities"`
 	}{}
 
 	if err := json.Unmarshal(data, &intermediate); err != nil {
@@ -80,6 +83,7 @@ func (g *GameState) UnmarshalJSON(data []byte) error {
 	g.GameConfig = intermediate.GameConfig
 	g.Players = intermediate.Players
 	g.CurrentPlayer = intermediate.CurrentPlayer
+	g.Turn = intermediate.Turn
 	g.StatusEffectPriorities = intermediate.StatusEffectPriorities
 
 	//Copy Deck
@@ -143,6 +147,8 @@ type GameConfig struct {
 	NumWorkingPods int `json:"numWorkingPods"`
 	//Number of Broken Escape Pods left
 	NumBrokenPods int `json:"numBrokenPods"`
+	//Number of turns before the game should end
+	NumTurns int `json:"numTurns"`
 	//Which cards should be active, as well as how many of each
 	ActiveCards map[string]int `json:"activeCards"`
 	//Which roles should be active, as well as the maximum number allowed to be present. Should be >= that role's presence in RequiredRoles, if it's required

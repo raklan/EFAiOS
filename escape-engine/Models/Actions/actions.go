@@ -258,6 +258,30 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 	}
 
 	gameState.CurrentPlayer = getNextPlayerId(gameState.Players, slices.IndexFunc(gameState.Players, func(p Models.Player) bool { return p.Id == actingPlayer.Id }))
+
+	if gameState.CurrentPlayer == gameState.Players[0].Id {
+		gameState.Turn++
+	}
+
+	if gameState.Turn > gameState.GameConfig.NumTurns {
+		if gameEvent == nil {
+			gameEvent = &Models.GameEvent{
+				Row:         -99,
+				Col:         "!",
+				Description: "",
+			}
+		}
+
+		gameEvent.Description += "The ship ran out of oxygen!"
+
+		for i, player := range gameState.Players {
+			if player.Team == Models.PlayerTeam_Human {
+				gameState.Players[i].Team = Models.PlayerTeam_Spectator
+				gameEvent.Description += fmt.Sprintf(" Player '%s' died!", player.Name)
+			}
+		}
+	}
+
 	return gameEvent, nil
 }
 

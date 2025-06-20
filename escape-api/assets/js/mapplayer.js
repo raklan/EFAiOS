@@ -3,6 +3,9 @@
 const GAME_CONFIG_DEFAULT = {
     workingPods: 4,
     brokenPods: 1,
+
+    numTurns: 40,
+
     red: 24,
     green: 26,
     silent: 4,
@@ -580,6 +583,11 @@ function renderTurnOrder() {
     }
 }
 
+function renderTurnNumber(turnNum, maxTurns){
+    var turnNumContainer = document.getElementById("turn-number")
+    turnNumContainer.innerText = `Turn ${turnNum} / ${maxTurns}`
+}
+
 function getTeamColor() {
     switch (thisPlayer.team) {
         case PlayerTeams.Human:
@@ -678,6 +686,8 @@ function setGeneralConfig(configObject) {
 
     configForm['config-numWorkingPods'].value = configObject.workingPods;
     configForm['config-numBrokenPods'].value = configObject.brokenPods;
+
+    configForm['config-numTurns'].value = configObject.numTurns;
 }
 
 function setCardConfig(configObject) {
@@ -731,6 +741,8 @@ function getGameConfig() {
 
     config.numWorkingPods = getConfigValue('config-numWorkingPods')
     config.numBrokenPods = getConfigValue('config-numBrokenPods')
+
+    config.numTurns = getConfigValue('config-numTurns')
 
     config.activeCards = {
         "Red Card": getConfigValue('config-numRedCards'),

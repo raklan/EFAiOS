@@ -270,3 +270,12 @@
 .tabcontent p {
     margin: 2%;
 }
+
+#turn-number {
+    position: fixed;
+    top: 3px;
+    padding: 2px;
+    background-color: black;
+    border: 1px solid lime;
+    border-radius: 2px;
+}

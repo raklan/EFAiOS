@@ -181,6 +181,7 @@ async function handleGameStateMessage(gameState) {
     renderStatusEffects();
     renderPlayerHand();
     renderTurnOrder();
+    renderTurnNumber(gameState.turn, gameState.gameConfig.numTurns);
 }
 
 async function handleLobbyInfoMessage(messageData) {

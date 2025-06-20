@@ -101,6 +101,12 @@
                             placeholder="# Cards" />
                     </label>
                 </div>
+                <div style="display: flex; justify-content: space-evenly;">
+                    <label class="text-input-label">
+                        <span>Turns</span>
+                        <input type="number" min="1" class="text-input" name="config-numTurns" placeholder="# Turns" />
+                    </label>
+                </div>
             </div>
             <div id="config-cards" style="display: none;">
                 <h2>Noise</h2>
@@ -340,6 +346,7 @@
     </div>
 </div>
 <div id="gameplay">
+    <div id="turn-number"></div>
     <div id="gridParent"></div>
     <div id="event-log">
         <div id="tab-list" class="tab-list">
