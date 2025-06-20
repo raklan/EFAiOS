@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"maps"
 	"math"
+	"slices"
 )
 
 type GameMap struct {
@@ -25,7 +26,7 @@ func (gameMap *GameMap) GetSpacesOfType(spaceType int) []Space {
 	return spaces
 }
 
-func (gameMap GameMap) GetSpacesWithinNthAdjacency(n int, homeSpaceKey string) map[string]Space {
+func (gameMap GameMap) GetSpacesWithinNthAdjacency(n int, homeSpaceKey string, player *Player) map[string]Space {
 	spaces := map[string]Space{}
 
 	homeSpace := gameMap.Spaces[homeSpaceKey]
@@ -108,11 +109,17 @@ func (gameMap GameMap) GetSpacesWithinNthAdjacency(n int, homeSpaceKey string) m
 		}
 	}
 
+	if player != nil {
+		maps.DeleteFunc(spaces, func(k string, v Space) bool {
+			return slices.Contains(GetNonmovableSpaces(player), v.Type)
+		})
+	}
+
 	neighbors := maps.Clone(spaces) //Make a clone to iterate over the neighbors to avoid the collection changing while iterating over it
 
 	if n > 1 {
 		for neighborKey := range neighbors {
-			maps.Copy(spaces, gameMap.GetSpacesWithinNthAdjacency(n-1, neighborKey))
+			maps.Copy(spaces, gameMap.GetSpacesWithinNthAdjacency(n-1, neighborKey, player))
 			delete(spaces, homeSpaceKey)
 		}
 	}

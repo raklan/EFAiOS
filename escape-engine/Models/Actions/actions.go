@@ -89,7 +89,7 @@ func (move Movement) Execute(gameState *Models.GameState, playerId string) (Mode
 
 		//Make sure it's close enough
 		numAllowedSpaces := Models.GetAllowedSpaces(actingPlayer, gameState)
-		allowedSpacesToMoveTo := gameState.GameMap.GetSpacesWithinNthAdjacency(numAllowedSpaces, actingPlayer.GetSpaceMapKey())
+		allowedSpacesToMoveTo := gameState.GameMap.GetSpacesWithinNthAdjacency(numAllowedSpaces, actingPlayer.GetSpaceMapKey(), actingPlayer)
 
 		if _, exists := allowedSpacesToMoveTo[space.GetMapKey()]; !exists {
 			if actingPlayer.GetSpaceMapKey() == space.GetMapKey() {
@@ -115,13 +115,11 @@ func (move Movement) Execute(gameState *Models.GameState, playerId string) (Mode
 func GetPotentialMoves(gameState *Models.GameState, playerId string) []string {
 	actingPlayer := gameState.GetCurrentPlayer()
 	numAllowedSpaces := Models.GetAllowedSpaces(actingPlayer, gameState)
-	allowedSpacesToMoveTo := gameState.GameMap.GetSpacesWithinNthAdjacency(numAllowedSpaces, actingPlayer.GetSpaceMapKey())
+	allowedSpacesToMoveTo := gameState.GameMap.GetSpacesWithinNthAdjacency(numAllowedSpaces, actingPlayer.GetSpaceMapKey(), actingPlayer)
 	if actingPlayer.HasStatusEffect(Models.StatusEffect_Lurking) {
 		allowedSpacesToMoveTo[actingPlayer.GetSpaceMapKey()] = gameState.GameMap.Spaces[actingPlayer.GetSpaceMapKey()]
 	}
-	maps.DeleteFunc(allowedSpacesToMoveTo, func(k string, v Models.Space) bool {
-		return slices.Contains(Models.GetNonmovableSpaces(actingPlayer), v.Type)
-	})
+
 	return slices.Collect(maps.Keys(allowedSpacesToMoveTo))
 }
 

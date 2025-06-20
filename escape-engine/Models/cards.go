@@ -263,7 +263,7 @@ func (c Spotlight) Play(gameState *GameState, details CardPlayDetails) string {
 
 	seenPlayers := []Player{}
 
-	adjacentSpaces := gameState.GameMap.GetSpacesWithinNthAdjacency(1, GetMapKey(details.TargetRow, details.TargetCol))
+	adjacentSpaces := gameState.GameMap.GetSpacesWithinNthAdjacency(1, GetMapKey(details.TargetRow, details.TargetCol), nil)
 
 	for spaceKey := range adjacentSpaces {
 		for i, player := range gameState.Players {
