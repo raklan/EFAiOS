@@ -141,6 +141,7 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 	//Make sure this player has joined the game before
 	log.Printf("Making sure player {%s} has joined this game before", playerId)
 	if !slices.ContainsFunc(lobbyInfo.Players, func(p Models.Player) bool { return p.Id == playerId }) {
+		log.Printf("No player with given ID found in lobby")
 		http.Error(w, "No player with given ID found in lobby", http.StatusNotFound)
 		return
 	}
@@ -149,6 +150,7 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Making sure player {%s} does not already have an open connection", playerId)
 	gamesClientsMutex.Lock()
 	if _, exists := gamesClients[roomCode][playerId]; exists {
+		log.Printf("Found already open connection for player")
 		http.Error(w, "Found already open connection for player", http.StatusBadRequest)
 		gamesClientsMutex.Unlock()
 		return
@@ -159,6 +161,7 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Player {%s} is allowed to rejoin. Upgrading connection to websocket.", playerId)
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
+		log.Printf("WebSocket upgrade failed")
 		http.Error(w, "WebSocket upgrade failed", http.StatusInternalServerError)
 		return
 	}

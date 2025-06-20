@@ -481,8 +481,7 @@ function cardClick(card) {
         for (let player of gamePlayerList) {
             playerEntry = document.createElement("button")
             playerEntry.innerText = player.name
-            playerEntry.classList = ['redCard-confirm']
-            playerEntry.style.color = 'red'
+            playerEntry.style.setProperty('--button-color', 'red')
             playerEntry.onclick = () => {
                 sensorConfirm(player.id)
             }
@@ -501,8 +500,7 @@ function cardClick(card) {
         for (let player of gamePlayerList) {
             playerEntry = document.createElement("button")
             playerEntry.innerText = player.name
-            playerEntry.classList = ['redCard-confirm']
-            playerEntry.style.color = 'red'
+            playerEntry.style.setProperty('--button-color', 'red')
             playerEntry.onclick = () => {
                 scannerConfirm(player.id)
             }
@@ -584,9 +582,9 @@ function renderTurnOrder() {
     }
 }
 
-function renderTurnNumber(turnNum, maxTurns){
+function renderTurnNumber(turnNum, maxTurns, mapName){
     var turnNumContainer = document.getElementById("turn-number")
-    turnNumContainer.innerText = `Turn ${turnNum} / ${maxTurns}`
+    turnNumContainer.innerHTML = `<h4 style="margin-top: 5px">${mapName}</h4><div>Turn ${turnNum} / ${maxTurns}<div>`
 }
 
 function getTeamColor() {

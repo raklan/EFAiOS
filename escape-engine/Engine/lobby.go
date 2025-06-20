@@ -25,6 +25,7 @@ func CreateRoom(mapId string) (string, error) {
 	log.Printf("%s Creating lobby object", funcLogPrefix)
 	lobby := Models.Lobby{
 		MapId:      requestedMap.Id,
+		MapName:    requestedMap.Name,
 		Status:     Models.LobbyStatus_AwaitingStart,
 		MaxPlayers: 12, //Setting just on my own for now
 		NumPlayers: 0,

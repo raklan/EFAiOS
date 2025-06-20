@@ -23,6 +23,8 @@ type Lobby struct {
 	RoomCode string `json:"roomCode"`
 	//The Map this Lobby is going to play
 	MapId string `json:"mapId"`
+	//The name of the Map this Lobby is going to play
+	MapName string `json:"mapName"`
 	//The GameState created from this lobby. This field is empty until the game is started,
 	//at which point the API server will fill it in.
 	GameStateId string `json:"gameStateId"`

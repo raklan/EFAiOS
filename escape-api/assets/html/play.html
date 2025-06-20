@@ -36,7 +36,7 @@
         </div>
         <div id="playerChoice-redCard">
             <div id="playerChoice-redCard-content">You're about to make noise in your space</div>
-            <button class="redCard-confirm" onclick="redCardConfirm()">Confirm</button>
+            <button style="--button-color: red" onclick="redCardConfirm()">Confirm</button>
         </div>
         <div id="playerChoice-spotlight">
             <div id="playerChoice-spotlight-content">Choose a space to use Spotlight on!</div>
@@ -53,7 +53,7 @@
         <div id="playerChoice-attack">
             <div id="playerChoice-attack-content">Would you like to attack this space?</div>
             <div>
-                <button class="redCard-confirm" onclick="attack(true)" style="color:red;">Yes</button>
+                <button onclick="attack(true)" style="--button-color: red">Yes</button>
                 <button onclick="attack(false)" style="color: lime;">No</button>
             </div>
         </div>
@@ -61,10 +61,14 @@
 </div>
 <div id="lobby">
     <h3>Lobby</h3>
+    <div id="lobby-mapTitle"></div>
     <div id="lobby-roomCode"></div>
+    <h4>Players</h4>
     <div id="lobby-playerList"></div>
-    <button id="lobby-gameConfigButton" style="display: none;">Game Settings</button>
-    <button id="lobby-startButton" style="display: none;">Start</button>
+    <div id="lobby-controls">
+        <button id="lobby-gameConfigButton" style="display: none; --button-color: white">Game Settings</button>
+        <button id="lobby-startButton" style="display: none;">Start</button>
+    </div>
     <div class="config-popup">
         <div id="config-header" style="display: flex; justify-content: center;">
             <span style="font-weight: bold; font-size: large" id="config-title">Game Settings</span>

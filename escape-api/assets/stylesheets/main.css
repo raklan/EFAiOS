@@ -2,6 +2,7 @@ body {
     background-color: black;
     color: lime;
     font-family: 'Courier New', Courier, monospace;
+    --button-color: lime;
 }
 
 a {
@@ -19,7 +20,7 @@ button,button::after {
     font-size: 20px;
     border: none;
     border-radius: 5px;
-    color: inherit;
+    color: var(--button-color);
     background-color: transparent;
     position: relative;
   }
@@ -44,19 +45,22 @@ button,button::after {
     animation: glitch_4011 1s;
     text-shadow: 10 10px 10px rgb(255, 0, 0);
     animation-timing-function: steps(2, end);
-    text-shadow: -3px -3px 0px #24f21d, 3px 3px 0px #27c200;
+    /* text-shadow: -3px -3px 0px #24f21d, 3px 3px 0px #27c200; */
+    text-shadow: -3px -3px 0px var(--button-color), 3px 3px 0px var(--button-color);
     background-color: transparent;
-    border: 3px dotted lime;
+    border: 3px dotted var(--button-color);
   }
   
   button:hover {
-    text-shadow: -1px -1px 0px #24f21d, 1px 1px 0px #27c200;
+    /* text-shadow: -1px -1px 0px #24f21d, 1px 1px 0px #27c200; */
+    text-shadow: -1px -1px 0px var(--button-color), 1px 1px 0px var(--button-color);
   }
   
   button:hover {
     background-color: transparent;
-    border: 1px dotted lime;
-    box-shadow: 0px 10px 10px -10px rgb(0, 141, 0);
+    border: 1px dotted var(--button-color);
+    /* box-shadow: 0px 10px 10px -10px rgb(0, 141, 0); */
+    box-shadow: 0px 10px 10px -10px var(--button-color);
     padding: 9px 49px;
   }
   

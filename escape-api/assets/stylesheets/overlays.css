@@ -21,54 +21,6 @@
     opacity: 1;
 }
 
-.redCard-confirm,
-#redCard-confirm::after {
-    font-family: inherit;
-    padding: 10px 50px;
-    font-size: 20px;
-    border: none;
-    border-radius: 5px;
-    color: inherit;
-    background-color: transparent;
-    position: relative;
-}
-
-.redCard-confirm::after {
-    --move1: inset(50% 50% 50% 50%);
-    --move2: inset(31% 0 40% 0);
-    --move3: inset(39% 0 15% 0);
-    --move4: inset(45% 0 40% 0);
-    --move5: inset(45% 0 6% 0);
-    --move6: inset(14% 0 61% 0);
-    clip-path: var(--move1);
-    content: 'RUN';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    /* display: block; */
-}
-
-.redCard-confirm:hover::after {
-    animation: glitch_4011 1s;
-    text-shadow: 10 10px 10px rgb(255, 0, 0);
-    animation-timing-function: steps(2, end);
-    text-shadow: -3px -3px 0px #ff2323, 3px 3px 0px #ca0000;
-    background-color: transparent;
-    border: 3px dotted red;
-}
-
-.redCard-confirm:hover {
-    text-shadow: -1px -1px 0px #ff2323, 1px 1px 0px #ca0000;
-}
-
-.redCard-confirm:hover {
-    background-color: transparent;
-    border: 1px dotted red;
-    box-shadow: 0px 10px 10px -10px rgb(141, 0, 0);
-}
-
 #cards {
     position: fixed;
     bottom: -150px;
@@ -274,8 +226,9 @@
 #turn-number {
     position: fixed;
     top: 3px;
-    padding: 2px;
+    padding: 5px;
     background-color: black;
     border: 1px solid lime;
     border-radius: 2px;
+    justify-items: center;
 }

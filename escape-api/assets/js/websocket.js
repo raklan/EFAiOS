@@ -181,7 +181,7 @@ async function handleGameStateMessage(gameState) {
     renderStatusEffects();
     renderPlayerHand();
     renderTurnOrder();
-    renderTurnNumber(gameState.turn, gameState.gameConfig.numTurns);
+    renderTurnNumber(gameState.turn, gameState.gameConfig.numTurns, gameState.gameMap.name);
 }
 
 async function handleLobbyInfoMessage(messageData) {
@@ -195,6 +195,7 @@ async function handleLobbyInfoMessage(messageData) {
         window.localStorage.setItem('efaios-connectionInfo', JSON.stringify(connectionInfo))
     }
     document.getElementById("lobby-roomCode").innerHTML = `Room Code: ${messageData.lobbyInfo.roomCode}`
+    document.getElementById('lobby-mapTitle').innerText = `Map: ${messageData.lobbyInfo.mapName}`
 
     //#region Player List Rendering
     var playerList = document.getElementById("lobby-playerList")
@@ -202,8 +203,9 @@ async function handleLobbyInfoMessage(messageData) {
 
     for (let player of messageData.lobbyInfo.players) {
         playerEntry = document.createElement("div")
-        playerEntry.innerText = player.name
+        playerEntry.innerText = `${player.name}${player.name === messageData.lobbyInfo.host.name? " (Host)" : ""}`
         playerEntry.style.border = "1px solid black"
+        playerEntry.style.margin = '5px'
 
         playerList.appendChild(playerEntry)
     }
