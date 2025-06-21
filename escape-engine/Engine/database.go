@@ -205,7 +205,7 @@ func clearOutOldFiles(directory string) {
 	for _, file := range files {
 		fullFileName := directory + file.Name()
 		stats, _ := os.Stat(fullFileName)
-		expirationTime := stats.ModTime().AddDate(0, 1, 0)
+		expirationTime := stats.ModTime().AddDate(0, 0, 7)
 		if time.Now().After(expirationTime) {
 			os.Remove(fullFileName)
 		}
