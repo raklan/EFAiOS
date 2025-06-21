@@ -259,7 +259,7 @@ func (c Spotlight) Play(gameState *GameState, details CardPlayDetails) string {
 
 	activePlayer := gameState.GetCurrentPlayer()
 
-	descriptionString := fmt.Sprintf("Player '%s' used a Spotlight!", activePlayer.Name)
+	descriptionString := fmt.Sprintf("Player '%s' used a Spotlight on [%s-%d]!", activePlayer.Name, details.TargetCol, details.TargetRow)
 
 	seenPlayers := []Player{}
 
@@ -353,7 +353,7 @@ func (c Sedatives) Play(gameState *GameState, details CardPlayDetails) string {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewSedated())
 	}
 
-	return fmt.Sprintf("Player '%s' used Sedatives!", activePlayer.Name)
+	return fmt.Sprintf("Player '%s' used Sedatives! They will treat the next sector they enter as a safe sector!", activePlayer.Name)
 }
 
 func NewSedatives() *Sedatives {
@@ -408,7 +408,7 @@ func (c Cat) Play(gameState *GameState, details CardPlayDetails) string {
 	} else {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewFeline())
 	}
-	return fmt.Sprintf("Player '%s' used a Cat!", activePlayer.Name)
+	return fmt.Sprintf("Player '%s' used a Cat! They can make 1 extra noise the next time they make a noise!", activePlayer.Name)
 }
 
 func NewCat() *Cat {
