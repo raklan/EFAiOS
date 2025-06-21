@@ -80,6 +80,7 @@
                 <button type="button" onclick="configTabSwitch('config-general')">General</button>
                 <button type="button" onclick="configTabSwitch('config-cards')">Cards</button>
                 <button type="button" onclick="configTabSwitch('config-roles')">Roles</button>
+                <button type="button" onclick="configTabSwitch('config-presets')">Presets</button>
             </div>
             <div id="config-general">
                 <h2>General Settings</h2>
@@ -115,9 +116,6 @@
                         <input type="checkbox" name="config-aliensRespawn" />
                         <div class="checkmark"></div>
                     </label>
-                </div>
-                <div style="position: fixed; bottom: 10px; left: 0px; width: 100%;">
-                    <button type="button" onclick="setAllConfigAsDefault()" style="background-color: black; --button-color: white">Restore All Defaults</button>
                 </div>
             </div>
             <div id="config-cards" style="display: none;">
@@ -354,6 +352,13 @@
                     </label>
                 </div>
             </div>
+            <div id="config-presets" style="display: none; grid-template-columns: 1fr 3fr;">
+                <button type="button" class="preset-button" onclick="setConfigForm(GAME_PRESETS.Tabletop)">Tabletop</button>
+                <p>The Classic experience, with all settings exactly as they appear in the Tabletop version</p>
+                <button type="button" class="preset-button" onclick="setConfigForm(GAME_PRESETS.Basic)">The Basics</button>
+                <p>A simplified version of the Tabletop preset, with all Roles turned off and every Item card replaced
+                    with a White "Silent" Card. Ideal for people just learning the game</p>
+            </div>
         </form>
     </div>
 </div>
@@ -381,6 +386,7 @@
 <script src="/assets/js/utils.js"></script>
 <script src="/assets/js/websocket.js"></script>
 <script src="/assets/js/mapdrawer.js"></script>
+<script src="/assets/js/lobbyconfig.js"></script>
 <script src="/assets/js/mapplayer.js"></script>
 <script>
     var ws = null;
