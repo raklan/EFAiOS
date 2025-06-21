@@ -175,7 +175,7 @@ async function handleGameStateMessage(gameState) {
         sendWsMessage(ws, 'getAllowedMoves', {
             gameId: thisGameStateId
         })
-    } else {
+    } else if(!isThisPlayersTurn){
         clickMode = ClickModes.None
     }
 
