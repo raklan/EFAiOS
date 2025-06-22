@@ -102,7 +102,13 @@ func HandleJoinLobby(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		http.Error(w, "WebSocket upgrade failed", http.StatusInternalServerError)
+		gamesClientsMutex.Unlock()
 		return
+	}
+
+	//Ensure the server is tracking this lobby - if the lobby was created on a previous time the server was running, we'll need to re-add that lobby to the lobby tracker
+	if _, exists := gamesClients[roomCode]; !exists {
+		gamesClients[roomCode] = make(map[string]*websocket.Conn)
 	}
 
 	gamesClients[roomCode][playerID] = conn
@@ -201,6 +207,10 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 
 	//Store the connection, give the connection its own goroutine, and begin listening for more messages
 	gamesClientsMutex.Lock()
+	//Ensure the server is tracking this lobby - if the lobby was created on a previous time the server was running, we'll need to re-add that lobby to the lobby tracker
+	if _, exists := gamesClients[roomCode]; !exists {
+		gamesClients[roomCode] = make(map[string]*websocket.Conn)
+	}
 	gamesClients[roomCode][playerId] = conn
 	room := gamesClients[roomCode]
 	gamesClientsMutex.Unlock()
@@ -243,11 +253,12 @@ func handShake(roomCode string, newPlayerId string) {
 }
 
 func manageClient(lobbyCode string, room map[string]*websocket.Conn, playerId string, conn *websocket.Conn) {
-	defer socketRecovery(room, playerId)
+	defer socketRecovery(lobbyCode, room, playerId)
 
 	log.Printf("Managing Connection for playerId %s and waiting for message", playerId)
 	_, msg, err := conn.ReadMessage()
 	if err != nil {
+		log.Printf("Error trying to read message from player {%s}! Closing connection and stopping tracking", playerId)
 		//Disconnect client by closing connection and removing player from lobby
 		gamesClientsMutex.Lock()
 		room[playerId].Close()
@@ -546,13 +557,16 @@ func sendMessageToAllPlayers(room map[string]*websocket.Conn, message Models.Web
 }
 
 // Defer this function whenever you try to read from a socket. If ReadMessage panics, this will kick in. Note: This must be set up (deferred) **BEFORE** calling ReadMessage
-func socketRecovery(room map[string]*websocket.Conn, playerId string) {
+func socketRecovery(roomCode string, room map[string]*websocket.Conn, playerId string) {
 	if r := recover(); r != nil {
 		log.Printf("Something went wrong trying to manage the connection of Player, likely due to an unexpected closing of the Websocket connection: {%s} -- %s", playerId, r)
 		//Disconnect client by closing connection and removing player from lobby
 		gamesClientsMutex.Lock()
 		//lobby[playerId].Close() Assume the socket is already closed if we're here
 		delete(room, playerId)
+		if len(room) == 0 {
+			delete(gamesClients, roomCode)
+		}
 		gamesClientsMutex.Unlock()
 	}
 }
