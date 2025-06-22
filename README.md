@@ -50,3 +50,6 @@ With the map editor, I wanted to make sharing maps between computers easy; The i
  1. Whatever folder you run the server from will have a folder called `maps` that includes every map saved to your local version of the server. Inside you'll see a bunch of files named `map_{gibberish here}.json` (If you have the prebundled official maps, I've given those files special names so they'll look different)
  2. Whoever shared the map with you should have given you a `.json` file with a title something like `map_{text here}.json`.
  3. Simply copy the file they gave you into this `maps` folder and it should show up the next time you go to the Maps page in your browser, no server restart required!
+
+## Roadmap
+If you'd like to see what new features I have planned, known bugs, or to report your own bug you've found, check out the [Issues Page](https://github.com/raklan/EFAiOS/issues)! All work I do is tracked there, so if you post there I'm very likely to respond.
