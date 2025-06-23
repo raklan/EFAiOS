@@ -2,6 +2,7 @@ package Models
 
 import (
 	"encoding/json"
+	"escape-engine/Models/GameConfig"
 	"slices"
 )
 
@@ -28,6 +29,8 @@ type Lobby struct {
 	//The GameState created from this lobby. This field is empty until the game is started,
 	//at which point the API server will fill it in.
 	GameStateId string `json:"gameStateId"`
+	//The config object from the chosen map
+	MapConfig GameConfig.GameConfig `json:"mapConfig"`
 	//The status of the game, really only used for the backend to determine whether a game has started/ended. Will be one of the above constants
 	Status string `json:"status"`
 	//Current number of players in the lobby
@@ -47,8 +50,6 @@ type GameState struct {
 	Id string `json:"id"`
 	//The map used by this Game
 	GameMap GameMap `json:"gameMap"`
-	//GameState-specific config as defined by the Host
-	GameConfig GameConfig `json:"gameConfig"`
 	//All cards used by this Game
 	Deck []Card `json:"deck"`
 	//Used cards. Will be automatically reshuffled into the deck when empty
@@ -59,21 +60,18 @@ type GameState struct {
 	CurrentPlayer string `json:"currentPlayer"`
 	//Number of turn the game is on. The config sets the point at which this number will end the game
 	Turn int `json:"turn"`
-	//Priority list of StatusEffects
-	StatusEffectPriorities map[string]int `json:"statusEffectPriorities"`
 }
 
 func (g *GameState) UnmarshalJSON(data []byte) error {
 	intermediate := struct {
-		Id                     string         `json:"id"`
-		GameMap                GameMap        `json:"gameMap"`
-		GameConfig             GameConfig     `json:"gameConfig"`
-		Deck                   []CardBase     `json:"deck"`
-		DiscardPile            []CardBase     `json:"discardPile"`
-		Players                []Player       `json:"players"`
-		CurrentPlayer          string         `json:"currentPlayer"`
-		Turn                   int            `json:"turn"`
-		StatusEffectPriorities map[string]int `json:"statusEffectPriorities"`
+		Id            string                `json:"id"`
+		GameMap       GameMap               `json:"gameMap"`
+		GameConfig    GameConfig.GameConfig `json:"gameConfig"`
+		Deck          []CardBase            `json:"deck"`
+		DiscardPile   []CardBase            `json:"discardPile"`
+		Players       []Player              `json:"players"`
+		CurrentPlayer string                `json:"currentPlayer"`
+		Turn          int                   `json:"turn"`
 	}{}
 
 	if err := json.Unmarshal(data, &intermediate); err != nil {
@@ -82,11 +80,9 @@ func (g *GameState) UnmarshalJSON(data []byte) error {
 
 	g.Id = intermediate.Id
 	g.GameMap = intermediate.GameMap
-	g.GameConfig = intermediate.GameConfig
 	g.Players = intermediate.Players
 	g.CurrentPlayer = intermediate.CurrentPlayer
 	g.Turn = intermediate.Turn
-	g.StatusEffectPriorities = intermediate.StatusEffectPriorities
 
 	//Copy Deck
 	g.Deck = GetUnmarshalledCardArray(intermediate.Deck)
@@ -106,7 +102,7 @@ func (gameState *GameState) GetCurrentPlayer() *Player {
 }
 
 func (gameState *GameState) GetHumanPlayers() []Player {
-	players := make([]Player, gameState.GameConfig.NumHumans)
+	players := make([]Player, gameState.GameMap.GameConfig.NumHumans)
 	indexToAssign := 0
 	for _, player := range gameState.Players {
 		if player.Team == PlayerTeam_Human {
@@ -118,7 +114,7 @@ func (gameState *GameState) GetHumanPlayers() []Player {
 }
 
 func (gameState *GameState) GetAlienPlayers() []Player {
-	players := make([]Player, gameState.GameConfig.NumAliens)
+	players := make([]Player, gameState.GameMap.GameConfig.NumAliens)
 	indexToAssign := 0
 	for _, player := range gameState.Players {
 		if player.Team == PlayerTeam_Alien {
@@ -137,30 +133,6 @@ func (gameState *GameState) GetSpectatorPlayers() []Player {
 		}
 	}
 	return players
-}
-
-// GameState-specific config as defined by the Host
-type GameConfig struct {
-	//Number of Humans currently in the Game. The Game automatically ends when this number hits 0.
-	NumHumans int `json:"numHumans"`
-	//Number of Aliens currently in the Game
-	NumAliens int `json:"numAliens"`
-	//Number of Working Escape Pods left. The Game automatically ends when this number hits 0.
-	NumWorkingPods int `json:"numWorkingPods"`
-	//Number of Broken Escape Pods left
-	NumBrokenPods int `json:"numBrokenPods"`
-	//Number of turns before the game should end
-	NumTurns int `json:"numTurns"`
-	//Whether Alien players should join the Spectators team upon death
-	AliensRespawn bool `json:"aliensRespawn"`
-	//Which cards should be active, as well as how many of each
-	ActiveCards map[string]int `json:"activeCards"`
-	//Which roles should be active, as well as the maximum number allowed to be present. Should be >= that role's presence in RequiredRoles, if it's required
-	ActiveRoles map[string]int `json:"activeRoles"`
-	//Which roles should be guaranteed to be in the game, as well as the number of players that should have that role
-	RequiredRoles map[string]int `json:"requiredRoles"`
-	//Which StatusEffects should be active, as well as their priority
-	ActiveStatusEffects map[string]int `json:"activeStatusEffects"`
 }
 
 type Player struct {

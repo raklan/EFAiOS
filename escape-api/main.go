@@ -83,6 +83,7 @@ func serveHtml(w http.ResponseWriter, r *http.Request) {
 		"StripMapId":        Engine.StripMapId,
 		"GetMapName":        Engine.GetMapName,
 		"GetMapDescription": Engine.GetMapDescription,
+		"GetConfigPresets":  Engine.GetConfigPresets,
 	})
 
 	var tmpl *template.Template

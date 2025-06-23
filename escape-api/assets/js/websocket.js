@@ -184,7 +184,7 @@ async function handleGameStateMessage(gameState) {
     renderStatusEffects();
     renderPlayerHand();
     renderTurnOrder();
-    renderTurnNumber(gameState.turn, gameState.gameConfig.numTurns, gameState.gameMap.name);
+    renderTurnNumber(gameState.turn, gameState.gameMap.gameConfig.numTurns, gameState.gameMap.name);
 }
 
 async function handleLobbyInfoMessage(messageData) {
@@ -196,7 +196,7 @@ async function handleLobbyInfoMessage(messageData) {
             roomCode: messageData.lobbyInfo.roomCode
         }
         window.localStorage.setItem('efaios-connectionInfo', JSON.stringify(connectionInfo))
-        setAllConfigAsDefault();
+        setConfigFormFromObject(messageData.lobbyInfo.mapConfig)
     }
     document.getElementById("lobby-roomCode").innerHTML = `Room Code: ${messageData.lobbyInfo.roomCode}`
     document.getElementById('lobby-mapTitle').innerText = `Map: ${messageData.lobbyInfo.mapName}`

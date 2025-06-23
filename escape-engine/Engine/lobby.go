@@ -27,6 +27,7 @@ func CreateRoom(mapId string) (string, error) {
 		MapId:      requestedMap.Id,
 		MapName:    requestedMap.Name,
 		Status:     Models.LobbyStatus_AwaitingStart,
+		MapConfig:  requestedMap.GameConfig,
 		MaxPlayers: 12, //Setting just on my own for now
 		NumPlayers: 0,
 		Players:    []Models.Player{},

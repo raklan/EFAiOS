@@ -353,11 +353,14 @@
                 </div>
             </div>
             <div id="config-presets" style="display: none; grid-template-columns: 1fr 3fr;">
-                <button type="button" class="preset-button" onclick="setConfigForm(GAME_PRESETS.Tabletop)">Tabletop</button>
-                <p>The Classic experience, with all settings exactly as they appear in the Tabletop version</p>
+                <!-- <button type="button" class="preset-button" onclick="setConfigForm(GAME_PRESETS.Tabletop)">Tabletop</button>
+                <p></p>
                 <button type="button" class="preset-button" onclick="setConfigForm(GAME_PRESETS.Basic)">The Basics</button>
-                <p>A simplified version of the Tabletop preset, with all Roles turned off and every Item card replaced
-                    with a White "Silent" Card. Ideal for people just learning the game</p>
+                <p></p> -->
+                {{range GetConfigPresets}}
+                        <button type="button" class="preset-button" onclick="setConfigFormFromString('{{.ConfigJson}}')">{{.Name}}</button>
+                        <p>{{.Description}}</p>
+                {{end}}
             </div>
         </form>
     </div>
@@ -434,5 +437,10 @@
     }
 
     openSocket();
+
+    function test(configString){
+        let config = JSON.parse(configString)
+        console.log(config)
+    }
 </script>
 {{end}}

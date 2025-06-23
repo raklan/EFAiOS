@@ -203,12 +203,12 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 			return nil, fmt.Errorf("aliens are not allowed to enter pods")
 		}
 
-		totalPodCards := gameState.GameConfig.NumWorkingPods + gameState.GameConfig.NumBrokenPods
+		totalPodCards := gameState.GameMap.GameConfig.NumWorkingPods + gameState.GameMap.GameConfig.NumBrokenPods
 		if totalPodCards == 0 {
 			return nil, fmt.Errorf("no pod cards left")
 		}
-		workingPods := slices.Repeat([]bool{true}, gameState.GameConfig.NumWorkingPods)
-		brokenPods := slices.Repeat([]bool{false}, gameState.GameConfig.NumBrokenPods)
+		workingPods := slices.Repeat([]bool{true}, gameState.GameMap.GameConfig.NumWorkingPods)
+		brokenPods := slices.Repeat([]bool{false}, gameState.GameMap.GameConfig.NumBrokenPods)
 
 		allPods := slices.Concat(workingPods, brokenPods)
 		drawnPod := rand.Intn(len(allPods))
@@ -223,7 +223,7 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 			actingPlayer.Team = Models.PlayerTeam_Spectator
 			actingPlayer.Row, actingPlayer.Col = -99, "!"
 
-			gameState.GameConfig.NumWorkingPods -= 1
+			gameState.GameMap.GameConfig.NumWorkingPods -= 1
 
 		} else {
 			if len(allPods) > 1 && actingPlayer.SubtractStatusEffect(Models.StatusEffect_Knowhow) {
@@ -237,7 +237,7 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 					actingPlayer.Team = Models.PlayerTeam_Spectator
 					actingPlayer.Row, actingPlayer.Col = -99, "!"
 
-					gameState.GameConfig.NumWorkingPods -= 1
+					gameState.GameMap.GameConfig.NumWorkingPods -= 1
 
 				}
 			} else {
@@ -247,7 +247,7 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 					Description: fmt.Sprintf("Player '%s' tried the Pod at [%s-%d], but it didn't work!", actingPlayer.Name, actingPlayer.Col, actingPlayer.Row),
 				}
 
-				gameState.GameConfig.NumBrokenPods -= 1
+				gameState.GameMap.GameConfig.NumBrokenPods -= 1
 			}
 		}
 		gameState.GameMap.Spaces[space.GetMapKey()] = Models.Space{
@@ -263,7 +263,7 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 		gameState.Turn++
 	}
 
-	if gameState.Turn > gameState.GameConfig.NumTurns {
+	if gameState.Turn > gameState.GameMap.GameConfig.NumTurns {
 		if gameEvent == nil {
 			gameEvent = &Models.GameEvent{
 				Row:         -99,

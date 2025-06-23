@@ -114,6 +114,7 @@ async function initializePage(){
         MAP = map;
         createGrid(map.rows, map.cols, 50);
         drawMapOnPage();
+        setConfigFormFromObject(map.gameConfig);
     }else{
         rebuildGrid();
     }
@@ -126,7 +127,8 @@ async function exportMap(){
         name: document.getElementById('name')?.value ?? 'No Name',
         cols: parseInt(document.getElementById('columns')?.value ?? 0),
         rows: parseInt(document.getElementById('rows')?.value ?? 0),
-        description: document.getElementById('description')?.value ?? "No Description Given"
+        description: document.getElementById('description')?.value ?? "No Description Given",
+        gameConfig: getGameConfig()
     };
     var polycontainer = document.getElementById("polycontainer")
 

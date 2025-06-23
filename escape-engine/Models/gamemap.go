@@ -1,6 +1,7 @@
 package Models
 
 import (
+	"escape-engine/Models/GameConfig"
 	"fmt"
 	"maps"
 	"math"
@@ -8,12 +9,14 @@ import (
 )
 
 type GameMap struct {
-	Id          string           `json:"id"`
-	Name        string           `json:"name"`
-	Description string           `json:"description"`
-	Rows        int              `json:"rows"`
-	Cols        int              `json:"cols"`
-	Spaces      map[string]Space `json:"spaces"`
+	Id   string `json:"id"`
+	Name string `json:"name"`
+	//Default GameConfig for this map as defined by the map creator. This gets overwritten with a GameState-specific config if this GameMap is found within the GameMap field of a GameState
+	GameConfig  GameConfig.GameConfig `json:"gameConfig"`
+	Description string                `json:"description"`
+	Rows        int                   `json:"rows"`
+	Cols        int                   `json:"cols"`
+	Spaces      map[string]Space      `json:"spaces"`
 }
 
 func (gameMap *GameMap) GetSpacesOfType(spaceType int) []Space {

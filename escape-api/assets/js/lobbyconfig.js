@@ -5,143 +5,52 @@ const GAME_CONFIG_DEFAULT = {
     numTurns: 40,
     aliensRespawn: false,
 
-    red: 24,
-    green: 26,
-    silent: 4,
-    adrenaline: 3,
-    attack: 1,
-    cat: 2,
-    clone: 1,
-    defense: 1,
-    mutation: 1,
-    sedatives: 1,
-    sensor: 1,
-    spotlight: 2,
-    teleport: 1,
+    activeCards: {
+        'Red Card': 24,
+        'Green Card': 26,
+        'White Card': 4,
 
-    numCaptain: 1,
-    numPilot: 1,
-    numCopilot: 1,
-    numSoldier: 1,
-    numPsychologist: 1,
-    numEO: 1,
-    numMedic: 1,
-    numEngineer: 1,
+        Adrenaline: 3,
+        Attack: 1,
+        Cat: 2,
+        Clone: 1,
+        Defense: 1,
+        Mutation: 1,
+        Sedatives: 1,
+        Sensor: 1,
+        Spotlight: 2,
+        Teleport: 1
+    },
 
-    numFast: 1,
-    numSurge: 1,
-    numBlink: 1,
-    numSilent: 1,
-    numBrute: 1,
-    numInvisible: 1,
-    numLurking: 1,
-    numPsychic: 1
+    activeRoles: {
+        Captain: 1,
+        Pilot: 1,
+        Copilot: 1,
+        Soldier: 1,
+        Psychologist: 1,
+        'Executive Officer': 1,
+        Medic: 1,
+        Engineer: 1,
+
+        Fast: 1,
+        Surge: 1,
+        Blink: 1,
+        Silent: 1,
+        Brute: 1,
+        Invisible: 1,
+        Lurking: 1, 
+        Psychic: 1
+    },
 }
 
-const GAME_CONFIG_BASIC = {
-    workingPods: 4,
-    brokenPods: 1,
-
-    numTurns: 40,
-    aliensRespawn: false,
-
-    red: 24,
-    green: 26,
-    silent: 18,
-    adrenaline: 0,
-    attack: 0,
-    cat: 0,
-    clone: 0,
-    defense: 0,
-    mutation: 0,
-    sedatives: 0,
-    sensor: 0,
-    spotlight: 0,
-    teleport: 0,
-
-    numCaptain: 1,
-    numPilot: 1,
-    numCopilot: 1,
-    numSoldier: 1,
-    numPsychologist: 1,
-    numEO: 1,
-    numMedic: 1,
-    numEngineer: 1,
-
-    numFast: 1,
-    numSurge: 1,
-    numBlink: 1,
-    numSilent: 1,
-    numBrute: 1,
-    numInvisible: 1,
-    numLurking: 1,
-    numPsychic: 1
+function setConfigFormFromObject(configObject) {
+    setGeneralConfig(configObject);
+    setCardConfig(configObject);
+    setRoleConfig(configObject);
 }
 
-const GAME_CONFIG_HIDEANDSEEK = {
-    workingPods: 4,
-    brokenPods: 1,
-
-    numTurns: 40,
-    aliensRespawn: false,
-
-    red: 24,
-    green: 0,
-    silent: 4,
-    adrenaline: 0,
-    attack: 1,
-    cat: 2,
-    clone: 1,
-    defense: 1,
-    mutation: 1,
-    sedatives: 1,
-    sensor: 1,
-    spotlight: 2,
-    teleport: 1,
-
-    numCaptain: 1,
-    numPilot: 1,
-    numCopilot: 1,
-    numSoldier: 1,
-    numPsychologist: 1,
-    numEO: 1,
-    numMedic: 1,
-    numEngineer: 1,
-
-    numFast: 1,
-    numSurge: 1,
-    numBlink: 1,
-    numSilent: 1,
-    numBrute: 1,
-    numInvisible: 1,
-    numLurking: 1,
-    numPsychic: 1
-}
-
-const GAME_PRESETS = {
-    Tabletop: GAME_CONFIG_DEFAULT,
-    Basic: GAME_CONFIG_BASIC
-}
-
-function setAllConfigAsDefault() {
-    setGeneralConfigAsDefault();
-    setCardConfigAsDefault();
-    setRoleConfigAsDefault();
-}
-
-function setGeneralConfigAsDefault() {
-    setGeneralConfig(GAME_CONFIG_DEFAULT)
-}
-
-function setCardConfigAsDefault() {
-    setCardConfig(GAME_CONFIG_DEFAULT)
-}
-
-function setRoleConfigAsDefault() {
-    setRoleConfig(GAME_CONFIG_DEFAULT)
-}
-
-function setConfigForm(configObject) {
+function setConfigFormFromString(configString){
+    const configObject = JSON.parse(configString);
     setGeneralConfig(configObject);
     setCardConfig(configObject);
     setRoleConfig(configObject);
@@ -150,11 +59,11 @@ function setConfigForm(configObject) {
 function setGeneralConfig(configObject) {
     let configForm = document.getElementById("lobby-gameConfig")
 
-    configForm['config-numHumans'].value = 0;
-    configForm['config-numAliens'].value = 0;
+    configForm['config-numHumans'].value = configObject.numHumans;
+    configForm['config-numAliens'].value = configObject.numAliens;
 
-    configForm['config-numWorkingPods'].value = configObject.workingPods;
-    configForm['config-numBrokenPods'].value = configObject.brokenPods;
+    configForm['config-numWorkingPods'].value = configObject.numWorkingPods;
+    configForm['config-numBrokenPods'].value = configObject.numBrokenPods;
 
     configForm['config-numTurns'].value = configObject.numTurns;
     configForm['config-aliensRespawn'].checked = configObject.aliensRespawn
@@ -163,43 +72,61 @@ function setGeneralConfig(configObject) {
 function setCardConfig(configObject) {
     let configForm = document.getElementById("lobby-gameConfig")
 
-    configForm['config-numRedCards'].value = configObject.red;
-    configForm['config-numGreenCards'].value = configObject.green;
-    configForm['config-numWhiteCards'].value = configObject.silent;
+    configForm['config-numRedCards'].value = configObject.activeCards['Red Card'];
+    configForm['config-numGreenCards'].value = configObject.activeCards['Green Card'];
+    configForm['config-numWhiteCards'].value = configObject.activeCards['White Card'];
 
-    configForm['config-numTeleport'].value = configObject.teleport;
-    configForm['config-numClone'].value = configObject.clone;
-    configForm['config-numDefense'].value = configObject.defense;
+    configForm['config-numTeleport'].value = configObject.activeCards.Teleport;
+    configForm['config-numClone'].value = configObject.activeCards.Clone;
+    configForm['config-numDefense'].value = configObject.activeCards.Defense;
 
-    configForm['config-numSpotlight'].value = configObject.spotlight;
-    configForm['config-numAttack'].value = configObject.attack;
-    configForm['config-numSensor'].value = configObject.sensor;
+    configForm['config-numSpotlight'].value = configObject.activeCards.Spotlight;
+    configForm['config-numAttack'].value = configObject.activeCards.Attack;
+    configForm['config-numSensor'].value = configObject.activeCards.Sensor;
 
-    configForm['config-numAdrenaline'].value = configObject.adrenaline;
-    configForm['config-numSedatives'].value = configObject.sedatives;
-    configForm['config-numCat'].value = configObject.cat;
-    configForm['config-numMutation'].value = configObject.mutation;
+    configForm['config-numAdrenaline'].value = configObject.activeCards.Adrenaline;
+    configForm['config-numSedatives'].value = configObject.activeCards.Sedatives;
+    configForm['config-numCat'].value = configObject.activeCards.Cat;
+    configForm['config-numMutation'].value = configObject.activeCards.Mutation;
 }
 
 function setRoleConfig(configObject) {
     let configForm = document.getElementById("lobby-gameConfig")
-    configForm['config-numCaptain'].value = configObject.numCaptain;
-    configForm['config-numPilot'].value = configObject.numPilot;
-    configForm['config-numCopilot'].value = configObject.numCopilot;
-    configForm['config-numSoldier'].value = configObject.numSoldier;
-    configForm['config-numEngineer'].value = configObject.numEngineer;
-    configForm['config-numPsychologist'].value = configObject.numPsychologist;
-    configForm['config-numEO'].value = configObject.numEO;
-    configForm['config-numMedic'].value = configObject.numMedic;
+    configForm['config-numCaptain'].value = configObject.activeRoles.Captain;
+    configForm['config-numPilot'].value = configObject.activeRoles.Pilot;
+    configForm['config-numCopilot'].value = configObject.activeRoles.Copilot;
+    configForm['config-numSoldier'].value = configObject.activeRoles.Soldier;
+    configForm['config-numEngineer'].value = configObject.activeRoles.Engineer;
+    configForm['config-numPsychologist'].value = configObject.activeRoles.Psychologist;
+    configForm['config-numEO'].value = configObject.activeRoles['Executive Officer'];
+    configForm['config-numMedic'].value = configObject.activeRoles.Medic;
 
-    configForm['config-numFast'].value = configObject.numFast;
-    configForm['config-numSurge'].value = configObject.numSurge;
-    configForm['config-numBlink'].value = configObject.numSilent;
-    configForm['config-numSilent'].value = configObject.numSilent;
-    configForm['config-numBrute'].value = configObject.numBrute;
-    configForm['config-numInvisible'].value = configObject.numInvisible;
-    configForm['config-numLurking'].value = configObject.numLurking;
-    configForm['config-numPsychic'].value = configObject.numPsychic;
+    configForm['config-numFast'].value = configObject.activeRoles.Fast;
+    configForm['config-numSurge'].value = configObject.activeRoles.Surge;
+    configForm['config-numBlink'].value = configObject.activeRoles.Blink;
+    configForm['config-numSilent'].value = configObject.activeRoles.Silent;
+    configForm['config-numBrute'].value = configObject.activeRoles.Brute;
+    configForm['config-numInvisible'].value = configObject.activeRoles.Invisible;
+    configForm['config-numLurking'].value = configObject.activeRoles.Lurking;
+    configForm['config-numPsychic'].value = configObject.activeRoles.Psychic;
+
+    configForm['config-numCaptainRequired'].value = configObject.requiredRoles.Captain;
+    configForm['config-numPilotRequired'].value = configObject.requiredRoles.Pilot;
+    configForm['config-numCopilotRequired'].value = configObject.requiredRoles.Copilot;
+    configForm['config-numSoldierRequired'].value = configObject.requiredRoles.Soldier;
+    configForm['config-numEngineerRequired'].value = configObject.requiredRoles.Engineer;
+    configForm['config-numPsychologistRequired'].value = configObject.requiredRoles.Psychologist;
+    configForm['config-numEORequired'].value = configObject.requiredRoles['Executive Officer'];
+    configForm['config-numMedicRequired'].value = configObject.requiredRoles.Medic;
+
+    configForm['config-numFastRequired'].value = configObject.requiredRoles.Fast;
+    configForm['config-numSurgeRequired'].value = configObject.requiredRoles.Surge;
+    configForm['config-numBlinkRequired'].value = configObject.requiredRoles.Blink;
+    configForm['config-numSilentRequired'].value = configObject.requiredRoles.Silent;
+    configForm['config-numBruteRequired'].value = configObject.requiredRoles.Brute;
+    configForm['config-numInvisibleRequired'].value = configObject.requiredRoles.Invisible;
+    configForm['config-numLurkingRequired'].value = configObject.requiredRoles.Lurking;
+    configForm['config-numPsychicRequired'].value = configObject.requiredRoles.Psychic;
 }
 
 function getGameConfig() {

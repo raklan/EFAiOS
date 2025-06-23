@@ -5,6 +5,7 @@ import (
 	"escape-api/LogUtil"
 	"escape-engine/Models"
 	"escape-engine/Models/Actions"
+	"escape-engine/Models/GameConfig"
 	"fmt"
 	"log"
 	"maps"
@@ -14,7 +15,7 @@ import (
 
 // Given an id to a Game defition, constructs and returns an initial GameState for it. This is essentially
 // how to start the game
-func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.GameState, error) {
+func GetInitialGameState(roomCode string, gameConfig GameConfig.GameConfig) (Models.GameState, error) {
 	funcLogPrefix := "==GetInitialGameState=="
 	defer LogUtil.EnsureLogPrefixIsReset()
 	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
@@ -41,7 +42,7 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 	}
 
 	gameState.GameMap = mapDef
-	gameState.GameConfig = gameConfig
+	gameState.GameMap.GameConfig = gameConfig
 
 	gameState.Players = []Models.Player{}
 
@@ -64,7 +65,6 @@ func GetInitialGameState(roomCode string, gameConfig Models.GameConfig) (Models.
 	gameState.Turn = 1
 	gameState.Deck = []Models.Card{}
 	gameState.DiscardPile = []Models.Card{}
-	gameState.GameConfig.ActiveStatusEffects = gameConfig.ActiveStatusEffects
 
 	assignCards(&gameState, gameConfig.ActiveCards)
 	assignTeams(&gameState)
@@ -376,7 +376,7 @@ func GetPlayerAllowedMoves(gameId string, playerId string) ([]string, error) {
 // Assigns teams randomly to all players in the GameState. If a player cannot be assigned for any reason, they are assigned as a spectator
 func assignTeams(gameState *Models.GameState) {
 	log.Println("Assigning teams")
-	humansToAssign, aliensToAssign := gameState.GameConfig.NumHumans, gameState.GameConfig.NumAliens
+	humansToAssign, aliensToAssign := gameState.GameMap.GameConfig.NumHumans, gameState.GameMap.GameConfig.NumAliens
 	for index := range gameState.Players {
 		if humansToAssign == 0 && aliensToAssign != 0 { //No human slots left, must be human
 			gameState.Players[index].Team = Models.PlayerTeam_Alien

@@ -70,7 +70,7 @@ func AttackSpace(row int, col string, gameState GameState) (*GameEvent, error) {
 		}
 
 		slices.SortFunc(defenseEffects, func(s1 string, s2 string) int {
-			return gameState.StatusEffectPriorities[s2] - gameState.StatusEffectPriorities[s1]
+			return gameState.GameMap.GameConfig.ActiveStatusEffects[s2] - gameState.GameMap.GameConfig.ActiveStatusEffects[s1]
 		})
 
 		playerWasSaved := false
@@ -91,7 +91,7 @@ func AttackSpace(row int, col string, gameState GameState) (*GameEvent, error) {
 		}
 
 		if !playerWasSaved {
-			if player.Team == PlayerTeam_Human || (player.Team == PlayerTeam_Alien && gameState.GameConfig.AliensRespawn) {
+			if player.Team == PlayerTeam_Human || (player.Team == PlayerTeam_Alien && gameState.GameMap.GameConfig.AliensRespawn) {
 				newSpaceForPlayer := alienStarts[rand.Intn(len(alienStarts))]
 
 				gameState.Players[index].Team = PlayerTeam_Alien

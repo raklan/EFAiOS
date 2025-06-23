@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"escape-engine/Models"
 	"escape-engine/Models/Actions"
+	"escape-engine/Models/GameConfig"
 	"log"
 	"net/http"
 	"slices"
@@ -285,7 +286,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 	switch msg.JsonType {
 	case "startGame":
 		log.Println("Received request to start game")
-		config := Models.GameConfig{}
+		config := GameConfig.GameConfig{}
 		if err := json.Unmarshal(msg.Data, &config); err != nil {
 			log.Printf("error decoding startGame config: %s", err)
 			socketError := Models.WebsocketMessage{

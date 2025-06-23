@@ -1,6 +1,7 @@
 package Engine
 
 import (
+	"escape-engine/Models/GameConfig"
 	"html/template"
 	"strings"
 )
@@ -31,4 +32,8 @@ func GetMapDescription(input string) template.HTML { //TODO: Sanitize descriptio
 	}
 
 	return template.HTML(gameMap.Description)
+}
+
+func GetConfigPresets() []GameConfig.GameConfigPreset {
+	return GameConfig.GetConfigPresets()
 }
