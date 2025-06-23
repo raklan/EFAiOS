@@ -209,3 +209,18 @@ function getGameConfig() {
 
     return config;
 }
+
+function updatePossible(inputName) {
+    let configForm = document.getElementById("lobby-gameConfig")
+    let possible = configForm[`config-${inputName}`]
+    let required = configForm[`config-${inputName}Required`]
+
+    possible.min = required.value ? parseInt(required.value) : 0
+    possible.value = Math.max(possible.value ? parseInt(possible.value) : 0, possible.min ? parseInt(possible.min) : 0)
+}
+
+function checkPossible(inputName) {
+    let configForm = document.getElementById("lobby-gameConfig")
+    let possible = configForm[`config-${inputName}`]
+    possible.value = Math.max(possible.value ? parseInt(possible.value) : 0, possible.min ? parseInt(possible.min) : 0)
+}
