@@ -160,13 +160,16 @@ async function handleGameStateMessage(gameState) {
     document.getElementById('gameplay').style.display = 'flex';
 
     document.querySelectorAll('.player').forEach(x => x.classList.remove('player'))
+    document.querySelectorAll('.player-human').forEach(x => x.classList.remove('player-human'))
+    document.querySelectorAll('.player-alien').forEach(x => x.classList.remove('player-alien'))
     if (thisPlayer.team != PlayerTeams.Spectator) {
         var playerSpace = document.getElementById(`hex-${thisPlayer.col}-${thisPlayer.row}`)
         playerSpace.classList.add('player')
     } else {
         for (let player of gameState.players.filter(p => p.team != PlayerTeams.Spectator)) {
             var playerSpace = document.getElementById(`hex-${player.col}-${player.row}`)
-            playerSpace.classList.add('player')
+            playerSpace.classList.add(player.team == PlayerTeams.Human? 'player-human' : 'player-alien')
+            playerSpace.nextSibling.innerHTML = `${player.name}`
         }
     }
 

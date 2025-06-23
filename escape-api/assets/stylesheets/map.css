@@ -34,7 +34,7 @@
 }
 
 .hexfield.alienstart {
-    fill: red;
+    fill: rgb(255, 55, 55);
 }
 
 .hexfield.humanstart {
@@ -47,6 +47,14 @@
 
 .hexfield.player {
     fill: gold;
+}
+
+.hexfield.player-human{
+    fill: rgb(22, 116, 238);
+}
+
+.hexfield.player-alien{
+    fill: red;
 }
 
 .hexfield:hover {
