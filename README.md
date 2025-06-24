@@ -18,7 +18,7 @@ My goal with this is twofold: First, a lightweight version that's easy to set up
 - Lost connection? Accidentally closed the page? No worries, we have rejoin support!
   ![image](https://github.com/user-attachments/assets/44e996fb-cc3a-40f8-8156-bd80421a1a8e)
   
-- Easy to set up and play. Simply visit the Maps page, click "Play" on the map you want, and share the Room Code with the other players. Those players can join your lobby by entering their Name and the Room Code on the home page.
+- Easy to set up and play. Simply visit the Maps page, click "Play" on the map you want, and share the Room Code with the other players. Anyone on your same internet (unless you set up Port Forwarding) can join your lobby by entering their Name and the Room Code on the home page.
   
   ![image](https://github.com/user-attachments/assets/db17d4fc-966e-42a9-b8f9-7e2d01ca32f5)
 
