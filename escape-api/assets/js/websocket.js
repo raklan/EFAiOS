@@ -176,6 +176,7 @@ async function handleGameStateMessage(gameState) {
     }
 
     if (isThisPlayersTurn && !playerHasMoved) {
+        showNotification('Your Turn', 'Your Turn')
         clickMode = ClickModes.Moving
         sendWsMessage(ws, 'getAllowedMoves', {
             gameId: thisGameStateId
@@ -206,7 +207,7 @@ async function handleLobbyInfoMessage(messageData) {
     document.getElementById("lobby-roomCode").innerHTML = `Room Code: ${messageData.lobbyInfo.roomCode}`
     document.getElementById('lobby-mapTitle').innerText = `Map: ${messageData.lobbyInfo.mapName}`
 
-    //#region Player List Rendering
+    //Player List Rendering
     var playerList = document.getElementById("lobby-playerList")
     playerList.replaceChildren() //Important: Clear the player list so new players joining don't cause duplicate rendering
 
@@ -218,9 +219,8 @@ async function handleLobbyInfoMessage(messageData) {
 
         playerList.appendChild(playerEntry)
     }
-    //#endregion
 
-    //#region Host Controls
+    //Host Controls
     if (thisPlayer?.id?.length > 0 && thisPlayer.id == messageData.lobbyInfo?.host?.id) {
         var startButton = document.getElementById("lobby-startButton")
         startButton.style.display = '';
@@ -240,7 +240,6 @@ async function handleLobbyInfoMessage(messageData) {
             showConfig();
         }
     }
-    //#endregion
 }
 
 async function handleMovementResponse(movementEvent) {

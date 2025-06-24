@@ -472,6 +472,10 @@ function cardClick(card) {
         showNotification('It\'s not your turn!', 'Error')
         return
     }
+    if([ClickModes.CatGreen, ClickModes.CatRed, ClickModes.Noise, ClickModes.Spotlight].includes(clickMode)){
+        showNotification("Finish what you're doing first!", "Error")
+        return;
+    }
 
     if (card.name === "Spotlight") {
         clickMode = ClickModes.Spotlight;

@@ -46,6 +46,7 @@ function showNotification(notificationContent, notificationType) {
     typeWord(content, notificationContent)
 
     popup.classList.add('notification-displayed')
+    setTimeout(hideNotification, 3000)
 }
 
 function showGameOver(){

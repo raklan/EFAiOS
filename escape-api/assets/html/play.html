@@ -17,14 +17,6 @@
 {{end}}
 
 {{define "body"}}
-<div id="notification-popup" class="notification-popup">
-    <div id="notification-header" style="display: flex; justify-content: center;">
-        <span style="font-weight: bold; font-size: large" id="notification-title">Alert</span>
-        <span style="font-size: 20px; cursor: pointer; position: absolute; right: 5%; top: 5%"
-            onclick="hideNotification()">&times;</span>
-    </div>
-    <div id="notification-content"></div>
-</div>
 <div id="playerChoice-popup" class="notification-popup">
     <div id="playerChoice-header">
         <span style="font-weight: bold; font-size: large;" id="playerChoice-title">Input Needed</span>
@@ -58,6 +50,14 @@
             </div>
         </div>
     </div>
+</div>
+<div id="notification-popup" class="notification-popup">
+    <div id="notification-header" style="display: flex; justify-content: center;">
+        <span style="font-weight: bold; font-size: large" id="notification-title">Alert</span>
+        <span style="font-size: 20px; cursor: pointer; position: absolute; right: 5%; top: 5%"
+            onclick="hideNotification()">&times;</span>
+    </div>
+    <div id="notification-content"></div>
 </div>
 <div id="lobby">
     <h3>Lobby</h3>
@@ -440,10 +440,5 @@
     }
 
     openSocket();
-
-    function test(configString){
-        let config = JSON.parse(configString)
-        console.log(config)
-    }
 </script>
 {{end}}
