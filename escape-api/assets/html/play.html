@@ -405,9 +405,11 @@
 
         switch (connectionInfo.type) {
             case "host":
+                window.localStorage.removeItem('efaios-eventlog')
                 urlToConnect = `http://${window.location.host}/lobby/host?mapId=${connectionInfo.mapId}&playerName=${connectionInfo.playerName}`
                 break;
             case "join":
+                window.localStorage.removeItem('efaios-eventlog')
                 urlToConnect = `http://${window.location.host}/lobby/join?roomCode=${connectionInfo.roomCode}&playerName=${connectionInfo.playerName}`
                 break;
             case "rejoin":

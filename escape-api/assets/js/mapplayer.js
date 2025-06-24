@@ -667,6 +667,14 @@ function initializeEventLog(players) {
         log.classList.add("tabcontent")
         eventLog.appendChild(log)
     }
+
+    let previousEventLog = window.localStorage.getItem('efaios-eventlog')
+    if(previousEventLog){
+        let eventLog = JSON.parse(previousEventLog);
+        for(let e of eventLog){
+            addEvent(e.playerName, e.description)
+        }
+    }
 }
 
 function viewPlayerEvents(playerName) {
@@ -694,6 +702,16 @@ function addEvent(playerName, event) {
     let eventDesc = document.createElement("p")
     eventDesc.innerHTML = event
     eventLogContainer.appendChild(eventDesc)
+}
+
+async function saveEventToLocalStorage(playerName, eventDescription){
+    let localStorageLog = window.localStorage.getItem("efaios-eventlog")
+    let eventLog = []
+    if(localStorageLog){
+        eventLog = JSON.parse(localStorageLog)
+    }
+    eventLog.push({playerName: playerName, description: eventDescription})
+    window.localStorage.setItem('efaios-eventlog', JSON.stringify(eventLog))
 }
 
 function endTurn() {

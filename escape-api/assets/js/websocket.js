@@ -115,6 +115,7 @@ async function handleGameEventMessage(gameEvent) {
         for (let match of matches) {
             if (!playersMentionedInThisEvent.includes(match.groups.PlayerName)) { //Only add one entry if a player is mentioned multiple times
                 addEvent(match.groups.PlayerName, gameEvent.description)
+                saveEventToLocalStorage(match.groups.PlayerName, gameEvent.description)
                 playersMentionedInThisEvent.push(match.groups.PlayerName)
             }
         }
@@ -136,6 +137,7 @@ async function handleGameOverMessage(messageData) {
     gameHasEnded = true;
     showGameOver();
     window.localStorage.removeItem('efaios-connectionInfo')
+    window.localStorage.removeItem('efaios-eventlog')
 }
 
 async function handleGameStateMessage(gameState) {
@@ -198,7 +200,7 @@ async function handleLobbyInfoMessage(messageData) {
             playerId: thisPlayer.id,
             roomCode: messageData.lobbyInfo.roomCode
         }
-        window.localStorage.setItem('efaios-connectionInfo', JSON.stringify(connectionInfo))
+        window.localStorage.setItem('efaios-connectionInfo', JSON.stringify(connectionInfo))        
         setConfigFormFromObject(messageData.lobbyInfo.mapConfig)
     }
     document.getElementById("lobby-roomCode").innerHTML = `Room Code: ${messageData.lobbyInfo.roomCode}`
