@@ -36,7 +36,7 @@ I'll probably get it deployed in some fashion (and post the URL in this README w
   - You can clone the repository, install Go on your machine, and simply run the command `go run ./escape-api` from the root directory. Be aware this option does not come with any premade maps.
   - I'll also probably push a docker image of the project that you can set up your own container for. Be aware that this option will not come with any premade maps.
 
-However you run the project, the site will run on port 80 of whatever machine is running it, so connecting from any web browser should get you up and running.
+However you run the project, the site will run on port 80 of whatever machine is running it, so any device on the same internet network can connect to your machine's IP via any web browser to play!
 
 ## Map Sharing
 With the map editor, I wanted to make sharing maps between computers easy; The idea is that if my friends want to make maps, they can run the server themselves, make a map, and easily send a file to me that I can import into the "official" server so we can all play their map. With that in mind, here's how to share maps:
