@@ -50,9 +50,24 @@ function createGrid(rows, columns, windowWidthDenominator) {
             polyText.setAttribute('fill', 'black')
             polyText.setAttribute('text-anchor', 'middle')
             polyText.setAttribute('font-size', `${radius/2.25}px`)
+            //polyText.setAttribute('textLength', `${radius/2.25}px`)
             polyText.innerHTML = `[${numberToLetter(column)}-${row+1}]`
             polyText.style.pointerEvents = 'none'
             svgParent.appendChild(polyText)
         }
     }
+}
+
+function showSpaceTooltip(event){
+    let tooltip = document.getElementById("spaceHoverTooltip")
+    tooltip.style.display = 'block'
+    tooltip.style.left = event.pageX + 10 + 'px'
+    tooltip.style.top = event.pageY + 10 + 'px'
+    tooltip.innerHTML = event.target.getAttribute('tooltip-text')
+    tooltip.style.setProperty('--tooltip-color', event.target.getAttribute('tooltip-color') )
+}
+
+function hideSpaceTooltip(event){
+    let tooltip = document.getElementById("spaceHoverTooltip")
+    tooltip.style.display = 'none'
 }

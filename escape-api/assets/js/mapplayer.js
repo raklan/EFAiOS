@@ -54,18 +54,46 @@ function drawMapOnPage() {
         var el = document.getElementById(`hex-${space.col}-${space.row}`)
         if (el) {
             var spaceClass = 'safe'
+            var tooltipText = ''
             switch (space.type) {
-                case SpaceTypes.Wall: spaceClass = 'wall'; break;
-                case SpaceTypes.Safe: spaceClass = 'safe'; break;
-                case SpaceTypes.Pod: spaceClass = 'pod'; break;
-                case SpaceTypes.UsedPod: spaceClass = 'pod-used'; break;
-                case SpaceTypes.Dangerous: spaceClass = 'dangerous'; break;
-                case SpaceTypes.HumanStart: spaceClass = 'humanstart'; break;
-                case SpaceTypes.AlienStart: spaceClass = 'alienstart'; break;
+                case SpaceTypes.Wall:
+                    spaceClass = 'wall';
+                    tooltipText = '';
+                    break;
+                case SpaceTypes.Safe:
+                    spaceClass = 'safe';
+                    tooltipText = ''
+                    break;
+                case SpaceTypes.Pod:
+                    spaceClass = 'pod';
+                    tooltipText = 'Escape Pod';
+                    break;
+                case SpaceTypes.UsedPod:
+                    spaceClass = 'pod-used';
+                    tooltipText = 'Used Escape Pod';
+                    break;
+                case SpaceTypes.Dangerous:
+                    spaceClass = 'dangerous';
+                    tooltipText = '';
+                    break;
+                case SpaceTypes.HumanStart:
+                    spaceClass = 'humanstart';
+                    tooltipText = 'Human Start Sector';
+                    break;
+                case SpaceTypes.AlienStart:
+                    spaceClass = 'alienstart';
+                    tooltipText = 'Alien Start Sector'
+                    break;
             }
 
             el.classList = [cssClass, spaceClass].join(' ');
             el.setAttribute('hex-type', space.type);
+            el.setAttribute('tooltip-text', tooltipText)
+            el.setAttribute('tooltip-color', `var(--space-${spaceClass})`)
+            if (tooltipText.length > 0) {
+                el.onmousemove = (event) => showSpaceTooltip(event)
+                el.onmouseleave = (event) => hideSpaceTooltip(event)
+            }
         }
     });
 }
@@ -560,6 +588,40 @@ function renderTurnOrder() {
         }
 
         turnOrderList.appendChild(entry);
+    }
+}
+
+function renderSpectatorView(gameState) {
+    //Render the locations of every player still in the game and style their spaces accordingly
+    for (let player of gameState.players.filter(p => p.team != PlayerTeams.Spectator)) {
+        let playerSpace = document.getElementById(`hex-${player.col}-${player.row}`)
+        let playersHere = gameState.players.filter(p => p.row == player.row && p.col == player.col)
+        let teamsHere = ''
+        if (playersHere.some(p => p.team == PlayerTeams.Human)) {
+            teamsHere += PlayerTeams.Human
+        }
+        if (playersHere.some(p => p.team == PlayerTeams.Alien)) {
+            teamsHere += PlayerTeams.Alien
+        }
+
+        switch (teamsHere) {
+            case PlayerTeams.Human:
+                playerSpace.classList.add('player-human')
+                playerSpace.setAttribute('tooltip-color', 'deepskyblue')
+                break;
+            case PlayerTeams.Alien:
+                playerSpace.classList.add('player-alien')
+                playerSpace.setAttribute('tooltip-color', 'red')
+                break;
+            case PlayerTeams.Human + PlayerTeams.Alien:
+                playerSpace.classList.add('player-both')
+                playerSpace.setAttribute('tooltip-color', 'mediumpurple')
+                break;
+        }
+
+        playerSpace.setAttribute('tooltip-text', playersHere.map(p => p.name).join(', '))
+        playerSpace.onmousemove = (event) => showSpaceTooltip(event)
+        playerSpace.onmouseleave = (event) => hideSpaceTooltip(event)
     }
 }
 

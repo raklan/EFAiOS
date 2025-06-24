@@ -1,3 +1,19 @@
+:root {
+    --space-wall: black;
+    --space-safe: white;
+    --space-pod: forestgreen;
+    --space-pod-used: brown;
+    --space-dangerous: gray;
+    --space-humanstart: deepskyblue;
+    --space-alienstart: rgb(255, 55, 55);
+    --space-selected: orange;
+    --space-player: gold;
+    --space-playerhuman: rgb(22, 116, 238);
+    --space-playeralien: red;
+    --space-playerboth: mediumpurple;
+    --space-hover: yellow;
+}
+
 .hexfield {
     fill: transparent;
     stroke: black;
@@ -9,15 +25,15 @@
 }
 
 .hexfield.wall {
-    fill: black;
+    fill: var(--space-wall);
 }
 
 .hexfield.safe {
-    fill: white;
+    fill: var(--space-safe);
 }
 
 .hexfield.dangerous {
-    fill: gray;
+    fill: var(--space-dangerous);
 }
 
 .hexfield.potential-move {
@@ -26,37 +42,50 @@
 }
 
 .hexfield.pod {
-    fill: forestgreen;
+    fill: var(--space-pod);
 }
 
 .hexfield.pod-used {
-    fill: brown;
+    fill: var(--space-pod-used);
 }
 
 .hexfield.alienstart {
-    fill: rgb(255, 55, 55);
+    fill: var(--space-alienstart);
 }
 
 .hexfield.humanstart {
-    fill: deepskyblue;
+    fill: var(--space-humanstart);
 }
 
 .hexfield.selected {
-    fill: orange;
+    fill: var(--space-selected);
 }
 
 .hexfield.player {
-    fill: gold;
+    fill: var(--space-player);
 }
 
-.hexfield.player-human{
-    fill: rgb(22, 116, 238);
+.hexfield.player-human {
+    fill: var(--space-playerhuman)
 }
 
-.hexfield.player-alien{
-    fill: red;
+.hexfield.player-alien {
+    fill: var(--space-playeralien);
+}
+
+.hexfield.player-both {
+    fill: var(--space-playerboth);
 }
 
 .hexfield:hover {
-    fill: yellow;
+    fill: var(--space-hover);
+}
+
+#spaceHoverTooltip {
+    display: none;
+    position: absolute;
+    background-color: black;
+    padding: 5px;
+    border: 1px solid var(--tooltip-color);
+    color: var(--tooltip-color)
 }

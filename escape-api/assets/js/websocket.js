@@ -88,7 +88,7 @@ async function handleCardMessage(cardEvent) {
         if (thisPlayer.statusEffects?.some(se => se.name === "Feline")) {
             clickMode = ClickModes.CatRed
             showPlayerChoicePopup('cat-red')
-        }else{
+        } else {
             showPlayerChoicePopup('redCard')
         }
     }
@@ -96,7 +96,7 @@ async function handleCardMessage(cardEvent) {
 }
 
 async function handleCloseMessage(messageData) {
-    if(!gameHasEnded){
+    if (!gameHasEnded) {
         showNotification(messageData.message, 'Connection Lost')
     }
     ws.close();
@@ -111,9 +111,9 @@ async function handleGameEventMessage(gameEvent) {
     let matches = [...gameEvent.description.matchAll(playerNameExtractor)]
     let playersMentionedInThisEvent = []
 
-    if (matches?.length > 0){
-        for(let match of matches){
-            if(!playersMentionedInThisEvent.includes(match.groups.PlayerName)){ //Only add one entry if a player is mentioned multiple times
+    if (matches?.length > 0) {
+        for (let match of matches) {
+            if (!playersMentionedInThisEvent.includes(match.groups.PlayerName)) { //Only add one entry if a player is mentioned multiple times
                 addEvent(match.groups.PlayerName, gameEvent.description)
                 playersMentionedInThisEvent.push(match.groups.PlayerName)
             }
@@ -122,12 +122,12 @@ async function handleGameEventMessage(gameEvent) {
 }
 
 async function handleTurnEnd(turnEnd) {
-    
+
     if (isThisPlayersTurn) {
         thisPlayer = turnEnd.playerCurrentState;
         renderPlayerHand();
         renderStatusEffects();
-        clickMode = ClickModes.None;        
+        clickMode = ClickModes.None;
         document.getElementById("endTurn-button").style.display = ''
     }
 }
@@ -164,13 +164,13 @@ async function handleGameStateMessage(gameState) {
     document.querySelectorAll('.player-alien').forEach(x => x.classList.remove('player-alien'))
     if (thisPlayer.team != PlayerTeams.Spectator) {
         var playerSpace = document.getElementById(`hex-${thisPlayer.col}-${thisPlayer.row}`)
+        playerSpace.setAttribute('tooltip-text', 'You')
+        playerSpace.setAttribute('tooltip-color', `var(--space-player)`)
+        playerSpace.onmousemove = (event) => showSpaceTooltip(event)
+        playerSpace.onmouseleave = (event) => hideSpaceTooltip(event)
         playerSpace.classList.add('player')
     } else {
-        for (let player of gameState.players.filter(p => p.team != PlayerTeams.Spectator)) {
-            var playerSpace = document.getElementById(`hex-${player.col}-${player.row}`)
-            playerSpace.classList.add(player.team == PlayerTeams.Human? 'player-human' : 'player-alien')
-            playerSpace.nextSibling.innerHTML = `${player.name}`
-        }
+        renderSpectatorView(gameState)
     }
 
     if (isThisPlayersTurn && !playerHasMoved) {
@@ -178,7 +178,7 @@ async function handleGameStateMessage(gameState) {
         sendWsMessage(ws, 'getAllowedMoves', {
             gameId: thisGameStateId
         })
-    } else if(!isThisPlayersTurn){
+    } else if (!isThisPlayersTurn) {
         clickMode = ClickModes.None
     }
 
@@ -210,7 +210,7 @@ async function handleLobbyInfoMessage(messageData) {
 
     for (let player of messageData.lobbyInfo.players) {
         playerEntry = document.createElement("div")
-        playerEntry.innerText = `${player.name}${player.name === messageData.lobbyInfo.host.name? " (Host)" : ""}`
+        playerEntry.innerText = `${player.name}${player.name === messageData.lobbyInfo.host.name ? " (Host)" : ""}`
         playerEntry.style.border = "1px solid black"
         playerEntry.style.margin = '5px'
 
@@ -236,7 +236,7 @@ async function handleLobbyInfoMessage(messageData) {
         configButton.style.display = '';
         configButton.onclick = () => {
             showConfig();
-        }        
+        }
     }
     //#endregion
 }
@@ -267,7 +267,7 @@ async function handleMovementResponse(movementEvent) {
         }
 
         sendWsMessage(ws, 'submitAction', actionToSend);
-    } else if (thisPlayer.team == PlayerTeams.Alien) {        
+    } else if (thisPlayer.team == PlayerTeams.Alien) {
         showPlayerChoicePopup('attack')
     }
 }
