@@ -23,6 +23,7 @@ button,button::after {
     color: var(--button-color);
     background-color: transparent;
     position: relative;
+    border: 1px solid transparent;
   }
   
   button::after {
@@ -52,7 +53,6 @@ button,button::after {
   }
   
   button:hover {
-    /* text-shadow: -1px -1px 0px #24f21d, 1px 1px 0px #27c200; */
     text-shadow: -1px -1px 0px var(--button-color), 1px 1px 0px var(--button-color);
   }
   
