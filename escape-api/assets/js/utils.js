@@ -1,4 +1,5 @@
 typingQueue = {}
+let notificationCloseTimeout = null;
 
 function typeWord(element, word) {
     if(!typingQueue[element.id]){
@@ -46,7 +47,10 @@ function showNotification(notificationContent, notificationType) {
     typeWord(content, notificationContent)
 
     popup.classList.add('notification-displayed')
-    setTimeout(hideNotification, 3000)
+    if(notificationCloseTimeout){
+        clearTimeout(notificationCloseTimeout)
+    }
+    notificationCloseTimeout = setTimeout(hideNotification, 3000)
 }
 
 function showGameOver(){
