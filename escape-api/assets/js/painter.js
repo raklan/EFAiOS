@@ -53,7 +53,7 @@ function draw() {
     ctx.beginPath();
     ctx.strokeStyle = selectedColor;
     ctx.lineWidth = strokeWidth;
-    if (selectedColor == "white") {
+    if (selectedColor == "eraser") {
         ctx.globalCompositeOperation = "destination-out";
     } else {
         ctx.globalCompositeOperation = "source-over";
