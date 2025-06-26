@@ -18,7 +18,7 @@ My goal with this is twofold: First, a lightweight version that's easy to set up
 - Lost connection? Accidentally closed the page? No worries, we have rejoin support!
   ![image](https://github.com/user-attachments/assets/44e996fb-cc3a-40f8-8156-bd80421a1a8e)
   
-- Easy to set up and play. Simply visit the Maps page, click "Play" on the map you want, and share the Room Code with the other players. Those players can join your lobby by entering their Name and the Room Code on the home page.
+- Easy to set up and play. Simply visit the Maps page, click "Play" on the map you want, and share the Room Code with the other players. Anyone on your same internet (unless you set up Port Forwarding) can join your lobby by entering their Name and the Room Code on the home page.
   
   ![image](https://github.com/user-attachments/assets/db17d4fc-966e-42a9-b8f9-7e2d01ca32f5)
 
@@ -36,7 +36,7 @@ I'll probably get it deployed in some fashion (and post the URL in this README w
   - You can clone the repository, install Go on your machine, and simply run the command `go run ./escape-api` from the root directory. Be aware this option does not come with any premade maps.
   - I'll also probably push a docker image of the project that you can set up your own container for. Be aware that this option will not come with any premade maps.
 
-However you run the project, the site will run on port 80 of whatever machine is running it, so connecting from any web browser should get you up and running.
+However you run the project, the site will run on port 80 of whatever machine is running it, so any device on the same internet network can connect to your machine's IP via any web browser to play!
 
 ## Map Sharing
 With the map editor, I wanted to make sharing maps between computers easy; The idea is that if my friends want to make maps, they can run the server themselves, make a map, and easily send a file to me that I can import into the "official" server so we can all play their map. With that in mind, here's how to share maps:
