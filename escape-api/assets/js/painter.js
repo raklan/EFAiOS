@@ -34,11 +34,19 @@ function initializeCanvas() {
 }
 
 function color(obj) {
-    selectedColor = obj.id
+    selectedColor = obj.getAttribute('color-value')
     document.querySelectorAll('.color-picker.selected').forEach(el => el.classList.remove('selected'))
     obj.classList.add('selected')
-    if (selectedColor == "white") strokeWidth= 14;
-    else strokeWidth= 2;
+}
+
+function updateStrokeWidth(control){
+    strokeWidth = control.value
+}
+
+function colorPicker(control){
+    control.setAttribute('color-value', control.value)
+    control.style.setProperty('--color-input-bg', control.value)
+    color(control)
 }
 
 function draw() {
@@ -47,14 +55,14 @@ function draw() {
     ctx.lineWidth = strokeWidth;
     if (selectedColor == "white") {
         ctx.globalCompositeOperation = "destination-out";
-        ctx.arc(prevX, prevY, 8, 0, Math.PI * 2, false);
-        ctx.fill();
     } else {
         ctx.globalCompositeOperation = "source-over";
-        ctx.moveTo(prevX, prevY);
-        ctx.lineTo(currX, currY);
-        ctx.stroke();
     }
+    ctx.moveTo(prevX, prevY);
+    ctx.lineTo(currX, currY);
+    ctx.stroke();
+    ctx.arc(prevX, prevY, strokeWidth/2, 0, Math.PI * 2, false);    
+    ctx.fill();
     ctx.closePath();
 }
 

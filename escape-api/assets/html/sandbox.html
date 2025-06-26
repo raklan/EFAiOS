@@ -10,12 +10,32 @@
     <div id="paint-controls">
         <div id="paint-palatte">
             <div style="grid-column: span 3; justify-self: center;">Choose Color</div>
-            <div class="color-picker" style="background:green;" id="green" onclick="color(this)"></div>
-            <div class="color-picker" style="background:deepskyblue;" id="deepskyblue" onclick="color(this)"></div>
-            <div class="color-picker" style="background:red;" id="red" onclick="color(this)"></div>
-            <div class="color-picker" style="background:yellow;" id="yellow" onclick="color(this)"></div>
-            <div class="color-picker" style="background:orange;" id="orange" onclick="color(this)"></div>
-            <div class="color-picker" style="background:hotpink;" id="hotpink" onclick="color(this)"></div>
+            <div class="color-picker" style="background:green;" color-value="green" onclick="color(this)"></div>
+            <div class="color-picker" style="background:deepskyblue;" color-value="deepskyblue" onclick="color(this)"></div>
+            <div class="color-picker" style="background:red;" color-value="red" onclick="color(this)"></div>
+            <div class="color-picker" style="background:yellow;" color-value="yellow" onclick="color(this)"></div>
+            <div class="color-picker" style="background:orange;" color-value="orange" onclick="color(this)"></div>
+            <div class="color-picker" style="background:hotpink;" color-value="hotpink" onclick="color(this)"></div>
+            <div style="grid-column: span 3; justify-self: center;">
+                <input style="background-color: var(--color-input-bg); --color-input-bg: #ffffff" value="#ffffff"
+                    color-value="#ffffff" class="color-picker" type="color" id="color-input" oninput="colorPicker(this)"
+                    onclick="color(this)" />
+            </div>
+            <div style="grid-column: span 3;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-dash-circle" viewBox="0 0 16 16" style="margin-left: 4px; margin-right: -10px">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
+                </svg>
+                <input type="range" id="stroke-width" value="2" min="2" max="32" step="2"
+                    onchange="updateStrokeWidth(this)" />
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-plus-circle" viewBox="0 0 16 16" style="margin-left: -10px; margin-right: 4px">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                    <path
+                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                </svg>
+            </div>
             <div class="color-picker" id="white" onclick="color(this)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eraser"
                     viewBox="0 0 16 16">

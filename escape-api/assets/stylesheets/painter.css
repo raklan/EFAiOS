@@ -14,7 +14,7 @@
 #paint-controls {
     position: fixed;
     bottom: 5px;
-    left: -123px;
+    left: -179px;
     padding-left: 5px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -53,5 +53,5 @@
 }
 
 .color-picker.selected {
-    border: 1px solid white;
+    border: 2px solid lime;
 }
