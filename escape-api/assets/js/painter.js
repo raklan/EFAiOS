@@ -7,7 +7,7 @@ var canvas, ctx, flag = false,
 
 let isPainting = false;
 
-var selectedColor = "black",
+var selectedColor = "green",
     strokeWidth= 2;
 
 function initializeCanvas() {
