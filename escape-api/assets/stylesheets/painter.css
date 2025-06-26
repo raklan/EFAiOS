@@ -1,0 +1,57 @@
+#can {
+    width: 80%;
+    height: 90%;
+    left: 10%;
+    position: absolute;
+}
+
+.background {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+}
+
+#paint-controls {
+    position: fixed;
+    bottom: 5px;
+    left: -123px;
+    padding-left: 5px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    transition: all 0.3s ease-in-out;
+}
+
+#paint-controls.displayed {
+    left: 0px;
+    transition: all 0.3s ease-in-out;
+}
+
+#paint-palatte {
+    border: 1px solid lime;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: fit-content;
+    height: fit-content;
+}
+
+#paint-toggle {
+    cursor: pointer;
+    align-self: end;
+    padding: 5px;
+    padding-bottom: 0px;
+    border: 1px solid lime;
+    width: fit-content;
+}
+
+.color-picker {
+    width: 20px;
+    height: 20px;
+    margin: 2px;
+    justify-self: center;
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+
+.color-picker.selected {
+    border: 1px solid white;
+}

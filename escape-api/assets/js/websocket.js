@@ -152,14 +152,15 @@ async function handleGameStateMessage(gameState) {
     })
     drawMap(gameState.gameMap)
     if (!thisGameStateId) {
+        document.getElementById("lobby").style.display = 'none';
+        document.getElementById('gameplay').style.display = 'flex';
         thisGameStateId = gameState.id
         initializeEventLog(gameState.players)
+        initializeCanvas();
         await fetch(`/api/role?name=${thisPlayer.role}`).then(resp => resp.json()).then(apiObj => {
             roleDescription = apiObj.roleDescription;
         })
     }
-    document.getElementById("lobby").style.display = 'none';
-    document.getElementById('gameplay').style.display = 'flex';
 
     document.querySelectorAll('.player').forEach(x => x.classList.remove('player'))
     document.querySelectorAll('.player-human').forEach(x => x.classList.remove('player-human'))
@@ -201,7 +202,7 @@ async function handleLobbyInfoMessage(messageData) {
             playerId: thisPlayer.id,
             roomCode: messageData.lobbyInfo.roomCode
         }
-        window.localStorage.setItem('efaios-connectionInfo', JSON.stringify(connectionInfo))        
+        window.localStorage.setItem('efaios-connectionInfo', JSON.stringify(connectionInfo))
         setConfigFormFromObject(messageData.lobbyInfo.mapConfig)
     }
     document.getElementById("lobby-roomCode").innerHTML = `Room Code: ${messageData.lobbyInfo.roomCode}`

@@ -198,6 +198,7 @@ function clearGrid() {
 }
 
 function showPlayerChoicePopup(mode) {
+    console.log('showing player choice', mode)
     let popup = document.getElementById("playerChoice-popup");
     let title = document.getElementById("playerChoice-title");
     let content = document.getElementById("playerChoice-content");
@@ -209,6 +210,7 @@ function showPlayerChoicePopup(mode) {
     }
 
     if (mode == 'greenCard') {
+        console.log('greencard')
         document.getElementById("greenCard-confirm").style.display = 'none'
         document.getElementById("playerChoice-greenCard").style.display = '';
 
@@ -221,6 +223,7 @@ function showPlayerChoicePopup(mode) {
         typeWord(title, 'Green Card Drawn')
         typeWord(content_info, 'Choose a space to make noise in')
     } else if (mode == 'redCard') {
+        console.log('redcard')
         document.getElementById("playerChoice-redCard").style.display = '';
         typeWord(title, 'Red Card Drawn')
 
@@ -299,8 +302,18 @@ function showPlayerChoicePopup(mode) {
 
         typeWord(title, 'Red Card Drawn + Cat Activated')
         typeWord(content_info, 'Choose an extra space to make noise in')
-    }
+    } else if (mode == 'clearCanvas') {
+        document.getElementById("playerChoice-clearCanvas").style.display = '';
+        typeWord(title, 'Clear All Drawings?')
 
+        popup.style.color = 'white'
+        popup.style.border = '2px solid white'
+
+        let content_info = document.getElementById("playerChoice-clearCanvas-content")
+        content_info.innerHTML = ''
+
+        typeWord(content_info, 'Clear All Drawings?')
+    }
     popup.classList.add('notification-displayed')
 }
 
@@ -446,6 +459,13 @@ function attack(isAttacking) {
     hidePlayerChoicePopup();
 }
 
+function confirmClear(isClearing) {
+    if (isClearing) {
+        eraseCanvas();
+    }
+    hidePlayerChoicePopup();
+}
+
 function renderPlayerHand() {
     let hand = document.getElementById("cards")
     hand.replaceChildren()
@@ -472,7 +492,7 @@ function cardClick(card) {
         showNotification('It\'s not your turn!', 'Error')
         return
     }
-    if([ClickModes.CatGreen, ClickModes.CatRed, ClickModes.Noise, ClickModes.Spotlight].includes(clickMode)){
+    if ([ClickModes.CatGreen, ClickModes.CatRed, ClickModes.Noise, ClickModes.Spotlight].includes(clickMode)) {
         showNotification("Finish what you're doing first!", "Error")
         return;
     }
@@ -673,9 +693,9 @@ function initializeEventLog(players) {
     }
 
     let previousEventLog = window.localStorage.getItem('efaios-eventlog')
-    if(previousEventLog){
+    if (previousEventLog) {
         let eventLog = JSON.parse(previousEventLog);
-        for(let e of eventLog){
+        for (let e of eventLog) {
             addEvent(e.playerName, e.description)
         }
     }
@@ -708,13 +728,13 @@ function addEvent(playerName, event) {
     eventLogContainer.appendChild(eventDesc)
 }
 
-async function saveEventToLocalStorage(playerName, eventDescription){
+async function saveEventToLocalStorage(playerName, eventDescription) {
     let localStorageLog = window.localStorage.getItem("efaios-eventlog")
     let eventLog = []
-    if(localStorageLog){
+    if (localStorageLog) {
         eventLog = JSON.parse(localStorageLog)
     }
-    eventLog.push({playerName: playerName, description: eventDescription})
+    eventLog.push({ playerName: playerName, description: eventDescription })
     window.localStorage.setItem('efaios-eventlog', JSON.stringify(eventLog))
 }
 

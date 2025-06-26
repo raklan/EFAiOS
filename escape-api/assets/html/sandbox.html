@@ -1,153 +1,57 @@
 {{define "styling"}}
 <style>
-
 </style>
+<link rel="stylesheet" href="/assets/stylesheets/painter.css">
 {{end}}
 
 {{define "body"}}
-<div id="container" style="background-color: white;">
-    <canvas id="can" width="400" height="400" style="position:absolute;top:10%;left:10%;border:2px solid;"></canvas>
-    <div style="position:absolute;top:12%;left:43%;">Choose Color</div>
-    <div style="position:absolute;top:15%;left:45%;width:10px;height:10px;background:green;" id="green"
-        onclick="color(this)"></div>
-    <div style="position:absolute;top:15%;left:46%;width:10px;height:10px;background:blue;" id="blue"
-        onclick="color(this)"></div>
-    <div style="position:absolute;top:15%;left:47%;width:10px;height:10px;background:red;" id="red"
-        onclick="color(this)"></div>
-    <div style="position:absolute;top:17%;left:45%;width:10px;height:10px;background:yellow;" id="yellow"
-        onclick="color(this)"></div>
-    <div style="position:absolute;top:17%;left:46%;width:10px;height:10px;background:orange;" id="orange"
-        onclick="color(this)"></div>
-    <div style="position:absolute;top:17%;left:47%;width:10px;height:10px;background:black;" id="black"
-        onclick="color(this)"></div>
-    <div style="position:absolute;top:20%;left:43%;">Eraser</div>
-    <div style="position:absolute;top:22%;left:45%;width:15px;height:15px;background:white;border:2px solid;" id="white"
-        onclick="color(this)"></div>
-    <img id="canvasimg" style="position:absolute;top:10%;left:52%;" style="display:none;">
-    <input type="button" value="save" id="btn" size="30" onclick="save()" style="position:absolute;top:55%;left:10%;">
-    <input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:55%;left:15%;">
+<div id="container">
+    <canvas id="can" style="border:2px solid;"></canvas>
+    <div id="paint-controls">
+        <div id="paint-palatte">
+            <div style="grid-column: span 3; justify-self: center;">Choose Color</div>
+            <div class="color-picker" style="background:green;" id="green" onclick="color(this)"></div>
+            <div class="color-picker" style="background:deepskyblue;" id="deepskyblue" onclick="color(this)"></div>
+            <div class="color-picker" style="background:red;" id="red" onclick="color(this)"></div>
+            <div class="color-picker" style="background:yellow;" id="yellow" onclick="color(this)"></div>
+            <div class="color-picker" style="background:orange;" id="orange" onclick="color(this)"></div>
+            <div class="color-picker" style="background:hotpink;" id="hotpink" onclick="color(this)"></div>
+            <div class="color-picker" id="white" onclick="color(this)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eraser"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293z" />
+                </svg>
+            </div>
+            <div value="clear" style="cursor: pointer; justify-self: center; grid-column: 3;" id="clr" size="23"
+                onclick="erase()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                </svg>
+            </div>
+        </div>
+        <div id="paint-toggle" title="Open Paint Tray" onclick="togglePaint()">
+            <svg id="paint-toggle-pencil" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
+                class="bi bi-pencil" viewBox="0 0 16 16">
+                <path
+                    d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
+            </svg>
+            <svg id="paint-toggle-close" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="48"
+                height="48" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                <path
+                    d="M14 4.577v6.846L8 15l-6-3.577V4.577L8 1zM8.5.134a1 1 0 0 0-1 0l-6 3.577a1 1 0 0 0-.5.866v6.846a1 1 0 0 0 .5.866l6 3.577a1 1 0 0 0 1 0l6-3.577a1 1 0 0 0 .5-.866V4.577a1 1 0 0 0-.5-.866z" />
+            </svg>
+        </div>
+    </div>
 </div>
 {{end}}
 
 {{define "scripts"}}
 <script src="/assets/js/utils.js"></script>
+<script src="/assets/js/painter.js"></script>
 <script>
-    var canvas, ctx, flag = false,
-        prevX = 0,
-        currX = 0,
-        prevY = 0,
-        currY = 0,
-        dot_flag = false;
-
-    var x = "black",
-        y = 2;
-    
-    function init() {
-        canvas = document.getElementById('can');
-        ctx = canvas.getContext("2d");
-        w = canvas.width;
-        h = canvas.height;
-    
-        canvas.addEventListener("mousemove", function (e) {
-            findxy('move', e)
-        }, false);
-        canvas.addEventListener("mousedown", function (e) {
-            findxy('down', e)
-        }, false);
-        canvas.addEventListener("mouseup", function (e) {
-            findxy('up', e)
-        }, false);
-        canvas.addEventListener("mouseout", function (e) {
-            findxy('out', e)
-        }, false);
-    }
-    
-    function color(obj) {
-        console.log('picking color')
-        switch (obj.id) {
-            case "green":
-                x = "green";
-                break;
-            case "blue":
-                x = "blue";
-                break;
-            case "red":
-                x = "red";
-                break;
-            case "yellow":
-                x = "yellow";
-                break;
-            case "orange":
-                x = "orange";
-                break;
-            case "black":
-                x = "black";
-                break;
-            case "white":
-                x = "rgb(0,0,0,0.5)";
-                break;
-        }
-        if (x == "white") y = 14;
-        else y = 2;
-        console.log(x)
-    }
-    
-    function draw() {
-        ctx.beginPath();
-        ctx.moveTo(prevX, prevY);
-        ctx.lineTo(currX, currY);
-        ctx.strokeStyle = x;
-        ctx.lineWidth = y;
-        ctx.stroke();
-        ctx.closePath();
-    }
-    
-    function erase() {
-        var m = confirm("Want to clear");
-        if (m) {
-            ctx.clearRect(0, 0, w, h);
-            document.getElementById("canvasimg").style.display = "none";
-        }
-    }
-    
-    function save() {
-        document.getElementById("canvasimg").style.border = "2px solid";
-        var dataURL = canvas.toDataURL();
-        document.getElementById("canvasimg").src = dataURL;
-        document.getElementById("canvasimg").style.display = "inline";
-    }
-    
-    function findxy(res, e) {
-        if (res == 'down') {
-            prevX = currX;
-            prevY = currY;
-            currX = e.clientX - canvas.offsetLeft;
-            currY = e.clientY - canvas.offsetTop;
-    
-            flag = true;
-            dot_flag = true;
-            if (dot_flag) {
-                ctx.beginPath();
-                ctx.fillStyle = x;
-                ctx.fillRect(currX, currY, 2, 2);
-                ctx.closePath();
-                dot_flag = false;
-            }
-        }
-        if (res == 'up' || res == "out") {
-            flag = false;
-        }
-        if (res == 'move') {
-            if (flag) {
-                prevX = currX;
-                prevY = currY;
-                currX = e.clientX - canvas.offsetLeft;
-                currY = e.clientY - canvas.offsetTop;
-                draw();
-            }
-        }
-    }
-
-    init();
-    </script>
+    initializeCanvas();
+</script>
 {{end}}
