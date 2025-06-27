@@ -1,9 +1,7 @@
 var MAP = null
 
-function createGrid(rows, columns, windowWidthDenominator) {
-    const byMap = 700/(columns * 0.5 + rows * 0.5);
-    const byWindow = window.innerWidth/windowWidthDenominator;
-    let radius = Math.min(byMap, byWindow)
+function createGrid(rows, columns) {
+    let radius = Math.min(window.innerWidth * 0.45 / columns, window.innerHeight * 0.45 / rows)
     var grid = document.getElementById("gridParent");
 
     var createSVG = function (tag) {

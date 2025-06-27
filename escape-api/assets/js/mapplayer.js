@@ -102,7 +102,7 @@ function drawMap(map) {
     if (map) {
         MAP = map;
         clearGrid();
-        createGrid(MAP.rows, MAP.cols, 35);
+        createGrid(MAP.rows, MAP.cols);
         drawMapOnPage();
     } else {
         console.error("No map given")

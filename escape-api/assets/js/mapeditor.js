@@ -99,7 +99,7 @@ function rebuildGrid() {
     columns = parseInt(document.getElementById('columns').value),
     rows = parseInt(document.getElementById('rows').value);    
     clearGrid();
-    createGrid(rows, columns, 50);
+    createGrid(rows, columns);
 };
 
 function setTool(newTool){
