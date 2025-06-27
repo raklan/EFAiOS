@@ -267,11 +267,11 @@ func (c Spotlight) Play(gameState *GameState, details CardPlayDetails) string {
 
 	for spaceKey := range adjacentSpaces {
 		for i, player := range gameState.Players {
-			if gameState.Players[i].SubtractStatusEffect(StatusEffect_Invisible) {
-				continue
-			}
 			playerSpace := GetMapKey(player.Row, player.Col)
 			if spaceKey == playerSpace {
+				if gameState.Players[i].SubtractStatusEffect(StatusEffect_Invisible) {
+					continue
+				}
 				seenPlayers = append(seenPlayers, player)
 			}
 		}
@@ -279,12 +279,12 @@ func (c Spotlight) Play(gameState *GameState, details CardPlayDetails) string {
 
 	//Check space spotlight was played on as well
 	for i, player := range gameState.Players {
-		if gameState.Players[i].SubtractStatusEffect(StatusEffect_Invisible) {
-			continue
-		}
 		playerSpace := GetMapKey(player.Row, player.Col)
 		spaceKey := GetMapKey(details.TargetRow, details.TargetCol)
 		if spaceKey == playerSpace {
+			if gameState.Players[i].SubtractStatusEffect(StatusEffect_Invisible) {
+				continue
+			}
 			seenPlayers = append(seenPlayers, player)
 		}
 	}

@@ -6,15 +6,15 @@
     <p>Each player's identity and position is kept secret; You will need to interpret their movement and behaviour to
         discover who and what they really are!</p>
     <ul>
-        <li>Each Human player acts alone, trying to be the first to reach one of the Escape Pods</li>
-        <li>The Aliens must work together to intercept the Humans before they reach an Escape Pod</li>
+        <li>Each <span style="color: deepskyblue">Human</span> player acts alone, trying to be the first to reach one of the Escape Pods</li>
+        <li>The <span style="color: red">Aliens</span> must work together to intercept the <span style="color: deepskyblue">Humans</span> before they reach an Escape Pod</li>
     </ul>
     <p>At the beginning of the game you don't know what side the other players are on! You will need to deduce their
         identity by watching their actions.</p>
 
     <h1>The Map</h1>
     <p>Each game will take place on one of the maps available <a href="/maps">here</a>. A grid of hexagons has been
-        place to control movement. Each hexagon is called a <a href="/compendium/dictionary#sector">Sector</a> and every
+        placed to control movement. Each hexagon is called a <a href="/compendium/dictionary#sector">Sector</a> and every
         Sector is identified by a unique letter & number combination</p>
     <p>Sectors are colored differently based on what type of Sector they are, and each type will be explained in the
         below.</p>
@@ -27,8 +27,8 @@
         <li>Aliens move ONE or TWO sectors</li>
     </ul>
     <p>Your location is marked by a <span style="color: gold">Gold</span> sector. On your turn, your available moves
-        will be marked in a <span style="color: palegoldenrod">Lighter Yellow</span>. Unless otherwise noted, you can
-        never end your turn in the same sector your started in. YOU MUST MOVE EVERY ROUND</p>
+        will be outlined in <span style="color: gold">Gold</span> as well. Unless otherwise noted, you can
+        never end your turn in the same sector your started in. <span style="color: orange">YOU MUST MOVE EVERY ROUND</span></p>
 
     <h2>Types of Sectors</h2>
     <p>There are 5 different types of Sectors. After moving, the type of Sector you moved into determines what happens
@@ -95,13 +95,13 @@
         <li>You will not draw any cards this turn, regardless of what type of Sector you just moved into.</li>
         <li>It will be announced that you are attacking the Sector you just moved into.</li>
         <li>Any other players in that Sector are immediately killed, regardless of whether they are Human or Alien.</li>
-        <li>Dead players will respawn on their next turn as an Alien in an Alien Start Sector. (In the original, killed
-            Aliens are permanently dead but I've never played this way because I misunderstood the rules. This feature
-            will be implemented as an option in the future)</li>
-        <li>If an Alien kills a player, they will be given the <a
+        <li>Humans that are killed will respawn on their next turn as an Alien in an Alien Start Sector. Killed Aliens
+            are (by default) permanently killed and will become a Spectator. The Host has an option to change this,
+            instead letting killed Aliens respawn as well.</li>
+        <li>If an Alien kills a player, that Alien will be given the <a
                 href="/compendium/statusEffects#hyperphagic">Hyperphagic</a> Status Effect. This will allow you to move
             1 extra space every turn for the rest of the game. This bonus does not increase if an Alien kills multiple
-            Humans</li>
+            Humans.</li>
     </ol>
 
     <h1>Character Roles</h1>
@@ -114,7 +114,7 @@
     <h1>Escape Pods</h1>
     <p>When a Human player ends their turn in one of the Escape Pods, the following will happen:</p>
     <ol>
-        <li>That player will draw one of the Escape Pod cards to see if it's functional. The number of working vs.
+        <li>That player will draw one of the Escape Pod cards to see if it's functional. By default, there are 4 "Working Pod" cards and 1 "Broken Pod" card. The number of working vs.
             broken Escape Pod cards can be set by the Host before the game starts.</li>
         <li>If the pod is working, that player has successfully escaped! They will be removed from the board and the
             player will be placed on the Spectator team</li>
@@ -125,13 +125,17 @@
     </ol>
 
     <h1>The End of the Game</h1>
-    <p>The game ends after 40 turns (not currently implemented) of when there are no Human players remaining.</p>
+    <p>The game ends after 40 turns (by default - the Host can adjust this value) or when there are no Human players
+        remaining.</p>
     <ul>
         <li>Any Human that successfully escaped wins!</li>
         <li>The Aliens win if they kill the last Human on board.</li>
-        <li>If 40 turns have elapsed (not currently implemented), the ship runs out of air. Any remaining Humans suffocate and the Aliens win!</li>
+        <li>If the set number of turns have elapsed, the ship runs out of air. Any remaining Humans suffocate and the
+            Aliens win!</li>
     </ul>
 
-    <p>That should be everything! Above all, Remember: <span style="color: orange">This is a game of bluff and guile. You are very much encouraged to chat with the other players during the game, discussing strategies, making accusations, and ideally pretending to be part of the opposing team!</span></p>
+    <p>That should be everything! Above all, <span style="color: orange">Remember: This is a game of bluff and guile.
+            You are very much encouraged to chat with the other players during the game, discussing strategies, making
+            accusations, and ideally pretending to be part of the opposing team!</span></p>
 </div>
 {{end}}
