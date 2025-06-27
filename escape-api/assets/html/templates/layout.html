@@ -1,45 +1,54 @@
 {{define "layout"}}
-	<!doctype html>
-	<html>
+<!doctype html>
+<html>
 
-	<head>
-		<meta charset="utf-8">
-		<title>EFAiOS</title>
-		<link rel="stylesheet" href="/assets/stylesheets/main.css">
-		{{template "styling" .}}
-	</head>
+<head>
+	<meta charset="utf-8">
+	<title>EFAiOS</title>
+	<link rel="stylesheet" href="/assets/stylesheets/main.css">
+	{{template "styling" .}}
+</head>
 
-	<body style="display: flex; flex-direction: column;">
-		<header style="margin-bottom: 5%;">
-			<nav>
-				<a href="/">Home</a>
-				<a href="/mapeditor">Map Editor</a>
-				<a href="/maps">Maps</a>
-				<a href="/compendium">Compendium</a>
-				<a href="https://github.com/raklan/EFAiOS/issues/new" target="_blank">Report a Bug</a>
-			</nav>
-		</header>
-		<!--IMPORTANT: The '.' sends the data passed in during execution of this template to the nested template being executed into these-->
-		{{template "body" .}}
-	</body>
-	{{template "scripts" .}}
+<body style="display: flex; flex-direction: column;">
+	<div id="notification-popup" class="notification-popup">
+		<div id="notification-header" style="display: flex; justify-content: center;">
+			<span style="font-weight: bold; font-size: large" id="notification-title">Alert</span>
+			<span style="font-size: 20px; cursor: pointer; position: absolute; right: 5%; top: 5%"
+				onclick="hideNotification()">&times;</span>
+		</div>
+		<div id="notification-content"></div>
+	</div>
+	<header style="margin-bottom: 5%;">
+		<nav>
+			<a href="/">Home</a>
+			<a href="/mapeditor">Map Editor</a>
+			<a href="/maps">Maps</a>
+			<a href="/compendium">Compendium</a>
+			<a href="https://github.com/raklan/EFAiOS/issues/new" target="_blank">Report a Bug</a>
+		</nav>
+	</header>
+	<!--IMPORTANT: The '.' sends the data passed in during execution of this template to the nested template being executed into these-->
+	{{template "body" .}}
+</body>
+{{template "scripts" .}}
 
-	<script>
-		//On page load, give every button on the page some fun glitchy text for the hover effect. This attribute is then used to set the content of the after pseudo-element of each button
-		const glitchTextOptions = [
-			'RUN',
-			'HIDE',
-			'QUIET',
-			'ESCAPE',
-			'DEATH',
-			'MONSTERS',
-			'KILL',			
-		]
-		let buttons = document.querySelectorAll("button")
+<script>
+	//On page load, give every button on the page some fun glitchy text for the hover effect. This attribute is then used to set the content of the after pseudo-element of each button
+	const glitchTextOptions = [
+		'RUN',
+		'HIDE',
+		'QUIET',
+		'ESCAPE',
+		'DEATH',
+		'MONSTERS',
+		'KILL',
+	]
+	let buttons = document.querySelectorAll("button")
 
-		for(let button of buttons){
-			button.setAttribute("glitch-text", glitchTextOptions[Math.floor(Math.random() * glitchTextOptions.length)])
-		}
-	</script>
-	</html>
+	for (let button of buttons) {
+		button.setAttribute("glitch-text", glitchTextOptions[Math.floor(Math.random() * glitchTextOptions.length)])
+	}
+</script>
+
+</html>
 {{end}}

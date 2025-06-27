@@ -1,26 +1,3 @@
-.notification-popup {
-    position: fixed;
-    top: 0;
-    left: 25%;
-    width: 50%;
-    background-color: black;
-    z-index: 5000;
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    border: 2px solid white;
-    text-align: center;
-    transform: translateY(-100%);
-    transition: all 0.5s ease-in-out;
-    opacity: 0;
-}
-
-.notification-displayed {
-    transform: translateY(25%);
-    transition: all 0.5s ease-in-out;
-    opacity: 1;
-}
-
 #cards {
     position: fixed;
     bottom: -150px;

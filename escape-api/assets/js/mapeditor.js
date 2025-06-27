@@ -17,13 +17,12 @@ const DANGER_TOOL = 'Dangerous Sector';
 const HUMAN_TOOL = 'Human Start';
 const ALIEN_TOOL = 'Alien Start';
 
-var currentTool = 'None';
-
+var currentTool = DANGER_TOOL;
 
 var cssClass = 'hexfield';//If you change this, change it in hexClick() too
 
-function drawMapOnPage(){
-    if(!MAP){
+function drawMapOnPage() {
+    if (!MAP) {
         return;
     }
 
@@ -33,9 +32,9 @@ function drawMapOnPage(){
     document.getElementById('description').value = MAP.description;
     Object.values(MAP.spaces).forEach(space => {
         var el = document.getElementById(`hex-${space.col}-${space.row}`)
-        if(el){
+        if (el) {
             var spaceClass = 'safe'
-            switch (space.type){
+            switch (space.type) {
                 case SpaceTypes.Wall: spaceClass = 'wall'; break;
                 case SpaceTypes.Safe: spaceClass = 'safe'; break;
                 case SpaceTypes.Pod: spaceClass = 'pod'; break;
@@ -48,7 +47,7 @@ function drawMapOnPage(){
             el.setAttribute('hex-type', space.type);
 
             el.nextElementSibling.setAttribute('fill', 'black')
-            if(spaceClass == 'wall'){
+            if (spaceClass == 'wall') {
                 el.nextElementSibling.setAttribute('fill', 'white')
             }
         }
@@ -57,9 +56,8 @@ function drawMapOnPage(){
 
 function hexClick(event) {
     event.target.classList = [cssClass]
-    event.target.removeAttribute('hex-type')
     event.target.nextElementSibling.setAttribute('fill', 'black')
-    switch(currentTool){
+    switch (currentTool) {
         case WALL_TOOL:
             event.target.classList.add('wall');
             event.target.setAttribute('hex-type', SpaceTypes.Wall);
@@ -85,8 +83,9 @@ function hexClick(event) {
             event.target.classList.add('humanstart')
             event.target.setAttribute('hex-type', SpaceTypes.HumanStart);
             break;
+        default:
+            break;
     }
-    event.target.classList.add('hexfield')
 }
 
 function clearGrid() {
@@ -96,31 +95,31 @@ function clearGrid() {
 
 function rebuildGrid() {
     var
-    columns = parseInt(document.getElementById('columns').value),
-    rows = parseInt(document.getElementById('rows').value);    
+        columns = parseInt(document.getElementById('columns').value),
+        rows = parseInt(document.getElementById('rows').value);
     clearGrid();
     createGrid(rows, columns);
 };
 
-function setTool(newTool){
+function setTool(newTool) {
     currentTool = newTool;
     document.getElementById("current-tool").innerText = `Current Tool: ${newTool}`;
 }
 
-async function initializePage(){
+async function initializePage() {
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has("id")){
+    if (urlParams.has("id")) {
         var map = await loadMap(urlParams.get("id"));
         MAP = map;
         createGrid(map.rows, map.cols, 50);
         drawMapOnPage();
         setConfigFormFromObject(map.gameConfig);
-    }else{
+    } else {
         rebuildGrid();
     }
 }
 
-async function exportMap(){
+async function exportMap() {
     var map = {
         id: MAP?.id ?? '',
         spaces: {},
@@ -132,29 +131,56 @@ async function exportMap(){
     };
     var polycontainer = document.getElementById("polycontainer")
 
-    for(child of polycontainer.children){
+    for (child of polycontainer.children) {
         var row = child.getAttribute('hex-row')
-            col = child.getAttribute('hex-column')
-            type = child.getAttribute('hex-type')
-        map.spaces[`${col}-${row}`] = {
-            row: parseInt(row),
-            col: col,
-            type: parseInt(type)
+        col = child.getAttribute('hex-column')
+        type = child.getAttribute('hex-type')
+        if(row && col){
+            map.spaces[`${col}-${row}`] = {
+                row: parseInt(row),
+                col: col,
+                type: parseInt(type)
+            }
         }
+    }
+
+    if (!validateMap(map)) {
+        return;
     }
 
     fetch('/api/map', {
         method: "POST",
         body: JSON.stringify(map)
-    }).then(resp => resp.json()).then(apiObj => console.log(apiObj))
+    }).then(resp => resp.json()).then(apiObj => showNotification(`Map \"${apiObj.name}\" saved`, 'Success'))
 }
 
-async function loadMap(id){
+function validateMap(map) {
+    let keys = Object.keys(map.spaces)
+    if(!keys.some(key => map.spaces[key].type == SpaceTypes.Pod)){
+        showNotification("Map must have at least 1 Escape Pod", "Error")
+        return false;
+    }
+    if(!keys.some(key => map.spaces[key].type == SpaceTypes.HumanStart)){
+        showNotification("Map must have at least 1 Human Start", "Error")
+        return false;
+    }
+    if(!keys.some(key => map.spaces[key].type == SpaceTypes.AlienStart)){
+        showNotification("Map must have at least 1 Alien Start", "Error")
+        return false
+    }
+    if(!map.name?.length > 0){
+        showNotification("Map must be given a Name", "Error")
+        return false;
+    }
+    return true
+}
+
+async function loadMap(id) {
     var map = null;
     await fetch(`/api/map?id=${id}`)
-    .then(resp => resp.json())
-    .then(apiObj => {
-        map = apiObj;
-    })
+        .then(resp => resp.json())
+        .then(apiObj => {
+            map = apiObj;
+        })
     return map;
 }
