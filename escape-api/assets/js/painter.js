@@ -8,13 +8,13 @@ var canvas, ctx, flag = false,
 let isPainting = false;
 
 var selectedColor = "green",
-    strokeWidth= 2;
+    strokeWidth = 2;
 
 function initializeCanvas() {
     console.log('initializing canvas')
     canvas = document.getElementById('can');
     ctx = canvas.getContext("2d");
-    resizeCanvasToDisplaySize(canvas);
+    resizeCanvasToDisplaySize(canvas, document.getElementById("gridParent"));
     canvas.style.pointerEvents = 'none';
     w = canvas.width;
     h = canvas.height;
@@ -31,6 +31,19 @@ function initializeCanvas() {
     canvas.addEventListener("mouseout", function (e) {
         findxy('out', e)
     }, false);
+
+    canvas.addEventListener("touchmove", function (e) {
+        findxy('move', e)
+    }, false);
+    canvas.addEventListener("touchstart", function (e) {
+        findxy('down', e)
+    }, false);
+    canvas.addEventListener("touchend", function (e) {
+        findxy('up', e)
+    }, false);
+    canvas.addEventListener("touchcancel", function (e) {
+        findxy('up', e)
+    }, false);
 }
 
 function color(obj) {
@@ -39,11 +52,11 @@ function color(obj) {
     obj.classList.add('selected')
 }
 
-function updateStrokeWidth(control){
+function updateStrokeWidth(control) {
     strokeWidth = control.value
 }
 
-function colorPicker(control){
+function colorPicker(control) {
     control.setAttribute('color-value', control.value)
     control.style.setProperty('--color-input-bg', control.value)
     color(control)
@@ -61,7 +74,7 @@ function draw() {
     ctx.moveTo(prevX, prevY);
     ctx.lineTo(currX, currY);
     ctx.stroke();
-    ctx.arc(prevX, prevY, strokeWidth/2, 0, Math.PI * 2, false);    
+    ctx.arc(prevX, prevY, strokeWidth / 2, 0, Math.PI * 2, false);
     ctx.fill();
     ctx.closePath();
 }
@@ -72,10 +85,16 @@ function eraseCanvas() {
 
 function findxy(res, e) {
     if (res == 'down') {
+
+        let clientX, clientY;
+
+        clientX = e.clientX ? e.clientX : e.targetTouches[0].clientX;
+        clientY = e.clientY ? e.clientY : e.targetTouches[0].clientY;
+
         prevX = currX;
         prevY = currY;
-        currX = e.clientX - canvas.offsetLeft;
-        currY = e.clientY - canvas.offsetTop;
+        currX = clientX - canvas.offsetLeft;
+        currY = clientY - canvas.offsetTop;
 
         flag = true;
         dot_flag = true;
@@ -92,10 +111,15 @@ function findxy(res, e) {
     }
     if (res == 'move') {
         if (flag) {
+            let clientX, clientY;
+
+            clientX = e.clientX ? e.clientX : e.targetTouches[0].clientX;
+            clientY = e.clientY ? e.clientY : e.targetTouches[0].clientY;
+
             prevX = currX;
             prevY = currY;
-            currX = e.clientX - canvas.offsetLeft;
-            currY = e.clientY - canvas.offsetTop;
+            currX = clientX - canvas.offsetLeft;
+            currY = clientY - canvas.offsetTop;
             draw();
         }
     }
@@ -123,11 +147,14 @@ function togglePaint() {
     }
 }
 
-function resizeCanvasToDisplaySize(canvas) {
+function resizeCanvasToDisplaySize(canvas, sizeTo) {
     // look up the size the canvas is being displayed
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
+    const width = sizeTo.clientWidth;
+    const height = sizeTo.clientHeight;
     console.log('resizing canvas', canvas, width, height)
+
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
 
     // If it's resolution does not match change it
     if (canvas.width !== width || canvas.height !== height) {

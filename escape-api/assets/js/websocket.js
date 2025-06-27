@@ -160,6 +160,11 @@ async function handleGameStateMessage(gameState) {
         await fetch(`/api/role?name=${thisPlayer.role}`).then(resp => resp.json()).then(apiObj => {
             roleDescription = apiObj.roleDescription;
         })
+
+        window.onresize = (event) => {
+            drawMap(gameState.gameMap)
+            resizeCanvasToDisplaySize(document.getElementById("can"), document.getElementById("gridParent"))
+        }
     }
 
     document.querySelectorAll('.player').forEach(x => x.classList.remove('player'))
