@@ -4,8 +4,8 @@
     --space-pod: forestgreen;
     --space-pod-used: brown;
     --space-dangerous: gray;
-    --space-humanstart: deepskyblue;
-    --space-alienstart: rgb(255, 55, 55);
+    --space-humanstart: var(--human-color);
+    --space-alienstart: var(--alien-color);
     --space-selected: orange;
     --space-player: gold;
     --space-playerhuman: rgb(22, 116, 238);

@@ -6,15 +6,18 @@
     <p>Each player's identity and position is kept secret; You will need to interpret their movement and behaviour to
         discover who and what they really are!</p>
     <ul>
-        <li>Each <span style="color: deepskyblue">Human</span> player acts alone, trying to be the first to reach one of the Escape Pods</li>
-        <li>The <span style="color: red">Aliens</span> must work together to intercept the <span style="color: deepskyblue">Humans</span> before they reach an Escape Pod</li>
+        <li>Each <span class="human-text">Human</span> player acts alone, trying to be the first to reach one of the
+            Escape Pods</li>
+        <li>The <span class="alien-text">Aliens</span> must work together to intercept and kill the <span
+                class="human-text">Humans</span> before they reach an Escape Pod</li>
     </ul>
     <p>At the beginning of the game you don't know what side the other players are on! You will need to deduce their
         identity by watching their actions.</p>
 
     <h1>The Map</h1>
     <p>Each game will take place on one of the maps available <a href="/maps">here</a>. A grid of hexagons has been
-        placed to control movement. Each hexagon is called a <a href="/compendium/dictionary#sector">Sector</a> and every
+        placed to control movement. Each hexagon is called a <a href="/compendium/dictionary#sector">Sector</a> and
+        every
         Sector is identified by a unique letter & number combination</p>
     <p>Sectors are colored differently based on what type of Sector they are, and each type will be explained in the
         below.</p>
@@ -23,40 +26,48 @@
     <p>The game is played over a series of rounds. During each round, each player must move his or her character. Your
         character type determines the distance they can move:</p>
     <ul>
-        <li>Humans move only ONE sector</li>
-        <li>Aliens move ONE or TWO sectors</li>
+        <li><span class="human-text">Humans</span> move only <span style="color: orange">ONE</span> sector</li>
+        <li><span class="alien-text">Aliens</span> move <span style="color: orange">ONE or TWO</span> sectors</li>
     </ul>
     <p>Your location is marked by a <span style="color: gold">Gold</span> sector. On your turn, your available moves
         will be outlined in <span style="color: gold">Gold</span> as well. Unless otherwise noted, you can
-        never end your turn in the same sector your started in. <span style="color: orange">YOU MUST MOVE EVERY ROUND</span></p>
+        never end your turn in the same sector your started in. <span style="color: orange">YOU MUST MOVE EVERY
+            ROUND</span></p>
 
     <h2>Types of Sectors</h2>
     <p>There are 5 different types of Sectors. After moving, the type of Sector you moved into determines what happens
         next:</p>
 
-    <h3 style="color: white">Silent Sector</h3>
-    <p>Silent Sectors are marked in <span style="color: white">White</span>. If you move into a Silent Sector, you
+    <h3 style="color: white">Safe Sector</h3>
+    <p>Safe Sectors are marked in <span style="color: white">White</span>. If you move into a Safe Sector, you
         will make no noise.</p>
 
     <h3 style="color: grey">Dangerous Sector</h3>
     <p>Dangerous Sectors are marked in <span style="color: gray">Gray</span>. If you move into a Dangerous Sector, you
-        will draw a card. Depending on what card is drawn, you will make noise accordingly. This is explained more below
+        will draw a card. Depending on what card is drawn, you will make noise accordingly. This is explained more
+        below.
     </p>
 
-    <h3 style="color: deepskyblue">Human Sector</h3>
-    <p>Human Sectors are marked in <span style="color: deepskyblue">Blue</span>. This is where Human players start - if
-        there are multiple Human Sectors, Humans will be randomly placed in one of them at the beginning of the game.
+    <h3 class="human-text">Human Sector</h3>
+    <p>Human Sectors are marked in <span class="human-text">Blue</span>. This is where <span
+            class="human-text">Human</span> players start - if
+        there are multiple Human Sectors, <span class="human-text">Humans</span> will be randomly placed in one of them
+        at the beginning of the game.
         Players cannot move into or through these Sectors.
     </p>
 
-    <h3 style="color: red">Alien Sector</h3>
-    <p>Alien Sectors are marked in <span style="color: red">Red</span>. This is where Alien players start - if there are
-        multiple Alien Sectors, Aliens will be randomly placed in one of them at the beginning of the game. Players
+    <h3 class="alien-text">Alien Sector</h3>
+    <p>Alien Sectors are marked in <span class="alien-text">Red</span>. This is where <span
+            class="alien-text">Alien</span> players start - if there are
+        multiple Alien Sectors, <span class="alien-text">Aliens</span> will be randomly placed in one of them at the
+        beginning of the game. Players
         cannot move into or through these Sectors.</p>
 
     <h3 style="color: forestgreen">Escape Pod Sectors</h3>
-    <p>Escape Pods are marked in <span style="color: forestgreen">Green</span>. Humans must end their turn in one of
-        these Sectors to win. Only Humans can move into these Sectors. These are explained more below.</p>
+    <p>Escape Pods are marked in <span style="color: forestgreen">Green</span>. <span class="human-text">Humans</span>
+        must end their turn in one of
+        these Sectors to win. Only <span class="human-text">Humans</span> can move into these Sectors. These are
+        explained more below.</p>
 
     <h2>Dangerous Sectors</h2>
     <p>If you move into a Dangerous Sector, you will draw a <a href="/compendium/cards">Card</a>. There are 4 main types
@@ -77,9 +88,12 @@
         </li>
         <li>
             <h4 style="color: white">White "Item" Cards</h4>
-            <p>If you draw an Item card, you will avoid making any noise that turn and if you're a Human, add that Item
+            <p>If you draw an Item card, you will avoid making any noise that turn. Additionally, if you're a <span
+                    class="human-text">Human</span>, you will add that Item
                 to your hand, which
-                is shown at the bottom of the screen. Alien Players cannot receive Item cards. For an explanation of
+                is shown at the bottom of the screen. Cards can be used at any point on your turn after you've drawn
+                them, including <em>on</em> the turn you draw the Item. <span class="alien-text">Alien</span> Players
+                cannot receive Item cards and will discard them. For an explanation of
                 what each Item card does, you can hover over
                 that card in your hand, or check out <a href="/compendium/cards#item-cards">the Card page in the
                     Compendium</a>.</p>
@@ -88,20 +102,26 @@
     <p>In any game, before it starts, the Host can adjust how many of each card is active in the game.</p>
 
     <h2>Attacking</h2>
-    <p>Alien Players may decide to attack at the end of his or her turn. After moving, you will be asked if you'd like
+    <p><span class="alien-text">Alien</span> Players may decide to attack at the end of his or her turn. After moving,
+        you will be asked if you'd like
         to attack the Sector you just moved into. If you select "No", your turn will continue as normal. If you select
         "Yes", the following will happen:</p>
     <ol>
         <li>You will not draw any cards this turn, regardless of what type of Sector you just moved into.</li>
         <li>It will be announced that you are attacking the Sector you just moved into.</li>
-        <li>Any other players in that Sector are immediately killed, regardless of whether they are Human or Alien.</li>
-        <li>Humans that are killed will respawn on their next turn as an Alien in an Alien Start Sector. Killed Aliens
+        <li>Any other players in that Sector are immediately killed, <span style="color: orange">regardless of whether
+                they are Human or Alien.</span></li>
+        <li><span class="human-text">Humans</span> that are killed will respawn on their next turn as an <span
+                class="alien-text">Alien</span> in an Alien Start Sector. Killed <span class="alien-text">Aliens</span>
             are (by default) permanently killed and will become a Spectator. The Host has an option to change this,
-            instead letting killed Aliens respawn as well.</li>
-        <li>If an Alien kills a player, that Alien will be given the <a
+            instead letting killed <span class="alien-text">Aliens</span> respawn as well.</li>
+        <li>If an <span class="alien-text">Alien</span> kills a <span class="human-text">Human</span>, that <span
+                class="alien-text">Alien</span> will be given the <a
                 href="/compendium/statusEffects#hyperphagic">Hyperphagic</a> Status Effect. This will allow you to move
-            1 extra space every turn for the rest of the game. This bonus does not increase if an Alien kills multiple
-            Humans.</li>
+            1 extra space every turn for the rest of the game. This bonus does not increase if an <span
+                class="alien-text">Alien</span> kills multiple
+            <span class="human-text">Humans</span>.
+        </li>
     </ol>
 
     <h1>Character Roles</h1>
@@ -112,9 +132,11 @@
     <p>For an explanation of each role, see <a href="/compendium/roles">that page in the Compendium</a></p>
 
     <h1>Escape Pods</h1>
-    <p>When a Human player ends their turn in one of the Escape Pods, the following will happen:</p>
+    <p>When a <span class="human-text">Human</span> player ends their turn in one of the Escape Pods, the following will
+        happen:</p>
     <ol>
-        <li>That player will draw one of the Escape Pod cards to see if it's functional. By default, there are 4 "Working Pod" cards and 1 "Broken Pod" card. The number of working vs.
+        <li>That player will draw one of the Escape Pod cards to see if it's functional. By default, there are 4
+            "Working Pod" cards and 1 "Broken Pod" card. The number of working vs.
             broken Escape Pod cards can be set by the Host before the game starts.</li>
         <li>If the pod is working, that player has successfully escaped! They will be removed from the board and the
             player will be placed on the Spectator team</li>
@@ -128,10 +150,13 @@
     <p>The game ends after 40 turns (by default - the Host can adjust this value) or when there are no Human players
         remaining.</p>
     <ul>
-        <li>Any Human that successfully escaped wins!</li>
-        <li>The Aliens win if they kill the last Human on board.</li>
-        <li>If the set number of turns have elapsed, the ship runs out of air. Any remaining Humans suffocate and the
-            Aliens win!</li>
+        <li>Any <span class="human-text">Human</span> that successfully escaped wins!</li>
+        <li>The <span class="alien-text">Aliens</span> win if they kill the last <span class="human-text">Human</span>
+            on board.</li>
+        <li>If the set number of turns have elapsed, the ship runs out of air. Any remaining <span
+                class="human-text">Humans</span> suffocate and the
+            <span class="alien-text">Aliens</span> win!
+        </li>
     </ul>
 
     <p>That should be everything! Above all, <span style="color: orange">Remember: This is a game of bluff and guile.

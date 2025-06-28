@@ -1,176 +1,184 @@
+:root {
+  --human-color: deepskyblue;
+  --alien-color: rgb(255, 55, 55);
+  --button-color: lime;
+}
+
 body {
-    background-color: black;
-    color: lime;
-    font-family: 'Courier New', Courier, monospace;
-    --button-color: lime;
+  background-color: black;
+  color: lime;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 a {
-    color: inherit;
-    cursor: pointer;
+  color: inherit;
+  cursor: pointer;
 }
+
 a:hover {
-    color: rgb(1, 145, 1);
+  color: rgb(1, 145, 1);
 }
 
-/* Inspired by component on Uiverse.io by 212004ALJI */ 
-button,button::after {
-    font-family: inherit;
-    padding: 10px 50px;
-    font-size: 20px;
-    border: none;
-    border-radius: 5px;
-    color: var(--button-color);
-    background-color: transparent;
-    position: relative;
-    border: 1px solid transparent;
-  }
-  
-  button::after {
-    --move1: inset(50% 50% 50% 50%);
-    --move2: inset(31% 0 40% 0);
-    --move3: inset(39% 0 15% 0);
-    --move4: inset(45% 0 40% 0);
-    --move5: inset(45% 0 6% 0);
-    --move6: inset(14% 0 61% 0);
+/* Inspired by component on Uiverse.io by 212004ALJI */
+button,
+button::after {
+  font-family: inherit;
+  padding: 10px 50px;
+  font-size: 20px;
+  border: none;
+  border-radius: 5px;
+  color: var(--button-color);
+  background-color: transparent;
+  position: relative;
+  border: 1px solid transparent;
+}
+
+button::after {
+  --move1: inset(50% 50% 50% 50%);
+  --move2: inset(31% 0 40% 0);
+  --move3: inset(39% 0 15% 0);
+  --move4: inset(45% 0 40% 0);
+  --move5: inset(45% 0 6% 0);
+  --move6: inset(14% 0 61% 0);
+  clip-path: var(--move1);
+  content: attr(glitch-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+button:hover::after {
+  animation: glitch_4011 1s;
+  text-shadow: 10 10px 10px rgb(255, 0, 0);
+  animation-timing-function: steps(2, end);
+  /* text-shadow: -3px -3px 0px #24f21d, 3px 3px 0px #27c200; */
+  text-shadow: -3px -3px 0px var(--button-color), 3px 3px 0px var(--button-color);
+  background-color: transparent;
+  border: 3px dotted var(--button-color);
+}
+
+button:hover {
+  text-shadow: -1px -1px 0px var(--button-color), 1px 1px 0px var(--button-color);
+}
+
+button:hover {
+  background-color: transparent;
+  border: 1px dotted var(--button-color);
+  /* box-shadow: 0px 10px 10px -10px rgb(0, 141, 0); */
+  box-shadow: 0px 10px 10px -10px var(--button-color);
+  padding: 9px 49px;
+}
+
+@keyframes glitch_4011 {
+  0% {
     clip-path: var(--move1);
-    content: attr(glitch-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-  
-  button:hover::after {
-    animation: glitch_4011 1s;
-    text-shadow: 10 10px 10px rgb(255, 0, 0);
-    animation-timing-function: steps(2, end);
-    /* text-shadow: -3px -3px 0px #24f21d, 3px 3px 0px #27c200; */
-    text-shadow: -3px -3px 0px var(--button-color), 3px 3px 0px var(--button-color);
-    background-color: transparent;
-    border: 3px dotted var(--button-color);
-  }
-  
-  button:hover {
-    text-shadow: -1px -1px 0px var(--button-color), 1px 1px 0px var(--button-color);
-  }
-  
-  button:hover {
-    background-color: transparent;
-    border: 1px dotted var(--button-color);
-    /* box-shadow: 0px 10px 10px -10px rgb(0, 141, 0); */
-    box-shadow: 0px 10px 10px -10px var(--button-color);
-    padding: 9px 49px;
-  }
-  
-  @keyframes glitch_4011 {
-    0% {
-      clip-path: var(--move1);
-      transform: translate(0px,-10px);
-    }
-  
-    10% {
-      clip-path: var(--move2);
-      transform: translate(-10px,10px);
-    }
-  
-    20% {
-      clip-path: var(--move3);
-      transform: translate(10px,0px);
-    }
-  
-    30% {
-      clip-path: var(--move4);
-      transform: translate(-10px,10px);
-    }
-  
-    40% {
-      clip-path: var(--move5);
-      transform: translate(10px,-10px);
-    }
-  
-    50% {
-      clip-path: var(--move6);
-      transform: translate(-10px,10px);
-    }
-  
-    60% {
-      clip-path: var(--move1);
-      transform: translate(10px,-10px);
-    }
-  
-    70% {
-      clip-path: var(--move3);
-      transform: translate(-10px,10px);
-    }
-  
-    80% {
-      clip-path: var(--move2);
-      transform: translate(10px,-10px);
-    }
-  
-    90% {
-      clip-path: var(--move4);
-      transform: translate(-10px,10px);
-    }
-  
-    100% {
-      clip-path: var(--move1);
-      transform: translate(0);
-    }
+    transform: translate(0px, -10px);
   }
 
-  button:active {
-    transform: scale(0.95);
-   }
+  10% {
+    clip-path: var(--move2);
+    transform: translate(-10px, 10px);
+  }
 
-   /* From Uiverse.io by Cornerstone-04 */ 
+  20% {
+    clip-path: var(--move3);
+    transform: translate(10px, 0px);
+  }
+
+  30% {
+    clip-path: var(--move4);
+    transform: translate(-10px, 10px);
+  }
+
+  40% {
+    clip-path: var(--move5);
+    transform: translate(10px, -10px);
+  }
+
+  50% {
+    clip-path: var(--move6);
+    transform: translate(-10px, 10px);
+  }
+
+  60% {
+    clip-path: var(--move1);
+    transform: translate(10px, -10px);
+  }
+
+  70% {
+    clip-path: var(--move3);
+    transform: translate(-10px, 10px);
+  }
+
+  80% {
+    clip-path: var(--move2);
+    transform: translate(10px, -10px);
+  }
+
+  90% {
+    clip-path: var(--move4);
+    transform: translate(-10px, 10px);
+  }
+
+  100% {
+    clip-path: var(--move1);
+    transform: translate(0);
+  }
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+/* From Uiverse.io by Cornerstone-04 */
 .text-input {
+  color: rgb(0, 179, 0);
+  max-width: 190px;
+  height: 30px;
+  border: 2px solid transparent;
+  outline: none;
+  border: 1px solid transparent;
+  border-bottom: 1px solid #3f3f3f;
+  caret-color: #3f3f3f;
+  background-color: transparent;
+  padding: 5px;
+  transition: .25s linear;
+  font-family: inherit;
+  letter-spacing: 1px;
+  margin: 1%;
+}
+
+.text-input:focus {
+  border: 1px dashed lime;
+  caret-color: lime;
+  color: lime;
+}
+
+.text-input:focus::placeholder {
+  color: lime;
+}
+
+.text-input-label {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  max-width: 240px;
+
+  span {
     color: rgb(0, 179, 0);
-    max-width: 190px;
-    height: 30px;
-    border: 2px solid transparent;
-    outline: none;
-    border: 1px solid transparent;
-    border-bottom: 1px solid #3f3f3f;
-    caret-color: #3f3f3f;
-    background-color: transparent;
-    padding: 5px;
-    transition: .25s linear;
-    font-family: inherit;
-    letter-spacing: 1px;
-    margin: 1%;
-  }
-  
-  .text-input:focus {
-    border: 1px dashed lime;
-    caret-color: lime;
-    color: lime;
-  }
-  
-  .text-input:focus::placeholder {
-    color: lime;
-  }
-
-  .text-input-label{
-    display: flex;
-    flex-direction: column;
+    font-size: 0.75rem;
+    position: relative;
+    top: 0.5rem;
+    margin: 0 0 0 7px;
+    padding: 0 3px;
     width: fit-content;
-    max-width: 240px;
-    span{
-      color: rgb(0, 179, 0);
-      font-size: 0.75rem;
-      position: relative;
-      top: 0.5rem;
-      margin: 0 0 0 7px;
-      padding: 0 3px;
-      width: fit-content;
-      background: black;
-    }
+    background: black;
   }
+}
 
-  
+
 .checkbox-container {
   display: flex;
   align-items: center;
@@ -181,9 +189,9 @@ button,button::after {
 
   --checkmark-size: 1em;
   --border-color: #3f3f3f;
-  --checked-bg-color: lime; 
+  --checked-bg-color: lime;
   --checked-border-color: rgb(0, 179, 0);
-  --checkmark-color: black; 
+  --checkmark-color: black;
 }
 
 .checkbox-container input {
@@ -205,7 +213,7 @@ button,button::after {
     box-shadow 0.3s ease;
 }
 
-.checkbox-container input:checked + .checkmark {
+.checkbox-container input:checked+.checkmark {
   background-color: var(--checked-bg-color);
   border-color: var(--checked-border-color);
 }
@@ -225,7 +233,7 @@ button,button::after {
     transform 0.3s ease;
 }
 
-.checkbox-container input:checked + .checkmark::after {
+.checkbox-container input:checked+.checkmark::after {
   background-color: var(--checkmark-color);
   transform: scale(1);
   animation: checkmark-fade-in 0.3s ease forwards;
@@ -240,6 +248,7 @@ button,button::after {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.5);
   }
+
   100% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
@@ -247,24 +256,32 @@ button,button::after {
 }
 
 .notification-popup {
-    position: fixed;
-    top: 0;
-    left: 25%;
-    width: 50%;
-    background-color: black;
-    z-index: 5000;
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    border: 2px solid white;
-    text-align: center;
-    transform: translateY(-100%);
-    transition: all 0.5s ease-in-out;
-    opacity: 0;
+  position: fixed;
+  top: 0;
+  left: 25%;
+  width: 50%;
+  background-color: black;
+  z-index: 5000;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid white;
+  text-align: center;
+  transform: translateY(-100%);
+  transition: all 0.5s ease-in-out;
+  opacity: 0;
 }
 
 .notification-displayed {
-    transform: translateY(25%);
-    transition: all 0.5s ease-in-out;
-    opacity: 1;
+  transform: translateY(25%);
+  transition: all 0.5s ease-in-out;
+  opacity: 1;
+}
+
+.human-text{
+  color: var(--human-color);
+}
+
+.alien-text{
+  color: var(--alien-color);
 }
