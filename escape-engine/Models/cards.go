@@ -132,7 +132,7 @@ func NewAdrenaline() *Adrenaline {
 	return &Adrenaline{
 		CardBase: CardBase{
 			Name:        "Adrenaline",
-			Description: "Gives a rush of adrenaline, allowing one extra space of movement",
+			Description: "Gives the Adrenaline Rush Status Effect, allowing one extra space of movement on your next movement",
 			Type:        Card_White,
 		},
 	}
@@ -156,7 +156,7 @@ func NewMutation() *Mutation {
 	return &Mutation{
 		CardBase: CardBase{
 			Name:        "Mutation",
-			Description: "Turns the Player into an Alien!",
+			Description: "Turns you into an Alien!",
 			Type:        Card_White,
 		},
 	}
@@ -172,19 +172,23 @@ func (t Teleport) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
 	humanStarts := gameState.GameMap.GetSpacesOfType(Space_HumanStart)
-
 	toMoveTo := humanStarts[rand.Intn(len(humanStarts))]
+
+	if activePlayer.Team == PlayerTeam_Alien {
+		alienStarts := gameState.GameMap.GetSpacesOfType(Space_AlienStart)
+		toMoveTo = alienStarts[rand.Intn(len(alienStarts))]
+	}
 
 	activePlayer.Row, activePlayer.Col = toMoveTo.Row, toMoveTo.Col
 
-	return fmt.Sprintf("Player '%s' used a Teleport card! They've been moved to a random Human starting sector!", activePlayer.Name)
+	return fmt.Sprintf("Player '%s' used a Teleport card! They've been moved to a random starting sector of their team!", activePlayer.Name)
 }
 
 func NewTeleport() *Teleport {
 	return &Teleport{
 		CardBase: CardBase{
 			Name:        "Teleport",
-			Description: "Teleports the Player to a random Human Start Sector",
+			Description: "Teleports you to a random Start Sector belonging to your team",
 			Type:        Card_White,
 		},
 	}
@@ -212,7 +216,7 @@ func NewClone() *Clone {
 	return &Clone{
 		CardBase: CardBase{
 			Name:        "Clone",
-			Description: "Creates a Clone of this player that automatically activates upon death",
+			Description: "Gives the Cloned Status Effect, creating a Clone of you that automatically activates upon death",
 			Type:        Card_White,
 		},
 	}
@@ -240,7 +244,7 @@ func NewDefense() *Defense {
 	return &Defense{
 		CardBase: CardBase{
 			Name:        "Defense",
-			Description: "Makes this player invulnerable to the next attack that hits them",
+			Description: "Gives the Armored Status Effect, protecting you from the next attack to hit you",
 			Type:        Card_White,
 		},
 	}
@@ -360,7 +364,7 @@ func NewSedatives() *Sedatives {
 	return &Sedatives{
 		CardBase: CardBase{
 			Name:        "Sedatives",
-			Description: "Sedates the player, causing them to treat the next sector they enter as a Safe Sector",
+			Description: "Gives the Sedated Status Effect, causing you to treat the next sector you enter as a Safe Sector",
 			Type:        Card_White,
 		},
 	}
@@ -415,7 +419,7 @@ func NewCat() *Cat {
 	return &Cat{
 		CardBase: CardBase{
 			Name:        "Cat",
-			Description: "Gives the Feline StatusEffect, allowing this player to make 2 noises the next time they make a noise",
+			Description: "Gives the Feline StatusEffect, allowing you to pick one extra space to make a noise in, the next time you make a noise",
 			Type:        Card_White,
 		},
 	}

@@ -1,65 +1,85 @@
 {{define "info"}}
 <div id="compendium-cards">
-    <h1 id="vanilla-cards">Vanilla Cards</h1>
-    <p>These cards were ported more or less directly from the physical version of the game with minimal changes. Cards
-        that have been considerably changed from the tabletop version are marked with an asterisk (*)</p>
+        <h1 id="vanilla-cards">Vanilla Cards</h1>
+        <p>These cards were ported more or less directly from the physical version of the game with minimal changes.
+                Cards
+                that have been considerably changed from the tabletop version are marked with an asterisk (*) and the
+                exact changes are <em>italicized</em>. In general, any card that doesn't have an immediate effect (like
+                Attack, for example) will now give a <a href="/compendium/statuseffects">Status Effect</a>.</p>
 
-    <h2 id="noise-cards">Noise Cards</h2>
-    <p>Noise Cards are immediately discarded upon being drawn, causing the Player to make noise depending on the card
-    </p>
-    <h3 id="red-card">Red Card</h3>
-    <p>Make noise in the sector you just moved into</p>
+        <h2 id="noise-cards">Noise Cards</h2>
+        <p>Noise Cards are immediately discarded upon being drawn, causing the Player to make noise depending on the
+                card
+        </p>
+        <h3 id="red-card">Red Card</h3>
+        <p>Make noise in the sector you just moved into</p>
 
-    <h3 id="green-card">Green Card</h3>
-    <p>Make noise in any sector of your choosing</p>
+        <h3 id="green-card">Green Card</h3>
+        <p>Make noise in any sector of your choosing</p>
 
-    <h3 id="white-card">White Card</h3>
-    <p>Make no noise</p>
+        <h3 id="white-card">White Card</h3>
+        <p>Make no noise</p>
 
-    <h2 id="item-cards">Item Cards</h2>
-    <p>Item Cards are added to your hand upon being drawn. In addition to making no noise on this turn, you can also use
-        the card at any point after drawing it, including on the turn you draw it</p>
-    <h3 id="adrenaline">Adrenaline</h3>
-    <p>Gives 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
-            href="/compendium/statuseffects#adrenaline-surge">Adrenaline Surge</a> Status Effect</p>
+        <h2 id="item-cards">Item Cards</h2>
+        <p>Item Cards are added to your hand upon being drawn. In addition to making no noise on this turn, you can also
+                use
+                the card at any point after drawing it, including on the turn you draw it</p>
+        <h3 id="adrenaline">Adrenaline</h3>
+        <p>Gives 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
+                        href="/compendium/statuseffects#adrenaline-surge">Adrenaline Surge</a> Status Effect</p>
 
-    <h3 id="attack">Attack</h3>
-    <p>Immediately attacks the <a href="/compendium/dictionary#sector">sector</a> you are currently in, killing any
-        other player in that sector</p>
+        <h3 id="attack">Attack</h3>
+        <p>Immediately attacks the <a href="/compendium/dictionary#sector">sector</a> you are currently in, killing any
+                other player in that sector</p>
 
-    <h3 id="cat">Cat</h3>
-    <p>Gives 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
-            href="/compendium/statuseffects#feline">Feline</a> Status Effect</p>
+        <h3 id="cat">Cat</h3>
+        <p>Gives 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
+                        href="/compendium/statuseffects#feline">Feline</a> Status Effect</p>
 
-    <h3 id="clone">Clone*</h3>
-    <p>Gives 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
-            href="/compendium/statuseffects#cloned">Cloned</a> Status Effect. <em>This card now must be played before
-            you are attacked. You will not have a chance to play this if another player attacks you.</em></p>
+        <h3 id="clone">Clone*</h3>
+        <p>Gives 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
+                        href="/compendium/statuseffects#cloned">Cloned</a> Status Effect. <em>This card now must be
+                        played before
+                        you are attacked. You will not have a chance to play this if another player attacks you.</em>
+        </p>
 
-    <h3 id="defense">Defense*</h3>
-    <p>Gives 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
-            href="/compendium/statuseffects#armored">Armored</a> Status Effect. <em>This card now must be played
-            before you are attacked. You will not have a chance to play this if another player attacks you.</em></p>
+        <h3 id="defense">Defense*</h3>
+        <p>Gives 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
+                        href="/compendium/statuseffects#armored">Armored</a> Status Effect. <em>This card now must be
+                        played
+                        before you are attacked. You will not have a chance to play this if another player attacks
+                        you.</em></p>
 
-    <h3 id="mutation">Mutation</h3>
-    <p>Immediately turns you into an Alien and switches your team from Human to Alien. You will remain in the same <a
-            href="/compendium/dictionary#sector">sector</a> you were in at the time of playing the card</p>
+        <h3 id="mutation">Mutation</h3>
+        <p>Immediately turns you into an Alien and switches your team from Human to Alien. You will remain in the same
+                <a href="/compendium/dictionary#sector">sector</a> you were in at the time of playing the card
+        </p>
 
-    <h3 id="scanner">Scanner</h3>
-    <p>Upon playing this card, choose a Player. That Player's Team and Role is revealed to everyone in the game. <em>(This card is not actually in the tabletop version, but I have added it as a way to implement the <a href="/compendium/roles#medic">Medic's</a> ability)</em></p>
+        <h3 id="scanner">Scanner</h3>
+        <p>Upon playing this card, choose a Player. That Player's Team and Role is revealed to everyone in the game.
+                <em>(This card is not actually in the tabletop version, but I have added it as a way to implement the <a
+                                href="/compendium/roles#medic">Medic's</a> ability)</em>
+        </p>
 
-    <h3 id="sedatives">Sedatives</h3>
-    <p>Gives 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
-            href="/compendium/statuseffects#sedated">Sedated</a> Status Effect</p>
+        <h3 id="sedatives">Sedatives</h3>
+        <p>Gives 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
+                        href="/compendium/statuseffects#sedated">Sedated</a> Status Effect</p>
 
-    <h3 id="sensor">Sensor</h3>
-    <p>Upon playing this card, choose a Player. That Player's exact position is revealed to everyone in the game.</p>
+        <h3 id="sensor">Sensor</h3>
+        <p>Upon playing this card, choose a Player. That Player's exact position is revealed to everyone in the game.
+        </p>
 
-    <h3 id="spotlight">Spotlight</h3>
-    <p>Upon playing this card, choose a <a href="/compendium/dictionary#sector">sector</a>. Any Player in that sector or
-        any adjacent sector immediately has their exact location revealed to everyone in the game</p>
+        <h3 id="spotlight">Spotlight</h3>
+        <p>Upon playing this card, choose a <a href="/compendium/dictionary#sector">sector</a>. Any Player in that
+                sector or
+                any adjacent sector immediately has their exact location revealed to everyone in the game</p>
 
-    <h3 id="teleport">Teleport</h3>
-    <p>Immediately moves you to a randomly selected Human Start Sector. (If there is only 1, it will move you to that sector) Does not count as moving, so it can be played before or after moving, as desired</p>
+        <h3 id="teleport">Teleport*</h3>
+        <p>Immediately moves you to a randomly selected Start Sector <em>belonging to your team.</em> For example, if
+                you are a
+                Human, it moves you to a Human Start Sector; <em>If you are an Alien, it moves you to an Alien Start
+                        Sector.</em> (If there is only 1 Start Sector belonging to your team, it will move you to that
+                sector) Does not count as moving, so
+                it can be played before or after moving, as desired</p>
 </div>
 {{end}}
