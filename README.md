@@ -1,4 +1,4 @@
-![efaiosHomepage](https://github.com/user-attachments/assets/05326570-d2e1-464b-8da7-ed50fa05bbfe)
+![title](https://github.com/user-attachments/assets/5c8ef89a-18b4-4391-ae7e-4b7b030fc77d)
 An online version of [Escape From the Aliens in Outer Space](https://www.eftaios.com/), a game of strategy and bluff published by Osprey Games. 
 
 My friends and I love playing this game, but wished we had a way to more easily adjust the game to our liking, as well as adding our own content, such as new roles, maps, and items. With this in mind, I looked around for an online version, but didn't see any that A) were standalone, not requiring ANY external dependencies to run such as Java, C#, etc. and B) had ways to create my own content. Given my experience in similar projects, I decided to make an online version myself.
@@ -6,27 +6,28 @@ My friends and I love playing this game, but wished we had a way to more easily 
 My goal with this is twofold: First, a lightweight version that's easy to set up and play, similar to Jackbox Games, Kahoot, or Candlelight (my college senior project), and Second, to support as much customization as possible. I would love to eventually have some sort of system in place for user-generated roles/items and such, but currently, only maps can be created by users, and anything else must be implemented by myself.
 
 ## Features
-- Built-in, easy-to-use map editor for creating any map you can think of!
-  ![image](https://github.com/user-attachments/assets/1b56d025-6eaa-4fd8-9f37-4bc932454943)
-
 - Every Card & Role found in the Ultimate edition of the Tabletop version, as well as host controls over how many of each can be in the game
-  ![image](https://github.com/user-attachments/assets/9f6f6916-0e20-4e57-abee-5eb96c9afd30)
+  ![image](https://github.com/user-attachments/assets/2fd42acb-a49e-4b12-98d2-e746841e090a)
 
 - The Release Version comes prebundled with a recreation of every map found in the Ultimate edition of the Tabletop version
   ![image](https://github.com/user-attachments/assets/eb2e31d8-adba-47cc-a62d-972e28ce2d8d)
 
+- Screen Drawing built-in so you can keep notes right on your device, as well as an Event Log to ensure you don't miss important turns.
+  ![image](https://github.com/user-attachments/assets/275a5c02-5bcb-4780-b849-b42eef0b57f9)
+
+- Built-in, easy-to-use map editor for creating any map you can think of!
+  ![image](https://github.com/user-attachments/assets/ac85ee68-b161-4e11-9148-a2508bfdb1f0)
+
 - Lost connection? Accidentally closed the page? No worries, we have rejoin support!
   ![image](https://github.com/user-attachments/assets/44e996fb-cc3a-40f8-8156-bd80421a1a8e)
   
-- Easy to set up and play. Simply visit the Maps page, click "Play" on the map you want, and share the Room Code with the other players. Anyone on your same internet (unless you set up Port Forwarding) can join your lobby by entering their Name and the Room Code on the home page.
-  
+- Easy to set up and play. Simply visit the Maps page, click "Play" on the map you want, and share the Room Code with the other players. Anyone on your same internet (unless you set up Port Forwarding) can join your lobby by entering their Name and the Room Code on the home page.  
   ![image](https://github.com/user-attachments/assets/db17d4fc-966e-42a9-b8f9-7e2d01ca32f5)
 
 - Built-in Compendium with Game Rules and explanation of every card, role, etc.
-  ![image](https://github.com/user-attachments/assets/012a973d-d1b8-4d38-8717-4b984e9bef1a)
+  ![image](https://github.com/user-attachments/assets/6abaa3c7-3e3b-45d0-b7a9-d6f0b798f244)
 
-- Easy Map Sharing (Instructions below)
-
+- [Easy Map Sharing](#map-sharing)
 
 ## How to Run
 I'll probably get it deployed in some fashion (and post the URL in this README when I do), but if for whatever reason that doesn't happen or you just want to run it yourself, you'll have three options:
