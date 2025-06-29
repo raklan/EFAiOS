@@ -136,6 +136,7 @@ async function handleTurnEnd(turnEnd) {
 async function handleGameOverMessage(messageData) {
     gameHasEnded = true;
     showGameOver();
+    document.getElementById('gameover-recap-link').setAttribute('href', `/recap?gameStateId=${thisGameStateId}`)
     window.localStorage.removeItem('efaios-connectionInfo')
     window.localStorage.removeItem('efaios-eventlog')
 }

@@ -84,12 +84,12 @@ func AttackSpace(row int, col string, gameState GameState) (*GameEvent, error) {
 					playerWasSaved = true
 					gameEvent.Description += fmt.Sprintf("Player '%s' was saved by Armor!\n", player.Name)
 					go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Attacked Player '%s'", player.Name))
-					go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, "Saved by Armor")
+					go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, fmt.Sprintf("Attacked by Player '%s' and saved by Armor", actingPlayer.Name))
 				case StatusEffect_Cloned:
 					playerWasSaved = true
 					gameEvent.Description += fmt.Sprintf("Player '%s' activated their Emergency Clone!\n", player.Name)
 					go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Attacked Player '%s'", player.Name))
-					go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, "Activated Emergency Clone")
+					go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, fmt.Sprintf("Killed by player '%s' and activated Emergency Clone", actingPlayer.Name))
 				}
 			}
 			if playerWasSaved {

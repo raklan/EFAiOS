@@ -56,7 +56,7 @@ function showNotification(notificationContent, notificationType) {
 function showGameOver(){
     var gameOverMsg = document.getElementById("gameover-notification");
     gameOverMsg.style.display = '';
-    typeWord(gameOverMsg, "The Game has ended!")
+    typeWord(document.getElementById('gameover-notification-content'), "The Game has ended!")
 }
 
 function hideNotification() {

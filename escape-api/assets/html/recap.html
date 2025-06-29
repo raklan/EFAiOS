@@ -7,6 +7,14 @@
     .alien-team{
         border: 1px solid var(--alien-color);
     }
+
+    .human-button{
+        --button-color: var(--human-color);
+    }
+
+    .alien-button{
+        --button-color: var(--alien-color);
+    }
 </style>
 {{end}}
 
@@ -17,7 +25,7 @@
     <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
         <div id="playerList">
             {{range .Players}}
-            <button onclick="setDetailsVisible('{{.PlayerId}}')">{{.PlayerName}}</button>
+            <button class="{{ToLowercase .PlayerTeam}}-button" onclick="setDetailsVisible('{{.PlayerId}}')">{{.PlayerName}}</button>
             {{end}}
         </div>
         <div id="playerDetails">
@@ -26,7 +34,7 @@
                 <h4 class="{{ToLowercase .PlayerTeam}}-text">{{.PlayerName}}, the {{.PlayerRole}}
                     {{.PlayerTeam}}</h4>
                 {{range $index, $element := .Turns}}
-                <p>Turn {{$index}}: {{$element}}</li>
+                <p><u>Turn {{$index}}</u>: {{$element}}</li>
                     {{end}}
             </div>
             {{end}}
