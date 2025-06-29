@@ -14,6 +14,7 @@ func PrepareFilesystem() {
 	os.Mkdir("./maps", 0666)
 	os.Mkdir("./lobbies", 0666)
 	os.Mkdir("./gameStates", 0666)
+	os.Mkdir("./recaps", 0666)
 }
 
 // Yes, I know. I just REALLY didn't want to bring in an entire database JUST for this and Redis shouldn't be used for it

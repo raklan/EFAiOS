@@ -6,6 +6,7 @@ import (
 	"escape-engine/Models"
 	"escape-engine/Models/Actions"
 	"escape-engine/Models/GameConfig"
+	"escape-engine/Models/Recap"
 	"fmt"
 	"log"
 	"maps"
@@ -89,6 +90,9 @@ func GetInitialGameState(roomCode string, gameConfig GameConfig.GameConfig) (Mod
 		return gameState, err
 	}
 
+	//Create the recap object
+	go createInitialRecap(gameState)
+
 	return gameState, nil
 }
 
@@ -132,8 +136,6 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 		LogError(funcLogPrefix, err)
 		return []Models.WebsocketMessageListItem{}, err
 	}
-
-	//TODO: Add turn enforcement
 
 	messages := []Models.WebsocketMessageListItem{}
 
@@ -188,6 +190,7 @@ func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.Webso
 						},
 						ShouldBroadcast: true,
 					})
+					go Recap.AddDataToRecap(gameId, action.PlayerId, gameState.Turn, "In a Safe Sector")
 				}
 				messages = append(messages, Models.WebsocketMessageListItem{
 					Message: Models.WebsocketMessage{
@@ -554,6 +557,24 @@ func assignCards(gameState *Models.GameState, activeCards map[string]int) {
 			}
 		}
 	}
+}
+
+func createInitialRecap(gameState Models.GameState) {
+	recap := Recap.Recap{
+		GameStateId: gameState.Id,
+		MapName:     gameState.GameMap.Name,
+	}
+	for _, player := range gameState.Players {
+		recap.Players = append(recap.Players, Recap.PlayerRecap{
+			PlayerId:   player.Id,
+			PlayerName: player.Name,
+			PlayerTeam: player.Team,
+			PlayerRole: player.Role,
+			Turns:      map[int]string{},
+		})
+	}
+
+	Recap.SaveRecapToFs(recap)
 }
 
 //#endregion

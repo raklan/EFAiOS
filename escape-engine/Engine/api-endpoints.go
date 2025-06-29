@@ -4,13 +4,15 @@ import (
 	"encoding/json"
 	"escape-api/LogUtil"
 	"escape-engine/Models"
+	"escape-engine/Models/Recap"
 	"log"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
 // Given the path, gets any data that should be rendered with that requested template, if any. Only returns an error if one occurs (i.e. no data being found is not considered an error)
-func GetApiData(path string) (any, error) {
+func GetApiData(path string, query url.Values) (any, error) {
 	funcLogPrefix := "==GetApiData=="
 	defer LogUtil.EnsureLogPrefixIsReset()
 	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
@@ -20,6 +22,9 @@ func GetApiData(path string) (any, error) {
 	if strings.ToLower(path) == "/maps" {
 		mapIds, err := GetAllMaps()
 		return mapIds, err
+	} else if strings.ToLower(path) == "/recap" {
+		recap := GetRecap(query)
+		return recap, nil
 	}
 	return nil, nil
 }
@@ -97,4 +102,14 @@ func RoleDescription(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
+}
+
+func GetRecap(query url.Values) Recap.Recap {
+	gameStateId := query.Get("gameStateId")
+	recap, err := Recap.GetRecapFromFs(gameStateId)
+	if err != nil {
+		LogError("==GetRecap (API Data)==", err)
+		return Recap.Recap{}
+	}
+	return recap
 }

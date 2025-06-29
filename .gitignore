@@ -2,3 +2,4 @@ logs/*.log
 maps/*.json
 lobbies/*.json
 gameStates/*.json
+recaps/*.json

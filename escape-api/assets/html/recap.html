@@ -1,0 +1,45 @@
+{{define "styling"}}
+<style>
+    .human-team{
+        border: 1px solid var(--human-color);
+    }
+
+    .alien-team{
+        border: 1px solid var(--alien-color);
+    }
+</style>
+{{end}}
+
+{{define "body"}}
+<div id="list-container" style="margin: 10px;">
+    <h2 style="justify-self: center;">{{.MapName}}</h2>
+    <h4 style="justify-self: center;">{{NumPlayersForRecap .Players}} Players</h4>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
+        <div id="playerList">
+            {{range .Players}}
+            <button onclick="setDetailsVisible('{{.PlayerId}}')">{{.PlayerName}}</button>
+            {{end}}
+        </div>
+        <div id="playerDetails">
+            {{range .Players}}
+            <div class="player-details {{ToLowercase .PlayerTeam}}-team" id="{{.PlayerId}}-details" style="display: none; padding: 10px;">
+                <h4 class="{{ToLowercase .PlayerTeam}}-text">{{.PlayerName}}, the {{.PlayerRole}}
+                    {{.PlayerTeam}}</h4>
+                {{range $index, $element := .Turns}}
+                <p>Turn {{$index}}: {{$element}}</li>
+                    {{end}}
+            </div>
+            {{end}}
+        </div>
+    </div>
+</div>
+{{end}}
+
+{{define "scripts"}}
+<script>
+    function setDetailsVisible(playerId) {
+        document.querySelectorAll(".player-details").forEach(el => el.style.display = 'none')
+        document.getElementById(`${playerId}-details`).style.display = ''
+    }
+</script>
+{{end}}

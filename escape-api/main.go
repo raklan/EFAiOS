@@ -73,17 +73,19 @@ func serveHtml(w http.ResponseWriter, r *http.Request) {
 	layoutPath := filepath.Join("escape-api", "assets", "html", "templates", "layout.html")
 	requestedFilePath := filepath.Join("escape-api", "assets", "html", fmt.Sprintf("%s.html", filepath.Clean(r.URL.Path)))
 
-	templateData, err := Engine.GetApiData(r.URL.Path)
+	templateData, err := Engine.GetApiData(r.URL.Path, r.URL.Query())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	temp := template.New("layout.html").Funcs(template.FuncMap{
-		"StripMapId":        Engine.StripMapId,
-		"GetMapName":        Engine.GetMapName,
-		"GetMapDescription": Engine.GetMapDescription,
-		"GetConfigPresets":  Engine.GetConfigPresets,
+		"StripMapId":         Engine.StripMapId,
+		"GetMapName":         Engine.GetMapName,
+		"GetMapDescription":  Engine.GetMapDescription,
+		"GetConfigPresets":   Engine.GetConfigPresets,
+		"NumPlayersForRecap": Engine.NumPlayers,
+		"ToLowercase":        strings.ToLower,
 	})
 
 	var tmpl *template.Template

@@ -2,6 +2,7 @@ package Engine
 
 import (
 	"escape-engine/Models/GameConfig"
+	"escape-engine/Models/Recap"
 	"html/template"
 	"strings"
 )
@@ -36,4 +37,8 @@ func GetMapDescription(input string) template.HTML { //TODO: Sanitize descriptio
 
 func GetConfigPresets() []GameConfig.GameConfigPreset {
 	return GameConfig.GetConfigPresets()
+}
+
+func NumPlayers(players []Recap.PlayerRecap) int {
+	return len(players)
 }

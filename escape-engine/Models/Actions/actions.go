@@ -3,6 +3,7 @@ package Actions
 import (
 	"encoding/json"
 	"escape-engine/Models"
+	"escape-engine/Models/Recap"
 	"fmt"
 	"maps"
 	"math/rand"
@@ -105,6 +106,8 @@ func (move Movement) Execute(gameState *Models.GameState, playerId string) (Mode
 		//At this point, player is allowed to execute the move
 		actingPlayer.Row, actingPlayer.Col = move.ToRow, move.ToCol
 		movement.NewRow, movement.NewCol = actingPlayer.Row, actingPlayer.Col
+
+		go Recap.AddDataToRecap(gameState.Id, playerId, gameState.Turn, fmt.Sprintf("Moved to [%s-%d]", move.ToCol, move.ToRow))
 	} else {
 		return movement, fmt.Errorf("requested space [%s-%d] not found in map", move.ToCol, move.ToRow)
 	}
@@ -149,16 +152,19 @@ func DrawCard(gameState *Models.GameState, playerId string) (Models.CardEvent, e
 		if drawnCard.GetType() == Models.Card_White {
 			if actingPlayer.Team == Models.PlayerTeam_Human && drawnCard.GetName() != "White Card" { //May need tweaking. Currently discards item cards picked up by Aliens
 				actingPlayer.Hand = append(actingPlayer.Hand, drawnCard)
+			} else {
+				gameState.DiscardPile = append(gameState.DiscardPile, drawnCard)
 			}
 
 			if actingPlayer.SubtractStatusEffect(Models.StatusEffect_Deceptive) {
 				event.Type = Models.Card_Green
-				gameState.DiscardPile = append(gameState.DiscardPile, drawnCard)
 			}
 		} else {
 			//Don't need to check if the card needs to be destroyed in this case because it'll only ever be Red/Green/NoItem cards at this point
 			gameState.DiscardPile = append(gameState.DiscardPile, drawnCard)
 		}
+
+		go Recap.AddDataToRecap(gameState.Id, playerId, gameState.Turn, fmt.Sprintf("Drew %s", drawnCard.GetName()))
 	}
 
 	return event, nil
@@ -180,14 +186,18 @@ func (noise Noise) Execute(gameState *Models.GameState, playerId string) (*Model
 			//Randomize which space appears first and which appears second as an extra layer of secrecy
 			if rand.Intn(11)%2 == 0 {
 				event.Description = fmt.Sprintf("Player '%s' made noise at [%s-%d] and [%s-%d]!", actingPlayer.Name, noise.Col, noise.Row, noise.Col2, noise.Row2)
+				go Recap.AddDataToRecap(gameState.Id, playerId, gameState.Turn, fmt.Sprintf("Made noise at [%s-%d] and [%s-%d]", noise.Col, noise.Row, noise.Col2, noise.Row2))
 			} else {
 				event.Description = fmt.Sprintf("Player '%s' made noise at [%s-%d] and [%s-%d]!", actingPlayer.Name, noise.Col2, noise.Row2, noise.Col, noise.Row)
+				go Recap.AddDataToRecap(gameState.Id, playerId, gameState.Turn, fmt.Sprintf("Made noise at [%s-%d] and [%s-%d]", noise.Col2, noise.Row2, noise.Col, noise.Row))
 			}
 		} else {
 			event.Description = fmt.Sprintf("Player '%s' made noise at [%s-%d]!", actingPlayer.Name, noise.Col, noise.Row)
+			go Recap.AddDataToRecap(gameState.Id, playerId, gameState.Turn, fmt.Sprintf("Made noise at [%s-%d]", noise.Col, noise.Row))
 		}
 	} else {
 		event.Description = fmt.Sprintf("Player '%s' avoided making noise", actingPlayer.Name)
+		go Recap.AddDataToRecap(gameState.Id, playerId, gameState.Turn, "Avoided making noise")
 	}
 	return &event, nil
 }
@@ -220,11 +230,11 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 				Col:         actingPlayer.Col,
 				Description: fmt.Sprintf("Player '%s' escaped using the Pod at [%s-%d]!", actingPlayer.Name, actingPlayer.Col, actingPlayer.Row),
 			}
+			go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Escaped using the Pod at [%s-%d]", actingPlayer.Col, actingPlayer.Row))
 			actingPlayer.Team = Models.PlayerTeam_Spectator
 			actingPlayer.Row, actingPlayer.Col = -99, "!"
 
 			gameState.GameMap.GameConfig.NumWorkingPods -= 1
-
 		} else {
 			if len(allPods) > 1 && actingPlayer.SubtractStatusEffect(Models.StatusEffect_Knowhow) {
 				secondDrawnPod := Models.RandExclusive(len(allPods), drawnPod)
@@ -234,11 +244,11 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 						Col:         actingPlayer.Col,
 						Description: fmt.Sprintf("Player '%s' escaped using the Pod at [%s-%d]!", actingPlayer.Name, actingPlayer.Col, actingPlayer.Row),
 					}
+					go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Escaped using the Pod at [%s-%d]", actingPlayer.Col, actingPlayer.Row))
 					actingPlayer.Team = Models.PlayerTeam_Spectator
 					actingPlayer.Row, actingPlayer.Col = -99, "!"
 
 					gameState.GameMap.GameConfig.NumWorkingPods -= 1
-
 				}
 			} else {
 				gameEvent = &Models.GameEvent{
@@ -248,6 +258,7 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 				}
 
 				gameState.GameMap.GameConfig.NumBrokenPods -= 1
+				go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Tried the Pod at [%s-%d], but the Pod was broken", actingPlayer.Col, actingPlayer.Row))
 			}
 		}
 		gameState.GameMap.Spaces[space.GetMapKey()] = Models.Space{
@@ -278,6 +289,7 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 			if player.Team == Models.PlayerTeam_Human {
 				gameState.Players[i].Team = Models.PlayerTeam_Spectator
 				gameEvent.Description += fmt.Sprintf(" Player '%s' died!", player.Name)
+				go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, "Died due to lack of oxygen")
 			}
 		}
 	}

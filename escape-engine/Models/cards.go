@@ -1,6 +1,7 @@
 package Models
 
 import (
+	"escape-engine/Models/Recap"
 	"fmt"
 	"math/rand"
 	"slices"
@@ -124,7 +125,7 @@ func (a *Adrenaline) Play(gameState *GameState, details CardPlayDetails) string 
 	} else {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewAdrenalineSurge())
 	}
-
+	go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played %s", a.Name))
 	return fmt.Sprintf("Player '%s' played an Adrenaline card. They can move one space farther on their next turn!", activePlayer.Name)
 }
 
@@ -149,6 +150,7 @@ func (m *Mutation) Play(gameState *GameState, details CardPlayDetails) string {
 
 	activePlayer.Team = PlayerTeam_Alien
 
+	go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played %s", m.Name))
 	return fmt.Sprintf("Player '%s' used a Mutation card! They've turned into an Alien!", activePlayer.Name)
 }
 
@@ -181,6 +183,8 @@ func (t Teleport) Play(gameState *GameState, details CardPlayDetails) string {
 
 	activePlayer.Row, activePlayer.Col = toMoveTo.Row, toMoveTo.Col
 
+	go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played %s and teleported to [%s-%d]", t.Name, activePlayer.Col, activePlayer.Row))
+
 	return fmt.Sprintf("Player '%s' used a Teleport card! They've been moved to a random starting sector of their team!", activePlayer.Name)
 }
 
@@ -208,6 +212,8 @@ func (c Clone) Play(gameState *GameState, details CardPlayDetails) string {
 	} else {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewCloned())
 	}
+
+	go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played %s", c.Name))
 
 	return fmt.Sprintf("Player '%s' used a Clone card! They now have a clone ready in case they die!", activePlayer.Name)
 }
@@ -237,6 +243,8 @@ func (c Defense) Play(gameState *GameState, details CardPlayDetails) string {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewArmored())
 	}
 
+	go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played %s", c.Name))
+
 	return fmt.Sprintf("Player '%s' used a Defense card! They'll be protected from the next attack!", activePlayer.Name)
 }
 
@@ -262,6 +270,8 @@ func (c Spotlight) Play(gameState *GameState, details CardPlayDetails) string {
 	}
 
 	activePlayer := gameState.GetCurrentPlayer()
+
+	go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played a %s on [%s-%d]", c.Name, details.TargetCol, details.TargetRow))
 
 	descriptionString := fmt.Sprintf("Player '%s' used a Spotlight on [%s-%d]!", activePlayer.Name, details.TargetCol, details.TargetRow)
 
@@ -323,6 +333,8 @@ type AttackCard struct {
 func (c AttackCard) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 
+	go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played %s Card", c.Name))
+
 	descriptionString := fmt.Sprintf("Player '%s' used an Attack Card! ", activePlayer.Name)
 
 	gameEvent, _ := AttackSpace(activePlayer.Row, activePlayer.Col, *gameState)
@@ -357,6 +369,8 @@ func (c Sedatives) Play(gameState *GameState, details CardPlayDetails) string {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewSedated())
 	}
 
+	go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played %s", c.Name))
+
 	return fmt.Sprintf("Player '%s' used Sedatives! They will treat the next sector they enter as a safe sector!", activePlayer.Name)
 }
 
@@ -382,8 +396,11 @@ func (c Sensor) Play(gameState *GameState, details CardPlayDetails) string {
 	targetedPlayer := gameState.Players[indexOfTargetedPlayer]
 
 	if gameState.Players[indexOfTargetedPlayer].SubtractStatusEffect(StatusEffect_Invisible) {
+		go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played %s on Player '%s', but they were Invisible", c.Name, targetedPlayer.Name))
 		return fmt.Sprintf("Player '%s' used a Sensor on Player '%s' but Player '%s' is Invisible!", activePlayer.Name, targetedPlayer.Name, targetedPlayer.Name)
 	}
+
+	go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played %s on Player '%s', revealing their location at [%s-%d]", c.Name, targetedPlayer.Name, targetedPlayer.Col, targetedPlayer.Row))
 
 	return fmt.Sprintf("Player '%s' used a Sensor on Player '%s'! Player '%s' is at [%s-%d]", activePlayer.Name, targetedPlayer.Name, targetedPlayer.Name, targetedPlayer.Col, targetedPlayer.Row)
 }
@@ -412,6 +429,7 @@ func (c Cat) Play(gameState *GameState, details CardPlayDetails) string {
 	} else {
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewFeline())
 	}
+	go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played %s", c.Name))
 	return fmt.Sprintf("Player '%s' used a Cat! They can make 1 extra noise the next time they make a noise!", activePlayer.Name)
 }
 
@@ -435,6 +453,8 @@ func (s Scanner) Play(gameState *GameState, details CardPlayDetails) string {
 	activePlayer := gameState.GetCurrentPlayer()
 	indexOfTargetedPlayer := slices.IndexFunc(gameState.Players, func(p Player) bool { return p.Id == details.TargetPlayer })
 	targetedPlayer := gameState.Players[indexOfTargetedPlayer]
+
+	go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played %s on Player '%s', revealing they were a %s %s", s.Name, targetedPlayer.Name, targetedPlayer.Role, targetedPlayer.Team))
 
 	return fmt.Sprintf("Player '%s' used a Scanner on Player '%s'! Player '%s' is a %s %s!", activePlayer.Name, targetedPlayer.Name, targetedPlayer.Name, targetedPlayer.Role, targetedPlayer.Team)
 }

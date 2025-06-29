@@ -1,6 +1,7 @@
 package Models
 
 import (
+	"escape-engine/Models/Recap"
 	"fmt"
 	"log"
 	"math/rand"
@@ -55,6 +56,8 @@ func AttackSpace(row int, col string, gameState GameState) (*GameEvent, error) {
 	}
 	alienStarts := gameState.GameMap.GetSpacesOfType(Space_AlienStart)
 
+	go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Attacked [%s-%d]", col, row))
+
 	for index, player := range gameState.Players {
 		if player.Id == actingPlayer.Id { //Don't kill the player doing the attacking
 			continue
@@ -80,9 +83,13 @@ func AttackSpace(row int, col string, gameState GameState) (*GameEvent, error) {
 				case StatusEffect_Armored:
 					playerWasSaved = true
 					gameEvent.Description += fmt.Sprintf("Player '%s' was saved by Armor!\n", player.Name)
+					go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Attacked Player '%s'", player.Name))
+					go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, "Saved by Armor")
 				case StatusEffect_Cloned:
 					playerWasSaved = true
 					gameEvent.Description += fmt.Sprintf("Player '%s' activated their Emergency Clone!\n", player.Name)
+					go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Attacked Player '%s'", player.Name))
+					go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, "Activated Emergency Clone")
 				}
 			}
 			if playerWasSaved {
@@ -102,6 +109,8 @@ func AttackSpace(row int, col string, gameState GameState) (*GameEvent, error) {
 			}
 
 			gameEvent.Description += fmt.Sprintf("Player '%s' died!\n", player.Name)
+			go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Killed Player '%s'", player.Name))
+			go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, fmt.Sprintf("Killed by Player '%s'", actingPlayer.Name))
 		}
 	}
 
