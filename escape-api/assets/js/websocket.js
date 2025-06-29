@@ -136,7 +136,8 @@ async function handleTurnEnd(turnEnd) {
 async function handleGameOverMessage(messageData) {
     gameHasEnded = true;
     showGameOver();
-    document.getElementById('gameover-recap-link').setAttribute('href', `/recap?gameStateId=${thisGameStateId}`)
+    let roomCode = JSON.parse(window.localStorage.getItem("efaios-connectionInfo")).roomCode
+    document.getElementById('gameover-recap-link').setAttribute('href', `/recap?roomCode=${roomCode}`)
     window.localStorage.removeItem('efaios-connectionInfo')
     window.localStorage.removeItem('efaios-eventlog')
 }

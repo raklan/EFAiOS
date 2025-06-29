@@ -105,8 +105,20 @@ func RoleDescription(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetRecap(query url.Values) Recap.Recap {
-	gameStateId := query.Get("gameStateId")
-	recap, err := Recap.GetRecapFromFs(gameStateId)
+	roomCode := query.Get("roomCode")
+
+	lobby, err := GetLobbyFromFs(roomCode)
+	if err != nil {
+		return Recap.Recap{}
+	}
+
+	if lobby.Status != Models.LobbyStatus_Ended {
+		return Recap.Recap{
+			MapName: "Game has not ended yet",
+		}
+	}
+
+	recap, err := Recap.GetRecapFromFs(lobby.GameStateId)
 	if err != nil {
 		LogError("==GetRecap (API Data)==", err)
 		return Recap.Recap{}

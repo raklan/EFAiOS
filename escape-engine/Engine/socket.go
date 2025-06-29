@@ -357,6 +357,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 		if slices.ContainsFunc(messageList, func(li Models.WebsocketMessageListItem) bool {
 			return li.Message.Type == Models.WebsocketMessage_GameOver
 		}) {
+			MarkLobbyAsEnded(roomCode)
 			cleanUpRoom(room, roomCode)
 		}
 	case "getAllowedMoves":

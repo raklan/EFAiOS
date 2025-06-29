@@ -126,6 +126,30 @@ func EndGame(roomCode string, playerId string) error {
 	return err
 }
 
+func MarkLobbyAsEnded(roomCode string) error {
+	funcLogPrefix := "==MarkLobbyAsEnded=="
+	defer LogUtil.EnsureLogPrefixIsReset()
+	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
+
+	lobby, err := GetLobbyFromFs(roomCode)
+	if err != nil {
+		LogError(funcLogPrefix, err)
+		return err
+	}
+
+	if lobby.Status == Models.LobbyStatus_Ended {
+		return fmt.Errorf("game has already been marked as ended")
+	}
+
+	//Mark Game as ended and resave
+	lobby.Status = Models.LobbyStatus_Ended
+
+	_, err = SaveLobbyToFs(lobby)
+
+	//Return any error that occurred during saving, if any
+	return err
+}
+
 func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.WebsocketMessageListItem, error) {
 	funcLogPrefix := "==SubmitAction=="
 	defer LogUtil.EnsureLogPrefixIsReset()
