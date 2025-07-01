@@ -1,7 +1,7 @@
 var MAP = null
 
 function createGrid(rows, columns) {
-    let radius = Math.min(window.innerWidth * 0.45 / columns, window.innerHeight * 0.45 / rows)
+    let radius = Math.min(window.innerWidth * 0.43 / columns, window.innerHeight * 0.43 / rows)
     var grid = document.getElementById("gridParent");
 
     var createSVG = function (tag) {

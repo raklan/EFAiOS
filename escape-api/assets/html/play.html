@@ -371,14 +371,14 @@
     <div id="turn-number"></div>
     <div id="gridParent"></div>
     <div id="spaceHoverTooltip"></div>
-    <div id="event-log">
+    <div id="event-log" onclick="">
         <div id="tab-list" class="tab-list">
         </div>
     </div>
-    <div id="cards"></div>
-    <div id="team" class="player-card"></div>
-    <div id="role" class="player-card"></div>
-    <div id="status-effects" class="player-card"></div>
+    <div id="cards" onclick=""></div>
+    <div id="team" class="player-card" onclick=""></div>
+    <div id="role" class="player-card" onclick=""></div>
+    <div id="status-effects" class="player-card" onclick=""></div>
     <div id="paint-controls">
         <div id="paint-palatte">
             <div style="grid-column: span 3; justify-self: center;">Choose Color</div>
@@ -440,7 +440,7 @@
     <button id="endTurn-button"
         style="position: fixed; bottom: 0px; right: 50px; border: 1px solid lime; display: none;"
         onclick="endTurn()">End Turn</button>
-    <div id="turn-order" class="player-card"></div>
+    <div id="turn-order" class="player-card" onclick=""></div>
     <div id="gameover-notification"
         style="display: none; position: fixed; bottom: 45%; background-color: black; padding: 10px; border: 1px solid lime;">
         <h4 id="gameover-notification-content"></h4>
