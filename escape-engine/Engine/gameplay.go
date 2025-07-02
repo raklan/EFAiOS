@@ -579,6 +579,10 @@ func assignCards(gameState *Models.GameState, activeCards map[string]int) {
 			for range num {
 				gameState.Deck = append(gameState.Deck, Models.NewAttackCard())
 			}
+		case "Unstable Teleporter":
+			for range num {
+				gameState.Deck = append(gameState.Deck, Models.NewUnstableTeleporter())
+			}
 		}
 	}
 }
