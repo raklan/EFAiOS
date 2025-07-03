@@ -191,6 +191,15 @@ func (player *Player) SubtractStatusEffect(name string) bool {
 	return false
 }
 
+// Looks for a StatusEffect with the given name on the Player. If it finds one, adds one use. Otherwise, calls constructorFunc and adds the result to the Player's status effects
+func (player *Player) AddStatusEffect(name string, constructorFunc func() StatusEffect) {
+	if indexOfEffect := slices.IndexFunc(player.StatusEffects, func(s StatusEffect) bool { return s.Name == name }); indexOfEffect != -1 {
+		player.StatusEffects[indexOfEffect].AddUse()
+	} else {
+		player.StatusEffects = append(player.StatusEffects, constructorFunc())
+	}
+}
+
 func (player Player) GetSpaceMapKey() string {
 	return GetMapKey(player.Row, player.Col)
 }

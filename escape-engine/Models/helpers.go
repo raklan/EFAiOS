@@ -108,6 +108,10 @@ func AttackSpace(row int, col string, gameState GameState) (*GameEvent, error) {
 				gameState.Players[index].Row, gameState.Players[index].Col = -99, "!"
 			}
 
+			if actingPlayer.Team == PlayerTeam_Alien {
+				actingPlayer.AddStatusEffect(StatusEffect_Hyperphagic, NewHyperphagic)
+			}
+
 			gameEvent.Description += fmt.Sprintf("Player '%s' died!\n", player.Name)
 			go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Killed Player '%s'", player.Name))
 			go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, fmt.Sprintf("Killed by Player '%s'", actingPlayer.Name))
