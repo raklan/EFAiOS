@@ -42,10 +42,11 @@
 {{end}}
 
 {{define "body"}}
+<h1 style="text-align: center;">Maps</h1>
 <div id="list-container">
     {{range .}}
     <div class="map-entry">
-        <h4>{{GetMapName .}}</h4>
+        <h3>{{GetMapName .}}</h3>
         <div style="color: rgb(0, 179, 0)">{{GetMapDescription .}}</div>
         <div class="button-container">
             <button type="button" onclick="hostMap('{{StripMapId .}}', '{{GetMapName .}}')">Play</button>
@@ -58,9 +59,9 @@
     <form id="name-popup-form" onsubmit="playMap(event)"
         style="display: flex; flex-direction: column; align-items: center; height: 100%">
         <h4 id="name-popup-title" style="margin-bottom: 5px">Hosting New Game On:</h4>
-        <h5 id="name-popup-map-name-display" style="margin-top: 0px; text-decoration: underline; font-style: italic;">
-        </h5>
-        <div id="gridParent" style="width: 100%; height: 150px; display: flex; justify-content: center; flex-grow: 1">
+        <h5 id="name-popup-map-name-display" style="margin-top: 0px; text-decoration: underline; font-style: italic;"></h5>
+        <div id="map-loading">Loading Preview...</div>
+        <div id="gridParent" style="visibility: hidden; width: 100%; height: 150px; display: flex; justify-content: center; flex-grow: 1">
         </div>
         <input id="name-input" type="text" class="text-input" style="max-width: 100%; min-width: 95%;"
             placeholder="Enter Your Name" autocomplete="off" autocapitalize="off" />
@@ -120,7 +121,10 @@
     }
 
     async function loadMapPreview(mapId) {
-        let gridParent = document.getElementById("gridParent")
+        let gridParent = document.getElementById("gridParent");
+        let loadingMessage = document.getElementById('map-loading');
+        gridParent.style.visibility = 'hidden'
+        loadingMessage.style.display = '';
 
         if(!LOADED_MAPS[mapId]){
             await fetch(`/api/map?id=${mapId}`)
@@ -138,6 +142,8 @@
         clearGrid();
         createGrid(MAP.rows, MAP.cols, gridParent, false);
         drawMapOnPage();
+        loadingMessage.style.display = 'none';
+        gridParent.style.visibility = 'visible';
     }
 
     function hexClick() { }    
