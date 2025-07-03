@@ -127,7 +127,7 @@ func GetPotentialMoves(gameState *Models.GameState, playerId string) []string {
 }
 
 func (attack Attack) Execute(gameState *Models.GameState, playerId string) (*Models.GameEvent, error) {
-	return Models.AttackSpace(attack.Row, attack.Col, *gameState)
+	return Models.AttackSpace(attack.Row, attack.Col, gameState)
 }
 
 func DrawCard(gameState *Models.GameState, playerId string) (Models.CardEvent, error) {

@@ -337,7 +337,7 @@ func (c AttackCard) Play(gameState *GameState, details CardPlayDetails) string {
 
 	descriptionString := fmt.Sprintf("Player '%s' used an Attack Card! ", activePlayer.Name)
 
-	gameEvent, _ := AttackSpace(activePlayer.Row, activePlayer.Col, *gameState)
+	gameEvent, _ := AttackSpace(activePlayer.Row, activePlayer.Col, gameState)
 
 	descriptionString += gameEvent.Description
 

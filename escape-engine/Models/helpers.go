@@ -46,7 +46,7 @@ func GetNonmovableSpaces(player *Player) []int {
 	return cantMoveInto
 }
 
-func AttackSpace(row int, col string, gameState GameState) (*GameEvent, error) {
+func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) {
 	actingPlayer := gameState.GetCurrentPlayer()
 
 	var gameEvent *GameEvent = &GameEvent{
@@ -107,6 +107,13 @@ func AttackSpace(row int, col string, gameState GameState) (*GameEvent, error) {
 				gameState.Players[index].Team = PlayerTeam_Spectator
 				gameState.Players[index].Row, gameState.Players[index].Col = -99, "!"
 			}
+
+			for _, card := range player.Hand {
+				if !card.GetDestroyOnUse() {
+					gameState.DiscardPile = append(gameState.DiscardPile, card)
+				}
+			}
+			gameState.Players[index].Hand = []Card{}
 
 			if actingPlayer.Team == PlayerTeam_Alien {
 				actingPlayer.AddStatusEffect(StatusEffect_Hyperphagic, NewHyperphagic)
