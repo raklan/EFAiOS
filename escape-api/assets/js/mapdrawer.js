@@ -11,7 +11,7 @@ const SpaceTypes = {
     AlienStart: 6
 };
 
-function createGrid(rows, columns, container) {
+function createGrid(rows, columns, container, withText = true) {
     let radius = Math.min(container.clientWidth * 0.6 / columns, container.clientHeight * 0.5 / rows)
     var grid = container;
     let tooltip = document.createElement('div')
@@ -57,16 +57,18 @@ function createGrid(rows, columns, container) {
             poly.setAttribute('id', `hex-${numberToLetter(column)}-${row+1}`)
             svgParent.appendChild(poly);
 
-            var polyText = document.createElementNS("http://www.w3.org/2000/svg", "text")
-            polyText.setAttribute('x', `${center.x}`)
-            polyText.setAttribute('y', `${center.y}`)
-            polyText.setAttribute('fill', 'black')
-            polyText.setAttribute('text-anchor', 'middle')
-            polyText.setAttribute('font-size', `${radius/2.25}px`)
-            //polyText.setAttribute('textLength', `${radius/2.25}px`)
-            polyText.innerHTML = `[${numberToLetter(column)}-${row+1}]`
-            polyText.style.pointerEvents = 'none'
-            svgParent.appendChild(polyText)
+            if(withText){
+                var polyText = document.createElementNS("http://www.w3.org/2000/svg", "text")
+                polyText.setAttribute('x', `${center.x}`)
+                polyText.setAttribute('y', `${center.y}`)
+                polyText.setAttribute('fill', 'black')
+                polyText.setAttribute('text-anchor', 'middle')
+                polyText.setAttribute('font-size', `${radius/2.25}px`)
+                //polyText.setAttribute('textLength', `${radius/2.25}px`)
+                polyText.innerHTML = `[${numberToLetter(column)}-${row+1}]`
+                polyText.style.pointerEvents = 'none'
+                svgParent.appendChild(polyText)
+            }
         }
     }
 }
