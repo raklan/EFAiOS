@@ -114,6 +114,7 @@ func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) 
 				}
 			}
 			gameState.Players[index].Hand = []Card{}
+			gameState.Players[index].StatusEffects = []StatusEffect{}
 
 			if actingPlayer.Team == PlayerTeam_Alien {
 				actingPlayer.AddStatusEffect(StatusEffect_Hyperphagic, NewHyperphagic)
