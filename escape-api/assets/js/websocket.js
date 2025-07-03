@@ -152,7 +152,7 @@ async function handleGameStateMessage(gameState) {
             isThisPlayersTurn: gameState.currentPlayer == player.id
         }
     })
-    drawMap(gameState.gameMap)
+    
     if (!thisGameStateId) {
         document.getElementById("lobby").style.display = 'none';
         document.getElementById('gameplay').style.display = 'flex';
@@ -163,11 +163,14 @@ async function handleGameStateMessage(gameState) {
             roleDescription = apiObj.roleDescription;
         })
 
-        window.onresize = (event) => {
+        window.onresize = _ => {
             drawMap(gameState.gameMap)
             resizeCanvasToDisplaySize(document.getElementById("can"), document.getElementById("gridParent"))
+            var playerSpace = document.getElementById(`hex-${thisPlayer.col}-${thisPlayer.row}`)
+            playerSpace.classList.add('player')
         }
     }
+    drawMap(gameState.gameMap)
 
     document.querySelectorAll('.player').forEach(x => x.classList.remove('player'))
     document.querySelectorAll('.player-human').forEach(x => x.classList.remove('player-human'))

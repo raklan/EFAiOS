@@ -1,15 +1,5 @@
 //Heavily inspired by https://github.com/gojko/hexgridwidget, but altered to not require JQuery
 
-const SpaceTypes = {
-    Wall: 0,
-    Safe: 1,
-    Dangerous: 2,
-    Pod: 3,
-    UsedPod: 4,
-    HumanStart: 5,
-    AlienStart: 6
-}
-
 const WALL_TOOL = 'Walls';
 const POD_TOOL = 'Pods';
 const SAFE_TOOL = 'Safe Sector';
@@ -18,8 +8,6 @@ const HUMAN_TOOL = 'Human Start';
 const ALIEN_TOOL = 'Alien Start';
 
 var currentTool = DANGER_TOOL;
-
-var cssClass = 'hexfield';//If you change this, change it in hexClick() too
 
 function drawMapOnPage() {
     if (!MAP) {
@@ -88,17 +76,12 @@ function hexClick(event) {
     }
 }
 
-function clearGrid() {
-    var polycontainer = document.getElementById("polycontainer")
-    polycontainer?.remove();
-}
-
 function rebuildGrid() {
     var
         columns = parseInt(document.getElementById('columns').value),
         rows = parseInt(document.getElementById('rows').value);
     clearGrid();
-    createGrid(rows, columns);
+    createGrid(rows, columns, document.getElementById("gridParent"));
 };
 
 function setTool(newTool) {
@@ -111,7 +94,7 @@ async function initializePage() {
     if (urlParams.has("id")) {
         var map = await loadMap(urlParams.get("id"));
         MAP = map;
-        createGrid(map.rows, map.cols, 50);
+        createGrid(map.rows, map.cols, document.getElementById("gridParent"));
         drawMapOnPage();
         setConfigFormFromObject(map.gameConfig);
     } else {

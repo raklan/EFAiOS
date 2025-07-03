@@ -27,9 +27,10 @@
 
     #name-popup {
         position: fixed;
-        top: 40%;
-        left: 40%;
+        align-self: center;
         width: 20%;
+        top: 30%;
+        height: 40%;
         border: 1px solid lime;
         background-color: black;
 
@@ -37,6 +38,7 @@
         padding: 5px;
     }
 </style>
+<link rel="stylesheet" href="/assets/stylesheets/map.css">
 {{end}}
 
 {{define "body"}}
@@ -53,10 +55,16 @@
     {{end}}
 </div>
 <div id="name-popup">
-    <form id="name-popup-form" onsubmit="playMap(event)" style="display: flex; flex-direction: column; flex-grow: 1;">
-        <h4 id="name-popup-map-name-display">Host New Game</h4>
-        <input id="name-input" type="text" class="text-input" style="max-width: 100%" placeholder="Enter Your Name" autocomplete="off" autocapitalize="off" />
-        <div style="display: flex; justify-content: space-between;">
+    <form id="name-popup-form" onsubmit="playMap(event)"
+        style="display: flex; flex-direction: column; align-items: center; height: 100%">
+        <h4 id="name-popup-title" style="margin-bottom: 5px">Hosting New Game On:</h4>
+        <h5 id="name-popup-map-name-display" style="margin-top: 0px; text-decoration: underline; font-style: italic;">
+        </h5>
+        <div id="gridParent" style="width: 100%; height: 150px; display: flex; justify-content: center; flex-grow: 1">
+        </div>
+        <input id="name-input" type="text" class="text-input" style="max-width: 100%; min-width: 95%;"
+            placeholder="Enter Your Name" autocomplete="off" autocapitalize="off" />
+        <div style="display: flex; justify-content: space-between; width: 100%">
             <button type="submit">Play</button>
             <button type="button" onclick="cancel()">Cancel</button>
         </div>
@@ -65,32 +73,37 @@
 {{end}}
 
 {{define "scripts"}}
+<script src="/assets/js/utils.js"></script>
+<script src="/assets/js/mapdrawer.js"></script>
 <script>
     var selectedMapId = '';
+    const LOADED_MAPS = {}
+
     function hostMap(mapId, mapName) {
         document.getElementById("name-popup").style.display = "block";
-        document.getElementById("name-popup-map-name-display").innerText = `Host New Game: ${mapName}`
+        document.getElementById("name-popup-map-name-display").innerText = `${mapName}`
+        loadMapPreview(mapId);
         selectedMapId = mapId;
     }
 
-    function cancel(){
+    function cancel() {
         document.getElementById("name-popup").style.display = "none";
     }
 
-    function editMap(mapId){
+    function editMap(mapId) {
         window.open(`/mapeditor?id=${mapId}`, '_self')
     }
 
-    function playMap(event) {      
+    function playMap(event) {
         event.preventDefault();
         var name = document.getElementById("name-input")?.value;
-        
-        if(!name?.length > 0){
+
+        if (!name?.length > 0) {
             console.error("no name given")
             return;
         }
 
-        if(!selectedMapId?.length > 0){
+        if (!selectedMapId?.length > 0) {
             console.error("no map selected")
             return;
         }
@@ -105,5 +118,28 @@
 
         window.open('/play', "_self")
     }
+
+    async function loadMapPreview(mapId) {
+        let gridParent = document.getElementById("gridParent")
+
+        if(!LOADED_MAPS[mapId]){
+            await fetch(`/api/map?id=${mapId}`)
+                .then(resp => resp.json())
+                .then(apiObj => {
+                    LOADED_MAPS[mapId] = {
+                        rows: apiObj.rows,
+                        cols: apiObj.cols,
+                        spaces: apiObj.spaces
+                    }
+                })
+        }
+
+        MAP = LOADED_MAPS[mapId];
+        clearGrid();
+        createGrid(MAP.rows, MAP.cols, gridParent);
+        drawMapOnPage();
+    }
+
+    function hexClick() { }    
 </script>
 {{end}}

@@ -4,10 +4,11 @@
   --button-color: lime;
 }
 
-body {
+html, body {
   background-color: black;
   color: lime;
   font-family: 'Courier New', Courier, monospace;
+  height: 99%;
 }
 
 a {
@@ -53,7 +54,6 @@ button:hover::after {
   animation: glitch_4011 1s;
   text-shadow: 10 10px 10px rgb(255, 0, 0);
   animation-timing-function: steps(2, end);
-  /* text-shadow: -3px -3px 0px #24f21d, 3px 3px 0px #27c200; */
   text-shadow: -3px -3px 0px var(--button-color), 3px 3px 0px var(--button-color);
   background-color: transparent;
   border: 3px dotted var(--button-color);

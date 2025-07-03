@@ -1,15 +1,5 @@
 //Heavily inspired by https://github.com/gojko/hexgridwidget, but altered to not require JQuery
 
-const SpaceTypes = {
-    Wall: 0,
-    Safe: 1,
-    Dangerous: 2,
-    Pod: 3,
-    UsedPod: 4,
-    HumanStart: 5,
-    AlienStart: 6
-}
-
 var selectedSpace = {
     row: -99,
     col: '!'
@@ -43,66 +33,11 @@ const playerNameExtractor = new RegExp(/Player \'(?<PlayerName>[^\']+)\'/g);
 
 var clickMode = ClickModes.None;
 
-var cssClass = 'hexfield';//If you change this, change it in hexClick() too
-
-function drawMapOnPage() {
-    if (!MAP) {
-        return;
-    }
-
-    Object.values(MAP.spaces).forEach(space => {
-        var el = document.getElementById(`hex-${space.col}-${space.row}`)
-        if (el) {
-            var spaceClass = 'safe'
-            var tooltipText = ''
-            switch (space.type) {
-                case SpaceTypes.Wall:
-                    spaceClass = 'wall';
-                    tooltipText = '';
-                    break;
-                case SpaceTypes.Safe:
-                    spaceClass = 'safe';
-                    tooltipText = ''
-                    break;
-                case SpaceTypes.Pod:
-                    spaceClass = 'pod';
-                    tooltipText = 'Escape Pod';
-                    break;
-                case SpaceTypes.UsedPod:
-                    spaceClass = 'pod-used';
-                    tooltipText = 'Used Escape Pod';
-                    break;
-                case SpaceTypes.Dangerous:
-                    spaceClass = 'dangerous';
-                    tooltipText = '';
-                    break;
-                case SpaceTypes.HumanStart:
-                    spaceClass = 'humanstart';
-                    tooltipText = 'Human Start Sector';
-                    break;
-                case SpaceTypes.AlienStart:
-                    spaceClass = 'alienstart';
-                    tooltipText = 'Alien Start Sector'
-                    break;
-            }
-
-            el.classList = [cssClass, spaceClass].join(' ');
-            el.setAttribute('hex-type', space.type);
-            el.setAttribute('tooltip-text', tooltipText)
-            el.setAttribute('tooltip-color', `var(--space-${spaceClass})`)
-            if (tooltipText.length > 0) {
-                el.onmousemove = (event) => showSpaceTooltip(event)
-                el.onmouseleave = (event) => hideSpaceTooltip(event)
-            }
-        }
-    });
-}
-
 function drawMap(map) {
     if (map) {
         MAP = map;
         clearGrid();
-        createGrid(MAP.rows, MAP.cols);
+        createGrid(MAP.rows, MAP.cols, document.getElementById("gridParent"));
         drawMapOnPage();
     } else {
         console.error("No map given")
@@ -190,11 +125,6 @@ function hexClick(event) {
 
 
 
-}
-
-function clearGrid() {
-    var polycontainer = document.getElementById("polycontainer")
-    polycontainer?.remove();
 }
 
 function showPlayerChoicePopup(mode) {

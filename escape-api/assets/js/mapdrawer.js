@@ -1,8 +1,23 @@
-var MAP = null
+var MAP = null;
+var cssClass = 'hexfield';//If you change this, change it in hexClick() too
 
-function createGrid(rows, columns) {
-    let radius = Math.min(window.innerWidth * 0.43 / columns, window.innerHeight * 0.43 / rows)
-    var grid = document.getElementById("gridParent");
+const SpaceTypes = {
+    Wall: 0,
+    Safe: 1,
+    Dangerous: 2,
+    Pod: 3,
+    UsedPod: 4,
+    HumanStart: 5,
+    AlienStart: 6
+};
+
+function createGrid(rows, columns, container) {
+    let radius = Math.min(container.clientWidth * 0.6 / columns, container.clientHeight * 0.5 / rows)
+    var grid = container;
+    let tooltip = document.createElement('div')
+    tooltip.id = 'spaceHoverTooltip'
+    tooltip.style.textWrap = 'nowrap'
+    grid.appendChild(tooltip)
 
     var createSVG = function (tag) {
         var newElement = document.createElementNS('http://www.w3.org/2000/svg', tag || 'svg');
@@ -56,11 +71,69 @@ function createGrid(rows, columns) {
     }
 }
 
+function clearGrid() {
+    var polycontainer = document.getElementById("polycontainer")
+    polycontainer?.remove();
+}
+
+function drawMapOnPage() {
+    if (!MAP) {
+        return;
+    }
+
+    Object.values(MAP.spaces).forEach(space => {
+        var el = document.getElementById(`hex-${space.col}-${space.row}`)
+        if (el) {
+            var spaceClass = 'safe'
+            var tooltipText = ''
+            switch (space.type) {
+                case SpaceTypes.Wall:
+                    spaceClass = 'wall';
+                    tooltipText = '';
+                    break;
+                case SpaceTypes.Safe:
+                    spaceClass = 'safe';
+                    tooltipText = ''
+                    break;
+                case SpaceTypes.Pod:
+                    spaceClass = 'pod';
+                    tooltipText = 'Escape Pod';
+                    break;
+                case SpaceTypes.UsedPod:
+                    spaceClass = 'pod-used';
+                    tooltipText = 'Used Escape Pod';
+                    break;
+                case SpaceTypes.Dangerous:
+                    spaceClass = 'dangerous';
+                    tooltipText = '';
+                    break;
+                case SpaceTypes.HumanStart:
+                    spaceClass = 'humanstart';
+                    tooltipText = 'Human Start Sector';
+                    break;
+                case SpaceTypes.AlienStart:
+                    spaceClass = 'alienstart';
+                    tooltipText = 'Alien Start Sector'
+                    break;
+            }
+
+            el.classList = [cssClass, spaceClass].join(' ');
+            el.setAttribute('hex-type', space.type);
+            el.setAttribute('tooltip-text', tooltipText)
+            el.setAttribute('tooltip-color', `var(--space-${spaceClass})`)
+            if (tooltipText.length > 0) {
+                el.onmousemove = (event) => showSpaceTooltip(event)
+                el.onmouseleave = (event) => hideSpaceTooltip(event)
+            }
+        }
+    });
+}
+
 function showSpaceTooltip(event){
     let tooltip = document.getElementById("spaceHoverTooltip")
     tooltip.style.display = 'block'
-    tooltip.style.left = event.pageX + 10 + 'px'
-    tooltip.style.top = event.pageY + 10 + 'px'
+    tooltip.style.left = event.layerX + 10 + 'px'
+    tooltip.style.top = event.layerY + 10 + 'px'
     tooltip.innerHTML = event.target.getAttribute('tooltip-text')
     tooltip.style.setProperty('--tooltip-color', event.target.getAttribute('tooltip-color') )
 }
