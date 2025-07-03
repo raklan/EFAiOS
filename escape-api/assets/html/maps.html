@@ -49,8 +49,8 @@
         <h3>{{GetMapName .}}</h3>
         <div style="color: rgb(0, 179, 0)">{{GetMapDescription .}}</div>
         <div class="button-container">
-            <button type="button" onclick="hostMap('{{StripMapId .}}', '{{GetMapName .}}')">Play</button>
-            <button type="button" onclick="editMap('{{StripMapId .}}')">Edit</button>
+            <button type="button" onclick="hostMap('{{StripMapId .}}', '{{GetMapName .}}')" style="--button-color: white">Select</button>
+            <button type="button" onclick="editMap('{{StripMapId .}}')" style="--button-color: gold">Edit</button>
         </div>
     </div>
     {{end}}
@@ -66,8 +66,8 @@
         <input id="name-input" type="text" class="text-input" style="max-width: 100%; min-width: 95%;"
             placeholder="Enter Your Name" autocomplete="off" autocapitalize="off" />
         <div style="display: flex; justify-content: space-between; width: 100%">
-            <button type="submit">Play</button>
-            <button type="button" onclick="cancel()">Cancel</button>
+            <button type="submit">Play Map</button>
+            <button type="button" onclick="cancel()" style="--button-color: red">Cancel</button>
         </div>
     </form>
 </div>
