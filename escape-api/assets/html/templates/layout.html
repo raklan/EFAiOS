@@ -7,6 +7,16 @@
 	<title>EFAiOS</title>
 	<link rel="stylesheet" href="/assets/stylesheets/main.css">
 	{{template "styling" .}}
+
+	<style>
+		#rejoin-box {
+			border: 1px solid lime;
+			background-color: black;
+			align-self: center;
+			position: fixed;
+			bottom: 5px;
+		}
+	</style>
 </head>
 
 <body style="display: flex; flex-direction: column;">
@@ -29,6 +39,11 @@
 	</header>
 	<!--IMPORTANT: The '.' sends the data passed in during execution of this template to the nested template being executed into these-->
 	{{template "body" .}}
+	<div id="rejoin-box" style="display: none;">
+		<h4 style="text-align: center;">Active Game Detected. Rejoin?</h4>
+		<button onclick="rejoinGame()">Rejoin</button>
+		<button onclick="dropGame()">Drop Game</button>
+	</div>
 </body>
 {{template "scripts" .}}
 
@@ -48,6 +63,29 @@
 	for (let button of buttons) {
 		button.setAttribute("glitch-text", glitchTextOptions[Math.floor(Math.random() * glitchTextOptions.length)])
 	}
+
+
+	function checkForActiveGame() {
+		if(window.location.pathname == '/play'){
+			return
+		}
+		const connectionInfo = JSON.parse(window.localStorage.getItem('efaios-connectionInfo'))
+
+		if (connectionInfo?.type === 'rejoin') {
+			document.getElementById('rejoin-box').style.display = '';
+		}
+	}
+
+	function rejoinGame() {
+		window.open('/play', '_self')
+	}
+
+	function dropGame() {
+		window.localStorage.removeItem('efaios-connectionInfo')
+		document.getElementById('rejoin-box').style.display = 'none';
+	}
+
+	checkForActiveGame();
 </script>
 
 </html>

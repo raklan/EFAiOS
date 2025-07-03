@@ -5,14 +5,6 @@
         align-items: center;
         flex-direction: column;
     }
-
-    #rejoin-box {
-        border: 1px solid lime;
-        background-color: black;
-        align-self: center;
-        position: fixed;
-        bottom: 5px;
-    }
 </style>
 <style></style>
 {{end}}
@@ -29,11 +21,6 @@
 <div style="align-self: center;">
     <h3 style="text-align: center;">-OR-</h3>
     <button onclick="window.open('/maps', '_self')">HOST</button>
-</div>
-<div id="rejoin-box" style="display: none;">
-    <h4 style="text-align: center;">Active Game Detected. Rejoin?</h4>
-    <button onclick="rejoinGame()">Rejoin</button>
-    <button onclick="dropGame()">Drop Game</button>
 </div>
 {{end}}
 
@@ -54,23 +41,6 @@
         window.localStorage.setItem('efaios-connectionInfo', JSON.stringify(connectionInfo))
 
         window.open('/play', '_self')
-    }
-
-    function checkForActiveGame(){
-        const connectionInfo = JSON.parse(window.localStorage.getItem('efaios-connectionInfo'))
-
-        if(connectionInfo?.type === 'rejoin'){
-            document.getElementById('rejoin-box').style.display = '';
-        }
-    }
-
-    function rejoinGame(){
-        window.open('/play', '_self')
-    }
-
-    function dropGame(){
-        window.localStorage.removeItem('efaios-connectionInfo')
-        document.getElementById('rejoin-box').style.display = 'none';
     }
 
     function initializeGlitchText(selector, text) {
@@ -112,6 +82,5 @@
     }
 
     initializeGlitchText("game-title", 'ESCAPE FROM THE ALIENS IN OUTER SPACE');
-    checkForActiveGame();
 </script>
 {{end}}
