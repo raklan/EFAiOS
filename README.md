@@ -9,11 +9,14 @@ My goal with this is twofold: First, a lightweight version that's easy to set up
 - Every Card & Role found in the Ultimate edition of the Tabletop version, as well as host controls over how many of each can be in the game
   ![image](https://github.com/user-attachments/assets/2fd42acb-a49e-4b12-98d2-e746841e090a)
 
-- The Release Version comes prebundled with a recreation of every map found in the Ultimate edition of the Tabletop version
-  ![image](https://github.com/user-attachments/assets/eb2e31d8-adba-47cc-a62d-972e28ce2d8d)
+- The Release Version comes prebundled with an editable recreation of every map found in the Ultimate edition of the Tabletop version
+  ![image](https://github.com/user-attachments/assets/070f76a2-abd9-4e62-80bb-70fcfdc99755)
 
 - Screen Drawing built-in so you can keep notes right on your device, as well as an Event Log to ensure you don't miss important turns.
   ![image](https://github.com/user-attachments/assets/275a5c02-5bcb-4780-b849-b42eef0b57f9)
+
+- Post-game recap - See a play-by-play of every player's turn after the game ends.
+  ![image](https://github.com/user-attachments/assets/21ec01e7-15bc-489c-9eb3-d20ef9c7e01e)
 
 - Built-in, easy-to-use map editor for creating any map you can think of!
   ![image](https://github.com/user-attachments/assets/ac85ee68-b161-4e11-9148-a2508bfdb1f0)
@@ -21,8 +24,8 @@ My goal with this is twofold: First, a lightweight version that's easy to set up
 - Lost connection? Accidentally closed the page? No worries, we have rejoin support!
   ![image](https://github.com/user-attachments/assets/44e996fb-cc3a-40f8-8156-bd80421a1a8e)
   
-- Easy to set up and play. Simply visit the Maps page, click "Play" on the map you want, and share the Room Code with the other players. Anyone on your same internet (unless you set up Port Forwarding) can join your lobby by entering their Name and the Room Code on the home page.  
-  ![image](https://github.com/user-attachments/assets/db17d4fc-966e-42a9-b8f9-7e2d01ca32f5)
+- Easy to set up and play. To Host, click the "Host" button, select your map, and share the Room Code with your friends. Then, they can enter that Room Code on the home page to join your game!
+  ![image](https://github.com/user-attachments/assets/fa97247a-81c9-4d38-bffe-053e95ff19c4)
 
 - Built-in Compendium with Game Rules and explanation of every card, role, etc.
   ![image](https://github.com/user-attachments/assets/6abaa3c7-3e3b-45d0-b7a9-d6f0b798f244)
