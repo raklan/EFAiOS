@@ -28,6 +28,7 @@ const ClickModes = {
 let gameHasEnded = false;
 let playerHasMoved = false;
 let roleDescription = '';
+let showYourTurnNotification = true;
 
 const playerNameExtractor = new RegExp(/Player \'(?<PlayerName>[^\']+)\'/g);
 
@@ -426,6 +427,8 @@ function cardClick(card) {
         showNotification("Finish what you're doing first!", "Error")
         return;
     }
+
+    showYourTurnNotification = false;
 
     if (card.name === "Spotlight") {
         clickMode = ClickModes.Spotlight;

@@ -187,8 +187,12 @@ async function handleGameStateMessage(gameState) {
     }
 
     if (isThisPlayersTurn && !playerHasMoved) {
-        showNotification('Your Turn', 'Your Turn')
-        clickMode = ClickModes.Moving
+        if(showYourTurnNotification){
+            showNotification('Your Turn', 'Your Turn');
+        }else{
+            showYourTurnNotification = true;
+        }
+        clickMode = ClickModes.Moving;
         sendWsMessage(ws, 'getAllowedMoves', {
             gameId: thisGameStateId
         })
