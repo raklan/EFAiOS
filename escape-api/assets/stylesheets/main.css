@@ -31,7 +31,7 @@ button::after {
   color: var(--button-color);
   background-color: transparent;
   position: relative;
-  border: 1px solid transparent;
+  border: 1px dotted transparent;
 }
 
 button::after {
@@ -68,7 +68,8 @@ button:hover {
   border: 1px dotted var(--button-color);
   /* box-shadow: 0px 10px 10px -10px rgb(0, 141, 0); */
   box-shadow: 0px 10px 10px -10px var(--button-color);
-  padding: 9px 49px;
+  padding: 10px 50px;
+  transform: scale(0.95)
 }
 
 @keyframes glitch_4011 {
@@ -129,7 +130,7 @@ button:hover {
 }
 
 button:active {
-  transform: scale(0.95);
+  transform: scale(0.9);
 }
 
 /* From Uiverse.io by Cornerstone-04 */
