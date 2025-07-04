@@ -73,6 +73,7 @@ func GetInitialGameState(roomCode string, gameConfig GameConfig.GameConfig) (Mod
 		LogError(funcLogPrefix, err)
 		return gameState, err
 	}
+
 	assignStartingPositions(&gameState, &mapDef)
 
 	gameState, err = SaveGameStateToFs(gameState)
@@ -603,6 +604,10 @@ func createInitialRecap(gameState Models.GameState) {
 	}
 
 	Recap.SaveRecapToFs(recap)
+
+	for _, player := range gameState.Players {
+		go Recap.AddDataToRecap(gameState.Id, player.Id, 0, fmt.Sprintf("Started in [%s-%d]", player.Col, player.Row))
+	}
 }
 
 //#endregion

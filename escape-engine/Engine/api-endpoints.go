@@ -125,3 +125,24 @@ func GetRecap(query url.Values) Recap.Recap {
 	}
 	return recap
 }
+
+func GetMapForLobby(w http.ResponseWriter, r *http.Request) {
+	funcLogPrefix := "==GetMapForLobby=="
+	roomCode := r.URL.Query().Get("roomCode")
+	if roomCode == "" {
+		http.Error(w, "No room code provided", http.StatusBadRequest)
+	}
+
+	lobby, err := GetLobbyFromFs(roomCode)
+	if err != nil {
+		LogError(funcLogPrefix, err)
+	}
+
+	requestedMap, err := GetMapFromDB(lobby.MapId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(requestedMap)
+}

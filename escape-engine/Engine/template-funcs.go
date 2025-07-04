@@ -42,3 +42,7 @@ func GetConfigPresets() []GameConfig.GameConfigPreset {
 func NumPlayers(players []Recap.PlayerRecap) int {
 	return len(players)
 }
+
+func EqualZero(num int) bool {
+	return num == 0
+}

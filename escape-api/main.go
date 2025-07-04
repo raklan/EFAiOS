@@ -30,6 +30,7 @@ func startServer() {
 
 	http.HandleFunc("/api/map", Engine.Map)
 	http.HandleFunc("/api/allMaps", Engine.AllMaps)
+	http.HandleFunc("/api/mapForLobby", Engine.GetMapForLobby)
 
 	http.HandleFunc("/api/role", Engine.RoleDescription)
 
@@ -86,6 +87,7 @@ func serveHtml(w http.ResponseWriter, r *http.Request) {
 		"GetConfigPresets":   Engine.GetConfigPresets,
 		"NumPlayersForRecap": Engine.NumPlayers,
 		"ToLowercase":        strings.ToLower,
+		"EqualZero":          Engine.EqualZero,
 	})
 
 	var tmpl *template.Template
@@ -96,6 +98,7 @@ func serveHtml(w http.ResponseWriter, r *http.Request) {
 		tmpl, err = temp.ParseFiles(layoutPath, requestedFilePath)
 	}
 	if err != nil {
+		fmt.Println(err)
 		tmpl, err = template.ParseFiles(layoutPath, filepath.Join("escape-api", "assets", "html", "index.html"))
 		if err != nil {
 			fmt.Fprintf(w, "It broke")

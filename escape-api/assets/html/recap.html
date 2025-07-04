@@ -1,53 +1,95 @@
 {{define "styling"}}
 <style>
-    .human-team{
+    .human-team {
         border: 1px solid var(--human-color);
     }
 
-    .alien-team{
+    .alien-team {
         border: 1px solid var(--alien-color);
     }
 
-    .human-button{
+    .human-button {
         --button-color: var(--human-color);
     }
 
-    .alien-button{
+    .alien-button {
         --button-color: var(--alien-color);
     }
 </style>
+<link rel="stylesheet" href="/assets/stylesheets/map.css">
 {{end}}
 
 {{define "body"}}
-<div id="list-container" style="margin: 10px;">
+<div id="list-container" style="margin: 10px; height: 100%">
     <h2 style="justify-self: center;">{{.MapName}}</h2>
     <h4 style="justify-self: center;">{{NumPlayersForRecap .Players}} Players</h4>
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
-        <div id="playerList">
-            {{range .Players}}
-            <button class="{{ToLowercase .PlayerTeam}}-button" onclick="setDetailsVisible('{{.PlayerId}}')">{{.PlayerName}}</button>
-            {{end}}
-        </div>
-        <div id="playerDetails">
-            {{range .Players}}
-            <div class="player-details {{ToLowercase .PlayerTeam}}-team" id="{{.PlayerId}}-details" style="display: none; padding: 10px;">
-                <h4 class="{{ToLowercase .PlayerTeam}}-text">{{.PlayerName}}, the {{.PlayerRole}}
-                    {{.PlayerTeam}}</h4>
-                {{range $index, $element := .Turns}}
-                <p><u>Turn {{$index}}</u>: {{$element}}</li>
-                    {{end}}
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); height: 100%">
+        <div style="display: flex; flex-direction: column;">
+            <div id="playerList">
+                {{range .Players}}
+                <button class="{{ToLowercase .PlayerTeam}}-button"
+                    onclick="setDetailsVisible('{{.PlayerId}}')">{{.PlayerName}}</button>
+                {{end}}
             </div>
-            {{end}}
+            <div id="playerDetails">
+                {{range .Players}}
+                <div class="player-details {{ToLowercase .PlayerTeam}}-team" id="{{.PlayerId}}-details"
+                    style="display: none; padding: 10px;">
+                    <h4 class="{{ToLowercase .PlayerTeam}}-text">{{.PlayerName}}, the {{.PlayerRole}}
+                        {{.PlayerTeam}}</h4>
+                    {{range $index, $element := .Turns}}
+                        {{if EqualZero $index}}
+                        <p onmousemove="turnHover(this)" style="cursor: pointer;"><u>Game Start</u>: {{$element}}</li>
+                        {{else}}
+                        <p onmousemove="turnHover(this)" style="cursor: pointer;"><u>Turn {{$index}}</u>: {{$element}}</li>
+                        {{end}}
+                    {{end}}
+                </div>
+                {{end}}
+            </div>
         </div>
+        <div id="gridParent"
+            style="position: sticky;  display: flex; justify-content: center; width: 100%; height: 100%;"></div>
     </div>
 </div>
 {{end}}
 
 {{define "scripts"}}
+<script src="/assets/js/utils.js"></script>
+<script src="/assets/js/mapdrawer.js"></script>
 <script>
+    const spaceExtractor = new RegExp(/(?:Moved to|Started in) \[(?<Column>[A-Z]+)-(?<Row>\d)\]/g);
+
     function setDetailsVisible(playerId) {
         document.querySelectorAll(".player-details").forEach(el => el.style.display = 'none')
         document.getElementById(`${playerId}-details`).style.display = ''
     }
+
+    async function getAndDrawMap() {
+        let roomCode = new URLSearchParams(window.location.search).get('roomCode')
+        await fetch(`/api/mapForLobby?roomCode=${roomCode}`)
+            .then(resp => resp.json())
+            .then(apiObj => MAP = apiObj)
+
+        clearGrid();
+        createGrid(MAP.rows, MAP.cols, document.getElementById("gridParent"))
+        drawMapOnPage();
+    }
+
+    function hexClick() { }
+
+    function turnHover(element) {
+        let match = spaceExtractor.exec(element.innerText)
+        if (match) {
+            let col = match.groups.Column;
+            let row = match.groups.Row;
+            if (col && row) {
+                document.querySelectorAll(".player").forEach(el => el.classList.remove("player"))
+                document.getElementById(`hex-${col}-${row}`).classList.add("player")
+            }
+        }
+    }
+
+    getAndDrawMap();
 </script>
 {{end}}
