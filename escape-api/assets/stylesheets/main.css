@@ -152,6 +152,10 @@ button:active {
   margin: 1%;
 }
 
+input{
+  font-size: 21px; 
+}
+
 .text-input:focus {
   border: 1px dashed lime;
   caret-color: lime;

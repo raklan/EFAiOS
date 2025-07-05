@@ -28,12 +28,10 @@
     #name-popup {
         position: fixed;
         align-self: center;
-        width: 20%;
-        top: 30%;
-        height: 40%;
+        top: 10%;
+        height: 70%;
         border: 1px solid lime;
         background-color: black;
-
         display: none;
         padding: 5px;
     }
@@ -49,7 +47,8 @@
         <h3>{{GetMapName .}}</h3>
         <div style="color: rgb(0, 179, 0)">{{GetMapDescription .}}</div>
         <div class="button-container">
-            <button type="button" onclick="hostMap('{{StripMapId .}}', '{{GetMapName .}}')" style="--button-color: white">Select</button>
+            <button type="button" onclick="hostMap('{{StripMapId .}}', '{{GetMapName .}}')"
+                style="--button-color: white">Select</button>
             <button type="button" onclick="editMap('{{StripMapId .}}')" style="--button-color: gold">Edit</button>
         </div>
     </div>
@@ -59,9 +58,11 @@
     <form id="name-popup-form" onsubmit="playMap(event)"
         style="display: flex; flex-direction: column; align-items: center; height: 100%">
         <h4 id="name-popup-title" style="margin-bottom: 5px">Hosting New Game On:</h4>
-        <h5 id="name-popup-map-name-display" style="margin-top: 0px; text-decoration: underline; font-style: italic;"></h5>
+        <h5 id="name-popup-map-name-display" style="margin-top: 0px; text-decoration: underline; font-style: italic;">
+        </h5>
         <div id="map-loading">Loading Preview...</div>
-        <div id="gridParent" style="visibility: hidden; width: 100%; height: 150px; display: flex; justify-content: center; flex-grow: 1">
+        <div id="gridParent"
+            style="visibility: hidden; width: 100%; height: 150px; display: flex; justify-content: center; flex-grow: 1">
         </div>
         <input id="name-input" type="text" class="text-input" style="max-width: 100%; min-width: 95%;"
             placeholder="Enter Your Name" autocomplete="off" autocapitalize="off" />
@@ -126,7 +127,7 @@
         gridParent.style.visibility = 'hidden'
         loadingMessage.style.display = '';
 
-        if(!LOADED_MAPS[mapId]){
+        if (!LOADED_MAPS[mapId]) {
             await fetch(`/api/map?id=${mapId}`)
                 .then(resp => resp.json())
                 .then(apiObj => {
