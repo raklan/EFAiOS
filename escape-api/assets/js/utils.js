@@ -50,7 +50,7 @@ function showNotification(notificationContent, notificationType) {
     if(notificationCloseTimeout){
         clearTimeout(notificationCloseTimeout)
     }
-    notificationCloseTimeout = setTimeout(hideNotification, 4000)
+    notificationCloseTimeout = setTimeout(hideNotification, 10000)
 }
 
 function showGameOver(){
