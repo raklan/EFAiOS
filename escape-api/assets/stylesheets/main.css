@@ -9,6 +9,7 @@ html, body {
   color: lime;
   font-family: 'Courier New', Courier, monospace;
   height: 99%;
+  overscroll-behavior: none;
 }
 
 a {
