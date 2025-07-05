@@ -9,7 +9,6 @@ html, body {
   color: lime;
   font-family: 'Courier New', Courier, monospace;
   height: 99%;
-  overscroll-behavior: none;
 }
 
 a {
@@ -150,10 +149,6 @@ button:active {
   font-family: inherit;
   letter-spacing: 1px;
   margin: 1%;
-}
-
-input{
-  font-size: 21px; 
 }
 
 .text-input:focus {
