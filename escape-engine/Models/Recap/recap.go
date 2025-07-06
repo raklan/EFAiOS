@@ -33,6 +33,7 @@ func SaveRecapToFs(recap Recap) (Recap, error) {
 	LogUtil.SetLogPrefix("ESCAPE-ENGINE", "Recap")
 	asJson, err := json.Marshal(recap)
 	if err != nil {
+		LogUtil.LogError(funcLogPrefix, err)
 		return recap, err
 	}
 
@@ -47,6 +48,7 @@ func SaveRecapToFs(recap Recap) (Recap, error) {
 	_, err = f.Write(asJson)
 	f.Close()
 	if err != nil {
+		LogUtil.LogError(funcLogPrefix, err)
 		return recap, err
 	}
 
@@ -64,7 +66,7 @@ func GetRecapFromFs(gameStateId string) (Recap, error) {
 	log.Printf("%s Getting recap from FS with GameStateId == {%s}", funcLogPrefix, gameStateId)
 	data, err := os.ReadFile(fmt.Sprintf("./recaps/recap_%s.json", gameStateId))
 	if err != nil {
-		log.Printf("ERROR! %s", err)
+		LogUtil.LogError(funcLogPrefix, err)
 		return Recap{}, err
 	}
 
@@ -72,6 +74,7 @@ func GetRecapFromFs(gameStateId string) (Recap, error) {
 
 	err = json.Unmarshal(data, &parsed)
 	if err != nil {
+		LogUtil.LogError(funcLogPrefix, err)
 		return parsed, err
 	}
 
@@ -79,10 +82,11 @@ func GetRecapFromFs(gameStateId string) (Recap, error) {
 }
 
 func AddDataToRecap(gameStateId string, playerId string, turnNumber int, turnDescription string) {
+	funcLogPrefix := "==AddDataToRecap=="
 	recapFileMutex.Lock()
 	recap, err := GetRecapFromFs(gameStateId)
 	if err != nil {
-		panic(fmt.Sprintf("Couldn't find recap with gameStateId: %s", gameStateId))
+		LogUtil.LogError(funcLogPrefix, err)
 	}
 
 	if indexToAddTo := slices.IndexFunc(recap.Players, func(p PlayerRecap) bool { return p.PlayerId == playerId }); indexToAddTo != -1 {

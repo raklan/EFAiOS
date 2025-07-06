@@ -5,6 +5,7 @@ import (
 	"escape-api/LogUtil"
 	"escape-engine/Models"
 	"escape-engine/Models/Recap"
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -41,10 +42,11 @@ func Map(w http.ResponseWriter, r *http.Request) {
 }
 
 func AllMaps(w http.ResponseWriter, r *http.Request) {
-	//getNames := r.URL.Query().Get("getNames")
+	funcLogPrefix := "==AllMaps=="
 
 	mapIds, err := GetAllMaps()
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
@@ -53,16 +55,19 @@ func AllMaps(w http.ResponseWriter, r *http.Request) {
 }
 
 func saveMap(w http.ResponseWriter, r *http.Request) {
+	funcLogPrefix := "==saveMap=="
 	d := json.NewDecoder(r.Body)
 	req := Models.GameMap{}
 
 	err := d.Decode(&req)
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
 	saved, err := SaveMapToDB(req)
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
@@ -72,13 +77,16 @@ func saveMap(w http.ResponseWriter, r *http.Request) {
 }
 
 func getMap(w http.ResponseWriter, r *http.Request) {
+	funcLogPrefix := "==getMap=="
 	mapId := r.URL.Query().Get("id")
 	if mapId == "" {
+		LogError(funcLogPrefix, fmt.Errorf("no mapId provided"))
 		http.Error(w, "No map id provided", http.StatusBadRequest)
 	}
 
 	requestedMap, err := GetMapFromDB(mapId)
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
@@ -87,8 +95,10 @@ func getMap(w http.ResponseWriter, r *http.Request) {
 }
 
 func RoleDescription(w http.ResponseWriter, r *http.Request) {
+	funcLogPrefix := "==RoleDescription=="
 	roleName := r.URL.Query().Get("name")
 	if roleName == "" {
+		LogError(funcLogPrefix, fmt.Errorf("no role name provided"))
 		http.Error(w, "No role provided", http.StatusBadRequest)
 	}
 
@@ -105,10 +115,12 @@ func RoleDescription(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetRecap(query url.Values) Recap.Recap {
+	funcLogPrefix := "==GetRecap=="
 	roomCode := query.Get("roomCode")
 
 	lobby, err := GetLobbyFromFs(roomCode)
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		return Recap.Recap{}
 	}
 
@@ -120,7 +132,7 @@ func GetRecap(query url.Values) Recap.Recap {
 
 	recap, err := Recap.GetRecapFromFs(lobby.GameStateId)
 	if err != nil {
-		LogError("==GetRecap (API Data)==", err)
+		LogError(funcLogPrefix, err)
 		return Recap.Recap{}
 	}
 	return recap
@@ -136,10 +148,12 @@ func GetMapForLobby(w http.ResponseWriter, r *http.Request) {
 	lobby, err := GetLobbyFromFs(roomCode)
 	if err != nil {
 		LogError(funcLogPrefix, err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	requestedMap, err := GetMapFromDB(lobby.MapId)
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 

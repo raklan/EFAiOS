@@ -3,6 +3,7 @@ package Engine
 import (
 	"escape-api/LogUtil"
 	"escape-engine/Models"
+	"escape-engine/Models/Actions"
 	"fmt"
 	"log"
 	"slices"
@@ -99,6 +100,7 @@ func JoinRoom(roomCode string, playerName string) (Models.Lobby, string, error) 
 	log.Printf("%s Player added. Caching new Lobby", funcLogPrefix)
 	saved, err := SaveLobbyToFs(updatedLobby)
 	if err != nil { //If something goes wrong, re-save and return the version without any changes
+		LogError(funcLogPrefix, err)
 		SaveLobbyToFs(lobby)
 		return Models.Lobby{}, "", err
 	}
@@ -140,6 +142,7 @@ func LeaveRoom(roomCode string, playerId string) (Models.Lobby, error) {
 	log.Printf("%s Player Removed. Caching new Lobby", funcLogPrefix)
 	saved, err := SaveLobbyToFs(updatedLobby)
 	if err != nil { //If something goes wrong, re-save and return the version without any changes
+		LogError(funcLogPrefix, err)
 		SaveLobbyToFs(lobby)
 		return Models.Lobby{}, err
 	}
@@ -155,7 +158,7 @@ func LeaveRoom(roomCode string, playerId string) (Models.Lobby, error) {
 		//If it's this player's turn, end their turn before removing them
 		if gameState.CurrentPlayer == playerId {
 			log.Println("GameState is listing Player as CurrentPlayer. Ending their turn before removal...")
-			//Models.EndTurn{}.Execute(&gameState, playerId) TODO: Reimplement
+			Actions.EndTurn{}.Execute(&gameState, playerId)
 		}
 
 		//Remove from Player list

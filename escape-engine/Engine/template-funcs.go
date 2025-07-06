@@ -20,6 +20,7 @@ func StripMapId(input string) string {
 func GetMapName(input string) string {
 	gameMap, err := GetMapFromDB(StripMapId(input))
 	if err != nil {
+		LogError("==GetMapName==", err)
 		return "Error finding Map"
 	}
 
@@ -29,6 +30,7 @@ func GetMapName(input string) string {
 func GetMapDescription(input string) template.HTML { //TODO: Sanitize description somehow to prevent XSS?
 	gameMap, err := GetMapFromDB(StripMapId(input))
 	if err != nil {
+		LogError("==GetMapDescription==", err)
 		return "Error finding Map"
 	}
 

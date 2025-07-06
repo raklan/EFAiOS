@@ -19,25 +19,28 @@ func PrepareFilesystem() {
 
 // Yes, I know. I just REALLY didn't want to bring in an entire database JUST for this and Redis shouldn't be used for it
 func SaveMapToDB(m Models.GameMap) (Models.GameMap, error) {
+	funcLogPrefix := "==SaveMapToDB=="
 	if m.Id == "" {
 		m.Id = GenerateId()
 	}
 
 	asJson, err := json.Marshal(m)
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		return m, err
 	}
 
 	filename := "map_" + m.Id + ".json"
 	f, err := os.Create(fmt.Sprintf("./maps/%s", filename))
 	if err != nil {
-		fmt.Println("Ran into unrecoverable error trying to save map")
+		LogError(funcLogPrefix, err)
 		f.Close()
 		return m, err
 	}
 	_, err = f.Write(asJson)
 	f.Close()
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		return m, err
 	}
 
@@ -52,6 +55,7 @@ func GetMapFromDB(mapId string) (Models.GameMap, error) {
 	log.Printf("%s Getting map from DB with id == {%s}", funcLogPrefix, mapId)
 	data, err := os.ReadFile(fmt.Sprintf("./maps/map_%s.json", mapId))
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		return Models.GameMap{}, err
 	}
 
@@ -59,6 +63,7 @@ func GetMapFromDB(mapId string) (Models.GameMap, error) {
 
 	err = json.Unmarshal(data, &parsed)
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		return parsed, err
 	}
 
@@ -75,6 +80,7 @@ func GetAllMaps() ([]string, error) {
 	files, err := os.ReadDir("./maps/")
 	toReturn := []string{}
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		return []string{}, err
 	}
 
@@ -95,6 +101,7 @@ func SaveLobbyToFs(lobby Models.Lobby) (Models.Lobby, error) {
 	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
 	asJson, err := json.Marshal(lobby)
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		return lobby, err
 	}
 
@@ -102,13 +109,14 @@ func SaveLobbyToFs(lobby Models.Lobby) (Models.Lobby, error) {
 
 	f, err := os.Create(fmt.Sprintf("./lobbies/%s", filename))
 	if err != nil {
-		log.Printf("%s Ran into unrecoverable error trying to save lobby to filesystem", funcLogPrefix)
+		LogError(funcLogPrefix, err)
 		f.Close()
 		return lobby, err
 	}
 	_, err = f.Write(asJson)
 	f.Close()
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		return lobby, err
 	}
 
@@ -134,6 +142,7 @@ func GetLobbyFromFs(roomCode string) (Models.Lobby, error) {
 
 	err = json.Unmarshal(data, &parsed)
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		return parsed, err
 	}
 
@@ -159,19 +168,21 @@ func SaveGameStateToFs(gameState Models.GameState) (Models.GameState, error) {
 
 	asJson, err := json.Marshal(gameState)
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		return gameState, err
 	}
 
 	filename := "gameState_" + gameState.Id + ".json"
 	f, err := os.Create(fmt.Sprintf("./gameStates/%s", filename))
 	if err != nil {
-		log.Printf("%s Ran into unrecoverable error trying to save GameState to filesystem", funcLogPrefix)
+		LogError(funcLogPrefix, err)
 		f.Close()
 		return gameState, err
 	}
 	_, err = f.Write(asJson)
 	f.Close()
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		return gameState, err
 	}
 
@@ -188,6 +199,7 @@ func GetGameStateFromFs(id string) (Models.GameState, error) {
 	log.Printf("%s Getting GameState from FS with ID == {%s}", funcLogPrefix, id)
 	data, err := os.ReadFile(fmt.Sprintf("./gameStates/gameState_%s.json", id))
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		return Models.GameState{}, err
 	}
 
@@ -195,6 +207,7 @@ func GetGameStateFromFs(id string) (Models.GameState, error) {
 
 	err = json.Unmarshal(data, &parsed)
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		return parsed, err
 	}
 

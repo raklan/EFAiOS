@@ -30,6 +30,7 @@ var upgrader = websocket.Upgrader{
 // HostLobby creates the waiting lobby, joins on behalf of the given player, and upgrades the host into a websocket.
 // The lobby (which contains the Room Code used for other people to join) is then passed back into the websocket.
 func HostLobby(w http.ResponseWriter, r *http.Request) {
+	funcLogPrefix := "==HostLobby=="
 	log.Println("Starting hostLobby")
 	mapId := r.URL.Query().Get("mapId")
 	playerName := r.URL.Query().Get("playerName")
@@ -42,18 +43,19 @@ func HostLobby(w http.ResponseWriter, r *http.Request) {
 
 	roomCode, err := CreateRoom(mapId) // Assuming Engine.CreateRoom initializes room in DB
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		http.Error(w, "Unable to create room", http.StatusInternalServerError)
 		return
 	}
 	lobbyInfo, playerID, err := JoinRoom(roomCode, playerName)
 	if err != nil {
-		log.Printf("Error joining room: %v\n", err)
+		LogError(funcLogPrefix, err)
 		http.Error(w, "Unable to join room", http.StatusInternalServerError)
 		return
 	}
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Printf("Couldn't upgrade connection for player %s", playerName)
+		LogError(funcLogPrefix, err)
 		http.Error(w, "WebSocket upgrade failed", http.StatusInternalServerError)
 		return
 	}
@@ -78,6 +80,7 @@ func HostLobby(w http.ResponseWriter, r *http.Request) {
 // Given a playerName and roomCode, tries to join that room for the given player. If joining was successul,
 // the client's connection is upgraded to a websocket. Once complete, the client receives the lobby info
 func HandleJoinLobby(w http.ResponseWriter, r *http.Request) {
+	funcLogPrefix := "==HandleJoinLobby=="
 	roomCode := r.URL.Query().Get("roomCode")
 	playerName := r.URL.Query().Get("playerName")
 
@@ -88,13 +91,14 @@ func HandleJoinLobby(w http.ResponseWriter, r *http.Request) {
 
 	_, playerID, err := JoinRoom(roomCode, playerName)
 	if err != nil {
-		log.Printf("Error joining room: %v\n", err)
+		LogError(funcLogPrefix, err)
 		http.Error(w, "Unable to join room", http.StatusNotFound)
 		return
 	}
 
 	gamesClientsMutex.Lock()
 	if _, exists := gamesClients[roomCode]; !exists {
+		log.Printf("Lobby {%s} is not being tracked by the server\n", roomCode)
 		http.Error(w, "Lobby is not being tracked by server.", http.StatusInternalServerError)
 		gamesClientsMutex.Unlock()
 		return
@@ -102,6 +106,7 @@ func HandleJoinLobby(w http.ResponseWriter, r *http.Request) {
 
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		http.Error(w, "WebSocket upgrade failed", http.StatusInternalServerError)
 		gamesClientsMutex.Unlock()
 		return
@@ -121,6 +126,7 @@ func HandleJoinLobby(w http.ResponseWriter, r *http.Request) {
 // reinsert the player into the Lobby. If successful, connection is upgraded to a websocket, then, depending on whether the game has started yet
 // or not, either a LobbyInfo or GameState is sent to the player, after which they're added into the regular flow of listening for messages
 func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
+	funcLogPrefix := "==HandleRejoinLobby=="
 	log.Println("Received request to rejoin a lobby!")
 
 	roomCode := r.URL.Query().Get("roomCode")
@@ -133,6 +139,7 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 
 	lobbyInfo, err := GetLobbyFromFs(roomCode)
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		http.Error(w, "Could not find requested lobby", http.StatusNotFound)
 		return
 	}
@@ -140,7 +147,7 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 	//Make sure this player has joined the game before
 	log.Printf("Making sure player {%s} has joined this game before", playerId)
 	if !slices.ContainsFunc(lobbyInfo.Players, func(p Models.Player) bool { return p.Id == playerId }) {
-		log.Printf("No player with given ID found in lobby")
+		log.Printf("No player with given ID == {%s} found in lobby", playerId)
 		http.Error(w, "No player with given ID found in lobby", http.StatusNotFound)
 		return
 	}
@@ -149,7 +156,7 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Making sure player {%s} does not already have an open connection", playerId)
 	gamesClientsMutex.Lock()
 	if _, exists := gamesClients[roomCode][playerId]; exists {
-		log.Printf("Found already open connection for player")
+		log.Printf("Found already open connection for player with ID == {%s}", playerId)
 		http.Error(w, "Found already open connection for player", http.StatusBadRequest)
 		gamesClientsMutex.Unlock()
 		return
@@ -160,7 +167,7 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Player {%s} is allowed to rejoin. Upgrading connection to websocket.", playerId)
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Printf("WebSocket upgrade failed")
+		LogError(funcLogPrefix, err)
 		http.Error(w, "WebSocket upgrade failed", http.StatusInternalServerError)
 		return
 	}
@@ -196,6 +203,7 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 		log.Println("Game has been marked as 'In Progress' - Sending GameState...")
 		gameState, err := GetGameStateFromFs(lobbyInfo.GameStateId)
 		if err != nil {
+			LogError(funcLogPrefix, err)
 			conn.WriteJSON(Models.WebsocketMessage{
 				Type: Models.WebsocketMessage_Error,
 				Data: Models.SocketError{Message: err.Error()},
@@ -222,6 +230,7 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 // handShake sends out the lobby info to everyone currently in the room, along with the
 // name of the freshly joined player
 func handShake(roomCode string, newPlayerId string) {
+	funcLogPrefix := "==handShake=="
 	gamesClientsMutex.Lock()
 	room := gamesClients[roomCode]
 	gamesClientsMutex.Unlock()
@@ -236,11 +245,12 @@ func handShake(roomCode string, newPlayerId string) {
 	}
 	for playerId, conn := range room {
 		if err != nil {
-			log.Printf("error connecting: {%s}", err)
+			log.Printf("%s error connecting: {%s}", funcLogPrefix, err)
 		}
 		err := conn.WriteJSON(msg)
 		if err != nil {
-			log.Println("Error sending handshake, aborting connection ", playerId)
+			LogError(funcLogPrefix, err)
+			log.Printf("Error sending handshake, aborting connection of Player {%s}\n", playerId)
 			gamesClientsMutex.Lock()
 			room[playerId].Close()
 			delete(room, playerId)
@@ -254,11 +264,13 @@ func handShake(roomCode string, newPlayerId string) {
 }
 
 func manageClient(lobbyCode string, room map[string]*websocket.Conn, playerId string, conn *websocket.Conn) {
+	funcLogPrefix := "==manageClient=="
 	defer socketRecovery(lobbyCode, room, playerId)
 
 	log.Printf("Managing Connection for playerId %s and waiting for message", playerId)
 	_, msg, err := conn.ReadMessage()
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		log.Printf("Error trying to read message from player {%s}! Closing connection and stopping tracking", playerId)
 		//Disconnect client by closing connection and removing player from lobby
 		gamesClientsMutex.Lock()
@@ -272,6 +284,7 @@ func manageClient(lobbyCode string, room map[string]*websocket.Conn, playerId st
 
 // This gets called on loop per lobby
 func processMessage(roomCode string, playerId string, message []byte) {
+	funcLogPrefix := "==processMessage=="
 
 	var msg struct {
 		JsonType string          `json:"jsonType"`
@@ -301,7 +314,8 @@ func processMessage(roomCode string, playerId string, message []byte) {
 
 		game, err := GetInitialGameState(roomCode, config)
 		if err != nil {
-			log.Printf("ERROR: GAME NOT STARTED, ABORTING...%s", err)
+			LogError(funcLogPrefix, err)
+			log.Printf("ERROR: GAME NOT STARTED, ABORTING...")
 			break
 		}
 
@@ -309,7 +323,8 @@ func processMessage(roomCode string, playerId string, message []byte) {
 	case "endGame":
 		err := EndGame(roomCode, playerId)
 		if err != nil {
-			log.Printf("ERROR: Trying to end game...%s", err)
+			LogError(funcLogPrefix, err)
+			log.Printf("ERROR: Trying to end game, aborting...")
 			return
 		}
 		cleanUpRoom(room, roomCode)
@@ -335,7 +350,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 
 		messageList, err := SubmitAction(action.GameId, action.Action)
 		if err != nil {
-			log.Printf("error with submitAction: {%s}", err)
+			LogError(funcLogPrefix, err)
 			socketError := Models.WebsocketMessage{
 				Type: Models.WebsocketMessage_Error,
 				Data: Models.SocketError{
@@ -381,7 +396,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 		action.PlayerId = playerId
 		allowedMoves, err := GetPlayerAllowedMoves(action.GameId, action.PlayerId)
 		if err != nil {
-			log.Printf("error getting allowed moves: {%s}", err)
+			LogError(funcLogPrefix, err)
 			socketError := Models.WebsocketMessage{
 				Type: Models.WebsocketMessage_Error,
 				Data: Models.SocketError{
@@ -404,6 +419,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 		updatedLobby, err := endPlayerConnection(roomCode, playerId, room)
 
 		if err != nil {
+			LogError(funcLogPrefix, err)
 			socketError := Models.WebsocketMessage{
 				Type: Models.WebsocketMessage_Error,
 				Data: Models.SocketError{
@@ -434,7 +450,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 		dbLobby, err := GetLobbyFromFs(roomCode)
 
 		if err != nil {
-			log.Printf("Error trying to find lobby")
+			log.Printf("%s Error trying to find lobby: %s", funcLogPrefix, err)
 			socketError := Models.WebsocketMessage{
 				Type: Models.WebsocketMessage_Error,
 				Data: Models.SocketError{
@@ -459,6 +475,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 		updatedLobby, err := endPlayerConnection(roomCode, action.PlayerToKick, room)
 
 		if err != nil {
+			LogError(funcLogPrefix, err)
 			socketError := Models.WebsocketMessage{
 				Type: Models.WebsocketMessage_Error,
 				Data: Models.SocketError{
@@ -495,9 +512,11 @@ func processMessage(roomCode string, playerId string, message []byte) {
 }
 
 func endPlayerConnection(roomCode string, playerId string, room map[string]*websocket.Conn) (Models.Lobby, error) {
+	funcLogPrefix := "==endPlayerConnection=="
 	//Tell the engine to remove the player from the DB copy of the lobby
 	updatedLobby, err := LeaveRoom(roomCode, playerId)
 	if err != nil {
+		LogError(funcLogPrefix, err)
 		return Models.Lobby{}, err
 	}
 
