@@ -616,7 +616,7 @@ function initializeEventLog(players) {
         let button = document.createElement("button")
         button.classList.add("tablinks")
         button.onclick = () => viewPlayerEvents(player.name)
-        button.innerHTML = `${player.name}`
+        button.innerText = `${player.name}`
         tablist.appendChild(button)
 
         let log = document.createElement("div")
