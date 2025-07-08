@@ -29,6 +29,7 @@ let gameHasEnded = false;
 let playerHasMoved = false;
 let roleDescription = '';
 let showYourTurnNotification = true;
+let currentTurn = 0;
 
 const playerNameExtractor = new RegExp(/Player \'(?<PlayerName>[^\']+)\'/g);
 
@@ -583,6 +584,7 @@ function renderSpectatorView(gameState) {
 }
 
 function renderTurnNumber(turnNum, maxTurns, mapName) {
+    currentTurn = turnNum;
     var turnNumContainer = document.getElementById("turn-number")
     turnNumContainer.innerHTML = `<h4 style="margin-top: 5px">${mapName}</h4><div>Turn ${turnNum} / ${maxTurns}<div>`
 }
@@ -601,23 +603,21 @@ function getTeamColor() {
 }
 
 function initializeEventLog(players) {
-    const tablist = document.getElementById('tab-list')
+    const tablist = document.getElementById('tab-selector')
     const eventLog = document.getElementById("event-log")
 
     eventLog.onmouseleave = () => {
-        // Get all elements with class="tabcontent" and hide them
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-        }
+        document.querySelectorAll(".noiseevent").forEach(el => el.classList.remove("noiseevent"))
+        document.querySelectorAll(".cardevent").forEach(el => el.classList.remove("cardevent"))
     }
 
+    tablist.onchange = (event) => viewPlayerEvents(event.target.value);
+
     for (let player of players) {
-        let button = document.createElement("button")
-        button.classList.add("tablinks")
-        button.onclick = () => viewPlayerEvents(player.name)
-        button.innerText = `${player.name}`
-        tablist.appendChild(button)
+        let option = document.createElement("option")                
+        option.value = player.name;
+        option.innerText = `${player.name}`
+        tablist.appendChild(option)
 
         let log = document.createElement("div")
         log.id = `event-log-${player.name}`
@@ -629,8 +629,30 @@ function initializeEventLog(players) {
     if (previousEventLog) {
         let eventLog = JSON.parse(previousEventLog);
         for (let e of eventLog) {
-            addEvent(e.playerName, e.description)
+            addEvent(e.turn, e.playerName, e.description)
         }
+    }
+}
+
+function toggleEventLog(open) {    
+    let eventLogControls = document.getElementById('event-log-controls');
+    let openIcon = document.getElementById('event-toggle-open');
+    let closeIcon = document.getElementById('event-toggle-close');
+    let eventToggle = document.getElementById('event-log-toggle');
+    let tabselector = document.getElementById('tab-selector')
+
+    if (open) {
+        eventToggle.title = 'Close Event Log';
+        openIcon.style.display = 'none';
+        closeIcon.style.display = '';
+        eventLogControls.classList.add('show');
+        viewPlayerEvents(tabselector.value)
+    } else {
+        eventToggle.title = 'Open Event Log';
+        openIcon.style.display = '';
+        closeIcon.style.display = 'none';
+        eventLogControls.classList.remove('show');
+        document.querySelectorAll('.tabcontent.show').forEach(el => el.classList.remove('show'))
     }
 }
 
@@ -641,7 +663,7 @@ function viewPlayerEvents(playerName) {
     // Get all elements with class="tabcontent" and hide them
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
+        tabcontent[i].classList.remove('show')
     }
 
     // Get all elements with class="tablinks" and remove the class "active"
@@ -651,14 +673,53 @@ function viewPlayerEvents(playerName) {
     }
 
     // Show the current tab, and add an "active" class to the button that opened the tab
-    document.getElementById(`event-log-${playerName}`).style.display = "block";
+    document.getElementById(`event-log-${playerName}`).classList.add('show')
 }
 
-function addEvent(playerName, event) {
+function addEvent(turn, playerName, event) {
     const eventLogContainer = document.getElementById(`event-log-${playerName}`)
-    let eventDesc = document.createElement("p")
-    eventDesc.innerHTML = event
-    eventLogContainer.appendChild(eventDesc)
+    let thisTurnEvents = eventLogContainer.children.namedItem(`${playerName}-turn-${turn}`)
+
+    if (!thisTurnEvents) {
+        thisTurnEvents = document.createElement('div');
+        thisTurnEvents.classList = ['event-log-turn']
+        thisTurnEvents.id = `${playerName}-turn-${turn}`
+        thisTurnEvents.innerText = `Turn ${turn}`
+        eventLogContainer.appendChild(thisTurnEvents)
+    }
+
+    let eventDesc = document.createElement("p");
+    eventDesc.classList = ['event-log-turn-entry'];
+    eventDesc.innerHTML = event;
+    eventDesc.onmouseover = _ => highlightEventLogSpace(eventDesc.innerText)
+    thisTurnEvents.appendChild(eventDesc);
+}
+
+function highlightEventLogSpace(eventText) {
+    console.log(eventText)
+    const noiseSpaceExtractor = new RegExp(/made noise at \[(?<Column>[A-Z]+)-(?<Row>\d+)\]/g)
+    const regularSpaceExtractor = new RegExp(/\[(?<Column>[A-Z]+)-(?<Row>\d)\]/g)
+    
+    document.querySelectorAll(".noiseevent").forEach(el => {el.classList.remove("noiseevent");})
+    document.querySelectorAll(".cardevent").forEach(el => {el.classList.remove("cardevent");})
+    let match = noiseSpaceExtractor.exec(eventText);
+    if (match) {
+        let col = match.groups.Column;
+        let row = match.groups.Row;
+        if (col && row) {
+            document.getElementById(`hex-${col}-${row}`).classList.add("noiseevent")
+            return;
+        }
+    }
+    match = regularSpaceExtractor.exec(eventText);
+    if (match) {
+        let col = match.groups.Column;
+        let row = match.groups.Row;
+        if (col && row) {
+            document.getElementById(`hex-${col}-${row}`).classList.add("cardevent")
+            return;
+        }
+    }
 }
 
 async function saveEventToLocalStorage(playerName, eventDescription) {
@@ -667,7 +728,7 @@ async function saveEventToLocalStorage(playerName, eventDescription) {
     if (localStorageLog) {
         eventLog = JSON.parse(localStorageLog)
     }
-    eventLog.push({ playerName: playerName, description: eventDescription })
+    eventLog.push({ turn: currentTurn, playerName: playerName, description: eventDescription })
     window.localStorage.setItem('efaios-eventlog', JSON.stringify(eventLog))
 }
 

@@ -58,7 +58,7 @@
 <script src="/assets/js/utils.js"></script>
 <script src="/assets/js/mapdrawer.js"></script>
 <script>
-    const spaceExtractor = new RegExp(/(?:Moved to|Started in) \[(?<Column>[A-Z]+)-(?<Row>\d)\]/g);
+    const spaceExtractor = new RegExp(/(?:Moved to|Started in) \[(?<Column>[A-Z]+)-(?<Row>\d+)\]/g);
 
     function setDetailsVisible(playerId) {
         document.querySelectorAll(".player-details").forEach(el => el.style.display = 'none')

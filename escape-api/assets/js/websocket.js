@@ -114,7 +114,7 @@ async function handleGameEventMessage(gameEvent) {
     if (matches?.length > 0) {
         for (let match of matches) {
             if (!playersMentionedInThisEvent.includes(match.groups.PlayerName)) { //Only add one entry if a player is mentioned multiple times
-                addEvent(match.groups.PlayerName, gameEvent.description)
+                addEvent(currentTurn, match.groups.PlayerName, gameEvent.description)
                 saveEventToLocalStorage(match.groups.PlayerName, gameEvent.description)
                 playersMentionedInThisEvent.push(match.groups.PlayerName)
             }

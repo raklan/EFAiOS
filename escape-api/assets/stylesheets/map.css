@@ -6,12 +6,14 @@
     --space-dangerous: gray;
     --space-humanstart: var(--human-color);
     --space-alienstart: var(--alien-color);
-    --space-selected: orange;
+    --space-selected: lime;
     --space-player: gold;
     --space-playerhuman: rgb(22, 116, 238);
     --space-playeralien: red;
     --space-playerboth: mediumpurple;
     --space-hover: yellow;
+    --space-noiseevent: rgb(255, 237, 134);
+    --space-cardevent: orange;
 }
 
 .hexfield {
@@ -77,9 +79,18 @@
     fill: var(--space-playerboth);
 }
 
+.hexfield.noiseevent{
+    fill: var(--space-noiseevent);
+}
+
+.hexfield.cardevent{
+    fill: var(--space-cardevent);
+}
+
 .hexfield:hover {
     fill: var(--space-hover);
 }
+
 
 #spaceHoverTooltip {
     display: none;

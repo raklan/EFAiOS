@@ -54,7 +54,8 @@
 }
 
 #role {
-    top: 100px;    
+    top: 100px;
+
     .tooltip {
         visibility: hidden;
         position: absolute;
@@ -181,49 +182,69 @@
     }
 }
 
-#event-log {
+#event-log-controls {
     position: fixed;
+    top: 15%;
+    width: 20%;
+    left: -329px;
+    height: 65%;
+    padding-left: 5px;
+    display: grid;
+    grid-template-columns: 10fr 1fr;
+    transition: all 0.3s ease-in-out;
+}
+
+#event-log-controls.show {
+    left: 0px;
+    transition: all 0.3s ease-in-out;
+}
+
+#event-log-toggle {
+    cursor: pointer;
+    align-self: start;
+    justify-self: end;
+    padding: 5px;
+    padding-bottom: 0px;
+    border: 1px solid lime;
+    width: fit-content;
+}
+
+#event-log {
+    max-height: inherit;
+    height: inherit;
+    border: 1px solid white;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.tab-selector {
+    padding: 10px;
+    background-color: black;
+    font-family: inherit;
+    color: white;
+    option{
+        background-color: black;
+        color: white;
+        font-family: inherit;
+    }
+}
+
+.tabcontent {
+    transition: all 0.3s;
+    opacity: 0;
+    padding: 6px 12px;
+    border-top: none;
     background-color: black;
     overflow-y: auto;
     scrollbar-color: white black;
-    max-height: 80%;
-    width: 20%;
-    left: -15%;
-    transition: all 0.3s ease-in-out;
-    max-height: 60%;
-}
-
-#event-log:hover {
-    transform: translateX(75%);
-    transition: all 0.3s ease-in-out;
-}
-
-/* Style the tab */
-.tab-list {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    border: 1px solid white;
-}
-
-/* Style the buttons that are used to open the tab content */
-.tab-list button {
-    max-width: 90%;
-    overflow: hidden;
-    background-color: inherit;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-/* Style the tab content */
-.tabcontent {
     display: none;
-    padding: 6px 12px;
-    border: 1px solid white;
-    border-top: none;
-    background-color: black;
+}
+
+.tabcontent.show {
+    transition: all 0.3s;
+    opacity: 1;
+    display: block;
 }
 
 .tabcontent p {
@@ -240,27 +261,35 @@
     justify-items: center;
 }
 
-@media (max-width: 1000px){
-    .card{
+.event-log-turn {
+    .event-log-turn-entry {
+        border-bottom: 1px solid rgb(70 70 70);
+        color: rgb(0, 179, 0);
+        cursor: default;
+    }
+}
+
+@media (max-width: 1000px) {
+    .card {
         width: 100px;
         height: 125px;
     }
 
-    #cards{
+    #cards {
         bottom: -100px
     }
 
-    .player-card{
+    .player-card {
         height: 50px;
         width: 110px;
         right: -90px;
     }
 
-    #role{
+    #role {
         top: 75px;
     }
 
-    #status-effects{
+    #status-effects {
         height: 75px;
         top: 150px;
     }
