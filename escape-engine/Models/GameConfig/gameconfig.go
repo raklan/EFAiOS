@@ -22,6 +22,8 @@ type GameConfig struct {
 	NumTurns int `json:"numTurns"`
 	//Whether Alien players should join the Spectators team upon death
 	AliensRespawn bool `json:"aliensRespawn"`
+	//Whether players' turns should automatically end after moving (and choosing to attack, for aliens) if there are no cards in their hand
+	AutoTurnEnd bool `json:"autoTurnEnd"`
 	//Which cards should be active, as well as how many of each
 	ActiveCards map[string]int `json:"activeCards"`
 	//Which roles should be active, as well as the maximum number allowed to be present. Should be >= that role's presence in RequiredRoles, if it's required
@@ -44,6 +46,7 @@ func GetConfigPresets() []GameConfigPreset {
 				NumBrokenPods:  1,
 				NumTurns:       40,
 				AliensRespawn:  false,
+				AutoTurnEnd:    false,
 				ActiveCards: map[string]int{
 					"Red Card":   24,
 					"Green Card": 26,
@@ -107,6 +110,7 @@ func GetConfigPresets() []GameConfigPreset {
 				NumBrokenPods:  1,
 				NumTurns:       40,
 				AliensRespawn:  false,
+				AutoTurnEnd:    false,
 				ActiveCards: map[string]int{
 					"Red Card":   24,
 					"Green Card": 26,

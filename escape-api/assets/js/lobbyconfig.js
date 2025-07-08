@@ -4,6 +4,7 @@ const GAME_CONFIG_DEFAULT = {
 
     numTurns: 40,
     aliensRespawn: false,
+    autoTurnEnd: false,
 
     activeCards: {
         'Red Card': 24,
@@ -66,7 +67,8 @@ function setGeneralConfig(configObject) {
     configForm['config-numBrokenPods'].value = configObject.numBrokenPods;
 
     configForm['config-numTurns'].value = configObject.numTurns;
-    configForm['config-aliensRespawn'].checked = configObject.aliensRespawn
+    configForm['config-aliensRespawn'].checked = configObject.aliensRespawn;
+    configForm['config-autoTurnEnd'].checked = configObject.autoTurnEnd;
 }
 
 function setCardConfig(configObject) {
@@ -141,6 +143,7 @@ function getGameConfig() {
 
     config.numTurns = getConfigValue('config-numTurns')
     config.aliensRespawn = configForm['config-aliensRespawn']?.checked;
+    config.autoTurnEnd = configForm['config-autoTurnEnd']?.checked;
 
     config.activeCards = {
         "Red Card": getConfigValue('config-numRedCards'),

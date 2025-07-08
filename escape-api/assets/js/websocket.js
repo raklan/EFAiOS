@@ -129,6 +129,10 @@ async function handleTurnEnd(turnEnd) {
         renderStatusEffects();
         clickMode = ClickModes.None;
         document.getElementById("endTurn-button").style.display = ''
+
+        if(autoTurnEnd && turnEnd.playerCurrentState.hand.length == 0){
+            endTurn();
+        }
     }
 }
 
@@ -137,8 +141,9 @@ async function handleGameOverMessage(messageData) {
     showGameOver();
     let roomCode = JSON.parse(window.localStorage.getItem("efaios-connectionInfo")).roomCode
     document.getElementById('gameover-recap-link').setAttribute('href', `/recap?roomCode=${roomCode}`)
-    window.localStorage.removeItem('efaios-connectionInfo')
-    window.localStorage.removeItem('efaios-eventlog')
+    window.localStorage.removeItem('efaios-connectionInfo');
+    window.localStorage.removeItem('efaios-eventlog');
+    window.localStorage.removeItem('efaios-playermoved');
 }
 
 async function handleGameStateMessage(gameState) {
@@ -168,6 +173,8 @@ async function handleGameStateMessage(gameState) {
             var playerSpace = document.getElementById(`hex-${thisPlayer.col}-${thisPlayer.row}`)
             playerSpace.classList.add('player')
         }
+
+        autoTurnEnd = gameState.gameMap.gameConfig.autoTurnEnd;
     }
     drawMap(gameState.gameMap)
 
@@ -208,7 +215,7 @@ async function handleGameStateMessage(gameState) {
     renderStatusEffects();
     renderPlayerHand();
     renderTurnOrder();
-    renderTurnNumber(gameState.turn, gameState.gameMap.gameConfig.numTurns, gameState.gameMap.name);
+    renderTurnNumber(gameState.turn, gameState.gameMap.gameConfig.numTurns, gameState.gameMap.name, isThisPlayersTurn);
 }
 
 async function handleLobbyInfoMessage(messageData) {

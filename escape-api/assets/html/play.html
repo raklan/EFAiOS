@@ -121,6 +121,11 @@
                         <input type="checkbox" name="config-aliensRespawn" />
                         <div class="checkmark"></div>
                     </label>
+                    <label class="checkbox-container">
+                        <span>Auto Turn End</span>
+                        <input type="checkbox" name="config-autoTurnEnd" />
+                        <div class="checkmark"></div>
+                    </label>
                 </div>
             </div>
             <div id="config-cards" style="display: none;">
@@ -491,11 +496,13 @@
 
         switch (connectionInfo.type) {
             case "host":
-                window.localStorage.removeItem('efaios-eventlog')
+                window.localStorage.removeItem('efaios-eventlog');
+                window.localStorage.removeItem('efaios-playermoved');
                 urlToConnect = `http://${window.location.host}/lobby/host?mapId=${connectionInfo.mapId}&playerName=${connectionInfo.playerName}`
                 break;
             case "join":
-                window.localStorage.removeItem('efaios-eventlog')
+                window.localStorage.removeItem('efaios-eventlog');
+                window.localStorage.removeItem('efaios-playermoved');
                 urlToConnect = `http://${window.location.host}/lobby/join?roomCode=${connectionInfo.roomCode}&playerName=${connectionInfo.playerName}`
                 break;
             case "rejoin":
@@ -519,9 +526,9 @@
         })
 
         addEventListener('beforeunload', (event) => {
-            console.log('leaving page, closing websocket connection')
-            sendWsMessage(ws, 'disconnect', {})
-            ws.close();
+            console.log('leaving page, closing websocket connection');
+            sendWsMessage(ws, 'disconnect', {});
+            ws.close();            
         })
     }
 
