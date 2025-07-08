@@ -1,6 +1,7 @@
 package Models
 
 var RoleAssigners = map[string]func(*Player){
+	//Vanilla
 	Role_Captain:          AssignCaptain,
 	Role_Pilot:            AssignPilot,
 	Role_Copilot:          AssignCopilot,
@@ -18,9 +19,16 @@ var RoleAssigners = map[string]func(*Player){
 	Role_InvisibleAlien: AssignInvisibleAlien,
 	Role_LurkingAlien:   AssignLurkingAlien,
 	Role_PsychicAlien:   AssignPsychicAlien,
+
+	Role_Scout:                 AssignScout,
+	Role_CommunicationsOfficer: AssignCommunicationsOfficer,
+
+	Role_TrackerAlien: AssignTrackerAlien,
+	Role_CallingAlien: AssignCallingAlien,
 }
 
 var RoleTeams = map[string]string{
+	//Vanilla
 	Role_Captain:          PlayerTeam_Human,
 	Role_Pilot:            PlayerTeam_Human,
 	Role_Copilot:          PlayerTeam_Human,
@@ -38,9 +46,17 @@ var RoleTeams = map[string]string{
 	Role_InvisibleAlien: PlayerTeam_Alien,
 	Role_LurkingAlien:   PlayerTeam_Alien,
 	Role_PsychicAlien:   PlayerTeam_Alien,
+
+	//Raklan's Arsenal
+	Role_Scout:                 PlayerTeam_Human,
+	Role_CommunicationsOfficer: PlayerTeam_Human,
+
+	Role_CallingAlien: PlayerTeam_Alien,
+	Role_TrackerAlien: PlayerTeam_Alien,
 }
 
 var RoleDescriptions = map[string]string{
+	//Vanilla
 	Role_Captain:          "You start with 1 stack of the Sedated Status Effect",
 	Role_Pilot:            "You start with 1 Cat card",
 	Role_Copilot:          "You start with 1 Teleport card",
@@ -58,9 +74,17 @@ var RoleDescriptions = map[string]string{
 	Role_InvisibleAlien: "You permanently gain the Invisible Status Effect",
 	Role_LurkingAlien:   "You permanently gain the Lurking Status Effect",
 	Role_PsychicAlien:   "You permanently gain the Deceptive Status Effect",
+
+	//Raklan's Arsenal
+	Role_Scout:                 "You start with 1 stack of the Invisible Status Effect",
+	Role_CommunicationsOfficer: "You start with 1 Noisemaker card",
+
+	Role_CallingAlien: "You start with 1 Cat card",
+	Role_TrackerAlien: "You start with 1 Spotlight card",
 }
 
 const (
+	//Vanilla
 	Role_Captain          = "Captain"
 	Role_Pilot            = "Pilot"
 	Role_Copilot          = "Copilot"
@@ -78,6 +102,13 @@ const (
 	Role_InvisibleAlien = "Invisible"
 	Role_LurkingAlien   = "Lurking"
 	Role_PsychicAlien   = "Psychic"
+
+	//Raklan's Arsenal
+	Role_Scout                 = "Scout"
+	Role_CommunicationsOfficer = "Communications Officer"
+
+	Role_CallingAlien = "Calling"
+	Role_TrackerAlien = "Tracker"
 )
 
 //#region Human Roles
@@ -145,7 +176,7 @@ func AssignSurgeAlien(player *Player) {
 	player.Hand = append(player.Hand, adr)
 }
 
-func AssignBlinkAlien(player *Player) { //TODO: This can allow the blink alien to instantly get to the human sector
+func AssignBlinkAlien(player *Player) {
 	player.Role = Role_BlinkAlien
 	tp := NewTeleport()
 	tp.DestroyOnUse = true
@@ -185,4 +216,31 @@ func AssignPsychicAlien(player *Player) {
 	dec := NewDeceptive()
 	dec.UsesLeft = 1000
 	player.StatusEffects = append(player.StatusEffects, dec)
+}
+
+// #region Raklan's Arsenal
+func AssignScout(player *Player) {
+	player.Role = Role_Scout
+	player.StatusEffects = append(player.StatusEffects, NewInvisible())
+}
+
+func AssignCommunicationsOfficer(player *Player) {
+	player.Role = Role_CommunicationsOfficer
+	nm := NewNoisemaker()
+	nm.DestroyOnUse = true
+	player.Hand = append(player.Hand, nm)
+}
+
+func AssignTrackerAlien(player *Player) {
+	player.Role = Role_TrackerAlien
+	spotlight := NewSpotlight()
+	spotlight.DestroyOnUse = true
+	player.Hand = append(player.Hand, spotlight)
+}
+
+func AssignCallingAlien(player *Player) {
+	player.Role = Role_CallingAlien
+	cat := NewCat()
+	cat.DestroyOnUse = true
+	player.Hand = append(player.Hand, cat)
 }

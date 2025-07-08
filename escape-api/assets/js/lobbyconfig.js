@@ -39,7 +39,7 @@ const GAME_CONFIG_DEFAULT = {
         Silent: 1,
         Brute: 1,
         Invisible: 1,
-        Lurking: 1, 
+        Lurking: 1,
         Psychic: 1
     },
 }
@@ -50,7 +50,7 @@ function setConfigFormFromObject(configObject) {
     setRoleConfig(configObject);
 }
 
-function setConfigFormFromString(configString){
+function setConfigFormFromString(configString) {
     const configObject = JSON.parse(configString);
     setGeneralConfig(configObject);
     setCardConfig(configObject);
@@ -60,75 +60,90 @@ function setConfigFormFromString(configString){
 function setGeneralConfig(configObject) {
     let configForm = document.getElementById("lobby-gameConfig")
 
-    configForm['config-numHumans'].value = configObject.numHumans;
-    configForm['config-numAliens'].value = configObject.numAliens;
+    setConfigInputValue('config-numHumans', configObject.numHumans);
+    setConfigInputValue('config-numAliens', configObject.numAliens);
 
-    configForm['config-numWorkingPods'].value = configObject.numWorkingPods;
-    configForm['config-numBrokenPods'].value = configObject.numBrokenPods;
+    setConfigInputValue('config-numWorkingPods', configObject.numWorkingPods);
+    setConfigInputValue('config-numBrokenPods', configObject.numBrokenPods);
 
-    configForm['config-numTurns'].value = configObject.numTurns;
+    setConfigInputValue('config-numTurns', configObject.numTurns);
     configForm['config-aliensRespawn'].checked = configObject.aliensRespawn;
     configForm['config-autoTurnEnd'].checked = configObject.autoTurnEnd;
 }
 
 function setCardConfig(configObject) {
-    let configForm = document.getElementById("lobby-gameConfig")
+    setConfigInputValue('config-numRedCards', configObject.activeCards['Red Card']);
+    setConfigInputValue('config-numGreenCards', configObject.activeCards['Green Card']);
+    setConfigInputValue('config-numWhiteCards', configObject.activeCards['White Card']);
 
-    configForm['config-numRedCards'].value = configObject.activeCards['Red Card'];
-    configForm['config-numGreenCards'].value = configObject.activeCards['Green Card'];
-    configForm['config-numWhiteCards'].value = configObject.activeCards['White Card'];
+    setConfigInputValue('config-numTeleport', configObject.activeCards.Teleport);
+    setConfigInputValue('config-numClone', configObject.activeCards.Clone);
+    setConfigInputValue('config-numDefense', configObject.activeCards.Defense);
 
-    configForm['config-numTeleport'].value = configObject.activeCards.Teleport;
-    configForm['config-numClone'].value = configObject.activeCards.Clone;
-    configForm['config-numDefense'].value = configObject.activeCards.Defense;
+    setConfigInputValue('config-numSpotlight', configObject.activeCards.Spotlight);
+    setConfigInputValue('config-numAttack', configObject.activeCards.Attack);
+    setConfigInputValue('config-numSensor', configObject.activeCards.Sensor);
 
-    configForm['config-numSpotlight'].value = configObject.activeCards.Spotlight;
-    configForm['config-numAttack'].value = configObject.activeCards.Attack;
-    configForm['config-numSensor'].value = configObject.activeCards.Sensor;
+    setConfigInputValue('config-numAdrenaline', configObject.activeCards.Adrenaline);
+    setConfigInputValue('config-numSedatives', configObject.activeCards.Sedatives);
+    setConfigInputValue('config-numCat', configObject.activeCards.Cat);
+    setConfigInputValue('config-numMutation', configObject.activeCards.Mutation);
 
-    configForm['config-numAdrenaline'].value = configObject.activeCards.Adrenaline;
-    configForm['config-numSedatives'].value = configObject.activeCards.Sedatives;
-    configForm['config-numCat'].value = configObject.activeCards.Cat;
-    configForm['config-numMutation'].value = configObject.activeCards.Mutation;
+    setConfigInputValue('config-numHidingSpot', configObject.activeCards['Hiding Spot']);
+    setConfigInputValue('config-numCloakingDevice', configObject.activeCards['Cloaking Device']);
+    setConfigInputValue('config-numEngineeringManual', configObject.activeCards['Engineering Manual']);
+    setConfigInputValue('config-numNoisemaker', configObject.activeCards.Noisemaker);
 }
 
 function setRoleConfig(configObject) {
     let configForm = document.getElementById("lobby-gameConfig")
-    configForm['config-numCaptain'].value = configObject.activeRoles.Captain;
-    configForm['config-numPilot'].value = configObject.activeRoles.Pilot;
-    configForm['config-numCopilot'].value = configObject.activeRoles.Copilot;
-    configForm['config-numSoldier'].value = configObject.activeRoles.Soldier;
-    configForm['config-numEngineer'].value = configObject.activeRoles.Engineer;
-    configForm['config-numPsychologist'].value = configObject.activeRoles.Psychologist;
-    configForm['config-numEO'].value = configObject.activeRoles['Executive Officer'];
-    configForm['config-numMedic'].value = configObject.activeRoles.Medic;
+    setConfigInputValue('config-numCaptain', configObject.activeRoles.Captain);
+    setConfigInputValue('config-numPilot', configObject.activeRoles.Pilot);
+    setConfigInputValue('config-numCopilot', configObject.activeRoles.Copilot);
+    setConfigInputValue('config-numSoldier', configObject.activeRoles.Soldier);
+    setConfigInputValue('config-numEngineer', configObject.activeRoles.Engineer);
+    setConfigInputValue('config-numPsychologist', configObject.activeRoles.Psychologist);
+    setConfigInputValue('config-numEO', configObject.activeRoles['Executive Officer']);
+    setConfigInputValue('config-numMedic', configObject.activeRoles.Medic);
 
-    configForm['config-numFast'].value = configObject.activeRoles.Fast;
-    configForm['config-numSurge'].value = configObject.activeRoles.Surge;
-    configForm['config-numBlink'].value = configObject.activeRoles.Blink;
-    configForm['config-numSilent'].value = configObject.activeRoles.Silent;
-    configForm['config-numBrute'].value = configObject.activeRoles.Brute;
-    configForm['config-numInvisible'].value = configObject.activeRoles.Invisible;
-    configForm['config-numLurking'].value = configObject.activeRoles.Lurking;
-    configForm['config-numPsychic'].value = configObject.activeRoles.Psychic;
+    setConfigInputValue('config-numFast', configObject.activeRoles.Fast);
+    setConfigInputValue('config-numSurge', configObject.activeRoles.Surge);
+    setConfigInputValue('config-numBlink', configObject.activeRoles.Blink);
+    setConfigInputValue('config-numSilent', configObject.activeRoles.Silent);
+    setConfigInputValue('config-numBrute', configObject.activeRoles.Brute);
+    setConfigInputValue('config-numInvisible', configObject.activeRoles.Invisible);
+    setConfigInputValue('config-numLurking', configObject.activeRoles.Lurking);
+    setConfigInputValue('config-numPsychic', configObject.activeRoles.Psychic);
 
-    configForm['config-numCaptainRequired'].value = configObject.requiredRoles.Captain;
-    configForm['config-numPilotRequired'].value = configObject.requiredRoles.Pilot;
-    configForm['config-numCopilotRequired'].value = configObject.requiredRoles.Copilot;
-    configForm['config-numSoldierRequired'].value = configObject.requiredRoles.Soldier;
-    configForm['config-numEngineerRequired'].value = configObject.requiredRoles.Engineer;
-    configForm['config-numPsychologistRequired'].value = configObject.requiredRoles.Psychologist;
-    configForm['config-numEORequired'].value = configObject.requiredRoles['Executive Officer'];
-    configForm['config-numMedicRequired'].value = configObject.requiredRoles.Medic;
+    setConfigInputValue('config-numCaptainRequired', configObject.requiredRoles.Captain);
+    setConfigInputValue('config-numPilotRequired', configObject.requiredRoles.Pilot);
+    setConfigInputValue('config-numCopilotRequired', configObject.requiredRoles.Copilot);
+    setConfigInputValue('config-numSoldierRequired', configObject.requiredRoles.Soldier);
+    setConfigInputValue('config-numEngineerRequired', configObject.requiredRoles.Engineer);
+    setConfigInputValue('config-numPsychologistRequired', configObject.requiredRoles.Psychologist);
+    setConfigInputValue('config-numEORequired', configObject.requiredRoles['Executive Officer']);
+    setConfigInputValue('config-numMedicRequired', configObject.requiredRoles.Medic);
 
-    configForm['config-numFastRequired'].value = configObject.requiredRoles.Fast;
-    configForm['config-numSurgeRequired'].value = configObject.requiredRoles.Surge;
-    configForm['config-numBlinkRequired'].value = configObject.requiredRoles.Blink;
-    configForm['config-numSilentRequired'].value = configObject.requiredRoles.Silent;
-    configForm['config-numBruteRequired'].value = configObject.requiredRoles.Brute;
-    configForm['config-numInvisibleRequired'].value = configObject.requiredRoles.Invisible;
-    configForm['config-numLurkingRequired'].value = configObject.requiredRoles.Lurking;
-    configForm['config-numPsychicRequired'].value = configObject.requiredRoles.Psychic;
+    setConfigInputValue('config-numFastRequired', configObject.requiredRoles.Fast);
+    setConfigInputValue('config-numSurgeRequired', configObject.requiredRoles.Surge);
+    setConfigInputValue('config-numBlinkRequired', configObject.requiredRoles.Blink);
+    setConfigInputValue('config-numSilentRequired', configObject.requiredRoles.Silent);
+    setConfigInputValue('config-numBruteRequired', configObject.requiredRoles.Brute);
+    setConfigInputValue('config-numInvisibleRequired', configObject.requiredRoles.Invisible);
+    setConfigInputValue('config-numLurkingRequired', configObject.requiredRoles.Lurking);
+    setConfigInputValue('config-numPsychicRequired', configObject.requiredRoles.Psychic);
+
+    setConfigInputValue('config-numScout', configObject.activeRoles.Scout);
+    setConfigInputValue('config-numCommunicationsOfficer', configObject.activeRoles['Communications Officer']);
+
+    setConfigInputValue('config-numTracker', configObject.activeRoles.Tracker);
+    setConfigInputValue('config-numCalling', configObject.activeRoles.Calling);
+
+    setConfigInputValue('config-numScoutRequired', configObject.requiredRoles.Scout);
+    setConfigInputValue('config-numCommunicationsOfficerRequired', configObject.requiredRoles['Communications Officer']);
+
+    setConfigInputValue('config-numTrackerRequired', configObject.requiredRoles.Tracker);
+    setConfigInputValue('config-numCallingRequired', configObject.requiredRoles.Calling);
 }
 
 function getGameConfig() {
@@ -159,6 +174,11 @@ function getGameConfig() {
         "Sedatives": getConfigValue('config-numSedatives'),
         "Cat": getConfigValue('config-numCat'),
         "Mutation": getConfigValue('config-numMutation'),
+
+        "Hiding Spot": getConfigValue('config-numHidingSpot'),
+        "Cloaking Device": getConfigValue('config-numCloakingDevice'),
+        "Engineering Manual": getConfigValue('config-numEngineeringManual'),
+        "Noisemaker": getConfigValue('config-numNoisemaker')
     }
 
     config.activeStatusEffects = {
@@ -184,6 +204,12 @@ function getGameConfig() {
         "Invisible": getConfigValue('config-numInvisible'),
         "Lurking": getConfigValue('config-numLurking'),
         "Psychic": getConfigValue('config-numPsychic'),
+
+        'Scout': getConfigValue('config-numScout'),
+        'Communications Officer': getConfigValue('config-numCommunicationsOfficer'),
+
+        'Tracker': getConfigValue('config-numTracker'),
+        'Calling': getConfigValue('config-numCalling'),
     }
 
     config.requiredRoles = {
@@ -204,6 +230,12 @@ function getGameConfig() {
         "Invisible": getConfigValue('config-numInvisibleRequired'),
         "Lurking": getConfigValue('config-numLurkingRequired'),
         "Psychic": getConfigValue('config-numPsychicRequired'),
+
+        'Scout': getConfigValue('config-numScoutRequired'),
+        'Communications Officer': getConfigValue('config-numCommunicationsOfficerRequired'),
+
+        'Tracker': getConfigValue('config-numTrackerRequired'),
+        'Calling': getConfigValue('config-numCallingRequired'),
     }
 
     function getConfigValue(inputKey) {
@@ -211,6 +243,11 @@ function getGameConfig() {
     }
 
     return config;
+}
+
+function setConfigInputValue(inputName, val) {
+    let configForm = document.getElementById("lobby-gameConfig")
+    configForm[inputName].value = val ?? 0;
 }
 
 function updatePossible(inputName) {

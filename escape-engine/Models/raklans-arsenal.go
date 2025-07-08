@@ -43,3 +43,103 @@ func (c UnstableTeleporter) Play(gameState *GameState, details CardPlayDetails) 
 
 	return fmt.Sprintf("Player '%s' used an Unstable Teleporter! Player '%s' and Player '%s' switched places!", activePlayer.Name, player1.Name, player2.Name)
 }
+
+// #region Hiding Spot
+type HidingSpot struct {
+	CardBase
+}
+
+func NewHidingSpot() *HidingSpot {
+	return &HidingSpot{
+		CardBase: CardBase{
+			Name:        "Hiding Spot",
+			Description: "Allows you to end your turn in the same spot you started it.",
+			Type:        Card_White,
+		},
+	}
+}
+
+func (c HidingSpot) Play(gameState *GameState, details CardPlayDetails) string {
+	activePlayer := gameState.GetCurrentPlayer()
+
+	activePlayer.AddStatusEffect(StatusEffect_Lurking, NewLurking)
+
+	go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played %s, gaining one stack of %s", c.Name, StatusEffect_Lurking))
+
+	return fmt.Sprintf("Player '%s' used a Hiding Spot! They can choose not to move at any time!", activePlayer.Name)
+}
+
+// #region Cloaking Device
+type CloakingDevice struct {
+	CardBase
+}
+
+func NewCloakingDevice() *CloakingDevice {
+	return &CloakingDevice{
+		CardBase: CardBase{
+			Name:        "Cloaking Device",
+			Description: "Hides you from the next Spotlight or Sensor that would reveal your location",
+			Type:        Card_White,
+		},
+	}
+}
+
+func (c CloakingDevice) Play(gameState *GameState, details CardPlayDetails) string {
+	activePlayer := gameState.GetCurrentPlayer()
+
+	activePlayer.AddStatusEffect(StatusEffect_Invisible, NewInvisible)
+
+	go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played %s, gaining one stack of %s", c.Name, StatusEffect_Invisible))
+
+	return fmt.Sprintf("Player '%s' used a Cloaking Device! They will be hidden from the next Spotlight or Sensor that would reveal their location!", activePlayer.Name)
+}
+
+// #region Engineering Manual
+type EngineeringManual struct {
+	CardBase
+}
+
+func NewEngineeringManual() *EngineeringManual {
+	return &EngineeringManual{
+		CardBase: CardBase{
+			Name:        "Engineering Manual",
+			Description: "Allows you to draw 2 Escape Pod cards from the next Escape Pod you try to use",
+			Type:        Card_White,
+		},
+	}
+}
+
+func (c EngineeringManual) Play(gameState *GameState, details CardPlayDetails) string {
+	activePlayer := gameState.GetCurrentPlayer()
+
+	activePlayer.AddStatusEffect(StatusEffect_Knowhow, NewKnowhow)
+
+	go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played %s, gaining one stack of %s", c.Name, StatusEffect_Knowhow))
+
+	return fmt.Sprintf("Player '%s' used an Engineering Manual! They can draw 2 Escape Pod cards from the next Escape Pod they enter!", activePlayer.Name)
+}
+
+// #region Noisemaker
+type Noisemaker struct {
+	CardBase
+}
+
+func NewNoisemaker() *Noisemaker {
+	return &Noisemaker{
+		CardBase: CardBase{
+			Name:        "Noisemaker",
+			Description: "Allows you to choose a sector to make noise in the next time you draw a White Card.",
+			Type:        Card_White,
+		},
+	}
+}
+
+func (c Noisemaker) Play(gameState *GameState, details CardPlayDetails) string {
+	activePlayer := gameState.GetCurrentPlayer()
+
+	activePlayer.AddStatusEffect(StatusEffect_Deceptive, NewDeceptive)
+
+	go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played %s, gaining one stack of %s", c.Name, StatusEffect_Deceptive))
+
+	return fmt.Sprintf("Player '%s' used a Noisemaker! They can choose a sector to make noise in the next time they draw a White Card!", activePlayer.Name)
+}

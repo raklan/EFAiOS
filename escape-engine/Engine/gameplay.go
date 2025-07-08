@@ -584,6 +584,22 @@ func assignCards(gameState *Models.GameState, activeCards map[string]int) {
 			for range num {
 				gameState.Deck = append(gameState.Deck, Models.NewUnstableTeleporter())
 			}
+		case "Hiding Spot":
+			for range num {
+				gameState.Deck = append(gameState.Deck, Models.NewHidingSpot())
+			}
+		case "Cloaking Device":
+			for range num {
+				gameState.Deck = append(gameState.Deck, Models.NewCloakingDevice())
+			}
+		case "Engineering Manual":
+			for range num {
+				gameState.Deck = append(gameState.Deck, Models.NewEngineeringManual())
+			}
+		case "Noisemaker":
+			for range num {
+				gameState.Deck = append(gameState.Deck, Models.NewNoisemaker())
+			}
 		}
 	}
 }

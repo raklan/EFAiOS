@@ -111,6 +111,11 @@
                         <input type="checkbox" name="config-aliensRespawn" />
                         <div class="checkmark"></div>
                     </label>
+                    <label class="checkbox-container">
+                        <span>Auto Turn End</span>
+                        <input type="checkbox" name="config-autoTurnEnd" />
+                        <div class="checkmark"></div>
+                    </label>
                 </div>
             </div>
             <div id="config-cards" style="display: none;">
@@ -187,6 +192,29 @@
                     <label class="text-input-label">
                         <span>Mutation</span>
                         <input type="number" min="0" class="text-input" name="config-numMutation"
+                            placeholder="# of Cards" />
+                    </label>
+                </div>
+                <h2>Raklan's Arsenal</h2>
+                <div style="display: flex; justify-content: space-evenly;">
+                    <label class="text-input-label">
+                        <span>Hiding Spot</span>
+                        <input type="number" min="0" class="text-input" name="config-numHidingSpot"
+                            placeholder="# of Cards" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Cloaking Device</span>
+                        <input type="number" min="0" class="text-input" name="config-numCloakingDevice"
+                            placeholder="# of Cards" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Engineering Manual</span>
+                        <input type="number" min="0" class="text-input" name="config-numEngineeringManual"
+                            placeholder="# of Cards" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Noisemaker</span>
+                        <input type="number" min="0" class="text-input" name="config-numNoisemaker"
                             placeholder="# of Cards" />
                     </label>
                 </div>
@@ -344,6 +372,48 @@
                         <span>Required</span>
                         <input type="number" min="0" class="text-input" name="config-numPsychicRequired"
                             placeholder="# Required" onchange="updatePossible('numPsychic')" />
+                    </label>
+                </div>
+                <h2 style="color: deepskyblue">Raklan's Arsenal - Humans</h2>
+                <div style="display: flex; justify-content: space-evenly;">
+                    <label class="text-input-label" style="color: deepskyblue">
+                        Scout
+                        <span>Available</span>
+                        <input type="number" min="0" class="text-input" name="config-numScout"
+                            placeholder="# Possible" onchange="checkPossible('numScout')" />
+                        <span>Required</span>
+                        <input type="number" min="0" class="text-input" name="config-numScoutRequired"
+                            placeholder="# Required" onchange="updatePossible('numScout')" />
+                    </label>
+                    <label class="text-input-label" style="color: deepskyblue">
+                        Communications Officer
+                        <span>Available</span>
+                        <input type="number" min="0" class="text-input" name="config-numCommunicationsOfficer"
+                            placeholder="# Possible" onchange="checkPossible('numCommunicationsOfficer')" />
+                        <span>Required</span>
+                        <input type="number" min="0" class="text-input" name="config-numCommunicationsOfficerRequired"
+                            placeholder="# Required" onchange="updatePossible('numCommunicationsOfficer')" />
+                    </label>
+                </div>
+                <h2 style="color: red">Raklan's Arsenal - Aliens</h2>
+                <div style="display: flex; justify-content: space-evenly;">
+                    <label class="text-input-label" style="color: red">
+                        Tracker
+                        <span>Available</span>
+                        <input type="number" min="0" class="text-input" name="config-numTracker"
+                            placeholder="# Possible" onchange="checkPossible('numTracker')" />
+                        <span>Required</span>
+                        <input type="number" min="0" class="text-input" name="config-numTrackerRequired"
+                            placeholder="# Required" onchange="updatePossible('numTracker')" />
+                    </label>
+                    <label class="text-input-label" style="color: red">
+                        Calling
+                        <span>Available</span>
+                        <input type="number" min="0" class="text-input" name="config-numCalling"
+                            placeholder="# Possible" onchange="checkPossible('numCalling')" />
+                        <span>Required</span>
+                        <input type="number" min="0" class="text-input" name="config-numCallingRequired"
+                            placeholder="# Required" onchange="updatePossible('numCalling')" />
                     </label>
                 </div>
             </div>

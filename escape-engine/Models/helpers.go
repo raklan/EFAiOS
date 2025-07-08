@@ -165,6 +165,14 @@ func GetUnmarshalledCardArray(intermediate []CardBase) []Card {
 			cards[i] = NewScanner()
 		case "Unstable Teleporter":
 			cards[i] = NewUnstableTeleporter()
+		case "Hiding Spot":
+			cards[i] = NewHidingSpot()
+		case "Cloaking Device":
+			cards[i] = NewCloakingDevice()
+		case "Engineering Manual":
+			cards[i] = NewEngineeringManual()
+		case "Noisemaker":
+			cards[i] = NewNoisemaker()
 		}
 		cards[i].SetDestroyOnUse(card.DestroyOnUse)
 	}

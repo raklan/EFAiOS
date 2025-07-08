@@ -25,6 +25,7 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
+    text-align: center;
 
     .tooltip {
         visibility: hidden;

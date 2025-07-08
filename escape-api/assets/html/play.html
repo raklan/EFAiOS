@@ -205,6 +205,29 @@
                             placeholder="# of Cards" />
                     </label>
                 </div>
+                <h2>Raklan's Arsenal</h2>
+                <div style="display: flex; justify-content: space-evenly;">
+                    <label class="text-input-label">
+                        <span>Hiding Spot</span>
+                        <input type="number" min="0" class="text-input" name="config-numHidingSpot"
+                            placeholder="# of Cards" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Cloaking Device</span>
+                        <input type="number" min="0" class="text-input" name="config-numCloakingDevice"
+                            placeholder="# of Cards" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Engineering Manual</span>
+                        <input type="number" min="0" class="text-input" name="config-numEngineeringManual"
+                            placeholder="# of Cards" />
+                    </label>
+                    <label class="text-input-label">
+                        <span>Noisemaker</span>
+                        <input type="number" min="0" class="text-input" name="config-numNoisemaker"
+                            placeholder="# of Cards" />
+                    </label>
+                </div>
             </div>
             <div id="config-roles" style="display: none;">
                 <h2 style="color: deepskyblue">Humans</h2>
@@ -361,12 +384,50 @@
                             placeholder="# Required" onchange="updatePossible('numPsychic')" />
                     </label>
                 </div>
+                <h2 style="color: deepskyblue">Raklan's Arsenal - Humans</h2>
+                <div style="display: flex; justify-content: space-evenly;">
+                    <label class="text-input-label" style="color: deepskyblue">
+                        Scout
+                        <span>Available</span>
+                        <input type="number" min="0" class="text-input" name="config-numScout"
+                            placeholder="# Possible" onchange="checkPossible('numScout')" />
+                        <span>Required</span>
+                        <input type="number" min="0" class="text-input" name="config-numScoutRequired"
+                            placeholder="# Required" onchange="updatePossible('numScout')" />
+                    </label>
+                    <label class="text-input-label" style="color: deepskyblue">
+                        Communications Officer
+                        <span>Available</span>
+                        <input type="number" min="0" class="text-input" name="config-numCommunicationsOfficer"
+                            placeholder="# Possible" onchange="checkPossible('numCommunicationsOfficer')" />
+                        <span>Required</span>
+                        <input type="number" min="0" class="text-input" name="config-numCommunicationsOfficerRequired"
+                            placeholder="# Required" onchange="updatePossible('numCommunicationsOfficer')" />
+                    </label>
+                </div>
+                <h2 style="color: red">Raklan's Arsenal - Aliens</h2>
+                <div style="display: flex; justify-content: space-evenly;">
+                    <label class="text-input-label" style="color: red">
+                        Tracker
+                        <span>Available</span>
+                        <input type="number" min="0" class="text-input" name="config-numTracker"
+                            placeholder="# Possible" onchange="checkPossible('numTracker')" />
+                        <span>Required</span>
+                        <input type="number" min="0" class="text-input" name="config-numTrackerRequired"
+                            placeholder="# Required" onchange="updatePossible('numTracker')" />
+                    </label>
+                    <label class="text-input-label" style="color: red">
+                        Calling
+                        <span>Available</span>
+                        <input type="number" min="0" class="text-input" name="config-numCalling"
+                            placeholder="# Possible" onchange="checkPossible('numCalling')" />
+                        <span>Required</span>
+                        <input type="number" min="0" class="text-input" name="config-numCallingRequired"
+                            placeholder="# Required" onchange="updatePossible('numCalling')" />
+                    </label>
+                </div>
             </div>
             <div id="config-presets" style="display: none; grid-template-columns: 1fr 3fr;">
-                <!-- <button type="button" class="preset-button" onclick="setConfigForm(GAME_PRESETS.Tabletop)">Tabletop</button>
-                <p></p>
-                <button type="button" class="preset-button" onclick="setConfigForm(GAME_PRESETS.Basic)">The Basics</button>
-                <p></p> -->
                 {{range GetConfigPresets}}
                 <button type="button" class="preset-button"
                     onclick="setConfigFormFromString('{{.ConfigJson}}')">{{.Name}}</button>
