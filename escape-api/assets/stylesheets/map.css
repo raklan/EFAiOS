@@ -87,6 +87,10 @@
     fill: var(--space-cardevent);
 }
 
+.hexfield.attackevent{
+    fill: var(--space-playeralien);
+}
+
 .hexfield:hover {
     fill: var(--space-hover);
 }

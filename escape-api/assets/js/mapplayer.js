@@ -609,6 +609,7 @@ function initializeEventLog(players) {
     eventLog.onmouseleave = () => {
         document.querySelectorAll(".noiseevent").forEach(el => el.classList.remove("noiseevent"))
         document.querySelectorAll(".cardevent").forEach(el => el.classList.remove("cardevent"))
+        document.querySelectorAll(".attackevent").forEach(el => el.classList.remove("attackevent"))
     }
 
     tablist.onchange = (event) => viewPlayerEvents(event.target.value);
@@ -698,16 +699,27 @@ function addEvent(turn, playerName, event) {
 function highlightEventLogSpace(eventText) {
     console.log(eventText)
     const noiseSpaceExtractor = new RegExp(/made noise at \[(?<Column>[A-Z]+)-(?<Row>\d+)\]/g)
+    const attackSpaceExtractor = new RegExp(/attacked \[(?<Column>[A-Z]+)-(?<Row>\d+)\]/g)
     const regularSpaceExtractor = new RegExp(/\[(?<Column>[A-Z]+)-(?<Row>\d)\]/g)
     
     document.querySelectorAll(".noiseevent").forEach(el => {el.classList.remove("noiseevent");})
     document.querySelectorAll(".cardevent").forEach(el => {el.classList.remove("cardevent");})
+    document.querySelectorAll(".attackevent").forEach(el => {el.classList.remove("attackevent");})
     let match = noiseSpaceExtractor.exec(eventText);
     if (match) {
         let col = match.groups.Column;
         let row = match.groups.Row;
         if (col && row) {
             document.getElementById(`hex-${col}-${row}`).classList.add("noiseevent")
+            return;
+        }
+    }
+    match = attackSpaceExtractor.exec(eventText);
+    if (match) {
+        let col = match.groups.Column;
+        let row = match.groups.Row;
+        if (col && row) {
+            document.getElementById(`hex-${col}-${row}`).classList.add("attackevent")
             return;
         }
     }
