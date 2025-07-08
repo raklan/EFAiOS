@@ -123,7 +123,6 @@ async function handleGameEventMessage(gameEvent) {
 }
 
 async function handleTurnEnd(turnEnd) {
-
     if (isThisPlayersTurn) {
         thisPlayer = turnEnd.playerCurrentState;
         renderPlayerHand();
@@ -186,6 +185,7 @@ async function handleGameStateMessage(gameState) {
         renderSpectatorView(gameState)
     }
 
+    let playerHasMoved = getPlayerHasMoved()
     if (isThisPlayersTurn && !playerHasMoved) {
         if(showYourTurnNotification){
             showNotification('Your Turn', 'Your Turn');
@@ -196,8 +196,11 @@ async function handleGameStateMessage(gameState) {
         sendWsMessage(ws, 'getAllowedMoves', {
             gameId: thisGameStateId
         })
-    } else if (!isThisPlayersTurn) {
-        clickMode = ClickModes.None
+    } else {
+        clickMode = ClickModes.None;
+        if(isThisPlayersTurn){
+            document.getElementById("endTurn-button").style.display = ''
+        }
     }
 
     renderTeamCard();

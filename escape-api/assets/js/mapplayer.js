@@ -26,7 +26,6 @@ const ClickModes = {
 }
 
 let gameHasEnded = false;
-let playerHasMoved = false;
 let roleDescription = '';
 let showYourTurnNotification = true;
 let currentTurn = 0;
@@ -62,7 +61,7 @@ function hexClick(event) {
 
     var actionToSend = {}
     if (clickMode == ClickModes.Moving) {
-        playerHasMoved = true;
+        setPlayerHasMoved(true);
         actionToSend = {
             gameId: thisGameStateId,
             action: {
@@ -742,5 +741,13 @@ function endTurn() {
     }
     sendWsMessage(ws, 'submitAction', actionToSend)
     document.getElementById("endTurn-button").style.display = 'none'
-    playerHasMoved = false;
+    setPlayerHasMoved(false);
+}
+
+async function setPlayerHasMoved(val){
+    window.localStorage.setItem('efaios-playermoved', val)
+}
+
+function getPlayerHasMoved(){
+    return window.localStorage.getItem('efaios-playermoved') === 'true'
 }
