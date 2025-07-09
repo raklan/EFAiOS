@@ -212,11 +212,10 @@
 
 #event-log {
     max-height: inherit;
-    height: inherit;
+    height: 45%;
     border: 1px solid white;
     display: flex;
     flex-direction: column;
-    height: 100%;
 }
 
 .tab-selector {
