@@ -633,6 +633,7 @@ function initializeEventLog(players) {
             addEvent(e.turn, e.playerName, e.description)
         }
     }
+    viewPlayerEvents(players[0].name)
 }
 
 function toggleEventLog(open) {    
@@ -653,7 +654,6 @@ function toggleEventLog(open) {
         openIcon.style.display = '';
         closeIcon.style.display = 'none';
         eventLogControls.classList.remove('show');
-        document.querySelectorAll('.tabcontent.show').forEach(el => el.classList.remove('show'))
     }
 }
 

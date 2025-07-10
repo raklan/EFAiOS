@@ -186,8 +186,7 @@
 #event-log-controls {
     position: fixed;
     top: 15%;
-    width: 20%;
-    left: -329px;
+    left: -337px;
     height: 65%;
     padding-left: 5px;
     display: grid;
@@ -208,14 +207,16 @@
     padding-bottom: 0px;
     border: 1px solid lime;
     width: fit-content;
+    grid-column-start: 11;
 }
 
 #event-log {
     max-height: inherit;
-    height: 45%;
     border: 1px solid white;
+    width: 330px;
     display: flex;
     flex-direction: column;
+    grid-column-start: span 10;
 }
 
 .tab-selector {

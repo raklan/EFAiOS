@@ -13,10 +13,11 @@
 #paint-controls {
     position: fixed;
     bottom: 5px;
-    left: -179px;
+    left: -195px;
+    width: 250px;
     padding-left: 5px;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 10fr 1fr;
     transition: all 0.3s ease-in-out;
 }
 
@@ -29,17 +30,19 @@
     border: 1px solid lime;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    width: fit-content;
     height: fit-content;
+    grid-column-start: span 10;
 }
 
 #paint-toggle {
     cursor: pointer;
     align-self: end;
+    justify-self: end;
     padding: 5px;
     padding-bottom: 0px;
     border: 1px solid lime;
     width: fit-content;
+    grid-column-start: 11;
 }
 
 .color-picker {
