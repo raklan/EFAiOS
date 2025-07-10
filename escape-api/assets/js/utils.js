@@ -1,4 +1,5 @@
-typingQueue = {}
+typingQueue = {};
+let notificationQueue = [];
 let notificationCloseTimeout = null;
 
 function typeWord(element, word) {
@@ -40,17 +41,22 @@ function showNotification(notificationContent, notificationType) {
     var content = document.getElementById("notification-content");
     var title = document.getElementById("notification-title");
 
-    title.innerHTML = '';
-    content.innerHTML = '';
-
-    typeWord(title, notificationType)
-    typeWord(content, notificationContent)
-
-    popup.classList.add('notification-displayed')
-    if(notificationCloseTimeout){
-        clearTimeout(notificationCloseTimeout)
+    
+    notificationQueue.push({
+        type: notificationType,
+        content: notificationContent
+    })
+    
+    if(!notificationCloseTimeout){
+        title.innerHTML = '';
+        content.innerHTML = '';
+        let toType = notificationQueue.shift();
+        typeWord(title, toType.type);
+        typeWord(content, toType.content);
+    
+        popup.classList.add('notification-displayed');
+        notificationCloseTimeout = setTimeout(hideNotification, Math.log(Math.pow(toType.content.length, 5)) * 1000)
     }
-    notificationCloseTimeout = setTimeout(hideNotification, 10000)
 }
 
 function showGameOver(){
@@ -60,8 +66,22 @@ function showGameOver(){
 }
 
 function hideNotification() {
-    var popup = document.getElementById("notification-popup");
-    popup.classList.remove('notification-displayed')
+    var popup = document.getElementById("notification-popup");    
+    clearTimeout(notificationCloseTimeout);
+    notificationCloseTimeout = null;
+
+    if(notificationQueue.length > 0){
+        var content = document.getElementById("notification-content");
+        var title = document.getElementById("notification-title");
+        title.innerHTML = '';
+        content.innerHTML = '';
+        let toType = notificationQueue.shift();
+        typeWord(title, toType.type);
+        typeWord(content, toType.content);        
+        notificationCloseTimeout = setTimeout(hideNotification, Math.log(Math.pow(toType.content.length, 5)) * 1000)
+    }else{
+        popup.classList.remove('notification-displayed');
+    }
 }
 
 function hideConfig() {
