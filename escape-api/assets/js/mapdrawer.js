@@ -23,6 +23,7 @@ function createGrid(rows, columns, container, withText = true) {
         var newElement = document.createElementNS('http://www.w3.org/2000/svg', tag || 'svg');
         if(tag !== 'svg') //Only add to the polygons
             newElement.addEventListener('click', hexClick);
+            newElement.addEventListener('dblclick', null);
         return newElement;
     };
     var toPoint = function (dx, dy) {
@@ -61,12 +62,13 @@ function createGrid(rows, columns, container, withText = true) {
                 var polyText = document.createElementNS("http://www.w3.org/2000/svg", "text")
                 polyText.setAttribute('x', `${center.x}`)
                 polyText.setAttribute('y', `${center.y}`)
-                polyText.setAttribute('fill', 'black')
-                polyText.setAttribute('text-anchor', 'middle')
-                polyText.setAttribute('font-size', `${radius/2.25}px`)
+                polyText.setAttribute('fill', 'black');
+                polyText.setAttribute('text-anchor', 'middle');
+                polyText.setAttribute('font-size', `${radius/2.25}px`);
                 //polyText.setAttribute('textLength', `${radius/2.25}px`)
                 polyText.innerHTML = `[${numberToLetter(column)}-${row+1}]`
-                polyText.style.pointerEvents = 'none'
+                polyText.style.pointerEvents = 'none';
+                polyText.style.userSelect = 'none';
                 svgParent.appendChild(polyText)
             }
         }

@@ -1,9 +1,6 @@
 //Heavily inspired by https://github.com/gojko/hexgridwidget, but altered to not require JQuery
 
-var selectedSpace = {
-    row: -99,
-    col: '!'
-}
+var selectedSpace = null;
 
 var selectedSpace2 = {
     row: -99,
@@ -63,36 +60,55 @@ function hexClick(event) {
 
     var actionToSend = {}
     if (clickMode == ClickModes.Moving) {
-        setPlayerHasMoved(true);
-        actionToSend = {
-            gameId: thisGameStateId,
-            action: {
-                type: 'Movement',
-                turn: {
-                    toRow: row,
-                    toCol: col
+        if (selectedSpace?.row == row && selectedSpace?.col == col) {
+            setPlayerHasMoved(true);
+            actionToSend = {
+                gameId: thisGameStateId,
+                action: {
+                    type: 'Movement',
+                    turn: {
+                        toRow: row,
+                        toCol: col
+                    }
                 }
             }
+            sendWsMessage(ws, 'submitAction', actionToSend);
+            selectedSpace = null;
+        } else {
+            selectedSpace = {
+                row: row,
+                col: col
+            }
+
+            document.querySelectorAll('.hexfield.selected').forEach(x => x.classList.remove('selected'))
+            event.target.classList.add('selected')
         }
-        sendWsMessage(ws, 'submitAction', actionToSend);
     } else if (clickMode == ClickModes.Noise) {
-        selectedSpace = {
-            row: row,
-            col: col
-        }
-        document.querySelectorAll('.hexfield.selected').forEach(x => x.classList.remove('selected'))
-        event.target.classList.add('selected')
+        if (selectedSpace?.row == row && selectedSpace?.col == col) {
+            greenCardConfirm();
+        } else {
+            selectedSpace = {
+                row: row,
+                col: col
+            }
+            document.querySelectorAll('.hexfield.selected').forEach(x => x.classList.remove('selected'))
+            event.target.classList.add('selected')
 
-        document.getElementById("greenCard-confirm").style.display = ''
+            document.getElementById("greenCard-confirm").style.display = ''
+        }
     } else if (clickMode == ClickModes.Spotlight) {
-        selectedSpace = {
-            row: row,
-            col: col
-        }
-        document.querySelectorAll('.hexfield.selected').forEach(x => x.classList.remove('selected'))
-        event.target.classList.add('selected')
+        if (selectedSpace?.row == row && selectedSpace?.col == col) {
+            spotlightConfirm();
+        } else {
+            selectedSpace = {
+                row: row,
+                col: col
+            }
+            document.querySelectorAll('.hexfield.selected').forEach(x => x.classList.remove('selected'))
+            event.target.classList.add('selected')
 
-        document.getElementById("spotlight-confirm").style.display = ''
+            document.getElementById("spotlight-confirm").style.display = ''
+        }
     } else if (clickMode == ClickModes.CatRed) {
         selectedSpace = {
             row: thisPlayer.row,
@@ -289,10 +305,7 @@ function greenCardConfirm() {
     }
     sendWsMessage(ws, 'submitAction', actionToSend)
     hidePlayerChoicePopup();
-    selectedSpace = {
-        row: thisPlayer.row,
-        col: thisPlayer.col
-    }
+    selectedSpace = null;
 }
 
 function catConfirm() {
@@ -312,10 +325,7 @@ function catConfirm() {
     }
     sendWsMessage(ws, 'submitAction', actionToSend)
     hidePlayerChoicePopup();
-    selectedSpace = {
-        row: thisPlayer.row,
-        col: thisPlayer.col
-    }
+    selectedSpace = null;
 }
 
 function spotlightConfirm() {
@@ -334,10 +344,7 @@ function spotlightConfirm() {
     }
     sendWsMessage(ws, 'submitAction', actionToSend)
     hidePlayerChoicePopup();
-    selectedSpace = {
-        row: thisPlayer.row,
-        col: thisPlayer.col
-    }
+    selectedSpace = null
 }
 
 function sensorConfirm(playerId) {
@@ -616,7 +623,7 @@ function initializeEventLog(players) {
     tablist.onchange = (event) => viewPlayerEvents(event.target.value);
 
     for (let player of players) {
-        let option = document.createElement("option")                
+        let option = document.createElement("option")
         option.value = player.name;
         option.innerText = `${player.name}`
         tablist.appendChild(option)
@@ -637,7 +644,7 @@ function initializeEventLog(players) {
     viewPlayerEvents(players[0].name)
 }
 
-function toggleEventLog(open) {    
+function toggleEventLog(open) {
     let eventLogControls = document.getElementById('event-log-controls');
     let openIcon = document.getElementById('event-toggle-open');
     let closeIcon = document.getElementById('event-toggle-close');
@@ -702,10 +709,10 @@ function highlightEventLogSpace(eventText) {
     const noiseSpaceExtractor = new RegExp(/made noise at \[(?<Column>[A-Z]+)-(?<Row>\d+)\]/g)
     const attackSpaceExtractor = new RegExp(/attacked \[(?<Column>[A-Z]+)-(?<Row>\d+)\]/g)
     const regularSpaceExtractor = new RegExp(/\[(?<Column>[A-Z]+)-(?<Row>\d)\]/g)
-    
-    document.querySelectorAll(".noiseevent").forEach(el => {el.classList.remove("noiseevent");})
-    document.querySelectorAll(".cardevent").forEach(el => {el.classList.remove("cardevent");})
-    document.querySelectorAll(".attackevent").forEach(el => {el.classList.remove("attackevent");})
+
+    document.querySelectorAll(".noiseevent").forEach(el => { el.classList.remove("noiseevent"); })
+    document.querySelectorAll(".cardevent").forEach(el => { el.classList.remove("cardevent"); })
+    document.querySelectorAll(".attackevent").forEach(el => { el.classList.remove("attackevent"); })
     let match = noiseSpaceExtractor.exec(eventText);
     if (match) {
         let col = match.groups.Column;
@@ -759,10 +766,10 @@ function endTurn() {
     clearInterval(endTurnReminder);
 }
 
-async function setPlayerHasMoved(val){
+async function setPlayerHasMoved(val) {
     window.localStorage.setItem('efaios-playermoved', val)
 }
 
-function getPlayerHasMoved(){
+function getPlayerHasMoved() {
     return window.localStorage.getItem('efaios-playermoved') === 'true'
 }
