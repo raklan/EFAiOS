@@ -55,7 +55,7 @@ function showNotification(notificationContent, notificationType) {
         typeWord(content, toType.content);
     
         popup.classList.add('notification-displayed');
-        notificationCloseTimeout = setTimeout(hideNotification, Math.log(Math.pow(toType.content.length, 5)) * 1000)
+        notificationCloseTimeout = setTimeout(hideNotification, Math.log(Math.pow(toType.content.length, 5)) * 1000 / 3)
     }
 }
 
@@ -78,7 +78,7 @@ function hideNotification() {
         let toType = notificationQueue.shift();
         typeWord(title, toType.type);
         typeWord(content, toType.content);        
-        notificationCloseTimeout = setTimeout(hideNotification, Math.log(Math.pow(toType.content.length, 5)) * 1000)
+        notificationCloseTimeout = setTimeout(hideNotification, Math.log(Math.pow(toType.content.length, 5)) * 1000 / 3)
     }else{
         popup.classList.remove('notification-displayed');
     }
