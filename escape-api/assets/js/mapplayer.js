@@ -30,6 +30,7 @@ let roleDescription = '';
 let showYourTurnNotification = true;
 let currentTurn = 0;
 let autoTurnEnd = false;
+let endTurnReminder = null;
 
 const playerNameExtractor = new RegExp(/Player \'(?<PlayerName>[^\']+)\'/g);
 
@@ -583,10 +584,10 @@ function renderSpectatorView(gameState) {
     }
 }
 
-function renderTurnNumber(turnNum, maxTurns, mapName, thisPlayersTurn) {
+function renderTurnNumber(turnNum, maxTurns, mapName) {
     currentTurn = turnNum;
     var turnNumContainer = document.getElementById("turn-number")
-    turnNumContainer.innerHTML = `<h4 style="margin-top: 5px">${mapName}</h4><div>Turn ${turnNum} / ${maxTurns}<div>${thisPlayersTurn? `<p style="text-align: center; color: gold">YOUR TURN</p>` : ''}`
+    turnNumContainer.innerHTML = `<h4 style="margin-top: 5px">${mapName}</h4><div>Turn ${turnNum} / ${maxTurns}<div>`
 }
 
 function getTeamColor() {
@@ -755,6 +756,7 @@ function endTurn() {
     sendWsMessage(ws, 'submitAction', actionToSend)
     document.getElementById("endTurn-button").style.display = 'none'
     setPlayerHasMoved(false);
+    clearInterval(endTurnReminder);
 }
 
 async function setPlayerHasMoved(val){

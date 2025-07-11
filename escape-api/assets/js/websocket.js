@@ -128,7 +128,8 @@ async function handleTurnEnd(turnEnd) {
         renderPlayerHand();
         renderStatusEffects();
         clickMode = ClickModes.None;
-        document.getElementById("endTurn-button").style.display = ''
+        document.getElementById("endTurn-button").style.display = '';
+        endTurnReminder = setInterval(showNotification, 6000, 'Remember to end your turn!', 'Reminder')
 
         if(autoTurnEnd && turnEnd.playerCurrentState.hand.length == 0){
             endTurn();
@@ -215,7 +216,7 @@ async function handleGameStateMessage(gameState) {
     renderStatusEffects();
     renderPlayerHand();
     renderTurnOrder();
-    renderTurnNumber(gameState.turn, gameState.gameMap.gameConfig.numTurns, gameState.gameMap.name, isThisPlayersTurn);
+    renderTurnNumber(gameState.turn, gameState.gameMap.gameConfig.numTurns, gameState.gameMap.name);
 }
 
 async function handleLobbyInfoMessage(messageData) {
