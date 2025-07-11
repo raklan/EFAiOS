@@ -187,7 +187,7 @@
     position: fixed;
     top: 15%;
     left: -337px;
-    height: 65%;
+    max-height: 65%;
     padding-left: 5px;
     display: grid;
     grid-template-columns: 10fr 1fr;
