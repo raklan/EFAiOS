@@ -1,3 +1,5 @@
+//Heavily inspired by https://github.com/gojko/hexgridwidget, but altered to not require JQuery and to support my use case better
+
 var MAP = null;
 var cssClass = 'hexfield';//If you change this, change it in hexClick() too
 

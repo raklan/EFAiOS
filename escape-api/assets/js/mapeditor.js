@@ -1,5 +1,3 @@
-//Heavily inspired by https://github.com/gojko/hexgridwidget, but altered to not require JQuery
-
 const WALL_TOOL = 'Walls';
 const POD_TOOL = 'Pods';
 const SAFE_TOOL = 'Safe Sector';
