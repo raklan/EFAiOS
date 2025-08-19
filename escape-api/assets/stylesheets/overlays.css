@@ -206,6 +206,7 @@
     padding: 5px;
     padding-bottom: 0px;
     border: 1px solid lime;
+    background-color: black;
     width: fit-content;
     grid-column-start: 11;
 }
@@ -214,9 +215,11 @@
     max-height: inherit;
     border: 1px solid white;
     width: 330px;
+    height: 50%;
     display: flex;
     flex-direction: column;
     grid-column-start: span 10;
+    background-color: black;
 }
 
 .tab-selector {
@@ -293,5 +296,9 @@
     #status-effects {
         height: 75px;
         top: 150px;
+    }
+
+    #event-log{
+        height: 20%;
     }
 }
