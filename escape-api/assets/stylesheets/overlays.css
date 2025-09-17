@@ -185,9 +185,9 @@
 
 #event-log-controls {
     position: fixed;
+    height: 65%;
     top: 15%;
     left: -337px;
-    max-height: 65%;
     padding-left: 5px;
     display: grid;
     grid-template-columns: 10fr 1fr;
@@ -215,11 +215,11 @@
     max-height: inherit;
     border: 1px solid white;
     width: 330px;
-    height: 50%;
     display: flex;
     flex-direction: column;
     grid-column-start: span 10;
     background-color: black;
+    overflow-y: auto;
 }
 
 .tab-selector {
@@ -296,9 +296,5 @@
     #status-effects {
         height: 75px;
         top: 150px;
-    }
-
-    #event-log{
-        height: 20%;
     }
 }
