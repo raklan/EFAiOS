@@ -37,7 +37,7 @@ I'll probably get it deployed in some fashion (and post the URL in this README w
   ### Recommended/Easiest
   Check out the [Releases Page](https://github.com/raklan/EFAiOS/releases), which is the easiest way to get set up. Every release will have a ZIP folder included called EFAiOS-vX.Y.Z (replace X.Y.Z with the version number) that you can download and extract. There will be a .exe file inside called `efaios.exe` that you can run.
   ### Other Options
-  - You can clone the repository, install Go on your machine, and simply run the command `go run ./escape-api` from the root directory. Be aware this option does not come with any premade maps.
+  - You can clone the repository, install Go on your machine, and simply run the command `go run ./escape-api` from the root directory. 
   - I'll also probably push a docker image of the project that you can set up your own container for. Be aware that this option will not come with any premade maps.
 
 However you run the project, the site will run on port 80 of whatever machine is running it, so any device on the same internet network can connect to your machine's IP via any web browser to play!
