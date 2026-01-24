@@ -1,0 +1,80 @@
+{{define "info"}}
+<div id="mapeditor">
+    <h1>The Map Editor</h1>
+    <p>EFAiOS Online comes with a built-in map editor for you to make any map you can think of. This page explains
+        how to use it.</p>
+
+    <h1 id="overview">Overview</h1>
+    <p>To access the map editor for creating new maps, you can click <a href="/mapeditor">here</a>, or the link to the
+        Map Editor can always
+        be found at the top of the screen in the navigation bar. Alternatively, to edit an existing map, you can click
+        the "Edit" button next to any map on the <a href="/maps">Maps</a> page.</p>
+    <p>When you load the Map Editor, you'll see a screen like this:</p>
+    <div class="image-container" style="height: 500px;">
+        <img src="/assets/images/mapeditor.png" />
+    </div>
+    <p>On the left is the sidebar, where you can configure the map details and settings, as well as your toolbar for
+        selecting various sector types you can place in the map. The right side is your map preview.</p>
+
+    <h1 id="map-details">Map Details</h1>
+    <p>These fields are what others will see when your map is saved and appears on the Maps list:</p>
+    <ul>
+        <li>Name: The name of the map as it appears at the top of the list entry on the Maps page, such as Galelei,
+            Fermi, or Galvani.</li>
+        <li>Description: The description that appears between the map name and the Select & Edit buttons. This field
+            accepts raw HTML, so you can structure the description however you want, including using bold, italics, and
+            various text sizes.</li>
+    </ul>
+
+    <h1 id="map-layout">Map Layout</h1>
+    <p>This is where most of the magic happens!</p>
+
+    <h2 id="tools">Tools</h2>
+    <p>This first section is your toolbar, which includes 6 different tools for you to choose from, as well as an
+        indicator of which tool is currently selected. When any tool is selected, you can click any sector on the Map
+        Preview (to the right) to set that sector to the type selected by the tool.</p>
+
+    <h2 id="rows-and-columns">Rows & Columns</h2>
+    <p>Using these two controls, you can adjust how many rows and columns your map has. Note that adjusting these values
+        does not affect the map on its own - you must use the "Clear and Rebuild" button for the rows and columns to
+        update. This also means that any work you have will be lost.</p>
+
+    <h2 id="map-config">Map Config</h2>
+    <p>Pressing this button will open a Game Config popup, just like what happens when you click the "Game Settings"
+        button in a pre-game lobby. However, this config editor works slightly differently; The config set in this popup
+        will be the default configuration any time someone starts a Lobby using this map. They can adjust the settings
+        to their liking, of course, but using this, you can suggest a certain configuration for those playing your map.
+    </p>
+
+    <h2 id="save">Save</h2>
+    <p>When you're happy with your map (or just want to save it and come back to editing later, after playtesting it,
+        for example) you can hit Save to save it to whatever filesystem is running the server. When a map is saved, it
+        is saved as a .json file in the /maps folder wherever you're running the server from. This can be useful if you
+        want to send your map to someone else!</p>
+    <p><em>Note: In order for a Map to be valid to save, it must have at least 1 Escape Pod, 1 Human Start, and 1 Alien
+        Start. It can have multiple of any of these, but it must have at least one.</em></p>
+
+    <h1 id="tips-and-tricks">Tips & Tricks</h1>
+    <ul>
+        <li>
+            Your map can have as many of any Sector type as you like, but be aware:
+            When having multiple Human Starts or Alien Starts, at the beginning of the game, players on that
+            team will be randomly placed in a sector belonging to their team - there is currently no way to
+            control which players start in which of their team's Start Sectors.
+        </li>
+        <li>
+            The closer together you have Human and Alien starts, the more ambiguous you should allow early Human moves
+            to be. This avoids Aliens being able to consistently and easily kill Humans within the first few turns.
+        </li>
+        <li>
+            While the map editor supports any size of map, remember that the bigger a map is, the longer games will generally take when playing that map.
+        </li>
+        <li>
+            You should absolutely play around with having varying numbers of Start Sectors and Escape Pods. Variety is the spice of life, after all!
+        </li>
+        <li>
+            If you're feeling stumped on what to make, try looking at some of the official maps for ideas - ask yourself what you like about them, or what you'd change.
+        </li>
+    </ul>
+</div>
+{{end}}

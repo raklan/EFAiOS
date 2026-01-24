@@ -1,50 +1,37 @@
 {{define "styling"}}
-<style type="text/css">
-    #sidebar {
-        background-color: rgb(39, 39, 39);
-        max-width: 500px;
-    }
-
-    #map-details .text-input-label span{
-        background-color: rgb(39, 39, 39);
-        color: lime;
-    }
-
-    #tools{
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-    }
-
-    #map-details{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-</style>
 <link rel="stylesheet" href="/assets/stylesheets/map.css">
 <link rel="stylesheet" href="/assets/stylesheets/lobby.css">
+<link rel="stylesheet" href="/assets/stylesheets/mapeditor.css">
 {{end}}
 
 {{define "body"}}
+<a style="width: fit-content" href="/compendium/mapeditor">Help</a>
 <div id="page" style="height: 100%; width: 100%; display: flex;">
-    <div id="sidebar" style="display: flex; flex-direction: column;">
-        <span id="current-tool">Current Tool: None</span>
-        <div id="tools">
-            <button type="button" onclick="setTool('Walls')">Walls</button>
-            <button type="button" onclick="setTool('Pods')">Pods</button>
-            <button type="button" onclick="setTool('Safe Sector')">Safe Sector</button>
-            <button type="button" onclick="setTool('Dangerous Sector')">Dangerous Sector</button>
-            <button type="button" onclick="setTool('Human Start')">Human Start</button>
-            <button type="button" onclick="setTool('Alien Start')">Alien Start</button>
-        </div>        
-        <button type="button" onclick="exportMap()">Save</button>
+    <div id="sidebar" style="display: flex; flex-direction: column; justify-content: space-around;">
         <div id="map-details">
-
-            <label class="text-input-label">
-                <span>Name</span>
-                <input class="text-input" id="name" placeholder="Name" autocomplete="off"/>
+            <h3>Map Details</h3>
+            <label class="text-input-label" style="align-self: start; margin-left: 2.5em;">
+                    <span>Name</span>
+                    <input class="text-input" id="name" placeholder="Name" autocomplete="off"/>
             </label>
-
+            <div style="width: 100%; display: flex; justify-content: center;">
+                <label class="text-input-label" style="min-width: 86%">
+                    <span>Description</span>
+                    <textarea id="description" placeholder="Raw HTML is valid. Please don't XSS me :)" class="text-input" rows="10" style="min-width: 95%; max-height: none; min-height: fit-content;"></textarea>
+                </label>
+            </div>
+        </div>
+        <div id="map-layout">
+            <h3 style="text-align: center;">Map Layout</h3>
+            <h4 id="current-tool">Current Tool: None</h4>
+            <div id="tools">
+                <button type="button" class="tool-button" onclick="setTool('Walls')">Wall</button>
+                <button type="button" class="tool-button"  onclick="setTool('Pods')">Escape Pod</button>
+                <button type="button" class="tool-button"  onclick="setTool('Safe Sector')">Safe Sector</button>
+                <button type="button" class="tool-button"  onclick="setTool('Dangerous Sector')">Dangerous Sector</button>
+                <button type="button" class="tool-button"  onclick="setTool('Human Start')">Human Start</button>
+                <button type="button" class="tool-button"  onclick="setTool('Alien Start')">Alien Start</button>
+            </div>        
             <div style="width: 100%; display: flex; justify-content: space-around;">
                 <label class="text-input-label">
                     <span>Rows</span>
@@ -54,15 +41,11 @@
                     <span>Columns</span>
                     <input class="text-input" id="columns" placeholder="Columns" value="10" autocomplete="off" />
                 </label>
-            </div>
-
-            <label class="text-input-label" style="min-width: 100%; max-width: 100%; max-height: none;">
-                <span>Description</span>
-                <textarea id="description" placeholder="Raw HTML is valid. Please don't XSS me :)" class="text-input" rows="15" style="max-width: 90%; max-height: none; min-height: fit-content;"></textarea>
-            </label>
-        </div>
-        <button type="button" onclick="showConfig()">Map Config</button>
-        <button class="btn" id="rebuild" onclick="rebuildGrid()">Clear & Rebuild</button>
+            </div>            
+            <button type="button" id="rebuild" onclick="rebuildGrid()" style="margin-top: 1em">Clear & Rebuild</button>
+        </div>    
+        <button class="control-button" type="button" onclick="showConfig()">Map Config</button>
+        <button class="control-button" type="button" onclick="exportMap()">Save</button>
     </div>
     <div class="config-popup" style="left: 25%">
         <div id="config-header" style="display: flex; justify-content: center;">

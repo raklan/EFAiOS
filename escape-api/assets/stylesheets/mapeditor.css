@@ -1,0 +1,34 @@
+.tool-button{
+    --button-color: lime;
+}
+
+#current-tool{
+    text-align: center;
+    line-height: 0;
+}
+
+#sidebar {
+    border: 2px dashed lime;
+    margin-right: 1em;
+    max-width: 500px;
+}
+
+#tools{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+#map-details, #map-layout{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h3 {
+    line-height: 0;
+}
+
+.control-button{
+    width: fit-content;
+    align-self: center;
+}
