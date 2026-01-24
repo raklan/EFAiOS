@@ -60,6 +60,8 @@ function handleWsMessage(message) {
 
     if (handler) {
         handler(message.data)
+    }else{
+        showNotification('Server sent an unknown message, message will not be processed', 'Error')
     }
 }
 
@@ -164,9 +166,12 @@ async function handleGameStateMessage(gameState) {
         thisGameStateId = gameState.id
         initializeEventLog(gameState.players)
         initializeCanvas();
-        await fetch(`/api/role?name=${thisPlayer.role}`).then(resp => resp.json()).then(apiObj => {
-            roleDescription = apiObj.roleDescription;
-        })
+
+        if(thisPlayer.role){
+            await fetch(`/api/role?name=${thisPlayer.role}`).then(resp => resp.json()).then(apiObj => {
+                roleDescription = apiObj.roleDescription;
+            })
+        }
 
         window.onresize = _ => {
             drawMap(gameState.gameMap)
@@ -222,14 +227,16 @@ async function handleGameStateMessage(gameState) {
 async function handleLobbyInfoMessage(messageData) {
     if (!thisPlayer) {
         thisPlayer = messageData.lobbyInfo?.players?.find(p => p.id == messageData.playerID)
-        const connectionInfo = {
-            type: 'rejoin',
-            playerId: thisPlayer.id,
-            roomCode: messageData.lobbyInfo.roomCode
-        }
-        window.localStorage.setItem('efaios-connectionInfo', JSON.stringify(connectionInfo))
-        setConfigFormFromObject(messageData.lobbyInfo.mapConfig)
+    }else{
+        thisPlayer = messageData.lobbyInfo?.players?.find(p => p.id == thisPlayer.id)
     }
+    const connectionInfo = {
+        type: 'rejoin',
+        playerId: thisPlayer.id,
+        roomCode: messageData.lobbyInfo.roomCode
+    }
+    window.localStorage.setItem('efaios-connectionInfo', JSON.stringify(connectionInfo))
+    setConfigFormFromObject(messageData.lobbyInfo.mapConfig)
     document.getElementById("lobby-roomCode").innerHTML = `Room Code: ${messageData.lobbyInfo.roomCode}`
     document.getElementById('lobby-mapTitle').innerText = `Map: ${messageData.lobbyInfo.mapName}`
 
@@ -239,7 +246,14 @@ async function handleLobbyInfoMessage(messageData) {
 
     for (let player of messageData.lobbyInfo.players) {
         playerEntry = document.createElement("div")
-        playerEntry.innerText = `${player.name}${player.name === messageData.lobbyInfo.host.name ? " (Host)" : ""}`
+        playerEntry.innerText = `${player.name}`
+        if(player.name === messageData.lobbyInfo.host.name){
+            playerEntry.innerText += " (Host)";
+        }
+        if(player.team === PlayerTeams.Spectator){
+            playerEntry.innerText += " (Spectator)"
+            playerEntry.style.color = "white"
+        }
         playerEntry.style.border = "1px solid black"
         playerEntry.style.margin = '5px'
 
@@ -253,8 +267,8 @@ async function handleLobbyInfoMessage(messageData) {
         startButton.onclick = () => {
             let gameConfig = getGameConfig()
             console.info('starting game with config', gameConfig);
-            if (gameConfig.numHumans + gameConfig.numAliens != messageData.lobbyInfo.players.length) {
-                showNotification("# of Humans + # of Aliens must add up to # of Players in lobby!", "Error")
+            if (gameConfig.numHumans + gameConfig.numAliens != messageData.lobbyInfo.players.filter(p => p.team != PlayerTeams.Spectator).length) {
+                showNotification("# of Humans + # of Aliens must add up to # of Non-Spectator Players in lobby!", "Error")
                 return;
             }
             sendWsMessage(ws, 'startGame', getGameConfig())
@@ -265,6 +279,12 @@ async function handleLobbyInfoMessage(messageData) {
         configButton.onclick = () => {
             showConfig();
         }
+    }
+
+    if(thisPlayer?.team == PlayerTeams.Spectator){
+        document.getElementById('lobby-joinAsSpectator').innerText = 'Join As Player'
+    }else{
+        document.getElementById('lobby-joinAsSpectator').innerText = 'Join As Spectator'
     }
 }
 

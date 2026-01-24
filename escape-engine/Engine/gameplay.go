@@ -51,6 +51,7 @@ func GetInitialGameState(roomCode string, gameConfig GameConfig.GameConfig) (Mod
 		gameState.Players = append(gameState.Players, Models.Player{
 			Id:   element.Id,
 			Name: element.Name,
+			Team: element.Team,
 			//Using -99 to avoid any weird cases where that player might be close enough to get onto the Map
 			Row:           -99,
 			Col:           "!",
@@ -149,6 +150,35 @@ func MarkLobbyAsEnded(roomCode string) error {
 
 	//Return any error that occurred during saving, if any
 	return err
+}
+
+func SwitchPlayerSpectating(roomCode string, playerId string, isSpectating bool) (Models.Lobby, error) {
+	funcLogPrefix := "==SwitchPlayerSpectating=="
+	defer LogUtil.EnsureLogPrefixIsReset()
+	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
+
+	lobby, err := GetLobbyFromFs(roomCode)
+	if err != nil {
+		LogError(funcLogPrefix, err)
+		return Models.Lobby{}, err
+	}
+
+	playerIndexToSwitch := slices.IndexFunc(lobby.Players, func(p Models.Player) bool { return p.Id == playerId })
+	if playerIndexToSwitch == -1 {
+		err := fmt.Errorf("could not find requested player with ID == %s", playerId)
+		LogError(funcLogPrefix, err)
+		return Models.Lobby{}, err
+	}
+
+	if isSpectating {
+		lobby.Players[playerIndexToSwitch].Team = Models.PlayerTeam_Spectator
+	} else {
+		lobby.Players[playerIndexToSwitch].Team = ""
+	}
+
+	_, err = SaveLobbyToFs(lobby)
+
+	return lobby, err
 }
 
 func SubmitAction(gameId string, action Actions.SubmittedAction) ([]Models.WebsocketMessageListItem, error) {
@@ -406,6 +436,9 @@ func assignTeams(gameState *Models.GameState) {
 	log.Println("Assigning teams")
 	humansToAssign, aliensToAssign := gameState.GameMap.GameConfig.NumHumans, gameState.GameMap.GameConfig.NumAliens
 	for index := range gameState.Players {
+		if gameState.Players[index].Team == Models.PlayerTeam_Spectator {
+			continue
+		}
 		if humansToAssign == 0 && aliensToAssign != 0 { //No human slots left, must be human
 			gameState.Players[index].Team = Models.PlayerTeam_Alien
 		} else if aliensToAssign == 0 && humansToAssign != 0 { //No alien slots left, must be alien
@@ -610,19 +643,23 @@ func createInitialRecap(gameState Models.GameState) {
 		MapName:     gameState.GameMap.Name,
 	}
 	for _, player := range gameState.Players {
-		recap.Players = append(recap.Players, Recap.PlayerRecap{
-			PlayerId:   player.Id,
-			PlayerName: player.Name,
-			PlayerTeam: player.Team,
-			PlayerRole: player.Role,
-			Turns:      map[int]string{},
-		})
+		if player.Team != Models.PlayerTeam_Spectator {
+			recap.Players = append(recap.Players, Recap.PlayerRecap{
+				PlayerId:   player.Id,
+				PlayerName: player.Name,
+				PlayerTeam: player.Team,
+				PlayerRole: player.Role,
+				Turns:      map[int]string{},
+			})
+		}
 	}
 
 	Recap.SaveRecapToFs(recap)
 
 	for _, player := range gameState.Players {
-		go Recap.AddDataToRecap(gameState.Id, player.Id, 0, fmt.Sprintf("Started in [%s-%d]", player.Col, player.Row))
+		if player.Team != Models.PlayerTeam_Spectator {
+			go Recap.AddDataToRecap(gameState.Id, player.Id, 0, fmt.Sprintf("Started in [%s-%d]", player.Col, player.Row))
+		}
 	}
 }
 

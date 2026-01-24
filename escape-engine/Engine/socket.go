@@ -415,6 +415,43 @@ func processMessage(roomCode string, playerId string, message []byte) {
 		}
 
 		room[playerId].WriteJSON(messageToSend)
+	case "spectate":
+		var request struct {
+			Spectating bool `json:"spectating"`
+		}
+		if err := json.Unmarshal(msg.Data, &request); err != nil {
+			LogError(funcLogPrefix, err)
+			socketError := Models.WebsocketMessage{
+				Type: Models.WebsocketMessage_Error,
+				Data: Models.SocketError{
+					Message: err.Error(),
+				},
+			}
+			room[playerId].WriteJSON(socketError)
+			break
+		}
+
+		lobby, err := SwitchPlayerSpectating(roomCode, playerId, request.Spectating)
+		if err != nil {
+			LogError(funcLogPrefix, err)
+			socketError := Models.WebsocketMessage{
+				Type: Models.WebsocketMessage_Error,
+				Data: Models.SocketError{
+					Message: err.Error(),
+				},
+			}
+			room[playerId].WriteJSON(socketError)
+			break
+		}
+
+		lobbyInfo := Models.WebsocketMessage{
+			Type: Models.WebsocketMessage_LobbyInfo,
+			Data: Models.LobbyInfo{
+				LobbyInfo: lobby,
+			},
+		}
+
+		sendMessageToAllPlayers(room, lobbyInfo)
 	case "leaveLobby":
 		updatedLobby, err := endPlayerConnection(roomCode, playerId, room)
 

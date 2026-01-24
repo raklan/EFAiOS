@@ -557,6 +557,12 @@ function renderTurnOrder() {
     }
 }
 
+function switchPlayerSpectating(){
+    let wantToSpectate = thisPlayer.team != PlayerTeams.Spectator;
+
+    sendWsMessage(ws, 'spectate', { spectating: wantToSpectate})
+}
+
 function renderSpectatorView(gameState) {
     //Render the locations of every player still in the game and style their spaces accordingly
     for (let player of gameState.players.filter(p => p.team != PlayerTeams.Spectator)) {
