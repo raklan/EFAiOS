@@ -8,7 +8,8 @@
         every player in the lobby that says something like "Player 'raklan' made noise at [A-1]!", where A-1 is the
         Sector on the
         map in which the noise is made. By carefully watching where other players are making Noise, you can deduce where
-        they are and where they're going, but remember: a Noise <em>COULD</em> be where that player is, but it can also be a lie!</p>
+        they are and where they're going, but remember: a Noise <em>COULD</em> be where that player is, but it can also
+        be a lie!</p>
 
     <h3 id="stack">Stack (of a Status Effect)</h3>
     <p>Another way of saying a use, activation, or charge. For example, if you have 1 stack of the <a
@@ -19,5 +20,83 @@
     <h3 id="sector">Sector</h3>
     <p>Synonymous with a space on the game board. The official rules use the term Sector, so I try to use it as well.
     </p>
+
+    <h1 id="config-options">Configuration Options</h1>
+    <h2 id="general-settings">General Settings</h2>
+    <h3 id="humans">Humans</h3>
+    <p>The number of Human player slots to allow. There is no guarantee all of these spots will be filled, but instead
+        allows that many Humans <em>at most.</em></p>
+
+    <h3 id="aliens">Aliens</h3>
+    <p>The number of Alien player slots to allow. There is no guarantee all of these spots will be filled, but instead
+        allows that many Aliens <em>at most.</em></p>
+
+    <h3 id="working-pods">Working Pods</h3>
+    <p>The number of Working Pod cards to add to the Escape Pod deck. These will be combined with <a
+            href="#broken-pods">Broken Pod</a> cards into one deck. When a Human Player reaches any escape pod, they
+        will draw a card at random from the Escape Pod Card Deck. If a Working Pod card is drawn, the pod is working and
+        the player successfully escapes. If a Broken Pod card is drawn, the pod is not working, and that player must try
+        to reach a different escape pod space. For more details, see <a href="/compendium/rules#escape-pods">How To Play
+            - Escape Pods</a>.</p>
+
+    <h3 id="broken-pods">Broken Pods</h3>
+    <p>The number of Broken Pod cards to add to the Escape Pod deck. These will be combined with <a
+            href="#working-pods">Working Pod</a> cards into one deck. When a Human Player reaches any escape pod, they
+        will draw a card at random from the Escape Pod Card Deck. If a Working Pod card is drawn, the pod is working and
+        the player successfully escapes. If a Broken Pod card is drawn, the pod is not working, and that player must try
+        to reach a different escape pod space. For more details, see <a href="/compendium/rules#escape-pods">How To Play
+            - Escape Pods</a>.</p>
+
+    <h3 id="turns">Turns</h3>
+    <p>The number of Turns the game should last. By default, after this many turns have elapsed, the ship runs out of
+        oxygen, and all remaining humans immediately die, ending the game. However, by turning on <a
+            href="#survival-mode">Survival Mode</a>, any surviving humans will immediately and automatically escape
+        after this many turns.</p>
+
+    <h3 id="aliens-can-respawn">Aliens Can Respawn</h3>
+    <p>Controls whether an Alien player can respawn after dying. If this is disabled (which is the default value), an
+        Alien Player that dies will be placed on the Spectator team for the rest of the game. If enabled, when an Alien
+        Player dies, they will respawn on their next turn at a randomly selected Alien Start Sector.</p>
+
+    <h3 id="auto-turn-end">Auto Turn End</h3>
+    <p>If enabled, the game will automatically end a player's turn after they move, if they do not have any cards in
+        their hand. This is useful for those friends you have that are always forgetting to end their turn.</p>
+
+    <h3 id="survival-mode">Survival Mode</h3>
+    <p>When enabled, this switches the game's end condition. After the maximum number of turns have elapsed,
+        reinforcements arrive and save the remaining humans. All remaining humans immediately and automatically escape.
+    </p>
+
+    <h2>Cards</h2>
+    <p>Using this section, you can set how many of each Noise and Item card is added to the main deck. For an
+        explanation of each card, see the <a href="/compendium/cards">Compendium page on Cards</a>.</p>
+
+    <h2>Roles</h2>
+    <p>Using this section, you can set how many of each Role can and must be in the game. Each role
+        has two number fields under it - Available and Required - which are explained below. For an explanation of each
+        Role, see the <a href="/compendium/roles">Compendium page on Roles</a>.</p>
+
+    <h3>Available</h3>
+    <p>Controls how many of a certain role is <em>possible</em> to be in the game, but not guaranteed. When roles are
+        being assigned, the server picks roles for each player very similarly to a raffle drawing - it will create a
+        pool of possible roles for each player, where every role receives a
+        number of entries in the pool equal to the number entered in this field. It will then pick a random role from
+        the pool for each player.
+    </p>
+
+    <h3>Required</h3>
+    <p>Controls how many of a certain role the server should attempt to guarantee will appear in the game. This runs
+        before the Available Roles process - when the server picks roles for each player, it will gather a
+        list of all required roles from the Lobby Config. It will then go through that list one by one (in the same
+        order the roles appear in the config window) and pick a random player on that team to assign the role to. Be
+        aware that the server expects there to be enough players to fill the required roles set by the config. For
+        example, if you have a total of 10 Human roles marked as required, but only 6 Human players, the game will not
+        be able to
+        start.</p>
+
+    <h2>Presets</h2>
+    <p>A list of configuration presets that you can either use as-is or as a starting point for your own custom game
+        configuration. Each preset has an explanation that describes what it is, and you can apply it simply by clicking
+        the button with the preset name.</p>
 </div>
 {{end}}

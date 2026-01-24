@@ -283,15 +283,28 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 			}
 		}
 
-		gameEvent.Description += "The ship ran out of oxygen!"
+		if gameState.GameMap.GameConfig.SurvivalMode {
+			gameEvent.Description = "The Humans held out long enough, and reinforcements arrived!"
 
-		for i, player := range gameState.Players {
-			if player.Team == Models.PlayerTeam_Human {
-				gameState.Players[i].Team = Models.PlayerTeam_Spectator
-				gameEvent.Description += fmt.Sprintf(" Player '%s' died!", player.Name)
-				go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, "Died due to lack of oxygen")
+			for i, player := range gameState.Players {
+				if player.Team == Models.PlayerTeam_Human {
+					gameState.Players[i].Team = Models.PlayerTeam_Spectator
+					gameEvent.Description += fmt.Sprintf(" Player '%s' was rescued!", player.Name)
+					go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, "Rescued by reinforcements")
+				}
+			}
+		} else {
+			gameEvent.Description += "The ship ran out of oxygen!"
+
+			for i, player := range gameState.Players {
+				if player.Team == Models.PlayerTeam_Human {
+					gameState.Players[i].Team = Models.PlayerTeam_Spectator
+					gameEvent.Description += fmt.Sprintf(" Player '%s' died!", player.Name)
+					go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, "Died due to lack of oxygen")
+				}
 			}
 		}
+
 	}
 
 	return gameEvent, nil

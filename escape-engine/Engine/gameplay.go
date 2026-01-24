@@ -524,6 +524,9 @@ func AssignRoles(gameState *Models.GameState, activeRoles map[string]int, requir
 
 	for (len(humanPlayers) > 0 || len(alienPlayers) > 0) && len(activeRoles) > 0 {
 		maps.DeleteFunc(activeRoles, func(name string, num int) bool { return num == 0 })
+		if len(activeRoles) == 0 {
+			break
+		}
 		roleName, _ := Models.GetRandomMapPair(activeRoles)
 
 		var playerListToAssignFrom []Models.Player

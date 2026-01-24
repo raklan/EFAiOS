@@ -505,10 +505,12 @@ async function renderRoleCard() {
     roleCard.innerHTML = `<span>${thisPlayer.role}</span>`;
     roleCard.style.setProperty('--team-color', getTeamColor())
 
-    let tooltip = document.createElement("div")
-    tooltip.classList.add("tooltip")
-    tooltip.innerText = roleDescription;
-    roleCard.appendChild(tooltip);
+    if(thisPlayer.role?.length > 0 && thisPlayer.role !== 'No Role'){
+        let tooltip = document.createElement("div")
+        tooltip.classList.add("tooltip")
+        tooltip.innerText = roleDescription;
+        roleCard.appendChild(tooltip);
+    }
 }
 
 function renderStatusEffects() {

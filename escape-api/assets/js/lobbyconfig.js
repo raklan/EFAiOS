@@ -69,6 +69,7 @@ function setGeneralConfig(configObject) {
     setConfigInputValue('config-numTurns', configObject.numTurns);
     configForm['config-aliensRespawn'].checked = configObject.aliensRespawn;
     configForm['config-autoTurnEnd'].checked = configObject.autoTurnEnd;
+    configForm['config-survivalMode'].checked = configObject.survivalMode;
 }
 
 function setCardConfig(configObject) {
@@ -159,6 +160,7 @@ function getGameConfig() {
     config.numTurns = getConfigValue('config-numTurns')
     config.aliensRespawn = configForm['config-aliensRespawn']?.checked;
     config.autoTurnEnd = configForm['config-autoTurnEnd']?.checked;
+    config.survivalMode = configForm['config-survivalMode']?.checked;
 
     config.activeCards = {
         "Red Card": getConfigValue('config-numRedCards'),

@@ -1,6 +1,6 @@
 {{define "info"}}
 <div id="compendium-rules">
-    <h1>Object of the Game</h1>
+    <h1 id="game-overview">Object of the Game</h1>
     <p>Each player assumes the role of either a Human or Alien. The Humans are trying to save themselves by reaching the
         Escape Pods. The Aliens seek to hunt down all the Humans.</p>
     <p>Each player's identity and position is kept secret; You will need to interpret their movement and behaviour to
@@ -15,7 +15,7 @@
         identity and location by watching their actions and the Noises they make. Your team can be seen by hovering over the card in the top-righthand corner
         of your screen.</p>
 
-    <h1>The Map</h1>
+    <h1 id="the-map">The Map</h1>
     <p>Each game will take place on one of the maps available <a href="/maps">here</a> and will look something like
         this:</p>
     <div class="image-container" style="height: 500px;">
@@ -28,7 +28,7 @@
     <p>Sectors are colored differently based on what <em>type</em> of Sector they are - each type will be explained
         below.</p>
 
-    <h1>Game Turns</h1>
+    <h1 id="game-turns">Game Turns</h1>
     <p>The game is played over a series of rounds. During each round, each player must move his or her character. Your
         character type determines the distance they can move:</p>
     <ul>
@@ -43,21 +43,21 @@
         never end your turn in the same sector your started in. <span style="color: orange">YOU MUST MOVE EVERY
             ROUND.</span></p>
 
-    <h2>Types of Sectors</h2>
+    <h2 id="sector-types">Types of Sectors</h2>
     <p>There are 5 different types of Sectors. After moving, the type of Sector you moved into determines what happens
         next:</p>
 
-    <h3 style="color: white">Safe Sector</h3>
+    <h3 id="safe-sector" style="color: white">Safe Sector</h3>
     <p>Safe Sectors are marked in <span style="color: white">White</span>. If you move into a Safe Sector, you
         will make no noise.</p>
 
-    <h3 style="color: grey">Dangerous Sector</h3>
+    <h3 id="dangerous-sector" style="color: grey">Dangerous Sector</h3>
     <p>Dangerous Sectors are marked in <span style="color: gray">Gray</span>. If you move into a Dangerous Sector, you
         will draw a card. Depending on what card is drawn, you will make noise accordingly. This is explained more
         below.
     </p>
 
-    <h3 class="human-text">Human Sector</h3>
+    <h3 id="human-sector" class="human-text">Human Sector</h3>
     <p>Human Sectors are marked in <span class="human-text">Blue</span>. This is where <span
             class="human-text">Human</span> players start - if
         there are multiple Human Sectors, <span class="human-text">Humans</span> will be randomly placed in one of them
@@ -65,20 +65,20 @@
         Players cannot move into or through these Sectors.
     </p>
 
-    <h3 class="alien-text">Alien Sector</h3>
+    <h3 id="alien-sector" class="alien-text">Alien Sector</h3>
     <p>Alien Sectors are marked in <span class="alien-text">Red</span>. This is where <span
             class="alien-text">Alien</span> players start - if there are
         multiple Alien Sectors, <span class="alien-text">Aliens</span> will be randomly placed in one of them at the
         beginning of the game. Players
         cannot move into or through these Sectors.</p>
 
-    <h3 style="color: forestgreen">Escape Pod Sectors</h3>
+    <h3 id="escape-pod-sectors" style="color: forestgreen">Escape Pod Sectors</h3>
     <p>Escape Pods are marked in <span style="color: forestgreen">Green</span>. <span class="human-text">Humans</span>
         must end their turn in one of
         these Sectors to win. Only <span class="human-text">Humans</span> can move into these Sectors. These are
         explained more below.</p>
 
-    <h2>Dangerous Sectors</h2>
+    <h2 id="dangerous-sectors">Dangerous Sectors</h2>
     <p>If you move into a Dangerous Sector, you will draw a <a href="/compendium/cards">Card</a>. There are 4 main types
         of
         cards you might draw:</p>
@@ -110,7 +110,7 @@
     </ul>
     <p>In any game, before it starts, the Host can adjust how many of each card is active in the game.</p>
 
-    <h2>Attacking</h2>
+    <h2 id="attacking">Attacking</h2>
     <p><span class="alien-text">Alien</span> Players may decide to attack at the end of his or her turn. After moving,
         you will be asked if you'd like
         to attack the Sector you just moved into. If you select "No", your turn will continue as normal. If you select
@@ -133,14 +133,14 @@
         </li>
     </ol>
 
-    <h1>Character Roles</h1>
+    <h1 id="character-roles">Character Roles</h1>
     <p>Character Roles give each player unique abilities for you to use in the game. Players do not have to reveal their
         Role at any point, so feel free to keep it a secret if it benefits you! In any game, before it starts, the Host
         has control over which roles are active, how many of each role can be in the game, and whether any roles should
         be guaranteed to be in the game.</p>
     <p>For an explanation of each role, see <a href="/compendium/roles">that page in the Compendium</a>.</p>
 
-    <h1>Escape Pods</h1>
+    <h1 id="escape-pods">Escape Pods</h1>
     <p>When a <span class="human-text">Human</span> player ends their turn in one of the Escape Pods, the following will
         happen:</p>
     <ol>
@@ -155,7 +155,7 @@
             be marked in <span style="color: brown">Brown</span> to signify it can no longer be used.</li>
     </ol>
 
-    <h1>The End of the Game</h1>
+    <h1 id="end-of-the-game">The End of the Game</h1>
     <p>The game ends after 40 turns (by default - the Host can adjust this value) or when there are no Human players
         remaining.</p>
     <ul>
@@ -172,7 +172,7 @@
             You are very much encouraged to chat with the other players during the game, discussing strategies, making
             accusations, and ideally pretending to be part of the opposing team!</span></p>
 
-    <h1>The Overlay</h1>
+    <h1 id="overlay">The Overlay</h1>
     <p>A number of elements have been positioned around the edge of your screen during play for information. Any overlay
         (unless otherwise noted) can be expanded by simply hovering your cursor over it.</p>
 

@@ -24,6 +24,8 @@ type GameConfig struct {
 	AliensRespawn bool `json:"aliensRespawn"`
 	//Whether players' turns should automatically end after moving (and choosing to attack, for aliens) if there are no cards in their hand
 	AutoTurnEnd bool `json:"autoTurnEnd"`
+	//Whether the game should be played such that after NumTurns, the Humans automatically win, instead of automatically dying
+	SurvivalMode bool `json:"survivalMode"`
 	//Which cards should be active, as well as how many of each
 	ActiveCards map[string]int `json:"activeCards"`
 	//Which roles should be active, as well as the maximum number allowed to be present. Should be >= that role's presence in RequiredRoles, if it's required
@@ -38,7 +40,7 @@ func GetConfigPresets() []GameConfigPreset {
 	return []GameConfigPreset{
 		{
 			Name:        "Tabletop",
-			Description: "The Classic experience, with all settings exactly as they appear in the Tabletop version",
+			Description: "The Classic experience, with all settings exactly as they appear in the Tabletop version.",
 			ConfigJson: GetConfigAsJsonString(GameConfig{
 				NumHumans:      0,
 				NumAliens:      0,
@@ -102,7 +104,7 @@ func GetConfigPresets() []GameConfigPreset {
 		},
 		{
 			Name:        "The Basics",
-			Description: "A simplified version of the Tabletop preset, with all Roles turned off and every Item card replaced with a White \"Silent\" Card. Ideal for people just learning the game",
+			Description: "A simplified version of the Tabletop preset, with all Roles turned off and every Item card replaced with a White \"Silent\" Card. Ideal for people just learning the game.",
 			ConfigJson: GetConfigAsJsonString(GameConfig{
 				NumHumans:      0,
 				NumAliens:      0,

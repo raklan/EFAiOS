@@ -171,6 +171,8 @@ async function handleGameStateMessage(gameState) {
             await fetch(`/api/role?name=${thisPlayer.role}`).then(resp => resp.json()).then(apiObj => {
                 roleDescription = apiObj.roleDescription;
             })
+        }else{
+            thisPlayer.role = 'No Role';
         }
 
         window.onresize = _ => {

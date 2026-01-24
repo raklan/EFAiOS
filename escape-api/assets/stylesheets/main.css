@@ -202,7 +202,7 @@ button:active {
 .checkmark {
   width: var(--checkmark-size);
   height: var(--checkmark-size);
-  border: 2px solid var(--border-color);
+  border: 3px solid var(--border-color);
   border-radius: 0.25em;
   background-color: transparent;
   position: relative;
@@ -224,8 +224,6 @@ button:active {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 0.75em;
-  height: 0.75em;
   background-color: transparent;
   border-radius: 0.1em;
   transform: translate(-50%, -50%);

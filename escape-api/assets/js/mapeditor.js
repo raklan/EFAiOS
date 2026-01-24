@@ -137,10 +137,6 @@ async function exportMap() {
 
 function validateMap(map) {
     let keys = Object.keys(map.spaces)
-    if(!keys.some(key => map.spaces[key].type == SpaceTypes.Pod)){
-        showNotification("Map must have at least 1 Escape Pod", "Error")
-        return false;
-    }
     if(!keys.some(key => map.spaces[key].type == SpaceTypes.HumanStart)){
         showNotification("Map must have at least 1 Human Start", "Error")
         return false;
