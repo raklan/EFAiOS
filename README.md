@@ -19,7 +19,7 @@ My goal with this is twofold: First, a lightweight version that's easy to set up
   ![image](https://github.com/user-attachments/assets/21ec01e7-15bc-489c-9eb3-d20ef9c7e01e)
 
 - Built-in, easy-to-use map editor for creating any map you can think of!
-  ![image](https://github.com/user-attachments/assets/ac85ee68-b161-4e11-9148-a2508bfdb1f0)
+  <img width="1495" height="805" alt="image" src="https://github.com/user-attachments/assets/fbd85c96-a50e-40c7-a7ff-f87714bee27a" />
 
 - Lost connection? Accidentally closed the page? No worries, we have rejoin support!
   ![image](https://github.com/user-attachments/assets/44e996fb-cc3a-40f8-8156-bd80421a1a8e)
