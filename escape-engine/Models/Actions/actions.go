@@ -268,9 +268,10 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 		}
 	}
 
-	gameState.CurrentPlayer = getNextPlayerId(gameState.Players, slices.IndexFunc(gameState.Players, func(p Models.Player) bool { return p.Id == actingPlayer.Id }))
+	nextPlayer, hadToWrap := getNextPlayerId(gameState.Players, slices.IndexFunc(gameState.Players, func(p Models.Player) bool { return p.Id == actingPlayer.Id }))
+	gameState.CurrentPlayer = nextPlayer
 
-	if gameState.CurrentPlayer == gameState.Players[0].Id {
+	if hadToWrap {
 		gameState.Turn++
 	}
 
@@ -343,20 +344,23 @@ func (play PlayCard) Execute(gameState *Models.GameState, playerId string) (Mode
 	}, nil
 }
 
-func getNextPlayerId(players []Models.Player, currentIndex int) string {
+func getNextPlayerId(players []Models.Player, currentIndex int) (string, bool) {
 	if !slices.ContainsFunc(players, func(p Models.Player) bool { return p.Team != Models.PlayerTeam_Spectator }) {
-		return ""
+		return "", false
 	}
 
+	hadToWrap := false
 	nextIndex := currentIndex + 1
 	if currentIndex >= len(players)-1 {
 		nextIndex = 0
+		hadToWrap = true
 	}
 
 	if players[nextIndex].Team == Models.PlayerTeam_Spectator {
-		return getNextPlayerId(players, nextIndex)
+		nextId, secondaryWrap := getNextPlayerId(players, nextIndex)
+		return nextId, hadToWrap || secondaryWrap
 	} else {
-		return players[nextIndex].Id
+		return players[nextIndex].Id, hadToWrap
 	}
 }
 
