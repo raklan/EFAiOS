@@ -58,11 +58,11 @@ func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) 
 
 	go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Attacked [%s-%d]", col, row))
 
-	for index, player := range gameState.Players {
-		if player.Id == actingPlayer.Id { //Don't kill the player doing the attacking
+	for index, targetPlayer := range gameState.Players {
+		if targetPlayer.Id == actingPlayer.Id { //Don't kill the player doing the attacking
 			continue
 		}
-		if player.Row != row || player.Col != col {
+		if targetPlayer.Row != row || targetPlayer.Col != col {
 			continue
 		}
 
@@ -78,18 +78,23 @@ func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) 
 
 		playerWasSaved := false
 		for _, se := range defenseEffects {
-			if player.SubtractStatusEffect(se) {
+			if targetPlayer.SubtractStatusEffect(se) {
 				switch se {
 				case StatusEffect_Armored:
 					playerWasSaved = true
-					gameEvent.Description += fmt.Sprintf("Player '%s' was saved by Armor!\n", player.Name)
-					go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Attacked Player '%s'", player.Name))
-					go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, fmt.Sprintf("Attacked by Player '%s' and saved by Armor", actingPlayer.Name))
+					gameEvent.Description += fmt.Sprintf("Player '%s' was saved by Armor!\n", targetPlayer.Name)
+					go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Attacked Player '%s'", targetPlayer.Name))
+					go Recap.AddDataToRecap(gameState.Id, targetPlayer.Id, gameState.Turn, fmt.Sprintf("Attacked by Player '%s' and saved by Armor", actingPlayer.Name))
 				case StatusEffect_Cloned:
 					playerWasSaved = true
-					gameEvent.Description += fmt.Sprintf("Player '%s' activated their Emergency Clone!\n", player.Name)
-					go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Attacked Player '%s'", player.Name))
-					go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, fmt.Sprintf("Killed by player '%s' and activated Emergency Clone", actingPlayer.Name))
+					gameEvent.Description += fmt.Sprintf("Player '%s' activated their Emergency Clone!\n", targetPlayer.Name)
+
+					humanStarts := gameState.GameMap.GetSpacesOfType(Space_HumanStart)
+					newSpaceForPlayer := humanStarts[rand.Intn(len(humanStarts))]
+					gameState.Players[index].Row, gameState.Players[index].Col = newSpaceForPlayer.Row, newSpaceForPlayer.Col
+
+					go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Attacked Player '%s'", targetPlayer.Name))
+					go Recap.AddDataToRecap(gameState.Id, targetPlayer.Id, gameState.Turn, fmt.Sprintf("Killed by player '%s' and activated Emergency Clone", actingPlayer.Name))
 				}
 			}
 			if playerWasSaved {
@@ -98,7 +103,7 @@ func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) 
 		}
 
 		if !playerWasSaved {
-			if player.Team == PlayerTeam_Human || (player.Team == PlayerTeam_Alien && gameState.GameMap.GameConfig.AliensRespawn) {
+			if targetPlayer.Team == PlayerTeam_Human || (targetPlayer.Team == PlayerTeam_Alien && gameState.GameMap.GameConfig.AliensRespawn) {
 				newSpaceForPlayer := alienStarts[rand.Intn(len(alienStarts))]
 
 				gameState.Players[index].Team = PlayerTeam_Alien
@@ -108,7 +113,7 @@ func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) 
 				gameState.Players[index].Row, gameState.Players[index].Col = -99, "!"
 			}
 
-			for _, card := range player.Hand {
+			for _, card := range targetPlayer.Hand {
 				if !card.GetDestroyOnUse() {
 					gameState.DiscardPile = append(gameState.DiscardPile, card)
 				}
@@ -116,13 +121,13 @@ func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) 
 			gameState.Players[index].Hand = []Card{}
 			gameState.Players[index].StatusEffects = []StatusEffect{}
 
-			if actingPlayer.Team == PlayerTeam_Alien {
+			if actingPlayer.Team == PlayerTeam_Alien && targetPlayer.Team == PlayerTeam_Human {
 				actingPlayer.AddStatusEffect(StatusEffect_Hyperphagic, NewHyperphagic)
 			}
 
-			gameEvent.Description += fmt.Sprintf("Player '%s' died!\n", player.Name)
-			go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Killed Player '%s'", player.Name))
-			go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, fmt.Sprintf("Killed by Player '%s'", actingPlayer.Name))
+			gameEvent.Description += fmt.Sprintf("Player '%s' died!\n", targetPlayer.Name)
+			go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Killed Player '%s'", targetPlayer.Name))
+			go Recap.AddDataToRecap(gameState.Id, targetPlayer.Id, gameState.Turn, fmt.Sprintf("Killed by Player '%s'", actingPlayer.Name))
 		}
 	}
 
