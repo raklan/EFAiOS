@@ -127,9 +127,11 @@ function hexClick(event) {
         if (deselectedSpace) {
             deselectedSpace.classList.remove("selected")
         }
-        selectedSpace2 = {
-            row: selectedSpace.row,
-            col: selectedSpace.col
+        if(selectedSpace){
+            selectedSpace2 = {
+                row: selectedSpace.row,
+                col: selectedSpace.col
+            }
         }
         selectedSpace = {
             row: row,
