@@ -132,6 +132,7 @@ func MarkLobbyAsEnded(roomCode string) error {
 	funcLogPrefix := "==MarkLobbyAsEnded=="
 	defer LogUtil.EnsureLogPrefixIsReset()
 	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
+	log.Printf("%s marking lobby as ended", funcLogPrefix)
 
 	lobby, err := GetLobbyFromFs(roomCode)
 	if err != nil {

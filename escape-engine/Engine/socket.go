@@ -53,12 +53,14 @@ func HostLobby(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to join room", http.StatusInternalServerError)
 		return
 	}
+	log.Printf("%s host has joined room. Upgrading connection to websocket", funcLogPrefix)
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		LogError(funcLogPrefix, err)
 		http.Error(w, "WebSocket upgrade failed", http.StatusInternalServerError)
 		return
 	}
+	log.Printf("%s host websocket connection established. Sending LobbyInfo and beginning managing connection", funcLogPrefix)
 	msg := Models.WebsocketMessage{
 		Type: Models.WebsocketMessage_LobbyInfo,
 		Data: Models.LobbyInfo{
@@ -104,6 +106,7 @@ func HandleJoinLobby(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Printf("%s player {%s} has joined lobby. Upgrading connection to websocket", funcLogPrefix, playerID)
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		LogError(funcLogPrefix, err)
@@ -111,6 +114,8 @@ func HandleJoinLobby(w http.ResponseWriter, r *http.Request) {
 		gamesClientsMutex.Unlock()
 		return
 	}
+
+	log.Printf("%s player {%s} websocket connection established. Beginning tracking connection", funcLogPrefix, playerID)
 
 	//Ensure the server is tracking this lobby - if the lobby was created on a previous time the server was running, we'll need to re-add that lobby to the lobby tracker
 	if _, exists := gamesClients[roomCode]; !exists {
@@ -127,7 +132,7 @@ func HandleJoinLobby(w http.ResponseWriter, r *http.Request) {
 // or not, either a LobbyInfo or GameState is sent to the player, after which they're added into the regular flow of listening for messages
 func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 	funcLogPrefix := "==HandleRejoinLobby=="
-	log.Println("Received request to rejoin a lobby!")
+	log.Printf("%s Received request to rejoin a lobby!", funcLogPrefix)
 
 	roomCode := r.URL.Query().Get("roomCode")
 	playerId := r.URL.Query().Get("playerId")
@@ -145,7 +150,7 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Make sure this player has joined the game before
-	log.Printf("Making sure player {%s} has joined this game before", playerId)
+	log.Printf("%s Making sure player {%s} has joined this game before", funcLogPrefix, playerId)
 	if !slices.ContainsFunc(lobbyInfo.Players, func(p Models.Player) bool { return p.Id == playerId }) {
 		log.Printf("No player with given ID == {%s} found in lobby", playerId)
 		http.Error(w, "No player with given ID found in lobby", http.StatusNotFound)
@@ -153,7 +158,7 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Make sure that player does not already have an open connection
-	log.Printf("Making sure player {%s} does not already have an open connection", playerId)
+	log.Printf("%s Making sure player {%s} does not already have an open connection", funcLogPrefix, playerId)
 	gamesClientsMutex.Lock()
 	if _, exists := gamesClients[roomCode][playerId]; exists {
 		log.Printf("Found already open connection for player with ID == {%s}", playerId)
@@ -164,7 +169,7 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 	gamesClientsMutex.Unlock()
 
 	//Now we should know the player is allowed to rejoin. Upgrade to websocket
-	log.Printf("Player {%s} is allowed to rejoin. Upgrading connection to websocket.", playerId)
+	log.Printf("%s Player {%s} is allowed to rejoin. Upgrading connection to websocket.", funcLogPrefix, playerId)
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		LogError(funcLogPrefix, err)
@@ -172,15 +177,15 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Upgrade finished. Checking status of lobby to give accurate first message(s)...")
+	log.Printf("%s Websocket connection established. Checking status of lobby to give accurate first message(s)...", funcLogPrefix)
 
 	//If the game has ended, indicate as such and close connection
 	if lobbyInfo.Status == Models.LobbyStatus_Ended {
-		log.Println("Game has already ended! Player cannot join!")
+		log.Printf("%s Game has already ended! Player cannot join!", funcLogPrefix)
 		msg := Models.WebsocketMessage{
 			Type: Models.WebsocketMessage_Error,
 			Data: Models.SocketError{
-				Message: "Game has already ended. Cannot rejoin",
+				Message: "Game has already ended. Cannot rejoin.",
 			},
 		}
 		conn.WriteJSON(msg)
@@ -200,7 +205,7 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 
 	//If the game has started, send a GameState
 	if lobbyInfo.Status == Models.LobbyStatus_InProgress {
-		log.Println("Game has been marked as 'In Progress' - Sending GameState...")
+		log.Printf("%s Game has been marked as 'In Progress' - Sending current GameState...", funcLogPrefix)
 		gameState, err := GetGameStateFromFs(lobbyInfo.GameStateId)
 		if err != nil {
 			LogError(funcLogPrefix, err)
@@ -212,7 +217,7 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 		conn.WriteJSON(Models.WebsocketMessage{Type: Models.WebsocketMessage_GameState, Data: gameState})
 	}
 
-	log.Printf("Player {%s} has been given first message(s). Beginning to track connection for further communication...", playerId)
+	log.Printf("%s Player {%s} has been given first message(s). Beginning to track and manage connection", funcLogPrefix, playerId)
 
 	//Store the connection, give the connection its own goroutine, and begin listening for more messages
 	gamesClientsMutex.Lock()
@@ -231,6 +236,9 @@ func HandleRejoinLobby(w http.ResponseWriter, r *http.Request) {
 // name of the freshly joined player
 func handShake(roomCode string, newPlayerId string) {
 	funcLogPrefix := "==handShake=="
+
+	log.Printf("%s a new player with Id == {%s} has joined Room {%s}. Beginning handshake", funcLogPrefix, newPlayerId, roomCode)
+
 	gamesClientsMutex.Lock()
 	room := gamesClients[roomCode]
 	gamesClientsMutex.Unlock()
@@ -259,6 +267,8 @@ func handShake(roomCode string, newPlayerId string) {
 		}
 	}
 
+	log.Printf("%s all players in lobby have been informed of new player joining. Beginning managing connection", funcLogPrefix)
+
 	//Last thing we need to do is start listening for messages from this player
 	go manageClient(roomCode, room, newPlayerId, room[newPlayerId])
 }
@@ -267,16 +277,19 @@ func manageClient(lobbyCode string, room map[string]*websocket.Conn, playerId st
 	funcLogPrefix := "==manageClient=="
 	defer socketRecovery(lobbyCode, room, playerId)
 
-	log.Printf("Managing Connection for playerId %s and waiting for message", playerId)
+	log.Printf("%s Managing Connection for playerId %s and waiting for message", funcLogPrefix, playerId)
 	_, msg, err := conn.ReadMessage()
 	if err != nil {
 		LogError(funcLogPrefix, err)
-		log.Printf("Error trying to read message from player {%s}! Closing connection and stopping tracking", playerId)
-		//Disconnect client by closing connection and removing player from lobby
+		log.Printf("%s Error trying to read message from player {%s}! Closing connection and stopping tracking", funcLogPrefix, playerId)
+		//Disconnect client by closing connection (if it's not already closed) and stopping tracking of that player's connection
 		gamesClientsMutex.Lock()
-		room[playerId].Close()
+		if room[playerId] != nil {
+			room[playerId].Close()
+		}
 		delete(room, playerId)
 		gamesClientsMutex.Unlock()
+		return
 	}
 
 	processMessage(lobbyCode, playerId, msg)
@@ -296,9 +309,11 @@ func processMessage(roomCode string, playerId string, message []byte) {
 	room := gamesClients[roomCode]
 	gamesClientsMutex.Unlock()
 
+	log.Printf("%s message received from PlayerId {%s} of type '%s' - trying to handle...", funcLogPrefix, playerId, msg.JsonType)
+
 	switch msg.JsonType {
 	case "startGame":
-		log.Println("Received request to start game")
+		log.Printf("%s Received request to start game", funcLogPrefix)
 		config := GameConfig.GameConfig{}
 		if err := json.Unmarshal(msg.Data, &config); err != nil {
 			log.Printf("error decoding startGame config: %s", err)
@@ -315,7 +330,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 		game, err := GetInitialGameState(roomCode, config)
 		if err != nil {
 			LogError(funcLogPrefix, err)
-			log.Printf("ERROR: GAME NOT STARTED, ABORTING...")
+			log.Printf("%s ERROR: GAME NOT STARTED, ABORTING...", funcLogPrefix)
 			break
 		}
 
@@ -324,7 +339,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 		err := EndGame(roomCode, playerId)
 		if err != nil {
 			LogError(funcLogPrefix, err)
-			log.Printf("ERROR: Trying to end game, aborting...")
+			log.Printf("%s ERROR: Trying to end game, aborting...", funcLogPrefix)
 			return
 		}
 		cleanUpRoom(room, roomCode)
@@ -334,7 +349,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 			Action Actions.SubmittedAction `json:"action"`
 		}
 		if err := json.Unmarshal(msg.Data, &action); err != nil {
-			log.Printf("error decoding submitAction: {%s}", err)
+			log.Printf("%s error decoding submitAction: {%s}", funcLogPrefix, err)
 			socketError := Models.WebsocketMessage{
 				Type: Models.WebsocketMessage_Error,
 				Data: Models.SocketError{
@@ -381,7 +396,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 			PlayerId string `json:"playerId"`
 		}
 		if err := json.Unmarshal(msg.Data, &action); err != nil {
-			log.Printf("error decoding message: {%s}", err)
+			log.Printf("%s error decoding message: {%s}", funcLogPrefix, err)
 			socketError := Models.WebsocketMessage{
 				Type: Models.WebsocketMessage_Error,
 				Data: Models.SocketError{
@@ -473,7 +488,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 			PlayerToKick string `json:"playerToKick"`
 		}
 		if err := json.Unmarshal(msg.Data, &action); err != nil {
-			log.Printf("Error trying to unmarshal kick request into struct with field 'playerToKick' ... Please ensure field exists in Data")
+			log.Printf("%s Error trying to unmarshal kick request into struct with field 'playerToKick' ... Please ensure field exists in Data", funcLogPrefix)
 			socketError := Models.WebsocketMessage{
 				Type: Models.WebsocketMessage_Error,
 				Data: Models.SocketError{
@@ -525,7 +540,7 @@ func processMessage(roomCode string, playerId string, message []byte) {
 
 		sendMessageToAllPlayers(room, Models.WebsocketMessage{Type: Models.WebsocketMessage_LobbyInfo, Data: Models.LobbyInfo{PlayerID: "", LobbyInfo: updatedLobby}})
 	case "disconnect":
-		log.Printf("Player %s is requesting a disconnect!", playerId)
+		log.Printf("%s Player %s is requesting a disconnect!", funcLogPrefix, playerId)
 		conn := room[playerId]
 		msg := Models.WebsocketMessage{
 			Type: Models.WebsocketMessage_Close,
@@ -535,13 +550,13 @@ func processMessage(roomCode string, playerId string, message []byte) {
 		}
 
 		conn.WriteJSON(msg)
-		log.Println("Close message has been sent, closing connection")
+		log.Printf("%s Close message has been sent, closing connection", funcLogPrefix)
 		conn.Close()
 		delete(room, playerId)
-		log.Println("Connection closed and server has stopped tracking websocket connection")
+		log.Printf("%s Connection closed and server has stopped tracking websocket connection", funcLogPrefix)
 		return //Return so we don't go back into manageClient
 	default:
-		log.Println("Unknown type sent, ignoring message recieved", msg)
+		log.Printf("%s Unknown type sent, ignoring the following message: %s", funcLogPrefix, msg)
 	}
 
 	//Listen for the next message from this client. Not using `go manageClient(...)` because this is already happening in a goroutine
@@ -568,13 +583,17 @@ func endPlayerConnection(roomCode string, playerId string, room map[string]*webs
 		conn.WriteJSON(msg)
 		conn.Close()
 		//Remove connection from lobby map so we don't try to send them any more messages
+		gamesClientsMutex.Lock()
 		delete(room, playerId)
+		gamesClientsMutex.Unlock()
 	}
 
 	return updatedLobby, nil
 }
 
 func cleanUpRoom(room map[string]*websocket.Conn, roomCode string) {
+	funcLogPrefix := "==cleanUpRoom=="
+	log.Printf("%s cleaning up Room {%s}", funcLogPrefix, roomCode)
 	closeMessage := Models.WebsocketMessage{
 		Type: Models.WebsocketMessage_Close,
 		Data: Models.SocketClose{
@@ -582,8 +601,10 @@ func cleanUpRoom(room map[string]*websocket.Conn, roomCode string) {
 		},
 	}
 
-	//Send the messages to every player
+	gamesClientsMutex.Lock()
+	//Send the messages to every player and stop tracking their connection
 	for playerId, conn := range room {
+		log.Printf("%s stopping tracking and closing connection for PlayerId %s", funcLogPrefix, playerId)
 		err := conn.WriteJSON(closeMessage)
 		if err != nil {
 			log.Printf("Error sending Close Message to %s. Aborting message, but closing connection anyways", playerId)
@@ -592,23 +613,24 @@ func cleanUpRoom(room map[string]*websocket.Conn, roomCode string) {
 		delete(room, playerId)
 	}
 
-	//Clean up the gamesClients map
-	gamesClientsMutex.Lock()
+	//Stop tracking the room
+	log.Printf("%s stopping tracking of Room {%s}", funcLogPrefix, roomCode)
 	delete(gamesClients, roomCode)
 	gamesClientsMutex.Unlock()
+	log.Printf("%s room successfully cleaned up", funcLogPrefix)
 }
 
 func sendMessageToAllPlayers(room map[string]*websocket.Conn, message Models.WebsocketMessage) {
-	//log.Printf("Sending message to every player: %s", message)
+	funcLogPrefix := "==sendMessageToAllPlayers=="
 
 	if message.Type == "" {
-		log.Println("WARNING: Websocket message being sent has no Type set! Frontend will likely not know how to handle the message!")
+		log.Printf("%s WARNING: Websocket message being sent has no Type set! Frontend will likely not know how to handle the message!", funcLogPrefix)
 	}
 
 	for playerId, conn := range room {
 		err := conn.WriteJSON(message)
 		if err != nil {
-			log.Println("Error sending message, skipping meesage to ", playerId)
+			log.Printf("%s Error sending message, skipping meesage to PlayerId {%s}", funcLogPrefix, playerId)
 			continue
 		}
 	}
@@ -616,11 +638,15 @@ func sendMessageToAllPlayers(room map[string]*websocket.Conn, message Models.Web
 
 // Defer this function whenever you try to read from a socket. If ReadMessage panics, this will kick in. Note: This must be set up (deferred) **BEFORE** calling ReadMessage
 func socketRecovery(roomCode string, room map[string]*websocket.Conn, playerId string) {
+	funcLogPrefix := "==socketRecovery=="
 	if r := recover(); r != nil {
-		log.Printf("Something went wrong trying to manage the connection of Player, likely due to an unexpected closing of the Websocket connection: {%s} -- %s", playerId, r)
-		//Disconnect client by closing connection and removing player from lobby
+		log.Printf("%s Something went wrong trying to manage the connection of Player, likely due to an unexpected closing of the Websocket connection for PlayerId {%s}\n\t Error is: %s", funcLogPrefix, playerId, r)
+		//Disconnect client by closing connection (if it's not already closed) and stopping tracking of their connection
 		gamesClientsMutex.Lock()
-		//lobby[playerId].Close() Assume the socket is already closed if we're here
+
+		if room[playerId] != nil {
+			room[playerId].Close()
+		}
 		delete(room, playerId)
 		if len(room) == 0 {
 			delete(gamesClients, roomCode)
