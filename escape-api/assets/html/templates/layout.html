@@ -24,6 +24,26 @@
 			width: 100%;
 		}
 
+		#main-content::before{
+			content: "";
+			position: fixed;
+			inset: 0;
+			pointer-events: none;
+			background: repeating-linear-gradient(
+				to bottom,
+				rgba(255, 0, 0, 0.03) 1px,
+				rgba(0, 255, 0, 0.03) 2px,
+				rgba(0, 0, 255, 0.03) 4px,
+				rgba(0, 0, 0, 0) 6px
+			);
+			opacity: 0.95;
+		}
+
+		#main-content.flicker::before{
+			opacity: 0.8;
+		}
+
+
 		#orientation-alert {
 			height: 100%;
 			width: 100%;
@@ -106,6 +126,17 @@
 		button.setAttribute("glitch-text", glitchTextOptions[Math.floor(Math.random() * glitchTextOptions.length)])
 	}
 
+	let mainContent = document.getElementById("main-content")
+	
+	function randomFlicker(){
+		mainContent.classList.add('flicker')
+
+		setTimeout(() => {
+			mainContent.classList.remove('flicker')
+		}, Math.random() * 60 + 20)
+
+		setTimeout(randomFlicker, Math.random() * 3000)
+	}	
 
 	function checkForActiveGame() {
 		if (window.location.pathname == '/play') {
@@ -128,6 +159,7 @@
 	}
 
 	checkForActiveGame();
+	randomFlicker();
 </script>
 
 </html>
