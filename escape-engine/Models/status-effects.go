@@ -15,6 +15,7 @@ const (
 	StatusEffect_Lurking         = "Lurking"
 	StatusEffect_Knowhow         = "Knowhow"
 	StatusEffect_Deceptive       = "Deceptive"
+	StatusEffect_Careful         = "Careful"
 )
 
 type StatusEffect struct {
@@ -44,7 +45,7 @@ func (a *StatusEffect) SubtractUse(player *Player) bool {
 func NewAdrenalineSurge() StatusEffect {
 	return StatusEffect{
 		Name:        StatusEffect_AdrenalineSurge,
-		Description: "You may move 1 extra space on your next movement",
+		Description: "You may move 1 extra space on your next movement.",
 		UsesLeft:    1,
 	}
 }
@@ -54,7 +55,7 @@ func NewAdrenalineSurge() StatusEffect {
 func NewCloned() StatusEffect {
 	return StatusEffect{
 		Name:        StatusEffect_Cloned,
-		Description: "You have a clone that will automatically activate upon death",
+		Description: "You have a clone that will automatically activate upon death.",
 		UsesLeft:    1,
 	}
 }
@@ -64,7 +65,7 @@ func NewCloned() StatusEffect {
 func NewArmored() StatusEffect {
 	return StatusEffect{
 		Name:        StatusEffect_Armored,
-		Description: "You are defended from the next attack that hits you",
+		Description: "You are defended from the next attack that hits you.",
 		UsesLeft:    1,
 	}
 }
@@ -84,7 +85,7 @@ func NewHyperphagic() StatusEffect {
 func NewSedated() StatusEffect {
 	return StatusEffect{
 		Name:        StatusEffect_Sedated,
-		Description: "You are sedated and will treat the next space you enter as a Safe Sector",
+		Description: "You will treat the next space you enter as a Safe Sector, regardless of its actual type.",
 		UsesLeft:    1,
 	}
 }
@@ -94,7 +95,7 @@ func NewSedated() StatusEffect {
 func NewFeline() StatusEffect {
 	return StatusEffect{
 		Name:        StatusEffect_Feline,
-		Description: "You can choose 1 additional Sector to make noise in, the next time they make any noise",
+		Description: "You can choose 1 additional Sector to make noise in, the next time they make any noise.",
 		UsesLeft:    1,
 	}
 }
@@ -104,7 +105,7 @@ func NewFeline() StatusEffect {
 func NewInvisible() StatusEffect {
 	return StatusEffect{
 		Name:        StatusEffect_Invisible,
-		Description: "You are immune to Spotlights and Sensors",
+		Description: "You are immune to Spotlights and Sensors.",
 		UsesLeft:    1,
 	}
 }
@@ -113,7 +114,7 @@ func NewInvisible() StatusEffect {
 func NewLurking() StatusEffect {
 	return StatusEffect{
 		Name:        StatusEffect_Lurking,
-		Description: "You can end your turn on the same space you started on",
+		Description: "You can end your turn on the same space you started on.",
 		UsesLeft:    1,
 	}
 }
@@ -122,7 +123,7 @@ func NewLurking() StatusEffect {
 func NewKnowhow() StatusEffect {
 	return StatusEffect{
 		Name:        StatusEffect_Knowhow,
-		Description: "You draw 2 Escape Pod cards upon arriving at an escape pod",
+		Description: "You draw 2 Escape Pod cards upon arriving at an escape pod.",
 		UsesLeft:    1,
 	}
 }
@@ -131,7 +132,15 @@ func NewKnowhow() StatusEffect {
 func NewDeceptive() StatusEffect {
 	return StatusEffect{
 		Name:        StatusEffect_Deceptive,
-		Description: "You may make a noise in any sector upon drawing a White Card, as if you had drawn a Green Card instead",
+		Description: "You may make a noise in any sector upon drawing a White Card, as if you had drawn a Green Card instead.",
+		UsesLeft:    1,
+	}
+}
+
+func NewCareful() StatusEffect {
+	return StatusEffect{
+		Name:        StatusEffect_Careful,
+		Description: "You will treat the next Dangerous Sector you enter as a Safe Sector.",
 		UsesLeft:    1,
 	}
 }

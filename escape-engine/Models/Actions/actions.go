@@ -142,8 +142,9 @@ func DrawCard(gameState *Models.GameState, playerId string) (Models.CardEvent, e
 
 	if actingPlayer.SubtractStatusEffect(Models.StatusEffect_Sedated) {
 		event.Type = Models.Card_NoCard
-	} else if gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Models.Space_Safe ||
-		gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Models.Space_Pod {
+	} else if gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Models.Space_Dangerous && actingPlayer.SubtractStatusEffect(Models.StatusEffect_Careful) {
+		event.Type = Models.Card_NoCard
+	} else if gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Models.Space_Safe || gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Models.Space_Pod {
 		event.Type = Models.Card_NoCard
 	} else {
 		drawnCard := *drawRandomCardFromDeck(gameState)

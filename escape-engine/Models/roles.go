@@ -57,7 +57,7 @@ var RoleTeams = map[string]string{
 
 var RoleDescriptions = map[string]string{
 	//Vanilla
-	Role_Captain:          "You start with 1 stack of the Sedated Status Effect",
+	Role_Captain:          "You start with 1 stack of the Careful Status Effect",
 	Role_Pilot:            "You start with 1 Cat card",
 	Role_Copilot:          "You start with 1 Teleport card",
 	Role_Soldier:          "You start with 1 Attack card",
@@ -115,7 +115,7 @@ const (
 
 func AssignCaptain(player *Player) {
 	player.Role = Role_Captain
-	player.StatusEffects = append(player.StatusEffects, NewSedated())
+	player.StatusEffects = append(player.StatusEffects, NewCareful())
 }
 
 func AssignPilot(player *Player) {
