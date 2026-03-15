@@ -126,7 +126,7 @@ func (a *Adrenaline) Play(gameState *GameState, details CardPlayDetails) string 
 		activePlayer.StatusEffects = append(activePlayer.StatusEffects, NewAdrenalineSurge())
 	}
 	go Recap.AddDataToRecap(gameState.Id, activePlayer.Id, gameState.Turn, fmt.Sprintf("Played %s", a.Name))
-	return fmt.Sprintf("Player '%s' played an Adrenaline card. They can move one space farther on their next turn!", activePlayer.Name)
+	return fmt.Sprintf("Player '%s' played an Adrenaline card. They can move one space farther on their next movement!", activePlayer.Name)
 }
 
 func NewAdrenaline() *Adrenaline {
