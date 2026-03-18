@@ -122,6 +122,8 @@ async function handleGameEventMessage(gameEvent) {
             }
         }
     }
+    addEvent(currentTurn, 'all', gameEvent.description)
+    saveEventToLocalStorage('all', gameEvent.description);
 }
 
 async function handleTurnEnd(turnEnd) {

@@ -632,6 +632,16 @@ function initializeEventLog(players) {
 
     tablist.onchange = (event) => viewPlayerEvents(event.target.value);
 
+    let option = document.createElement("option")
+    option.value = 'all';
+    option.innerText = `All Players`
+    tablist.appendChild(option)
+
+    let log = document.createElement("div")
+    log.id = `event-log-all`
+    log.classList.add("tabcontent")
+    eventLog.appendChild(log) 
+
     for (let player of players) {
         let option = document.createElement("option")
         option.value = player.name;
@@ -642,7 +652,7 @@ function initializeEventLog(players) {
         log.id = `event-log-${player.name}`
         log.classList.add("tabcontent")
         eventLog.appendChild(log)
-    }
+    }  
 
     let previousEventLog = window.localStorage.getItem('efaios-eventlog')
     if (previousEventLog) {
@@ -712,10 +722,10 @@ function addEvent(turn, playerName, event) {
     eventDesc.innerHTML = event;
     eventDesc.onmouseover = _ => highlightEventLogSpace(eventDesc.innerText)
     thisTurnEvents.appendChild(eventDesc);
+    eventDesc.scrollIntoView();
 }
 
 function highlightEventLogSpace(eventText) {
-    console.log(eventText)
     const noiseSpaceExtractor = new RegExp(/made noise at \[(?<Column>[A-Z]+)-(?<Row>\d+)\]/g)
     const attackSpaceExtractor = new RegExp(/attacked \[(?<Column>[A-Z]+)-(?<Row>\d+)\]/g)
     const regularSpaceExtractor = new RegExp(/\[(?<Column>[A-Z]+)-(?<Row>\d)\]/g)
