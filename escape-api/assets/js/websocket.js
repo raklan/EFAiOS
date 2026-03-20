@@ -231,6 +231,7 @@ async function handleGameStateMessage(gameState) {
 async function handleLobbyInfoMessage(messageData) {
     if (!thisPlayer) {
         thisPlayer = messageData.lobbyInfo?.players?.find(p => p.id == messageData.playerID)
+        setConfigFormFromObject(messageData.lobbyInfo.mapConfig)
     }else{
         thisPlayer = messageData.lobbyInfo?.players?.find(p => p.id == thisPlayer.id)
     }
@@ -240,7 +241,7 @@ async function handleLobbyInfoMessage(messageData) {
         roomCode: messageData.lobbyInfo.roomCode
     }
     window.localStorage.setItem('efaios-connectionInfo', JSON.stringify(connectionInfo))
-    setConfigFormFromObject(messageData.lobbyInfo.mapConfig)
+    
     document.getElementById("lobby-roomCode").innerHTML = `Room Code: ${messageData.lobbyInfo.roomCode}`
     document.getElementById('lobby-mapTitle').innerText = `Map: ${messageData.lobbyInfo.mapName}`
 
