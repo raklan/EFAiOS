@@ -60,7 +60,7 @@ var RoleDescriptions = map[string]string{
 	Role_Captain:          "You start with 1 stack of the Careful Status Effect",
 	Role_Pilot:            "You start with 1 Cat card",
 	Role_Copilot:          "You start with 1 Teleport card",
-	Role_Soldier:          "You start with 1 Attack card",
+	Role_Soldier:          "You start with 1 stack of the Armed Status Effect",
 	Role_Psychologist:     "You start the game in a randomly selected Alien start sector",
 	Role_ExecutiveOfficer: "You start with 1 stack of the Lurking Status Effect",
 	Role_Medic:            "You start with 1 Scanner card",
@@ -134,9 +134,7 @@ func AssignCopilot(player *Player) {
 
 func AssignSoldier(player *Player) {
 	player.Role = Role_Soldier
-	attack := NewAttackCard()
-	attack.DestroyOnUse = true
-	player.Hand = append(player.Hand, attack)
+	player.StatusEffects = append(player.StatusEffects, NewArmed())
 }
 
 func AssignPsychologist(player *Player) {

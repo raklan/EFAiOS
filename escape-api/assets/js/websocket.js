@@ -23,7 +23,7 @@ const WS_TURNEND = "TurnEnd"
 const WS_AVAILABLEMOVEMENT = "AvailableMovement"
 
 function handleWsMessage(message) {
-    console.info("Message inbound", message)
+    //console.info("Message inbound", message)
     let handler = null;
     switch (message.type) {
         case WS_CARD:
@@ -306,8 +306,10 @@ async function handleMovementResponse(movementEvent) {
     var playerSpace = document.getElementById(`hex-${thisPlayer.col}-${thisPlayer.row}`)
     playerSpace.classList.add('player')
 
-    //For now, just automatically don't let humans do anything after moving. In the future, we'll pause here to let them choose whether to play cards
-    if (thisPlayer.team != PlayerTeams.Alien) {
+    if (thisPlayer.team == PlayerTeams.Alien || thisPlayer.statusEffects.some(se => se.name === "Armed")) {
+        showPlayerChoicePopup('attack')
+    }
+    else{
         var actionToSend = {
             gameId: thisGameStateId,
             action: {
@@ -320,8 +322,6 @@ async function handleMovementResponse(movementEvent) {
         }
 
         sendWsMessage(ws, 'submitAction', actionToSend);
-    } else if (thisPlayer.team == PlayerTeams.Alien) {
-        showPlayerChoicePopup('attack')
     }
 }
 

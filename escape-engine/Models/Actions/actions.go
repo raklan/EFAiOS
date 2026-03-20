@@ -127,6 +127,11 @@ func GetPotentialMoves(gameState *Models.GameState, playerId string) []string {
 }
 
 func (attack Attack) Execute(gameState *Models.GameState, playerId string) (*Models.GameEvent, error) {
+	actingPlayer := gameState.GetCurrentPlayer()
+	if actingPlayer.Team != Models.PlayerTeam_Alien && !actingPlayer.SubtractStatusEffect(Models.StatusEffect_Armed) {
+		return &Models.GameEvent{}, fmt.Errorf("You cannot attack right now.")
+	}
+
 	return Models.AttackSpace(attack.Row, attack.Col, gameState)
 }
 
