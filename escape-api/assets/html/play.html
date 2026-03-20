@@ -66,10 +66,20 @@
 </div>
 <div id="lobby">
     <h3>Lobby</h3>
-    <div id="lobby-mapTitle"></div>
     <div id="lobby-roomCode"></div>
-    <h4>Players</h4>
-    <div id="lobby-playerList"></div>
+    <div style="display: flex; flex-direction: row; justify-content: space-around; width: 100%">
+        <div style="width: 33%;">            
+            <h4 style="justify-self: center;">Players</h4>
+            <div id="lobby-playerList"></div>
+        </div>
+        <div style="width: 33%; height: 50vh">
+            <h4 id="lobby-mapTitle" style="justify-self: center;"></h4>
+            <div id="map-loading">Loading Preview...</div>
+            <div id="lobby-gridParent"
+                style="visibility: hidden; width: 100%; height: 100%; display: flex; justify-content: center; flex-grow: 1; align-items: center; ">
+            </div>
+        </div>
+    </div>
     <div id="lobby-controls">
         <button id="lobby-joinAsSpectator" style="--button-color: white" onclick="switchPlayerSpectating()">Join As Spectator</button>
         <button id="lobby-gameConfigButton" style="display: none; --button-color: white">Game Settings</button>
@@ -604,6 +614,32 @@
             sendWsMessage(ws, 'disconnect', {});
             ws.close();            
         })
+    }
+
+    async function loadLobbyMapPreview(mapId){
+        let mapPreview = null;
+        let gridParent = document.getElementById("lobby-gridParent");
+        let loadingMessage = document.getElementById('map-loading');
+        gridParent.style.visibility = 'hidden'
+        loadingMessage.style.display = '';
+
+        await fetch(`/api/map?id=${mapId}`)
+            .then(resp => resp.json())
+            .then(apiObj => {
+                mapPreview = {
+                    rows: apiObj.rows,
+                    cols: apiObj.cols,
+                    spaces: apiObj.spaces
+                }
+            })
+
+        MAP = mapPreview;
+        clearGrid();
+        createGrid(MAP.rows, MAP.cols, gridParent, false);
+        drawMapOnPage();
+        
+        loadingMessage.style.display = 'none';
+        gridParent.style.visibility = 'visible';
     }
 
     openSocket();

@@ -64,7 +64,6 @@
 #lobby-playerList{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    width: 30%;
     justify-items: center;
 }
 

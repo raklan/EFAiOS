@@ -231,7 +231,8 @@ async function handleGameStateMessage(gameState) {
 async function handleLobbyInfoMessage(messageData) {
     if (!thisPlayer) {
         thisPlayer = messageData.lobbyInfo?.players?.find(p => p.id == messageData.playerID)
-        setConfigFormFromObject(messageData.lobbyInfo.mapConfig)
+        setConfigFormFromObject(messageData.lobbyInfo.mapConfig);
+        loadLobbyMapPreview(messageData.lobbyInfo.mapId);
     }else{
         thisPlayer = messageData.lobbyInfo?.players?.find(p => p.id == thisPlayer.id)
     }

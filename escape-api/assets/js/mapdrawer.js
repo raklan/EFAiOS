@@ -23,7 +23,7 @@ function createGrid(rows, columns, container, withText = true) {
 
     var createSVG = function (tag) {
         var newElement = document.createElementNS('http://www.w3.org/2000/svg', tag || 'svg');
-        if(tag !== 'svg') //Only add to the polygons
+        if(tag !== 'svg' && withText) //Only add to the polygons
             newElement.addEventListener('click', hexClick);
             newElement.addEventListener('dblclick', null);
         return newElement;
