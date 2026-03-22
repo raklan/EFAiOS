@@ -2,6 +2,7 @@
 
 var MAP = null;
 var cssClass = 'hexfield';//If you change this, change it in hexClick() too
+var tooltipid = ''
 
 const SpaceTypes = {
     Wall: 0,
@@ -17,7 +18,9 @@ function createGrid(rows, columns, container, withText = true) {
     let radius = Math.min(container.clientWidth * 0.6 / columns, container.clientHeight * 0.5 / rows)
     var grid = container;
     let tooltip = document.createElement('div')
-    tooltip.id = 'spaceHoverTooltip'
+    tooltip.id = `spaceHoverTooltip-${container.id}`
+    tooltip.classList.add('spaceHoverTooltip')
+    tooltipid = tooltip.id;
     tooltip.style.textWrap = 'nowrap'
     grid.appendChild(tooltip)
 
@@ -136,7 +139,7 @@ function drawMapOnPage() {
 }
 
 function showSpaceTooltip(event){
-    let tooltip = document.getElementById("spaceHoverTooltip")
+    let tooltip = document.getElementById(tooltipid)
     tooltip.style.display = 'block'
     tooltip.style.left = event.layerX + 10 + 'px'
     tooltip.style.top = event.layerY + 10 + 'px'
@@ -145,6 +148,6 @@ function showSpaceTooltip(event){
 }
 
 function hideSpaceTooltip(event){
-    let tooltip = document.getElementById("spaceHoverTooltip")
+    let tooltip = document.getElementById(tooltipid)
     tooltip.style.display = 'none'
 }

@@ -96,7 +96,7 @@
 }
 
 
-#spaceHoverTooltip {
+.spaceHoverTooltip {
     display: none;
     position: absolute;
     background-color: black;
