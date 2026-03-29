@@ -793,3 +793,21 @@ async function setPlayerHasMoved(val) {
 function getPlayerHasMoved() {
     return window.localStorage.getItem('efaios-playermoved') === 'true'
 }
+
+function initializeAudioManager(){
+    audioManager.load('ambient-1', '/assets/sound/ambient-1.mp3', volume = 0.6)    
+    audioManager.load('ambient-2', '/assets/sound/ambient-2.wav', volume = 0.2)    
+    audioManager.load('yourturn', '/assets/sound/yourturn.mp3', volume = 0.4)
+    audioManager.load('death-1', '/assets/sound/death-1.mp3', volume = 0.3)
+
+    function playRandomSound(){
+        const soundNames = ['ambient-1', 'ambient-2']
+        const soundToPlay = soundNames[Math.floor(Math.random() * soundNames.length)];
+
+        audioManager.play(soundToPlay)
+
+        audioManager.ambientTimer = setTimeout(playRandomSound, Math.random() * 120000 + 60000);
+    }
+
+    setTimeout(playRandomSound, Math.random() * 120000 + 60000)
+}

@@ -151,7 +151,7 @@ function resizeCanvasToDisplaySize(canvas, sizeTo) {
     // look up the size the canvas is being displayed
     const width = sizeTo.clientWidth;
     const height = sizeTo.clientHeight;
-    console.log('resizing canvas', canvas, width, height)
+    //console.log('resizing canvas', canvas, width, height)
 
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;

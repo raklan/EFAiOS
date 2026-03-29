@@ -95,6 +95,7 @@
 				<a href="/mapeditor">Map Editor</a>
 				<a href="/maps">Maps</a>
 				<a href="/compendium">Compendium</a>
+				<a id="audiomanager-mute" href="#" onclick="muteAudioManager()">Mute Audio</a>
 				<a href="https://github.com/raklan/EFAiOS/issues/new" target="_blank">Report a Bug</a>
 			</nav>
 		</header>
@@ -107,9 +108,11 @@
 		</div>
 	</div>
 </body>
-{{template "scripts" .}}
 
+<script src="/assets/js/audiomanager.js"></script>
 <script>
+	const audioManager = new AudioManager();
+
 	//On page load, give every button on the page some fun glitchy text for the hover effect. This attribute is then used to set the content of the after pseudo-element of each button
 	const glitchTextOptions = [
 		'RUN',
@@ -158,9 +161,25 @@
 		document.getElementById('rejoin-box').style.display = 'none';
 	}
 
+	function muteAudioManager(){
+		let isMuted = audioManager.muted;
+		let muteButton = document.getElementById("audiomanager-mute")
+
+		if(isMuted){
+			audioManager.muted = false;
+			muteButton.innerText = 'Mute Audio'
+		}else{
+			audioManager.muted = true;
+			muteButton.innerText = 'Unmute Audio'
+		}
+	}
+
 	checkForActiveGame();
 	randomFlicker();
+
+	
 </script>
+{{template "scripts" .}}
 
 </html>
 {{end}}

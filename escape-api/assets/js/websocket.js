@@ -124,6 +124,10 @@ async function handleGameEventMessage(gameEvent) {
     }
     addEvent(currentTurn, 'all', gameEvent.description)
     saveEventToLocalStorage('all', gameEvent.description);
+
+    if(gameEvent.description.includes('died')){
+        audioManager.play('death-1')
+    }
 }
 
 async function handleTurnEnd(turnEnd) {
@@ -168,6 +172,7 @@ async function handleGameStateMessage(gameState) {
         thisGameStateId = gameState.id
         initializeEventLog(gameState.players)
         initializeCanvas();
+        initializeAudioManager();
 
         if(thisPlayer.role){
             await fetch(`/api/role?name=${thisPlayer.role}`).then(resp => resp.json()).then(apiObj => {
@@ -205,6 +210,7 @@ async function handleGameStateMessage(gameState) {
     let playerHasMoved = getPlayerHasMoved()
     if (isThisPlayersTurn && !playerHasMoved) {
         if(showYourTurnNotification){
+            audioManager.play('yourturn')
             showNotification('Your Turn', 'Your Turn');
         }else{
             showYourTurnNotification = true;
