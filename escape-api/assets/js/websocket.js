@@ -126,7 +126,7 @@ async function handleGameEventMessage(gameEvent) {
     saveEventToLocalStorage('all', gameEvent.description);
 
     if(gameEvent.description.includes('died')){
-        audioManager.play('death-1')
+        playRandomDeathSound();
     }
 }
 

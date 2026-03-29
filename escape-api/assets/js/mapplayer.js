@@ -794,20 +794,32 @@ function getPlayerHasMoved() {
     return window.localStorage.getItem('efaios-playermoved') === 'true'
 }
 
+function playRandomSound(soundNames){
+    const soundToPlay = soundNames[Math.floor(Math.random() * soundNames.length)];
+
+    audioManager.play(soundToPlay)
+}
+
 function initializeAudioManager(){
     audioManager.load('ambient-1', '/assets/sound/ambient-1.mp3', volume = 0.6)    
-    audioManager.load('ambient-2', '/assets/sound/ambient-2.wav', volume = 0.2)    
+    audioManager.load('ambient-2', '/assets/sound/ambient-2.wav', volume = 0.1)    
+
     audioManager.load('yourturn', '/assets/sound/yourturn.mp3', volume = 0.4)
+
     audioManager.load('death-1', '/assets/sound/death-1.mp3', volume = 0.3)
+    audioManager.load('death-2', '/assets/sound/death-2.mp3', volume = 0.3)
+    audioManager.load('death-3', '/assets/sound/death-3.mp3', volume = 0.05)
+    audioManager.load('death-4', '/assets/sound/death-4.mp3', volume = 0.1)
 
-    function playRandomSound(){
-        const soundNames = ['ambient-1', 'ambient-2']
-        const soundToPlay = soundNames[Math.floor(Math.random() * soundNames.length)];
-
-        audioManager.play(soundToPlay)
-
-        audioManager.ambientTimer = setTimeout(playRandomSound, Math.random() * 120000 + 60000);
+    function playAmbientSound(){
+        playRandomSound(['ambient-1', 'ambient-2'])
+    
+        audioManager.ambientTimer = setTimeout(playAmbientSound, Math.random() * 120000 + 60000);
     }
 
-    setTimeout(playRandomSound, Math.random() * 120000 + 60000)
+    setTimeout(playAmbientSound, Math.random() * 120000 + 60000)
+}
+
+function playRandomDeathSound(){
+    playRandomSound(['death-1', 'death-2', 'death-3', 'death-4'])
 }
