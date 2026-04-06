@@ -802,7 +802,7 @@ function playRandomSound(soundNames){
 
 function initializeAudioManager(){
     audioManager.load('ambient-1', '/assets/sound/ambient-1.mp3', volume = 0.6)    
-    audioManager.load('ambient-2', '/assets/sound/ambient-2.wav', volume = 0.1)    
+    audioManager.load('ambient-2', '/assets/sound/ambient-2.wav', volume = 0.05)    
 
     audioManager.load('yourturn', '/assets/sound/yourturn.mp3', volume = 0.4)
 
@@ -814,7 +814,7 @@ function initializeAudioManager(){
     function playAmbientSound(){
         playRandomSound(['ambient-1', 'ambient-2'])
     
-        audioManager.ambientTimer = setTimeout(playAmbientSound, Math.random() * 120000 + 60000);
+        audioManager.ambientTimer = setTimeout(playAmbientSound, Math.random() * 6000000 + 120000);
     }
 
     setTimeout(playAmbientSound, Math.random() * 120000 + 60000)

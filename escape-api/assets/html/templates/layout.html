@@ -111,7 +111,7 @@
 
 <script src="/assets/js/audiomanager.js"></script>
 <script>
-	const audioManager = new AudioManager();
+	const audioManager = new AudioManager();	
 
 	//On page load, give every button on the page some fun glitchy text for the hover effect. This attribute is then used to set the content of the after pseudo-element of each button
 	const glitchTextOptions = [
@@ -166,12 +166,19 @@
 		let muteButton = document.getElementById("audiomanager-mute")
 
 		if(isMuted){
-			audioManager.muted = false;
+			audioManager.unmute();
 			muteButton.innerText = 'Mute Audio'
+			window.sessionStorage.removeItem('efaios-audiomanagermute')
 		}else{
-			audioManager.muted = true;
+			audioManager.mute();
 			muteButton.innerText = 'Unmute Audio'
+			window.sessionStorage.setItem('efaios-audiomanagermute', 'true')
 		}
+	}
+
+	const mute = window.sessionStorage.getItem("efaios-audiomanagermute") === 'true';
+	if(mute){
+		muteAudioManager();	
 	}
 
 	checkForActiveGame();
