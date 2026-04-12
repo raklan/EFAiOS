@@ -1,0 +1,55 @@
+{{define "styling"}}
+{{end}}
+{{define "body"}}
+<h2>Version 1.2.0 Changelog</h2>
+<h3>What's New</h3>
+<ul>
+    <li>Added maps from the Spring map pack</li>
+    <li>Added maps from the Before the World Ends map pack</li>
+    <ul>
+        <li>
+            None of the above maps came with descriptions or suggested player counts, so I playtested most of them and
+            just came up with those myself. They're not official, and might change if I realize there's an issue with
+            one.
+        </li>
+    </ul>
+    <li>
+        Added a new sound player that will play sounds under the following circumstances:
+        <ul>
+            <li>When it is your turn</li>
+            <li>When someone dies</li>
+            <li>Some randomly timed ambient sounds</li>
+            <li>I'll probably add more as time goes on, but I wanted to get this release out</li>
+        </ul>
+    </li>
+    <li>The above-mentioned audio player also has a "Mute Audio" button visible in the top navbar</li>       
+    <li>The "Captain" role has been given a new Status Effect called Careful, replacing its previously given "Sedated"
+        Status Effect.</li>
+    <ul>
+        <li>Careful allows the player to avoid drawing a card the next time they enter a Dangerous Sector. It does not
+            trigger until you do so, as opposed to Sedated, which triggers even if you enter a Safe Sector.</li>
+        <li>This was added after a rereading of the Captain's role effect from the official game rules</li>
+    </ul>
+    <li>The "Soldier" role has been given a new Status Effect called Armed, replacing its previously given "Attack" card
+        at the start.</li>
+    <ul>
+        <li>Armed allows the player to choose to attack after moving, exactly the way Aliens can. The alert will read
+            the same as an Alien attack as well.</li>
+        <li>This was added as a result of rereading the Soldier's attack from the official game rules. It mentions that
+            Soldier is useful for pretending to be an alien, which (to me) reads like the Soldier's attack should be
+            treated exactly the same as an Alien attack, instead of announcing a card was played.</li>
+    </ul>
+    <li>There is now an option in the event log to view all events, instead of filtered by player</li>
+    <li>The event log will now automatically scroll down if it's open when a new event is added</li> 
+    <li>The lobby screen now shows a preview of the map that will be used during the game</li>
+    <li>There is now a version number listed on the bottom-right of the homepage, which is also a link to a changelog.</li>
+</ul>
+<h3>Bugfixes</h3>
+<ul>
+    <li>Fixed a bug where the host's game config would be reset anytime a new player joined the lobby</li>
+    <li>Fixed mismatched grammar on player number suggestions for all maps on the Maps screen</li>
+    <li>The "Adrenaline" card's alert message has received a slight wording clarification</li>
+</ul>
+{{end}}
+{{define "scripts"}}
+{{end}}
