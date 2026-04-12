@@ -6,10 +6,10 @@ My friends and I love playing this game, but wished we had a way to more easily 
 My goal with this is twofold: First, a lightweight version that's easy to set up and play, similar to Jackbox Games, Kahoot, or Candlelight (my college senior project), and Second, to support as much customization as possible. I would love to eventually have some sort of system in place for user-generated roles/items and such, but currently, only maps can be created by users, and anything else must be implemented by myself.
 
 ## Features
-- Every Card & Role found in the Ultimate edition of the Tabletop version, as well as host controls over how many of each can be in the game
+- Every Card & Role found in the Ultimate edition of the Tabletop version, as well as host controls over how many of each can be in the game.
   ![image](https://github.com/user-attachments/assets/2fd42acb-a49e-4b12-98d2-e746841e090a)
 
-- The Release Version comes prebundled with an editable recreation of every map found in the Ultimate edition of the Tabletop version
+- The Release Version comes prebundled with an editable recreation of every map found in the Ultimate edition of the Tabletop version, as well as both the Spring and Before the World Ends map packs.
   ![image](https://github.com/user-attachments/assets/070f76a2-abd9-4e62-80bb-70fcfdc99755)
 
 - Screen Drawing built-in so you can keep notes right on your device, as well as an Event Log to ensure you don't miss important turns.
