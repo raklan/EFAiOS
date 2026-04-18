@@ -578,19 +578,21 @@
         const connectionInfo = JSON.parse(window.localStorage.getItem("efaios-connectionInfo"))
         let urlToConnect = "";
 
+        let protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+
         switch (connectionInfo.type) {
             case "host":
                 window.localStorage.removeItem('efaios-eventlog');
                 window.localStorage.removeItem('efaios-playermoved');
-                urlToConnect = `http://${window.location.host}/lobby/host?mapId=${connectionInfo.mapId}&playerName=${connectionInfo.playerName}`
+                urlToConnect = `${protocol}//${window.location.host}/lobby/host?mapId=${connectionInfo.mapId}&playerName=${connectionInfo.playerName}`
                 break;
             case "join":
                 window.localStorage.removeItem('efaios-eventlog');
                 window.localStorage.removeItem('efaios-playermoved');
-                urlToConnect = `http://${window.location.host}/lobby/join?roomCode=${connectionInfo.roomCode}&playerName=${connectionInfo.playerName}`
+                urlToConnect = `${protocol}//${window.location.host}/lobby/join?roomCode=${connectionInfo.roomCode}&playerName=${connectionInfo.playerName}`
                 break;
             case "rejoin":
-                urlToConnect = `http://${window.location.host}/lobby/rejoin?roomCode=${connectionInfo.roomCode}&playerId=${connectionInfo.playerId}`
+                urlToConnect = `${protocol}}//${window.location.host}/lobby/rejoin?roomCode=${connectionInfo.roomCode}&playerId=${connectionInfo.playerId}`
                 break;
             default:
                 console.error("Something went wrong trying to detect mode")
