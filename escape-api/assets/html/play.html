@@ -144,6 +144,9 @@
                         <a href="/compendium/dictionary#survival-mode" target="_blank">What is this?</a>
                     </label>
                 </div>
+                <div style="display: flex; justify-content: space-evenly;">
+                    <div id="team-assignment-player-list"></div>
+                </div>
             </div>
             <div id="config-cards" style="display: none;">
                 <h2>Noise</h2>
@@ -578,7 +581,8 @@
         const connectionInfo = JSON.parse(window.localStorage.getItem("efaios-connectionInfo"))
         let urlToConnect = "";
 
-        let protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+        //let protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+        let protocol = "ws:"
 
         switch (connectionInfo.type) {
             case "host":

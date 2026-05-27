@@ -436,24 +436,32 @@ func GetPlayerAllowedMoves(gameId string, playerId string) ([]string, error) {
 func assignTeams(gameState *Models.GameState) {
 	log.Println("Assigning teams")
 	humansToAssign, aliensToAssign := gameState.GameMap.GameConfig.NumHumans, gameState.GameMap.GameConfig.NumAliens
+
 	for index := range gameState.Players {
-		if gameState.Players[index].Team == Models.PlayerTeam_Spectator {
+		//Check if the host has already assigned this player a team
+		if gameState.Players[index].Team != "" {
+			switch gameState.Players[index].Team {
+			case Models.PlayerTeam_Human:
+				humansToAssign--
+			case Models.PlayerTeam_Alien:
+				aliensToAssign--
+			}
 			continue
 		}
-		if humansToAssign == 0 && aliensToAssign != 0 { //No human slots left, must be human
+
+		if humansToAssign == 0 && aliensToAssign == 0 { //No team slots left, must be spectator
+			gameState.Players[index].Team = Models.PlayerTeam_Spectator
+		} else if humansToAssign == 0 && aliensToAssign != 0 { //No human slots left, must be alien
 			gameState.Players[index].Team = Models.PlayerTeam_Alien
-		} else if aliensToAssign == 0 && humansToAssign != 0 { //No alien slots left, must be alien
+		} else if aliensToAssign == 0 && humansToAssign != 0 { //No alien slots left, must be human
 			gameState.Players[index].Team = Models.PlayerTeam_Human
 		} else {
-			if humansToAssign == 0 && aliensToAssign == 0 {
-				gameState.Players[index].Team = Models.PlayerTeam_Spectator
-			}
 			if rand.Intn(2) == 0 {
 				gameState.Players[index].Team = Models.PlayerTeam_Human
-				humansToAssign = humansToAssign - 1
+				humansToAssign--
 			} else {
 				gameState.Players[index].Team = Models.PlayerTeam_Alien
-				aliensToAssign = aliensToAssign - 1
+				aliensToAssign--
 			}
 		}
 	}
@@ -463,7 +471,6 @@ func assignTeams(gameState *Models.GameState) {
 func assignStartingPositions(gameState *Models.GameState, gameMap *Models.GameMap) {
 	log.Println("Assigning starting postitions")
 	humanStarts, alienStarts := gameMap.GetSpacesOfType(Models.Space_HumanStart), gameMap.GetSpacesOfType(Models.Space_AlienStart)
-	log.Println(humanStarts)
 	for index, player := range gameState.Players {
 		if player.Team == Models.PlayerTeam_Human && player.Role != Models.Role_Psychologist {
 			startingSpace := humanStarts[rand.Intn(len(humanStarts))]

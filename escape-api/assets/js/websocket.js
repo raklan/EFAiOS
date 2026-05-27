@@ -286,6 +286,60 @@ async function handleLobbyInfoMessage(messageData) {
             sendWsMessage(ws, 'startGame', getGameConfig())
         }
 
+        var teamAssignmentPlayerList = document.getElementById("team-assignment-player-list");
+        teamAssignmentPlayerList.replaceChildren();
+        for(let player of messageData.lobbyInfo.players){
+            playerEntry = document.createElement("fieldset")
+            playerEntry.style.borderColor = "lime"
+
+            playerLabel = document.createElement("legend")
+            playerLabel.innerText = player.name;
+
+            optionRandomLabel = document.createElement("label");
+            optionRandomLabel.innerText = "Random";
+            optionRandom = document.createElement("input");
+            optionRandom.type = "radio";
+            optionRandom.id = `team-assignment-random-${player.id}`;
+            optionRandom.name = `team-assignment-${player.id}`;
+            optionRandom.value = "";
+            optionRandom.setAttribute('checked', true);
+            optionRandomLabel.appendChild(optionRandom);
+
+            optionSpectatorLabel = document.createElement("label");
+            optionSpectatorLabel.innerText = PlayerTeams.Spectator;
+            optionSpectator = document.createElement("input");
+            optionSpectator.type = "radio";
+            optionSpectator.id = `team-assignment-spectator-${player.id}`;
+            optionSpectator.name = `team-assignment-${player.id}`;
+            optionSpectator.value = PlayerTeams.Spectator;
+            optionSpectatorLabel.appendChild(optionSpectator);
+
+            optionHumanLabel = document.createElement("label");
+            optionHumanLabel.innerText = PlayerTeams.Human;
+            optionHuman = document.createElement("input");
+            optionHuman.type = "radio";
+            optionHuman.id = `team-assignment-human-${player.name}`;
+            optionHuman.name = `team-assignment-${player.id}`;
+            optionHuman.value = PlayerTeams.Human;
+            optionHumanLabel.appendChild(optionHuman);
+
+            optionAlienLabel = document.createElement("label");
+            optionAlienLabel.innerText = PlayerTeams.Alien;
+            optionAlien = document.createElement("input");
+            optionAlien.type = "radio";
+            optionAlien.id = `team-assignment-alien-${player.name}`;
+            optionAlien.name = `team-assignment-${player.id}`;
+            optionAlien.value = "";
+            optionAlienLabel.appendChild(optionAlien);
+
+            playerEntry.appendChild(playerLabel);
+            playerEntry.appendChild(optionRandomLabel);
+            playerEntry.appendChild(optionSpectatorLabel);
+            playerEntry.appendChild(optionHumanLabel);
+            playerEntry.appendChild(optionAlienLabel);
+            teamAssignmentPlayerList.appendChild(playerEntry)
+        }
+
         var configButton = document.getElementById("lobby-gameConfigButton");
         configButton.style.display = '';
         configButton.onclick = () => {
