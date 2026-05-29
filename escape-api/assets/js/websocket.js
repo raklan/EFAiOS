@@ -358,7 +358,7 @@ async function handleLobbyInfoMessage(messageData) {
             optionAlien.type = "radio";
             optionAlien.id = `team-assignment-alien-${player.name}`;
             optionAlien.name = `team-assignment-${player.id}`;
-            optionAlien.value = "";
+            optionAlien.value = PlayerTeams.Alien;
             
             optionAlienLabel.appendChild(optionAlien);
             optionAlienLabel.appendChild(checkmarkDiv.cloneNode());

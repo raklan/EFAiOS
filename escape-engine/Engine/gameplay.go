@@ -452,16 +452,16 @@ func assignTeams(gameState *Models.GameState) {
 		}
 
 		switch team {
-		case Models.PlayerTeam_Alien:
-		case Models.PlayerTeam_Human:
-		case Models.PlayerTeam_Spectator:
+		case Models.PlayerTeam_Alien, Models.PlayerTeam_Human, Models.PlayerTeam_Spectator:
 			gameState.Players[requestedPlayerIndex].Team = team
+			log.Printf("Player %s was successfully manually assigned to %s team\n", gameState.Players[requestedPlayerIndex].Name, team)
 		default:
 			log.Printf("Player with ID == {%s} was assigned to \"%s\" team, but that team could not be found. Skipping...\n", playerId, team)
 		}
 	}
 
 	for index := range gameState.Players {
+		log.Printf("Performing random team assignment for player %s\n", gameState.Players[index].Name)
 		//Check if the host has already assigned this player a team
 		if gameState.Players[index].Team != "" {
 			switch gameState.Players[index].Team {
@@ -470,6 +470,7 @@ func assignTeams(gameState *Models.GameState) {
 			case Models.PlayerTeam_Alien:
 				aliensToAssign--
 			}
+			log.Printf("Player was already assigned to %s team, skipping random assignment\n", gameState.Players[index].Team)
 			continue
 		}
 
@@ -488,6 +489,7 @@ func assignTeams(gameState *Models.GameState) {
 				aliensToAssign--
 			}
 		}
+		log.Printf("Player %s was assigned to %s team\n", gameState.Players[index].Name, gameState.Players[index].Team)
 	}
 }
 
