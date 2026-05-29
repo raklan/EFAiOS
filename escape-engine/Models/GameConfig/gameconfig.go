@@ -41,6 +41,8 @@ type GameModifiers struct {
 	AutoTurnEnd bool `json:"autoTurnEnd"`
 	//Whether the game should be played such that after NumTurns, the Humans automatically win, instead of automatically dying
 	SurvivalMode bool `json:"survivalMode"`
+	//Whether the game should be played such that escape pods do not remove humans from the game, and the humans' new win condition is to activate each escape pod
+	ReactorMode bool `json:"reactorMode"`
 }
 
 func GetConfigPresets() []GameConfigPreset {

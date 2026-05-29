@@ -214,63 +214,93 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 	actingPlayer := gameState.GetCurrentPlayer()
 
 	space := gameState.GameMap.Spaces[actingPlayer.GetSpaceMapKey()]
-	if space.Type == Models.Space_Pod {
-		if actingPlayer.Team == Models.PlayerTeam_Alien {
-			return nil, fmt.Errorf("aliens are not allowed to enter pods")
-		}
+	//Reactor Mode
+	if gameState.GameMap.GameConfig.Modifiers.ReactorMode {
+		if space.Type == Models.Space_Pod {
+			gameState.GameMap.Spaces[space.GetMapKey()] = Models.Space{
+				Row:  space.Row,
+				Col:  space.Col,
+				Type: Models.Space_UsedPod,
+			}
 
-		totalPodCards := gameState.GameMap.GameConfig.NumWorkingPods + gameState.GameMap.GameConfig.NumBrokenPods
-		if totalPodCards == 0 {
-			return nil, fmt.Errorf("no pod cards left")
-		}
-		workingPods := slices.Repeat([]bool{true}, gameState.GameMap.GameConfig.NumWorkingPods)
-		brokenPods := slices.Repeat([]bool{false}, gameState.GameMap.GameConfig.NumBrokenPods)
-
-		allPods := slices.Concat(workingPods, brokenPods)
-		drawnPod := rand.Intn(len(allPods))
-
-		podIsWorking := allPods[drawnPod]
-		if podIsWorking {
 			gameEvent = &Models.GameEvent{
 				Row:         actingPlayer.Row,
 				Col:         actingPlayer.Col,
-				Description: fmt.Sprintf("Player '%s' escaped using the Pod at [%s-%d]!", actingPlayer.Name, actingPlayer.Col, actingPlayer.Row),
+				Description: fmt.Sprintf("Player '%s' activated the Node at [%s-%d]!", actingPlayer.Name, actingPlayer.Col, actingPlayer.Row),
 			}
-			go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Escaped using the Pod at [%s-%d]", actingPlayer.Col, actingPlayer.Row))
-			actingPlayer.Team = Models.PlayerTeam_Spectator
-			actingPlayer.Row, actingPlayer.Col = -99, "!"
+			go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Activated the Node at [%s-%d]", actingPlayer.Col, actingPlayer.Row))
 
-			gameState.GameMap.GameConfig.NumWorkingPods -= 1
-		} else {
-			if len(allPods) > 1 && actingPlayer.SubtractStatusEffect(Models.StatusEffect_Knowhow) {
-				secondDrawnPod := Models.RandExclusive(len(allPods), drawnPod)
-				if allPods[secondDrawnPod] {
-					gameEvent = &Models.GameEvent{
-						Row:         actingPlayer.Row,
-						Col:         actingPlayer.Col,
-						Description: fmt.Sprintf("Player '%s' escaped using the Pod at [%s-%d]!", actingPlayer.Name, actingPlayer.Col, actingPlayer.Row),
+			if len(gameState.GameMap.GetSpacesOfType(Models.Space_Pod)) == 0 {
+				gameEvent.Description += " All Nodes have been activated!"
+
+				for i, player := range gameState.Players {
+					if player.Team == Models.PlayerTeam_Human {
+						gameState.Players[i].Team = Models.PlayerTeam_Spectator
+						go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, "Survived until the Reactor restarted")
 					}
-					go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Escaped using the Pod at [%s-%d]", actingPlayer.Col, actingPlayer.Row))
-					actingPlayer.Team = Models.PlayerTeam_Spectator
-					actingPlayer.Row, actingPlayer.Col = -99, "!"
-
-					gameState.GameMap.GameConfig.NumWorkingPods -= 1
 				}
-			} else {
+			}
+		}
+	} else {
+		//Regular game flow - Escape Pod
+		if space.Type == Models.Space_Pod {
+			if actingPlayer.Team == Models.PlayerTeam_Alien {
+				return nil, fmt.Errorf("aliens are not allowed to enter pods")
+			}
+
+			totalPodCards := gameState.GameMap.GameConfig.NumWorkingPods + gameState.GameMap.GameConfig.NumBrokenPods
+			if totalPodCards == 0 {
+				return nil, fmt.Errorf("no pod cards left")
+			}
+			workingPods := slices.Repeat([]bool{true}, gameState.GameMap.GameConfig.NumWorkingPods)
+			brokenPods := slices.Repeat([]bool{false}, gameState.GameMap.GameConfig.NumBrokenPods)
+
+			allPods := slices.Concat(workingPods, brokenPods)
+			drawnPod := rand.Intn(len(allPods))
+
+			podIsWorking := allPods[drawnPod]
+			if podIsWorking {
 				gameEvent = &Models.GameEvent{
 					Row:         actingPlayer.Row,
 					Col:         actingPlayer.Col,
-					Description: fmt.Sprintf("Player '%s' tried the Pod at [%s-%d], but it didn't work!", actingPlayer.Name, actingPlayer.Col, actingPlayer.Row),
+					Description: fmt.Sprintf("Player '%s' escaped using the Pod at [%s-%d]!", actingPlayer.Name, actingPlayer.Col, actingPlayer.Row),
 				}
+				go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Escaped using the Pod at [%s-%d]", actingPlayer.Col, actingPlayer.Row))
+				actingPlayer.Team = Models.PlayerTeam_Spectator
+				actingPlayer.Row, actingPlayer.Col = -99, "!"
 
-				gameState.GameMap.GameConfig.NumBrokenPods -= 1
-				go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Tried the Pod at [%s-%d], but the Pod was broken", actingPlayer.Col, actingPlayer.Row))
+				gameState.GameMap.GameConfig.NumWorkingPods -= 1
+			} else {
+				if len(allPods) > 1 && actingPlayer.SubtractStatusEffect(Models.StatusEffect_Knowhow) {
+					secondDrawnPod := Models.RandExclusive(len(allPods), drawnPod)
+					if allPods[secondDrawnPod] {
+						gameEvent = &Models.GameEvent{
+							Row:         actingPlayer.Row,
+							Col:         actingPlayer.Col,
+							Description: fmt.Sprintf("Player '%s' escaped using the Pod at [%s-%d]!", actingPlayer.Name, actingPlayer.Col, actingPlayer.Row),
+						}
+						go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Escaped using the Pod at [%s-%d]", actingPlayer.Col, actingPlayer.Row))
+						actingPlayer.Team = Models.PlayerTeam_Spectator
+						actingPlayer.Row, actingPlayer.Col = -99, "!"
+
+						gameState.GameMap.GameConfig.NumWorkingPods -= 1
+					}
+				} else {
+					gameEvent = &Models.GameEvent{
+						Row:         actingPlayer.Row,
+						Col:         actingPlayer.Col,
+						Description: fmt.Sprintf("Player '%s' tried the Pod at [%s-%d], but it didn't work!", actingPlayer.Name, actingPlayer.Col, actingPlayer.Row),
+					}
+
+					gameState.GameMap.GameConfig.NumBrokenPods -= 1
+					go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Tried the Pod at [%s-%d], but the Pod was broken", actingPlayer.Col, actingPlayer.Row))
+				}
 			}
-		}
-		gameState.GameMap.Spaces[space.GetMapKey()] = Models.Space{
-			Row:  space.Row,
-			Col:  space.Col,
-			Type: Models.Space_UsedPod,
+			gameState.GameMap.Spaces[space.GetMapKey()] = Models.Space{
+				Row:  space.Row,
+				Col:  space.Col,
+				Type: Models.Space_UsedPod,
+			}
 		}
 	}
 
@@ -281,6 +311,7 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 		gameState.Turn++
 	}
 
+	//MaxTurns elapsed
 	if gameState.Turn > gameState.GameMap.GameConfig.Modifiers.NumTurns {
 		if gameEvent == nil {
 			gameEvent = &Models.GameEvent{

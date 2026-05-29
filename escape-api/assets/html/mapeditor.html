@@ -410,14 +410,21 @@
                         <input type="checkbox" name="config-autoTurnEnd" />
                         <div class="checkmark"></div>
                     </label>
+                </div>
+                <h2>Game Modes</h2>                
+                <div style="display: flex; justify-content: space-evenly;">
                     <label class="checkbox-container" style="padding-top: 2%;">
                         <span>Survival Mode</span>
                         <input type="checkbox" name="config-survivalMode" />
+                        <div class="checkmark"></div>                        
+                    </label>
+                    <label class="checkbox-container" style="padding-top: 2%;">
+                        <span>Reactor Mode</span>
+                        <input type="checkbox" name="config-reactorMode" />
                         <div class="checkmark"></div>
-                        <a href="/compendium/dictionary#survival-mode" target="_blank">What is this?</a>
                     </label>
                 </div>
-            </div>         
+            </div>     
             <div id="config-presets" style="display: none; grid-template-columns: 1fr 3fr;">
                 {{range GetConfigPresets}}
                 <button type="button" class="preset-button"

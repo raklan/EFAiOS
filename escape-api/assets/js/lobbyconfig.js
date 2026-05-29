@@ -126,6 +126,7 @@ function getGameConfig() {
         aliensRespawn: configForm['config-aliensRespawn']?.checked,
         autoTurnEnd: configForm['config-autoTurnEnd']?.checked,
         survivalMode: configForm['config-survivalMode']?.checked,
+        reactorMode: configForm['config-reactorMode']?.checked,
     }    
 
     config.activeCards = {

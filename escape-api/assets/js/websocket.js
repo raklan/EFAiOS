@@ -197,7 +197,7 @@ async function handleGameStateMessage(gameState) {
             }
         }
 
-        autoTurnEnd = gameState.gameMap.gameConfig.autoTurnEnd;
+        autoTurnEnd = gameState.gameMap.gameConfig.modifiers.autoTurnEnd;
     }
     drawMap(gameState.gameMap)
 
