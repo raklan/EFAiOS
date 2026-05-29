@@ -331,6 +331,13 @@ func processMessage(roomCode string, playerId string, message []byte) {
 		if err != nil {
 			LogError(funcLogPrefix, err)
 			log.Printf("%s ERROR: GAME NOT STARTED, ABORTING...", funcLogPrefix)
+			socketError := Models.WebsocketMessage{
+				Type: Models.WebsocketMessage_Error,
+				Data: Models.SocketError{
+					Message: err.Error(),
+				},
+			}
+			room[playerId].WriteJSON(socketError)
 			break
 		}
 

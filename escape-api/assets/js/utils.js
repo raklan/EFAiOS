@@ -99,11 +99,14 @@ function showConfig() {
     document.querySelector(".config-popup").classList.add("config-popup-displayed")
 }
 
-function configTabSwitch(newTab) {
+function configTabSwitch(event, newTab) {    
     let form = document.getElementById("lobby-gameConfig");
 
     let configSections = [...form.children].filter(x => x.id !== "config-tabs");
 
     configSections.forEach(div => div.style.display = 'none');
     configSections.find(x => x.id === newTab).style.display = '';
+
+    form.querySelectorAll("#config-tabs button").forEach(el => el.style.removeProperty('--button-color'))
+    event.target.style.setProperty('--button-color', 'white');
 }

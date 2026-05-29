@@ -563,6 +563,7 @@ function renderTurnOrder() {
 
 function switchPlayerSpectating(){
     let wantToSpectate = thisPlayer.team != PlayerTeams.Spectator;
+    showNotification('Be aware, the host can override this!', 'Heads up')
 
     sendWsMessage(ws, 'spectate', { spectating: wantToSpectate})
 }

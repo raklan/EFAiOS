@@ -87,18 +87,22 @@
     </div>
     <div class="config-popup">
         <div id="config-header" style="display: flex; justify-content: center;">
-            <h1 style="font-weight: bold;" id="config-title">Game Settings</h1>
-            <span style="font-size: 45px; cursor: pointer; position: absolute; right: 5%; top: 5%"
-                onclick="hideConfig()">&times;</span>
+            <h1 style="font-weight: bold; margin-top: 0; margin-bottom: 10px" id="config-title">Game Settings</h1>
+            <span style="font-size: 35px; cursor: pointer; position: absolute; right: 10%; top: 18px;">
+                <a href="/compendium/dictionary#config-options" title="Help" target="_blank" style="text-decoration: none;">?</a>
+            </span>
+            <span style="font-size: 45px; cursor: pointer; position: absolute; right: 5%; top: 15px" onclick="hideConfig()">
+                <a title="Close Game Settings">&times;</a>
+            </span>
         </div>
         <form id="lobby-gameConfig" style="white-space: normal;">
             <div id="config-tabs" 
                 style="display: flex; justify-content: space-around; border-bottom: 1px dashed lime; overflow-y: hidden; overflow-x: auto;">
-                <button type="button" onclick="configTabSwitch('config-teams')">Teams</button>
-                <button type="button" onclick="configTabSwitch('config-roles')">Roles</button>
-                <button type="button" onclick="configTabSwitch('config-cards')">Cards</button>
-                <button type="button" onclick="configTabSwitch('config-modifiers')">Modifiers</button>
-                <button type="button" onclick="configTabSwitch('config-presets')">Presets</button>
+                <button type="button" onclick="configTabSwitch(event, 'config-teams')" style="--button-color: white">Teams</button>
+                <button type="button" onclick="configTabSwitch(event, 'config-roles')">Roles</button>
+                <button type="button" onclick="configTabSwitch(event, 'config-cards')">Cards</button>
+                <button type="button" onclick="configTabSwitch(event, 'config-modifiers')">Modifiers</button>
+                <button type="button" onclick="configTabSwitch(event, 'config-presets')">Presets</button>
             </div>
             <div id="config-teams">
                 <h2>Players Per Team</h2>

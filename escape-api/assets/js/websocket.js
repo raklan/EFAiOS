@@ -287,7 +287,10 @@ async function handleLobbyInfoMessage(messageData) {
         startButton.onclick = () => {
             let gameConfig = getGameConfig()
             console.info('starting game with config', gameConfig);
-            if (gameConfig.numHumans + gameConfig.numAliens != messageData.lobbyInfo.players.filter(p => p.team != PlayerTeams.Spectator).length) {
+            if (gameConfig.numHumans + 
+                gameConfig.numAliens !== 
+                messageData.lobbyInfo.players.length -
+                Object.keys(gameConfig.teamAssignments).filter(assignment => gameConfig.teamAssignments[assignment] === PlayerTeams.Spectator).length) {
                 showNotification("# of Humans + # of Aliens must add up to # of Non-Spectator Players in lobby!", "Error")
                 return;
             }
@@ -308,7 +311,7 @@ async function handleLobbyInfoMessage(messageData) {
 
             //Random
             optionRandomLabel = document.createElement("label");
-            optionRandomLabel.innerText = "Random";
+            optionRandomLabel.innerText = "Default";
             optionRandomLabel.classList.add('checkbox-container');
 
             optionRandom = document.createElement("input");
