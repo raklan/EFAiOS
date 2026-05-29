@@ -288,49 +288,71 @@ async function handleLobbyInfoMessage(messageData) {
 
         var teamAssignmentPlayerList = document.getElementById("team-assignment-player-list");
         teamAssignmentPlayerList.replaceChildren();
+        let checkmarkDiv = document.createElement("div");
+        checkmarkDiv.classList.add("checkmark");
         for(let player of messageData.lobbyInfo.players){
             playerEntry = document.createElement("fieldset")
-            playerEntry.style.borderColor = "lime"
+            playerEntry.classList.add("player-team-assignment")
 
             playerLabel = document.createElement("legend")
             playerLabel.innerText = player.name;
 
+            //Random
             optionRandomLabel = document.createElement("label");
             optionRandomLabel.innerText = "Random";
+            optionRandomLabel.classList.add('checkbox-container');
+
             optionRandom = document.createElement("input");
             optionRandom.type = "radio";
             optionRandom.id = `team-assignment-random-${player.id}`;
             optionRandom.name = `team-assignment-${player.id}`;
             optionRandom.value = "";
             optionRandom.setAttribute('checked', true);
+                        
             optionRandomLabel.appendChild(optionRandom);
+            optionRandomLabel.appendChild(checkmarkDiv.cloneNode());
 
+            //Spectator
             optionSpectatorLabel = document.createElement("label");
             optionSpectatorLabel.innerText = PlayerTeams.Spectator;
+            optionSpectatorLabel.classList.add('checkbox-container');
+
             optionSpectator = document.createElement("input");
             optionSpectator.type = "radio";
             optionSpectator.id = `team-assignment-spectator-${player.id}`;
             optionSpectator.name = `team-assignment-${player.id}`;
             optionSpectator.value = PlayerTeams.Spectator;
-            optionSpectatorLabel.appendChild(optionSpectator);
 
+            optionSpectatorLabel.appendChild(optionSpectator);
+            optionSpectatorLabel.appendChild(checkmarkDiv.cloneNode());
+
+            //Human
             optionHumanLabel = document.createElement("label");
             optionHumanLabel.innerText = PlayerTeams.Human;
+            optionHumanLabel.classList.add("checkbox-container");
+
             optionHuman = document.createElement("input");
             optionHuman.type = "radio";
             optionHuman.id = `team-assignment-human-${player.name}`;
             optionHuman.name = `team-assignment-${player.id}`;
             optionHuman.value = PlayerTeams.Human;
-            optionHumanLabel.appendChild(optionHuman);
 
+            optionHumanLabel.appendChild(optionHuman);
+            optionHumanLabel.appendChild(checkmarkDiv.cloneNode());
+
+            //Alien
             optionAlienLabel = document.createElement("label");
             optionAlienLabel.innerText = PlayerTeams.Alien;
+            optionAlienLabel.classList.add("checkbox-container");
+
             optionAlien = document.createElement("input");
             optionAlien.type = "radio";
             optionAlien.id = `team-assignment-alien-${player.name}`;
             optionAlien.name = `team-assignment-${player.id}`;
             optionAlien.value = "";
+            
             optionAlienLabel.appendChild(optionAlien);
+            optionAlienLabel.appendChild(checkmarkDiv.cloneNode());
 
             playerEntry.appendChild(playerLabel);
             playerEntry.appendChild(optionRandomLabel);

@@ -100,40 +100,10 @@ function showConfig() {
 }
 
 function configTabSwitch(newTab) {
-    let generalConfigId = "config-general"
-    let cardConfigId = "config-cards"
-    let roleConfigId = "config-roles"
-    let presetsConfigId = "config-presets"
+    let form = document.getElementById("lobby-gameConfig");
 
-    let generalConfig = document.getElementById(generalConfigId)
-    let cardConfig = document.getElementById(cardConfigId)
-    let roleConfig = document.getElementById(roleConfigId)
-    let presetsConfig = document.getElementById(presetsConfigId);
+    let configSections = [...form.children].filter(x => x.id !== "config-tabs");
 
-    switch (newTab) {
-        case generalConfigId:
-            generalConfig.style.display = ''
-            cardConfig.style.display = 'none';
-            roleConfig.style.display = 'none';
-            presetsConfig.style.display = 'none';
-            break;
-        case cardConfigId:
-            generalConfig.style.display = 'none'
-            cardConfig.style.display = '';
-            roleConfig.style.display = 'none';
-            presetsConfig.style.display = 'none';
-            break;
-        case roleConfigId:
-            generalConfig.style.display = 'none'
-            cardConfig.style.display = 'none';
-            roleConfig.style.display = '';
-            presetsConfig.style.display = 'none';
-            break;
-        case presetsConfigId:
-            generalConfig.style.display = 'none'
-            cardConfig.style.display = 'none';
-            roleConfig.style.display = 'none';
-            presetsConfig.style.display = 'grid';
-            break;
-    }
+    configSections.forEach(div => div.style.display = 'none');
+    configSections.find(x => x.id === newTab).style.display = '';
 }
