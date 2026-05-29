@@ -61,21 +61,27 @@ func GetInitialGameState(roomCode string, gameConfig GameConfig.GameConfig) (Mod
 		})
 	}
 
-	slices.SortFunc(gameState.Players, func(p1 Models.Player, p2 Models.Player) int { return rand.Intn(100) - rand.Intn(100) })
-	gameState.CurrentPlayer = gameState.Players[0].Id
-
 	gameState.Turn = 1
 	gameState.Deck = []Models.Card{}
 	gameState.DiscardPile = []Models.Card{}
 
 	assignCards(&gameState, gameConfig.ActiveCards)
 	assignTeams(&gameState)
-	if err := AssignRoles(&gameState, gameConfig.ActiveRoles, gameConfig.RequiredRoles); err != nil {
+	if err := assignRoles(&gameState, gameConfig.ActiveRoles, gameConfig.RequiredRoles); err != nil {
 		LogError(funcLogPrefix, err)
 		return gameState, err
 	}
 
 	assignStartingPositions(&gameState, &mapDef)
+
+	slices.SortFunc(gameState.Players, func(p1 Models.Player, p2 Models.Player) int { return rand.Intn(100) - rand.Intn(100) })
+	firstNonSpectatorPlayer := slices.IndexFunc(gameState.Players, func(player Models.Player) bool { return player.Team != Models.PlayerTeam_Spectator })
+	if firstNonSpectatorPlayer == -1 {
+		err := fmt.Errorf("There are no non-spectator players to assign first turn to")
+		LogError(funcLogPrefix, err)
+		return gameState, err
+	}
+	gameState.CurrentPlayer = gameState.Players[firstNonSpectatorPlayer].Id
 
 	gameState, err = SaveGameStateToFs(gameState)
 	if err != nil {
@@ -437,6 +443,24 @@ func assignTeams(gameState *Models.GameState) {
 	log.Println("Assigning teams")
 	humansToAssign, aliensToAssign := gameState.GameMap.GameConfig.NumHumans, gameState.GameMap.GameConfig.NumAliens
 
+	//Manual team assignment
+	for playerId, team := range gameState.GameMap.GameConfig.TeamAssignments {
+		requestedPlayerIndex := slices.IndexFunc(gameState.Players, func(player Models.Player) bool { return player.Id == playerId })
+		if requestedPlayerIndex == -1 {
+			log.Printf("Player with ID == {%s} was assigned to \"%s\" team, but that player could not be found. Skipping...\n", playerId, team)
+			continue
+		}
+
+		switch team {
+		case Models.PlayerTeam_Alien:
+		case Models.PlayerTeam_Human:
+		case Models.PlayerTeam_Spectator:
+			gameState.Players[requestedPlayerIndex].Team = team
+		default:
+			log.Printf("Player with ID == {%s} was assigned to \"%s\" team, but that team could not be found. Skipping...\n", playerId, team)
+		}
+	}
+
 	for index := range gameState.Players {
 		//Check if the host has already assigned this player a team
 		if gameState.Players[index].Team != "" {
@@ -486,7 +510,7 @@ func assignStartingPositions(gameState *Models.GameState, gameMap *Models.GameMa
 	}
 }
 
-func AssignRoles(gameState *Models.GameState, activeRoles map[string]int, requiredRoles map[string]int) error {
+func assignRoles(gameState *Models.GameState, activeRoles map[string]int, requiredRoles map[string]int) error {
 	log.Println("Assigning roles")
 	humanPlayers := gameState.GetHumanPlayers()
 	alienPlayers := gameState.GetAlienPlayers()

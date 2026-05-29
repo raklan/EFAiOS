@@ -14,10 +14,25 @@ type GameConfig struct {
 	NumHumans int `json:"numHumans"`
 	//Number of Aliens currently in the Game
 	NumAliens int `json:"numAliens"`
+	//A map of Player ID -> Team name. A player whose ID does not appear here will be randomly assigned a team.
+	TeamAssignments map[string]string `json:"teamAssignments"`
 	//Number of Working Escape Pods left. The Game automatically ends when this number hits 0.
 	NumWorkingPods int `json:"numWorkingPods"`
 	//Number of Broken Escape Pods left
 	NumBrokenPods int `json:"numBrokenPods"`
+	//Which cards should be active, as well as how many of each
+	ActiveCards map[string]int `json:"activeCards"`
+	//Which roles should be active, as well as the maximum number allowed to be present. Should be >= that role's presence in RequiredRoles, if it's required
+	ActiveRoles map[string]int `json:"activeRoles"`
+	//Which roles should be guaranteed to be in the game, as well as the number of players that should have that role
+	RequiredRoles map[string]int `json:"requiredRoles"`
+	//All modifiers for this game
+	Modifiers GameModifiers `json:"modifiers"`
+	//Which StatusEffects should be active, as well as their priority
+	ActiveStatusEffects map[string]int `json:"activeStatusEffects"`
+}
+
+type GameModifiers struct {
 	//Number of turns before the game should end
 	NumTurns int `json:"numTurns"`
 	//Whether Alien players should join the Spectators team upon death
@@ -26,14 +41,6 @@ type GameConfig struct {
 	AutoTurnEnd bool `json:"autoTurnEnd"`
 	//Whether the game should be played such that after NumTurns, the Humans automatically win, instead of automatically dying
 	SurvivalMode bool `json:"survivalMode"`
-	//Which cards should be active, as well as how many of each
-	ActiveCards map[string]int `json:"activeCards"`
-	//Which roles should be active, as well as the maximum number allowed to be present. Should be >= that role's presence in RequiredRoles, if it's required
-	ActiveRoles map[string]int `json:"activeRoles"`
-	//Which roles should be guaranteed to be in the game, as well as the number of players that should have that role
-	RequiredRoles map[string]int `json:"requiredRoles"`
-	//Which StatusEffects should be active, as well as their priority
-	ActiveStatusEffects map[string]int `json:"activeStatusEffects"`
 }
 
 func GetConfigPresets() []GameConfigPreset {
@@ -46,9 +53,6 @@ func GetConfigPresets() []GameConfigPreset {
 				NumAliens:      0,
 				NumWorkingPods: 4,
 				NumBrokenPods:  1,
-				NumTurns:       40,
-				AliensRespawn:  false,
-				AutoTurnEnd:    false,
 				ActiveCards: map[string]int{
 					"Red Card":   24,
 					"Green Card": 26,
@@ -100,6 +104,11 @@ func GetConfigPresets() []GameConfigPreset {
 					"Lurking":           0,
 					"Psychic":           0,
 				},
+				Modifiers: GameModifiers{
+					NumTurns:      40,
+					AliensRespawn: false,
+					AutoTurnEnd:   false,
+				},
 			}),
 		},
 		{
@@ -110,9 +119,6 @@ func GetConfigPresets() []GameConfigPreset {
 				NumAliens:      0,
 				NumWorkingPods: 4,
 				NumBrokenPods:  1,
-				NumTurns:       40,
-				AliensRespawn:  false,
-				AutoTurnEnd:    false,
 				ActiveCards: map[string]int{
 					"Red Card":   24,
 					"Green Card": 26,
@@ -164,6 +170,11 @@ func GetConfigPresets() []GameConfigPreset {
 					"Lurking":           0,
 					"Psychic":           0,
 				},
+				Modifiers: GameModifiers{
+					NumTurns:      40,
+					AliensRespawn: false,
+					AutoTurnEnd:   false,
+				},
 			}),
 		},
 		{
@@ -174,8 +185,6 @@ func GetConfigPresets() []GameConfigPreset {
 				NumAliens:      0,
 				NumWorkingPods: 4,
 				NumBrokenPods:  1,
-				NumTurns:       40,
-				AliensRespawn:  false,
 				ActiveCards: map[string]int{
 					"Red Card":   24,
 					"Green Card": 26,
@@ -227,6 +236,11 @@ func GetConfigPresets() []GameConfigPreset {
 					"Lurking":           0,
 					"Psychic":           0,
 				},
+				Modifiers: GameModifiers{
+					NumTurns:      40,
+					AliensRespawn: false,
+					AutoTurnEnd:   false,
+				},
 			}),
 		},
 		{
@@ -237,9 +251,6 @@ func GetConfigPresets() []GameConfigPreset {
 				NumAliens:      0,
 				NumWorkingPods: 0,
 				NumBrokenPods:  0,
-				NumTurns:       0,
-				AliensRespawn:  false,
-				AutoTurnEnd:    false,
 				ActiveCards: map[string]int{
 					"Red Card":   0,
 					"Green Card": 0,
@@ -290,6 +301,11 @@ func GetConfigPresets() []GameConfigPreset {
 					"Invisible":         0,
 					"Lurking":           0,
 					"Psychic":           0,
+				},
+				Modifiers: GameModifiers{
+					NumTurns:      0,
+					AliensRespawn: false,
+					AutoTurnEnd:   false,
 				},
 			}),
 		},

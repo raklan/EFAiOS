@@ -1,78 +1,28 @@
-const GAME_CONFIG_DEFAULT = {
-    workingPods: 4,
-    brokenPods: 1,
-
-    numTurns: 40,
-    aliensRespawn: false,
-    autoTurnEnd: false,
-
-    activeCards: {
-        'Red Card': 24,
-        'Green Card': 26,
-        'White Card': 4,
-
-        Adrenaline: 3,
-        Attack: 1,
-        Cat: 2,
-        Clone: 1,
-        Defense: 1,
-        Mutation: 1,
-        Sedatives: 1,
-        Sensor: 1,
-        Spotlight: 2,
-        Teleport: 1
-    },
-
-    activeRoles: {
-        Captain: 1,
-        Pilot: 1,
-        Copilot: 1,
-        Soldier: 1,
-        Psychologist: 1,
-        'Executive Officer': 1,
-        Medic: 1,
-        Engineer: 1,
-
-        Fast: 1,
-        Surge: 1,
-        Blink: 1,
-        Silent: 1,
-        Brute: 1,
-        Invisible: 1,
-        Lurking: 1,
-        Psychic: 1
-    },
-}
-
 function setConfigFormFromObject(configObject) {
-    setGeneralConfig(configObject);
+    setTeamConfig(configObject);
     setCardConfig(configObject);
     setRoleConfig(configObject);
+    setModifierConfig(configObject);
 }
 
 function setConfigFormFromString(configString) {
     const configObject = JSON.parse(configString);
-    setGeneralConfig(configObject);
-    setCardConfig(configObject);
-    setRoleConfig(configObject);
+    setConfigFormFromObject(configObject);
 }
 
-function setGeneralConfig(configObject) {
-    let configForm = document.getElementById("lobby-gameConfig")
+function setModifierConfig(configObject) {
+    let configForm = document.getElementById("lobby-gameConfig")       
 
-    setConfigInputValue('config-numHumans', configObject.numHumans);
-    setConfigInputValue('config-numAliens', configObject.numAliens);
-
-    setConfigInputValue('config-numWorkingPods', configObject.numWorkingPods);
-    setConfigInputValue('config-numBrokenPods', configObject.numBrokenPods);
-
-    setConfigInputValue('config-numTurns', configObject.numTurns);
-    configForm['config-aliensRespawn'].checked = configObject.aliensRespawn;
-    configForm['config-autoTurnEnd'].checked = configObject.autoTurnEnd;
-    configForm['config-survivalMode'].checked = configObject.survivalMode;
+    setConfigInputValue('config-numTurns', configObject.modifiers.numTurns);
+    configForm['config-aliensRespawn'].checked = configObject.modifiers.aliensRespawn;
+    configForm['config-autoTurnEnd'].checked = configObject.modifiers.autoTurnEnd;
+    configForm['config-survivalMode'].checked = configObject.modifiers.survivalMode;
 }
 
 function setCardConfig(configObject) {
+    setConfigInputValue('config-numWorkingPods', configObject.numWorkingPods);
+    setConfigInputValue('config-numBrokenPods', configObject.numBrokenPods);
+
     setConfigInputValue('config-numRedCards', configObject.activeCards['Red Card']);
     setConfigInputValue('config-numGreenCards', configObject.activeCards['Green Card']);
     setConfigInputValue('config-numWhiteCards', configObject.activeCards['White Card']);
@@ -97,7 +47,8 @@ function setCardConfig(configObject) {
 }
 
 function setRoleConfig(configObject) {
-    let configForm = document.getElementById("lobby-gameConfig")
+    let configForm = document.getElementById("lobby-gameConfig")    
+
     setConfigInputValue('config-numCaptain', configObject.activeRoles.Captain);
     setConfigInputValue('config-numPilot', configObject.activeRoles.Pilot);
     setConfigInputValue('config-numCopilot', configObject.activeRoles.Copilot);
@@ -147,20 +98,35 @@ function setRoleConfig(configObject) {
     setConfigInputValue('config-numCallingRequired', configObject.requiredRoles.Calling);
 }
 
+function setTeamConfig(configObject){
+    setConfigInputValue('config-numHumans', configObject.numHumans);
+    setConfigInputValue('config-numAliens', configObject.numAliens);     
+}
+
 function getGameConfig() {
     let configForm = document.getElementById("lobby-gameConfig")
-    let config = {};
+    let config = {}
 
     config.numHumans = getConfigValue("config-numHumans")
     config.numAliens = getConfigValue("config-numAliens")
 
+    config.teamAssignments = {}
+    let teamAssignments = document.querySelectorAll('.player-team-assignment')
+    for(let assignment of teamAssignments){
+        if(configForm[assignment.id].value?.length > 0){
+            config.teamAssignments[assignment.id.replace('team-assignment-', '')] = configForm[assignment.id].value
+        }
+    }
+
     config.numWorkingPods = getConfigValue('config-numWorkingPods')
     config.numBrokenPods = getConfigValue('config-numBrokenPods')
 
-    config.numTurns = getConfigValue('config-numTurns')
-    config.aliensRespawn = configForm['config-aliensRespawn']?.checked;
-    config.autoTurnEnd = configForm['config-autoTurnEnd']?.checked;
-    config.survivalMode = configForm['config-survivalMode']?.checked;
+    config.modifiers = {
+        numTurns: getConfigValue('config-numTurns'),
+        aliensRespawn: configForm['config-aliensRespawn']?.checked,
+        autoTurnEnd: configForm['config-autoTurnEnd']?.checked,
+        survivalMode: configForm['config-survivalMode']?.checked,
+    }    
 
     config.activeCards = {
         "Red Card": getConfigValue('config-numRedCards'),

@@ -185,8 +185,16 @@ async function handleGameStateMessage(gameState) {
         window.onresize = _ => {
             drawMap(gameState.gameMap)
             resizeCanvasToDisplaySize(document.getElementById("can"), document.getElementById("gridParent"))
-            var playerSpace = document.getElementById(`hex-${thisPlayer.col}-${thisPlayer.row}`)
-            playerSpace.classList.add('player')
+            if (thisPlayer.team != PlayerTeams.Spectator) {
+                var playerSpace = document.getElementById(`hex-${thisPlayer.col}-${thisPlayer.row}`)
+                playerSpace.setAttribute('tooltip-text', 'You')
+                playerSpace.setAttribute('tooltip-color', `var(--space-player)`)
+                playerSpace.onmousemove = (event) => showSpaceTooltip(event)
+                playerSpace.onmouseleave = (event) => hideSpaceTooltip(event)
+                playerSpace.classList.add('player')
+            } else {
+                renderSpectatorView(gameState)
+            }
         }
 
         autoTurnEnd = gameState.gameMap.gameConfig.autoTurnEnd;
@@ -231,7 +239,7 @@ async function handleGameStateMessage(gameState) {
     renderStatusEffects();
     renderPlayerHand();
     renderTurnOrder();
-    renderTurnNumber(gameState.turn, gameState.gameMap.gameConfig.numTurns, gameState.gameMap.name);
+    renderTurnNumber(gameState.turn, gameState.gameMap.gameConfig.modifiers.numTurns, gameState.gameMap.name);
 }
 
 async function handleLobbyInfoMessage(messageData) {
@@ -291,10 +299,11 @@ async function handleLobbyInfoMessage(messageData) {
         let checkmarkDiv = document.createElement("div");
         checkmarkDiv.classList.add("checkmark");
         for(let player of messageData.lobbyInfo.players){
-            playerEntry = document.createElement("fieldset")
-            playerEntry.classList.add("player-team-assignment")
+            playerEntry = document.createElement("fieldset");
+            playerEntry.classList.add("player-team-assignment");
+            playerEntry.id = `team-assignment-${player.id}`;
 
-            playerLabel = document.createElement("legend")
+            playerLabel = document.createElement("legend");
             playerLabel.innerText = player.name;
 
             //Random

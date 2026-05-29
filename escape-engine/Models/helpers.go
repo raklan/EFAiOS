@@ -103,7 +103,7 @@ func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) 
 		}
 
 		if !playerWasSaved {
-			if targetPlayer.Team == PlayerTeam_Human || (targetPlayer.Team == PlayerTeam_Alien && gameState.GameMap.GameConfig.AliensRespawn) {
+			if targetPlayer.Team == PlayerTeam_Human || (targetPlayer.Team == PlayerTeam_Alien && gameState.GameMap.GameConfig.Modifiers.AliensRespawn) {
 				newSpaceForPlayer := alienStarts[rand.Intn(len(alienStarts))]
 
 				gameState.Players[index].Team = PlayerTeam_Alien

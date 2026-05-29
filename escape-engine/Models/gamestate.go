@@ -110,7 +110,7 @@ func (gameState *GameState) GetHumanPlayers() []Player {
 			indexToAssign++
 		}
 	}
-	return players
+	return slices.DeleteFunc(players, func(player Player) bool { return player.Id == "" })
 }
 
 func (gameState *GameState) GetAlienPlayers() []Player {
@@ -122,7 +122,7 @@ func (gameState *GameState) GetAlienPlayers() []Player {
 			indexToAssign++
 		}
 	}
-	return players
+	return slices.DeleteFunc(players, func(player Player) bool { return player.Id == "" })
 }
 
 func (gameState *GameState) GetSpectatorPlayers() []Player {

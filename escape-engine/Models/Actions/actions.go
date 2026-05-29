@@ -281,7 +281,7 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 		gameState.Turn++
 	}
 
-	if gameState.Turn > gameState.GameMap.GameConfig.NumTurns {
+	if gameState.Turn > gameState.GameMap.GameConfig.Modifiers.NumTurns {
 		if gameEvent == nil {
 			gameEvent = &Models.GameEvent{
 				Row:         -99,
@@ -290,7 +290,7 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 			}
 		}
 
-		if gameState.GameMap.GameConfig.SurvivalMode {
+		if gameState.GameMap.GameConfig.Modifiers.SurvivalMode {
 			gameEvent.Description = "The Humans held out long enough, and reinforcements arrived!"
 
 			for i, player := range gameState.Players {
