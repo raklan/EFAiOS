@@ -79,3 +79,31 @@
     align-self: center;
     max-height: fit-content;
 }
+
+.config-group {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    row-gap: 15px;
+}
+
+.config-context-button{
+    cursor: pointer;
+    position: absolute;
+    a {
+        text-decoration: none;
+    }
+}
+
+#config-presets{
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
+
+#config-tabs{
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 1px dashed lime; 
+    overflow-y: hidden; 
+    overflow-x: auto;
+}
