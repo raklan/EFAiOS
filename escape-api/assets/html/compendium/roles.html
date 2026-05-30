@@ -1,94 +1,103 @@
 {{define "info"}}
 <div id="compendium-roles">
-    <h1 id="vanilla-roles">Vanilla Roles</h1>
-    <p>These roles were ported as closely as the phyiscal version of the game as I could/was willing to do. Since many
-        Roles gave the player a one-time use ability, most of them
-        were tweaked to either give a Status Effect or a Card at the beginning of the game for ease of implementation,
-        but the end result should be roughly the same. Cards that are given as a result of being assigned a role are
-        <em>not</em> placed in the Discard Pile after being used, to avoid disrupting the balance of the Deck. Roles
-        that have been changed from the tabletop version are marked with an asterisk (*).
-    </p>
+        <h1 id="vanilla-roles">Vanilla Roles</h1>
+        <p>These roles were ported as closely as the phyiscal version of the game as I could/was willing to do. Since
+                many
+                Roles gave the player a one-time use ability, most of them
+                were tweaked to either give a Status Effect or a Card at the beginning of the game for ease of
+                implementation,
+                but the end result should be roughly the same. Cards that are given as a result of being assigned a role
+                are
+                <em>not</em> placed in the Discard Pile after being used, to avoid disrupting the balance of the Deck.
+                Roles
+                that have been changed from the tabletop version are marked with an asterisk (*).
+        </p>
 
-    <h2 id="human-roles" class="human-text">Human Roles</h2>
-    <p>Roles that can be assigned to Players on the Human team.</p>
+        <h2 id="human-roles" class="human-text">Human Roles</h2>
+        <p>Roles that can be assigned to Players on the Human team.</p>
 
-    <h3 id="captain" class="human-text">Captain</h3>
-    <p>You start with 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
-            href="/compendium/statuseffects#careful">Careful</a> Status Effect.</p>
+        <h3 id="captain" class="human-text">Captain</h3>
+        <p>You start with 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
+                        href="/compendium/statuseffects#careful">Careful</a> Status Effect.</p>
 
-    <h3 id="pilot" class="human-text">Pilot</h3>
-    <p>You start with 1 <a href="/compendium/cards#cat">Cat</a> card.</p>
+        <h3 id="copilot" class="human-text">Copilot</h3>
+        <p>You start with 1 <a href="/compendium/cards#teleport">Teleport</a> card.</p>
 
-    <h3 id="copilot" class="human-text">Copilot</h3>
-    <p>You start with 1 <a href="/compendium/cards#teleport">Teleport</a> card.</p>
+        <h3 id="engineer" class="human-text">Engineer</h3>
+        <p>You permanently gain the <a href="/compendium/statuseffects#knowhow">Knowhow</a> Status Effect.</p>
 
-    <h3 id="soldier" class="human-text">Soldier</h3>
-    <p>You start with 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
-            href="/compendium/statuseffects#armed">Armed</a> Status Effect.</p>
+        <h3 id="executiveofficer" class="human-text">Executive Officer</h3>
+        <p>You start with 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
+                        href="/compendium/statuseffects#lurking">Lurking</a> Status Effect.</p>
 
-    <h3 id="psychologist" class="human-text">Psychologist</h3>
-    <p>You start the game in a randomly selected Alien Start Sector.</p>
+        <h3 id="pilot" class="human-text">Pilot</h3>
+        <p>You start with 1 <a href="/compendium/cards#cat">Cat</a> card.</p>
 
-    <h3 id="executiveofficer" class="human-text">Executive Officer</h3>
-    <p>You start with 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
-            href="/compendium/statuseffects#lurking">Lurking</a> Status Effect.</p>
+        <h3 id="psychologist" class="human-text">Psychologist</h3>
+        <p>You start the game in a randomly selected Alien Start Sector.</p>
 
-    <h3 id="medic" class="human-text">Medic</h3>
-    <p>You start with 1 <a href="/compendium/cards#scanner">Scanner</a> card.</p>
+        <h3 id="medic" class="human-text">Medic</h3>
+        <p>You start with 1 <a href="/compendium/cards#scanner">Scanner</a> card.</p>
 
-    <h3 id="engineer" class="human-text">Engineer</h3>
-    <p>You permanently gain the <a href="/compendium/statuseffects#knowhow">Knowhow</a> Status Effect.</p>
+        <h3 id="soldier" class="human-text">Soldier</h3>
+        <p>You start with 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
+                        href="/compendium/statuseffects#armed">Armed</a> Status Effect.</p>
 
-    <h2 id="alien-roles" class="alien-text">Alien Roles</h2>
-    <p>Roles given to Players on the Alien Team. In the tabletop version, many of the Alien roles' powers are to allow
-        them to use one specific card type. However, since it's unlikely that Alien will even draw that card, they feel
-        (to me) quite
-        underwhelming, so for any Alien whose Role allowed them to use a certain card, I've adjusted them to start with
-        1 of those cards, but they cannot draw any more. Hopefully, this will bring them in line with the Human Roles.
-    </p>
+        <h2 id="alien-roles" class="alien-text">Alien Roles</h2>
+        <p>Roles given to Players on the Alien Team. In the tabletop version, many of the Alien roles' powers are to
+                allow
+                them to use one specific card type. However, since it's unlikely that Alien will even draw that card,
+                they feel
+                (to me) quite
+                underwhelming, so for any Alien whose Role allowed them to use a certain card, I've adjusted them to
+                start with
+                1 of those cards, but they cannot draw any more. Hopefully, this will bring them in line with the Human
+                Roles.
+        </p>
 
-    <h3 id="fast" class="alien-text">Fast Alien</h3>
-    <p>You start with 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
-            href="/compendium/statuseffects#adrenaline-surge">Adrenaline Surge</a> Status Effect.</p>
+        <h3 id="blink" class="alien-text">Blink Alien</h3>
+        <p>You start with 1 <a href="/compendium/cards#teleport">Teleport</a> card.</p>
 
-    <h3 id="surge" class="alien-text">Surge Alien</h3>
-    <p>You start with 1 <a href="/compendium/cards#adrenaline">Adrenaline</a> card.</p>
+        <h3 id="brute" class="alien-text">Brute Alien</h3>
+        <p>You permanently gain the <a href="/compendium/statuseffects#armored">Armored</a> Status Effect.</p>
 
-    <h3 id="blink" class="alien-text">Blink Alien</h3>
-    <p>You start with 1 <a href="/compendium/cards#teleport">Teleport</a> card.</p>
+        <h3 id="fast" class="alien-text">Fast Alien</h3>
+        <p>You start with 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
+                        href="/compendium/statuseffects#adrenaline-surge">Adrenaline Surge</a> Status Effect.</p>
 
-    <h3 id="silent" class="alien-text">Silent Alien</h3>
-    <p>You start with 1 <a href="/compendium/cards#sedatives">Sedatives</a> card.</p>
+        <h3 id="invisible" class="alien-text">Invisible Alien</h3>
+        <p>You permanently gain the <a href="/compendium/statuseffects#invisible">Invisible</a> Status Effect.</p>
 
-    <h3 id="brute" class="alien-text">Brute Alien</h3>
-    <p>You permanently gain the <a href="/compendium/statuseffects#armored">Armored</a> Status Effect.</p>
+        <h3 id="lurking" class="alien-text">Lurking Alien</h3>
+        <p>You permanently gain the <a href="/compendium/statuseffects#lurking">Lurking</a> Status Effect.</p>
 
-    <h3 id="invisible" class="alien-text">Invisible Alien</h3>
-    <p>You permanently gain the <a href="/compendium/statuseffects#invisible">Invisible</a> Status Effect.</p>
+        <h3 id="psychic" class="alien-text">Psychic Alien</h3>
+        <p>You permanently gain the <a href="/compendium/statuseffects#deceptive">Deceptive</a> Status Effect.</p>
 
-    <h3 id="lurking" class="alien-text">Lurking Alien</h3>
-    <p>You permanently gain the <a href="/compendium/statuseffects#lurking">Lurking</a> Status Effect.</p>
+        <h3 id="silent" class="alien-text">Silent Alien</h3>
+        <p>You start with 1 <a href="/compendium/cards#sedatives">Sedatives</a> card.</p>
 
-    <h3 id="psychic" class="alien-text">Psychic Alien</h3>
-    <p>You permanently gain the <a href="/compendium/statuseffects#deceptive">Deceptive</a> Status Effect.</p>
+        <h3 id="surge" class="alien-text">Surge Alien</h3>
+        <p>You start with 1 <a href="/compendium/cards#adrenaline">Adrenaline</a> card.</p>
 
-    <h1>Raklan's Arsenal</h1>
-    <p>A new section of the station was found, previously cut off from the rest of the crew. There seem to have been
-        some Crew Members and equipment trapped inside, how lucky! Hopefully nothing else was trapped with them...</p>
+        <h1>Raklan's Arsenal</h1>
+        <p>A new section of the station was found, previously cut off from the rest of the crew. There seem to have been
+                some Crew Members and equipment trapped inside, how lucky! Hopefully nothing else was trapped with
+                them...</p>
 
-    <h2 class="human-text">Human Roles</h2>
-    <h3 id="scout" class="human-text">Scout</h3>
-    <p>You start with 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
-            href="/compendium/statuseffects#invisible">Invisible</a> Status Effect.</p>
+        <h2 class="human-text">Human Roles</h2>
+        <h3 id="communicationsofficer" class="human-text">Communications Officer</h3>
+        <p>You start with 1 <a href="/compendium/cards#noisemaker">Noisemaker</a> card.</p>
 
-    <h3 id="communicationsofficer" class="human-text">Communications Officer</h3>
-    <p>You start with 1 <a href="/compendium/cards#noisemaker">Noisemaker</a> card.</p>
+        <h3 id="scout" class="human-text">Scout</h3>
+        <p>You start with 1 <a href="/compendium/dictionary#stack">stack</a> of the <a
+                        href="/compendium/statuseffects#invisible">Invisible</a> Status Effect.</p>
 
-    <h2 class="alien-text">Alien Roles</h2>
-    <h3 id="tracker" class="alien-text">Tracker Alien</h3>
-    <p>You start with 1 <a href="/compendium/cards#spotlight">Spotlight</a> card.</p>
-
-    <h3 id="calling" class="alien-text">Calling Alien</h3>
-    <p>You start with 1 <a href="/compendium/cards#cat">Cat</a> card</p>
+        <h2 class="alien-text">Alien Roles</h2>
+        <h3 id="calling" class="alien-text">Calling Alien</h3>
+        <p>You start with 1 <a href="/compendium/cards#cat">Cat</a> card</p>
+        
+        <h3 id="tracker" class="alien-text">Tracker Alien</h3>
+        <p>You start with 1 <a href="/compendium/cards#spotlight">Spotlight</a> card.</p>
 </div>
 {{end}}

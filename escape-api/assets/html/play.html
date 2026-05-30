@@ -134,15 +134,6 @@
                             placeholder="# Required" onchange="updatePossible('numCaptain')" />
                     </label>
                     <label class="text-input-label" style="color: deepskyblue">
-                        Pilot
-                        <span>Available</span>
-                        <input type="number" min="0" class="text-input" name="config-numPilot" placeholder="# Possible"
-                            onchange="checkPossible('numPilot')" />
-                        <span>Required</span>
-                        <input type="number" min="0" class="text-input" name="config-numPilotRequired"
-                            placeholder="# Required" onchange="updatePossible('numPilot')" />
-                    </label>
-                    <label class="text-input-label" style="color: deepskyblue">
                         Copilot
                         <span>Available</span>
                         <input type="number" min="0" class="text-input" name="config-numCopilot"
@@ -150,15 +141,6 @@
                         <span>Required</span>
                         <input type="number" min="0" class="text-input" name="config-numCopilotRequired"
                             placeholder="# Required" onchange="updatePossible('numCopilot')" />
-                    </label>
-                    <label class="text-input-label" style="color: deepskyblue">
-                        Soldier
-                        <span>Available</span>
-                        <input type="number" min="0" class="text-input" name="config-numSoldier"
-                            placeholder="# Possible" onchange="checkPossible('numSoldier')" />
-                        <span>Required</span>
-                        <input type="number" min="0" class="text-input" name="config-numSoldierRequired"
-                            placeholder="# Required" onchange="updatePossible('numSoldier')" />
                     </label>
                     <label class="text-input-label" style="color: deepskyblue;">
                         Engineer
@@ -168,15 +150,6 @@
                         <span>Required</span>
                         <input type="number" min="0" class="text-input" name="config-numEngineerRequired"
                             placeholder="# Required" onchange="updatePossible('numEngineer')" />
-                    </label>
-                    <label class="text-input-label" style="color: deepskyblue;">
-                        Psychologist
-                        <span>Available</span>
-                        <input type="number" min="0" class="text-input" name="config-numPsychologist"
-                            placeholder="# Possible" onchange="checkPossible('numPsychologist')" />
-                        <span>Required</span>
-                        <input type="number" min="0" class="text-input" name="config-numPsychologistRequired"
-                            placeholder="# Required" onchange="updatePossible('numPsychologist')" />
                     </label>
                     <label class="text-input-label" style="color: deepskyblue;">
                         Executive Officer
@@ -196,27 +169,36 @@
                         <input type="number" min="0" class="text-input" name="config-numMedicRequired"
                             placeholder="# Required" onchange="updatePossible('numMedic')" />
                     </label>
+                    <label class="text-input-label" style="color: deepskyblue">
+                        Pilot
+                        <span>Available</span>
+                        <input type="number" min="0" class="text-input" name="config-numPilot" placeholder="# Possible"
+                            onchange="checkPossible('numPilot')" />
+                        <span>Required</span>
+                        <input type="number" min="0" class="text-input" name="config-numPilotRequired"
+                            placeholder="# Required" onchange="updatePossible('numPilot')" />
+                    </label>
+                    <label class="text-input-label" style="color: deepskyblue;">
+                        Psychologist
+                        <span>Available</span>
+                        <input type="number" min="0" class="text-input" name="config-numPsychologist"
+                            placeholder="# Possible" onchange="checkPossible('numPsychologist')" />
+                        <span>Required</span>
+                        <input type="number" min="0" class="text-input" name="config-numPsychologistRequired"
+                            placeholder="# Required" onchange="updatePossible('numPsychologist')" />
+                    </label>                 
+                    <label class="text-input-label" style="color: deepskyblue">
+                        Soldier
+                        <span>Available</span>
+                        <input type="number" min="0" class="text-input" name="config-numSoldier"
+                            placeholder="# Possible" onchange="checkPossible('numSoldier')" />
+                        <span>Required</span>
+                        <input type="number" min="0" class="text-input" name="config-numSoldierRequired"
+                            placeholder="# Required" onchange="updatePossible('numSoldier')" />
+                    </label>
                 </div>
                 <h2 style="color: red">Aliens</h2>
                 <div class="config-group">
-                    <label class="text-input-label" style="color: red;">
-                        Fast
-                        <span>Available</span>
-                        <input type="number" min="0" class="text-input" name="config-numFast" placeholder="# Possible"
-                            onchange="checkPossible('numFast')" />
-                        <span>Required</span>
-                        <input type="number" min="0" class="text-input" name="config-numFastRequired"
-                            placeholder="# Required" onchange="updatePossible('numFast')" />
-                    </label>
-                    <label class="text-input-label" style="color: red;">
-                        Surge
-                        <span>Available</span>
-                        <input type="number" min="0" class="text-input" name="config-numSurge" placeholder="# Possible"
-                            onchange="checkPossible('numSurge')" />
-                        <span>Required</span>
-                        <input type="number" min="0" class="text-input" name="config-numSurgeRequired"
-                            placeholder="# Required" onchange="updatePossible('numSurge')" />
-                    </label>
                     <label class="text-input-label" style="color: red;">
                         Blink
                         <span>Available</span>
@@ -227,15 +209,6 @@
                             placeholder="# Required" onchange="updatePossible('numBlink')" />
                     </label>
                     <label class="text-input-label" style="color: red;">
-                        Silent
-                        <span>Available</span>
-                        <input type="number" min="0" class="text-input" name="config-numSilent" placeholder="# Possible"
-                            onchange="checkPossible('numSilent')" />
-                        <span>Required</span>
-                        <input type="number" min="0" class="text-input" name="config-numSilentRequired"
-                            placeholder="# Required" onchange="updatePossible('numSilent')" />
-                    </label>                
-                    <label class="text-input-label" style="color: red;">
                         Brute
                         <span>Available</span>
                         <input type="number" min="0" class="text-input" name="config-numBrute" placeholder="# Possible"
@@ -243,6 +216,15 @@
                         <span>Required</span>
                         <input type="number" min="0" class="text-input" name="config-numBruteRequired"
                             placeholder="# Required" onchange="updatePossible('numBrute')" />
+                    </label>
+                    <label class="text-input-label" style="color: red;">
+                        Fast
+                        <span>Available</span>
+                        <input type="number" min="0" class="text-input" name="config-numFast" placeholder="# Possible"
+                            onchange="checkPossible('numFast')" />
+                        <span>Required</span>
+                        <input type="number" min="0" class="text-input" name="config-numFastRequired"
+                            placeholder="# Required" onchange="updatePossible('numFast')" />
                     </label>
                     <label class="text-input-label" style="color: red;">
                         Invisible
@@ -271,9 +253,36 @@
                         <input type="number" min="0" class="text-input" name="config-numPsychicRequired"
                             placeholder="# Required" onchange="updatePossible('numPsychic')" />
                     </label>
+                    <label class="text-input-label" style="color: red;">
+                        Silent
+                        <span>Available</span>
+                        <input type="number" min="0" class="text-input" name="config-numSilent" placeholder="# Possible"
+                            onchange="checkPossible('numSilent')" />
+                        <span>Required</span>
+                        <input type="number" min="0" class="text-input" name="config-numSilentRequired"
+                            placeholder="# Required" onchange="updatePossible('numSilent')" />
+                    </label>
+                    <label class="text-input-label" style="color: red;">
+                        Surge
+                        <span>Available</span>
+                        <input type="number" min="0" class="text-input" name="config-numSurge" placeholder="# Possible"
+                            onchange="checkPossible('numSurge')" />
+                        <span>Required</span>
+                        <input type="number" min="0" class="text-input" name="config-numSurgeRequired"
+                            placeholder="# Required" onchange="updatePossible('numSurge')" />
+                    </label>
                 </div>
                 <h2 style="color: deepskyblue">Raklan's Arsenal - Humans</h2>
                 <div class="config-group">
+                    <label class="text-input-label" style="color: deepskyblue">
+                        Communications Officer
+                        <span>Available</span>
+                        <input type="number" min="0" class="text-input" name="config-numCommunicationsOfficer"
+                        placeholder="# Possible" onchange="checkPossible('numCommunicationsOfficer')" />
+                        <span>Required</span>
+                        <input type="number" min="0" class="text-input" name="config-numCommunicationsOfficerRequired"
+                        placeholder="# Required" onchange="updatePossible('numCommunicationsOfficer')" />
+                    </label>
                     <label class="text-input-label" style="color: deepskyblue">
                         Scout
                         <span>Available</span>
@@ -283,18 +292,18 @@
                         <input type="number" min="0" class="text-input" name="config-numScoutRequired"
                             placeholder="# Required" onchange="updatePossible('numScout')" />
                     </label>
-                    <label class="text-input-label" style="color: deepskyblue">
-                        Communications Officer
-                        <span>Available</span>
-                        <input type="number" min="0" class="text-input" name="config-numCommunicationsOfficer"
-                            placeholder="# Possible" onchange="checkPossible('numCommunicationsOfficer')" />
-                        <span>Required</span>
-                        <input type="number" min="0" class="text-input" name="config-numCommunicationsOfficerRequired"
-                            placeholder="# Required" onchange="updatePossible('numCommunicationsOfficer')" />
-                    </label>
                 </div>
                 <h2 style="color: red">Raklan's Arsenal - Aliens</h2>
                 <div class="config-group">
+                    <label class="text-input-label" style="color: red">
+                        Calling
+                        <span>Available</span>
+                        <input type="number" min="0" class="text-input" name="config-numCalling"
+                        placeholder="# Possible" onchange="checkPossible('numCalling')" />
+                        <span>Required</span>
+                        <input type="number" min="0" class="text-input" name="config-numCallingRequired"
+                        placeholder="# Required" onchange="updatePossible('numCalling')" />
+                    </label>
                     <label class="text-input-label" style="color: red">
                         Tracker
                         <span>Available</span>
@@ -303,15 +312,6 @@
                         <span>Required</span>
                         <input type="number" min="0" class="text-input" name="config-numTrackerRequired"
                             placeholder="# Required" onchange="updatePossible('numTracker')" />
-                    </label>
-                    <label class="text-input-label" style="color: red">
-                        Calling
-                        <span>Available</span>
-                        <input type="number" min="0" class="text-input" name="config-numCalling"
-                            placeholder="# Possible" onchange="checkPossible('numCalling')" />
-                        <span>Required</span>
-                        <input type="number" min="0" class="text-input" name="config-numCallingRequired"
-                            placeholder="# Required" onchange="updatePossible('numCalling')" />
                     </label>
                 </div>
             </div>
