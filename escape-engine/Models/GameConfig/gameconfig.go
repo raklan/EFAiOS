@@ -43,6 +43,8 @@ type GameModifiers struct {
 	SurvivalMode bool `json:"survivalMode"`
 	//Whether the game should be played such that escape pods do not remove humans from the game, and the humans' new win condition is to activate each escape pod
 	ReactorMode bool `json:"reactorMode"`
+	//Whether the game should add a randomly placed guaranteed escape sector after all escape pods are marked as used.
+	LastResortMode bool `json:"lastResortMode"`
 }
 
 func GetConfigPresets() []GameConfigPreset {

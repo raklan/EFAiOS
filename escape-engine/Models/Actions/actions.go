@@ -149,7 +149,9 @@ func DrawCard(gameState *Models.GameState, playerId string) (Models.CardEvent, e
 		event.Type = Models.Card_NoCard
 	} else if gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Models.Space_Dangerous && actingPlayer.SubtractStatusEffect(Models.StatusEffect_Careful) {
 		event.Type = Models.Card_NoCard
-	} else if gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Models.Space_Safe || gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Models.Space_Pod {
+	} else if gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Models.Space_Safe ||
+		gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Models.Space_Pod ||
+		gameState.GameMap.Spaces[currentSpace.GetMapKey()].Type == Models.Space_Evacuation {
 		event.Type = Models.Card_NoCard
 	} else {
 		drawnCard := *drawRandomCardFromDeck(gameState)
@@ -214,9 +216,12 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 	actingPlayer := gameState.GetCurrentPlayer()
 
 	space := gameState.GameMap.Spaces[actingPlayer.GetSpaceMapKey()]
-	//Reactor Mode
-	if gameState.GameMap.GameConfig.Modifiers.ReactorMode {
-		if space.Type == Models.Space_Pod {
+	if space.Type == Models.Space_Pod {
+		if actingPlayer.Team == Models.PlayerTeam_Alien {
+			return nil, fmt.Errorf("aliens are not allowed to enter pods")
+		}
+		//Reactor Mode
+		if gameState.GameMap.GameConfig.Modifiers.ReactorMode {
 			gameState.GameMap.Spaces[space.GetMapKey()] = Models.Space{
 				Row:  space.Row,
 				Col:  space.Col,
@@ -233,21 +238,19 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 			if len(gameState.GameMap.GetSpacesOfType(Models.Space_Pod)) == 0 {
 				gameEvent.Description += " All Nodes have been activated!"
 
-				for i, player := range gameState.Players {
-					if player.Team == Models.PlayerTeam_Human {
-						gameState.Players[i].Team = Models.PlayerTeam_Spectator
-						go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, "Survived until the Reactor restarted")
+				if gameState.GameMap.GameConfig.Modifiers.LastResortMode {
+					createRandomEvacuationSector(gameState, gameEvent)
+				} else {
+					for i, player := range gameState.Players {
+						if player.Team == Models.PlayerTeam_Human {
+							gameState.Players[i].Team = Models.PlayerTeam_Spectator
+							go Recap.AddDataToRecap(gameState.Id, player.Id, gameState.Turn, "Survived until the Reactor restarted")
+						}
 					}
 				}
 			}
-		}
-	} else {
-		//Regular game flow - Escape Pod
-		if space.Type == Models.Space_Pod {
-			if actingPlayer.Team == Models.PlayerTeam_Alien {
-				return nil, fmt.Errorf("aliens are not allowed to enter pods")
-			}
-
+			//Regular game flow
+		} else { //Regular flow
 			totalPodCards := gameState.GameMap.GameConfig.NumWorkingPods + gameState.GameMap.GameConfig.NumBrokenPods
 			if totalPodCards == 0 {
 				return nil, fmt.Errorf("no pod cards left")
@@ -301,7 +304,26 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 				Col:  space.Col,
 				Type: Models.Space_UsedPod,
 			}
+
+			if gameState.GameMap.GameConfig.Modifiers.LastResortMode &&
+				len(gameState.GameMap.GetSpacesOfType(Models.Space_Pod)) == 0 {
+
+				createRandomEvacuationSector(gameState, gameEvent)
+			}
 		}
+	} else if space.Type == Models.Space_Evacuation {
+		if actingPlayer.Team == Models.PlayerTeam_Alien {
+			return nil, fmt.Errorf("aliens are not allowed to enter evacuation zones")
+		}
+
+		gameEvent = &Models.GameEvent{
+			Row:         actingPlayer.Row,
+			Col:         actingPlayer.Col,
+			Description: fmt.Sprintf("Player '%s' evacuated from [%s-%d]!", actingPlayer.Name, actingPlayer.Col, actingPlayer.Row),
+		}
+		go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Evacuated from [%s-%d]", actingPlayer.Col, actingPlayer.Row))
+		actingPlayer.Team = Models.PlayerTeam_Spectator
+		actingPlayer.Row, actingPlayer.Col = -99, "!"
 	}
 
 	nextPlayer, hadToWrap := getNextPlayerId(gameState.Players, slices.IndexFunc(gameState.Players, func(p Models.Player) bool { return p.Id == actingPlayer.Id }))
@@ -418,4 +440,18 @@ func drawRandomCardFromDeck(gameState *Models.GameState) *Models.Card {
 	})
 	//Return address to copy of deleted card
 	return &cardCopy
+}
+
+func createRandomEvacuationSector(gameState *Models.GameState, currentGameEvent *Models.GameEvent) {
+	validSectors := slices.Concat(gameState.GameMap.GetSpacesOfType(Models.Space_Dangerous), gameState.GameMap.GetSpacesOfType(Models.Space_Safe))
+
+	spaceToChange := validSectors[rand.Intn(len(validSectors))]
+
+	gameState.GameMap.Spaces[spaceToChange.GetMapKey()] = Models.Space{
+		Row:  spaceToChange.Row,
+		Col:  spaceToChange.Col,
+		Type: Models.Space_Evacuation,
+	}
+
+	currentGameEvent.Description += fmt.Sprintf(" An Evacuation zone has opened at [%s-%d]! Any humans getting there automatically escape!", spaceToChange.Col, spaceToChange.Row)
 }

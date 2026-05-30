@@ -138,6 +138,7 @@ const (
 	Space_UsedPod
 	Space_HumanStart
 	Space_AlienStart
+	Space_Evacuation
 )
 
 type Space struct {

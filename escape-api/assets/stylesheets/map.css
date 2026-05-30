@@ -3,6 +3,7 @@
     --space-safe: white;
     --space-pod: forestgreen;
     --space-pod-used: brown;
+    --space-evacuation: rgb(6, 172, 0);
     --space-dangerous: gray;
     --space-humanstart: var(--human-color);
     --space-alienstart: var(--alien-color);
@@ -13,7 +14,7 @@
     --space-playerboth: mediumpurple;
     --space-hover: yellow;
     --space-noiseevent: rgb(255, 237, 134);
-    --space-cardevent: orange;
+    --space-cardevent: orange;    
 }
 
 .hexfield {
@@ -57,6 +58,10 @@
 
 .hexfield.humanstart {
     fill: var(--space-humanstart);
+}
+
+.hexfield.evacuation {
+    fill: var(--space-evacuation);
 }
 
 .hexfield.selected {
