@@ -151,12 +151,12 @@ func GetMapForLobby(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	requestedMap, err := GetMapFromDB(lobby.MapId)
+	gameState, err := GetGameStateFromFs(lobby.GameStateId)
 	if err != nil {
 		LogError(funcLogPrefix, err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(requestedMap)
+	json.NewEncoder(w).Encode(gameState.GameMap)
 }
