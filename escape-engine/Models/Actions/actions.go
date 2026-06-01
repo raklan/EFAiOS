@@ -331,6 +331,21 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 
 	if hadToWrap {
 		gameState.Turn++
+
+		//Evacuation Mode - I don't like having it here, but this prevents having to check for whether we've created
+		// an evacuation sector already or introducing a new field to track such a thing
+		if gameState.GameMap.GameConfig.Modifiers.EvacuationMode &&
+			gameState.Turn == gameState.GameMap.GameConfig.Modifiers.EvacuationTiming {
+			if gameEvent == nil {
+				gameEvent = &Models.GameEvent{
+					Row:         -99,
+					Col:         "",
+					Description: "",
+				}
+			}
+
+			createRandomEvacuationSector(gameState, gameEvent)
+		}
 	}
 
 	//Blocked Pods unblocking
@@ -349,7 +364,7 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 		}
 
 		if gameState.GameMap.GameConfig.Modifiers.SurvivalMode {
-			gameEvent.Description = "The Humans held out long enough, and reinforcements arrived!"
+			gameEvent.Description += "The Humans held out long enough, and reinforcements arrived!"
 
 			for i, player := range gameState.Players {
 				if player.Team == Models.PlayerTeam_Human {
@@ -450,8 +465,11 @@ func drawRandomCardFromDeck(gameState *Models.GameState) *Models.Card {
 func createRandomEvacuationSector(gameState *Models.GameState, currentGameEvent *Models.GameEvent) {
 	validSectors := slices.Concat(gameState.GameMap.GetSpacesOfType(Models.Space_Dangerous), gameState.GameMap.GetSpacesOfType(Models.Space_Safe))
 
-	spaceToChange := validSectors[rand.Intn(len(validSectors))]
+	if len(validSectors) == 0 {
+		return
+	}
 
+	spaceToChange := validSectors[rand.Intn(len(validSectors))]
 	gameState.GameMap.Spaces[spaceToChange.GetMapKey()] = Models.Space{
 		Row:  spaceToChange.Row,
 		Col:  spaceToChange.Col,

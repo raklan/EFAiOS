@@ -45,10 +45,14 @@ type GameModifiers struct {
 	ReactorMode bool `json:"reactorMode"`
 	//Whether the game should add a randomly placed guaranteed escape sector after all escape pods are marked as used.
 	LastResortMode bool `json:"lastResortMode"`
-	//Whether the Escape Pods should start the game as blocked, and become unblocked using the logic in
+	//Whether the Escape Pods should start the game as blocked, and become unblocked using the logic in PodUnblockTiming
 	UnstablePodsMode bool `json:"unstablePodsMode"`
 	//When to mark Escape Pods as unblocked. The following logic applies: If == -2, unblock on Even Turns. If == -1, unblock on Odd turns. If == 0, never unblock. If > 0, unblock forever starting on that turn #
 	PodUnblockTiming int `json:"podUnblockTiming"`
+	//Whether the game should spawn a random Evacuation Sector on turn # in `EvacuationTiming`
+	EvacuationMode bool `json:"evacuationMode"`
+	//On this turn, spawn a randomly-placed Evacuation Sector
+	EvacuationTiming int `json:"evacuationTiming"`
 }
 
 func GetConfigPresets() []GameConfigPreset {

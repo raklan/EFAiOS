@@ -410,6 +410,15 @@
                 <h2>Game Modes</h2>
                 <div class="config-group">
                     <label class="checkbox-container" style="padding-top: 2%;">
+                        <span>Evacuation Mode</span>
+                        <input type="checkbox" name="config-evacuationMode" onchange="updateEvacuationModeControls()" />
+                        <div class="checkmark"></div>
+                    </label>
+                    <label class="text-input-label" id="config-evacuationTimingInput" style="display: none;">                
+                        <span>Open Evacuation on Turn #</span>        
+                        <input type="number" min="1" class="text-input" name="config-evacuationTiming" placeholder="Turn #" />
+                    </label>
+                    <label class="checkbox-container" style="padding-top: 2%;">
                         <span>Last Resort Mode</span>
                         <input type="checkbox" name="config-lastResortMode" />
                         <div class="checkmark"></div>
@@ -444,7 +453,7 @@
                             <div class="checkmark"></div>
                         </label>
                         <label class="checkbox-container">
-                            After Turn #
+                            On Turn #
                             <input type="radio" name="config-podUnblockLogic" checked value="turn" onchange="updateUnstablePodControls()" />
                             <div class="checkmark"></div>
                         </label>

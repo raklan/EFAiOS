@@ -128,10 +128,12 @@ function drawMapOnPage() {
                     break;
                 case SpaceTypes.Evacuation:
                     spaceClass = 'evacuation';
-                    tooltipText = 'Evacuation Zone'
+                    tooltipText = 'Evacuation Zone';
+                    break;
                 case SpaceTypes.BlockedPod:
                     spaceClass = 'pod-blocked';
                     tooltipText = 'Blocked Escape Pod';
+                    break;                    
             }
 
             el.classList = [cssClass, spaceClass].join(' ');

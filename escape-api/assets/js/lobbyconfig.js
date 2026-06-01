@@ -33,6 +33,8 @@ function setModifierConfig(configObject) {
             break;
     }
     updateUnstablePodControls();
+    configForm['config-evacuationMode'].checked = configObject.modifiers.evacuationMode;
+    setConfigInputValue('config-evacuationTiming', configObject.modifiers.evacuationTiming)
 }
 
 function setCardConfig(configObject) {
@@ -145,6 +147,8 @@ function getGameConfig() {
         reactorMode: configForm['config-reactorMode']?.checked,
         survivalMode: configForm['config-survivalMode']?.checked,
         unstablePodsMode: configForm['config-unstablePodsMode']?.checked,
+        evacuationMode: configForm['config-evacuationMode']?.checked,
+        evacuationTiming: getConfigValue('config-evacuationTiming')
     }    
 
     if(config.modifiers.unstablePodsMode){
@@ -279,6 +283,16 @@ function updateUnstablePodControls(){
 
     let turnNumInput = form["config-podAfterTurn"]
     if(form['config-podUnblockLogic'].value === 'turn'){
+        turnNumInput.style.display = ''
+    }else{
+        turnNumInput.style.display = 'none'
+    }
+}
+
+function updateEvacuationModeControls(){
+    let form = document.getElementById('lobby-gameConfig');
+    let turnNumInput = form.querySelector("#config-evacuationTimingInput");
+    if(form['config-evacuationMode'].checked){
         turnNumInput.style.display = ''
     }else{
         turnNumInput.style.display = 'none'
