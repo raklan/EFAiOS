@@ -256,6 +256,7 @@
 }
 
 #turn-number {
+    display: grid;
     position: fixed;
     top: 3px;
     padding: 5px;

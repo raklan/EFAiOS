@@ -16,6 +16,7 @@ function setModifierConfig(configObject) {
     setConfigInputValue('config-numTurns', configObject.modifiers.numTurns);
     configForm['config-aliensRespawn'].checked = configObject.modifiers.aliensRespawn;
     configForm['config-autoTurnEnd'].checked = configObject.modifiers.autoTurnEnd;
+    configForm['config-lastManStandingMode'].checked = configObject.modifiers.lastManStandingMode;
     configForm['config-lastResortMode'].checked = configObject.modifiers.lastResortMode;
     configForm['config-reactorMode'].checked = configObject.modifiers.reactorMode;
     configForm['config-survivalMode'].checked = configObject.modifiers.survivalMode;
@@ -143,6 +144,7 @@ function getGameConfig() {
         numTurns: getConfigValue('config-numTurns'),
         aliensRespawn: configForm['config-aliensRespawn']?.checked,
         autoTurnEnd: configForm['config-autoTurnEnd']?.checked,
+        lastManStandingMode: configForm['config-lastManStandingMode']?.checked,
         lastResortMode: configForm['config-lastResortMode']?.checked,
         reactorMode: configForm['config-reactorMode']?.checked,
         survivalMode: configForm['config-survivalMode']?.checked,

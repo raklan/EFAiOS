@@ -137,16 +137,22 @@ func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) 
 
 func HandleEscapePodBlocking(gameState *GameState) {
 	podsShouldBeBlocked := false
-	//Logic is recorded in docs for PodUnblockTiming
-	switch gameState.GameMap.GameConfig.Modifiers.PodUnblockTiming {
-	case -2:
-		podsShouldBeBlocked = gameState.Turn%2 != 0
-	case -1:
-		podsShouldBeBlocked = gameState.Turn%2 == 0
-	case 0:
-		podsShouldBeBlocked = true
-	default:
-		podsShouldBeBlocked = gameState.Turn < gameState.GameMap.GameConfig.Modifiers.PodUnblockTiming
+	if gameState.GameMap.GameConfig.Modifiers.UnstablePodsMode {
+		//Logic is recorded in docs for PodUnblockTiming
+		switch gameState.GameMap.GameConfig.Modifiers.PodUnblockTiming {
+		case -2:
+			podsShouldBeBlocked = gameState.Turn%2 != 0
+		case -1:
+			podsShouldBeBlocked = gameState.Turn%2 == 0
+		case 0:
+			podsShouldBeBlocked = true
+		default:
+			podsShouldBeBlocked = gameState.Turn < gameState.GameMap.GameConfig.Modifiers.PodUnblockTiming
+		}
+	}
+
+	if gameState.GameMap.GameConfig.Modifiers.LastManStandingMode {
+		podsShouldBeBlocked = podsShouldBeBlocked || len(gameState.GetHumanPlayers()) > 1
 	}
 
 	//Don't touch used pods

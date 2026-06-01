@@ -102,15 +102,20 @@
         their hand. This is useful for those friends you have that are always forgetting to end their turn.</p>
 
     <h3>Game Modes</h3>
-    <p>This section contains a collection of different game modes you can activate for your game. Each one has a unique
+    <p>This section contains a collection of different game modes you can activate for your game, most of which are
+        inspired by the original tabletop version's scenario tool. Each one has a unique
         effect on the game. Feel free to mix and match the different modes - you can activate any number of them at
         once.</p>
     <ul>
         <li><span class="list-item">Evacuation Mode</span>: When enabled, this adds an evolution to the Game
-            Board. On a set turn, a random Dangerous or Safe Sector will be transformed into a special Evacuation
+            Board. At the beginning of a set turn, a random Dangerous or Safe Sector will be transformed into a special Evacuation
             Sector. Any human entering this new Sector immediately escapes, without needing to draw Escape Pod cards.
             The turn on which this sector should appear is set by a secondary control that appears in the Game Settings
             window upon activating this mode.</li>
+        <li><span class="list-item">Last Man Standing Mode</span>: When enabled, this changes the way Escape Pods are
+            handled. At the beginning of the game, all Escape Pods will become Blocked, and cannot be entered. They
+            remain Blocked until there is only one Human player remaining in the game, at which point they become
+            Unblocked and may be used as normal.</li>
         <li><span class="list-item">Last Resort Mode</span>: When enabled, this changes the way the game
             handles running out of Escape Pod Sectors. When all Escape Pods Sectors have been marked as used, the game
             will pick a random Dangerous or Safe Sector and turn it into a special Evacuation Sector. Any human entering
@@ -129,13 +134,22 @@
             reinforcements arrive and save the remaining humans. All remaining humans immediately and automatically
             escape.</li>
         <li><span class="list-item">Unstable Pods Mode</span>: When enabled, this changes the way Escape Pods
-            are handled. Escape Pods will become Blocked, and cannot be entered. They become unblocked using logic set
-            by a secondary control that appears in the Game Settings window upon activating this mode, which has the following options:
+            are handled. Escape Pods will become Blocked, and cannot be entered. They become unblocked and may be used
+            as normal using logic set
+            by a secondary control that appears in the Game Settings window upon activating this mode, which has the
+            following options:
             <ul>
-                <li><span style="font-style: italic">Even Turns</span>: Escape Pods are unblocked and usable only on even-numbered game turns. (2, 4, 6, etc.)</li>
-                <li><span style="font-style: italic">Odd Turns</span>: Escape Pods are unblocked and usable only on odd-numbered game turns. (1, 3, 5, etc.)</li>
-                <li><span style="font-style: italic">On Turn #</span>: Escape Pods become unblocked and permanently usable, starting on the set game turn number.</li>
+                <li><span style="font-style: italic">Even Turns</span>: Escape Pods are unblocked and usable only on
+                    even-numbered game turns. (2, 4, 6, etc.)</li>
+                <li><span style="font-style: italic">Odd Turns</span>: Escape Pods are unblocked and usable only on
+                    odd-numbered game turns. (1, 3, 5, etc.)</li>
+                <li><span style="font-style: italic">On Turn #</span>: Escape Pods become unblocked and permanently
+                    usable, starting at the beginning of the set game turn number.</li>
             </ul>
+            Note - this Mode supports simultaneous use with Last Man Standing Mode. If both Unstable Pods and Last Man
+            Standing are active, all Escape Pods are blocked until the unblocking criteria for both modes is met. For
+            example, if both are active, and Unstable Pods is set to "Even Turns" then Escape Pods will become unblocked
+            on every even-numbered turn once there is only one Human player remaining.
         </li>
     </ul>
 

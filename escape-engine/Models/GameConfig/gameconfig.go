@@ -39,20 +39,22 @@ type GameModifiers struct {
 	AliensRespawn bool `json:"aliensRespawn"`
 	//Whether players' turns should automatically end after moving (and choosing to attack, for aliens) if there are no cards in their hand
 	AutoTurnEnd bool `json:"autoTurnEnd"`
-	//Whether the game should be played such that after NumTurns, the Humans automatically win, instead of automatically dying
-	SurvivalMode bool `json:"survivalMode"`
-	//Whether the game should be played such that escape pods do not remove humans from the game, and the humans' new win condition is to activate each escape pod
-	ReactorMode bool `json:"reactorMode"`
-	//Whether the game should add a randomly placed guaranteed escape sector after all escape pods are marked as used.
-	LastResortMode bool `json:"lastResortMode"`
-	//Whether the Escape Pods should start the game as blocked, and become unblocked using the logic in PodUnblockTiming
-	UnstablePodsMode bool `json:"unstablePodsMode"`
-	//When to mark Escape Pods as unblocked. The following logic applies: If == -2, unblock on Even Turns. If == -1, unblock on Odd turns. If == 0, never unblock. If > 0, unblock forever starting on that turn #
-	PodUnblockTiming int `json:"podUnblockTiming"`
 	//Whether the game should spawn a random Evacuation Sector on turn # in `EvacuationTiming`
 	EvacuationMode bool `json:"evacuationMode"`
 	//On this turn, spawn a randomly-placed Evacuation Sector
 	EvacuationTiming int `json:"evacuationTiming"`
+	//Whether to block all escape pods until there is only one human remaining
+	LastManStandingMode bool `json:"lastManStandingMode"`
+	//Whether the game should add a randomly placed guaranteed escape sector after all escape pods are marked as used.
+	LastResortMode bool `json:"lastResortMode"`
+	//Whether the game should be played such that escape pods do not remove humans from the game, and the humans' new win condition is to activate each escape pod
+	ReactorMode bool `json:"reactorMode"`
+	//Whether the game should be played such that after NumTurns, the Humans automatically win, instead of automatically dying
+	SurvivalMode bool `json:"survivalMode"`
+	//Whether the Escape Pods should start the game as blocked, and become unblocked using the logic in PodUnblockTiming
+	UnstablePodsMode bool `json:"unstablePodsMode"`
+	//When to mark Escape Pods as unblocked. The following logic applies: If == -2, unblock on Even Turns. If == -1, unblock on Odd turns. If == 0, never unblock. If > 0, unblock forever starting on that turn #
+	PodUnblockTiming int `json:"podUnblockTiming"`
 }
 
 func GetConfigPresets() []GameConfigPreset {
