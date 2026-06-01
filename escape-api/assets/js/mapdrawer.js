@@ -12,7 +12,8 @@ const SpaceTypes = {
     UsedPod: 4,
     HumanStart: 5,
     AlienStart: 6,
-    Evacuation: 7
+    Evacuation: 7,
+    BlockedPod: 8
 };
 
 function createGrid(rows, columns, container, withText = true) {
@@ -128,6 +129,9 @@ function drawMapOnPage() {
                 case SpaceTypes.Evacuation:
                     spaceClass = 'evacuation';
                     tooltipText = 'Evacuation Zone'
+                case SpaceTypes.BlockedPod:
+                    spaceClass = 'pod-blocked';
+                    tooltipText = 'Blocked Escape Pod';
             }
 
             el.classList = [cssClass, spaceClass].join(' ');

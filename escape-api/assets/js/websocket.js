@@ -294,6 +294,10 @@ async function handleLobbyInfoMessage(messageData) {
                 showNotification("# of Humans + # of Aliens must add up to # of Non-Spectator Players in lobby!", "Error")
                 return;
             }
+            if(gameConfig.modifiers.unstablePodsMode && gameConfig.modifiers.podUnblockTiming === 0){
+                showNotification("If Unstable Pods Mode is enabled and \"After Turn #\" is selected, you must supply a turn number!", "Error")
+                return;
+            }
             sendWsMessage(ws, 'startGame', getGameConfig())
         }
 

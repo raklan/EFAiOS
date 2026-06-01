@@ -3,6 +3,7 @@
     --space-safe: white;
     --space-pod: forestgreen;
     --space-pod-used: brown;
+    --space-pod-blocked: rgb(55, 80, 51);    
     --space-evacuation: rgb(6, 172, 0);
     --space-dangerous: gray;
     --space-humanstart: var(--human-color);
@@ -50,6 +51,10 @@
 
 .hexfield.pod-used {
     fill: var(--space-pod-used);
+}
+
+.hexfield.pod-blocked{
+    fill: var(--space-pod-blocked)
 }
 
 .hexfield.alienstart {

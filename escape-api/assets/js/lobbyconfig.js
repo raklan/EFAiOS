@@ -19,6 +19,20 @@ function setModifierConfig(configObject) {
     configForm['config-lastResortMode'].checked = configObject.modifiers.lastResortMode;
     configForm['config-reactorMode'].checked = configObject.modifiers.reactorMode;
     configForm['config-survivalMode'].checked = configObject.modifiers.survivalMode;
+    configForm['config-unstablePodsMode'].checked = configObject.modifiers.unstablePodsMode;
+    switch(configObject?.modifiers?.podUnblockTiming){
+        case -2:
+            configForm['config-podUnblockLogic'].value = 'even';
+            break;
+        case -1:
+            configForm['config-podUnblockLogic'].value = 'odd';
+            break;
+        default:
+            configForm['config-podUnblockLogic'].value = 'turn';
+            setConfigInputValue('config-podAfterTurn', configObject.modifiers.podUnblockTiming);
+            break;
+    }
+    updateUnstablePodControls();
 }
 
 function setCardConfig(configObject) {
@@ -130,7 +144,23 @@ function getGameConfig() {
         lastResortMode: configForm['config-lastResortMode']?.checked,
         reactorMode: configForm['config-reactorMode']?.checked,
         survivalMode: configForm['config-survivalMode']?.checked,
+        unstablePodsMode: configForm['config-unstablePodsMode']?.checked,
     }    
+
+    if(config.modifiers.unstablePodsMode){
+        switch(configForm['config-podUnblockLogic'].value){
+            //Logic recorded in Golang GameConfig model
+            case 'even':
+                config.modifiers.podUnblockTiming = -2;
+                break;
+            case 'odd':
+                config.modifiers.podUnblockTiming = -1;
+                break;
+            case 'turn':
+                config.modifiers.podUnblockTiming = getConfigValue('config-podAfterTurn');
+                break;
+        }
+    }
 
     config.activeCards = {
         "Red Card": getConfigValue('config-numRedCards'),
@@ -235,4 +265,22 @@ function checkPossible(inputName) {
     let configForm = document.getElementById("lobby-gameConfig")
     let possible = configForm[`config-${inputName}`]
     possible.value = Math.max(possible.value ? parseInt(possible.value) : 0, possible.min ? parseInt(possible.min) : 0)
+}
+
+function updateUnstablePodControls(){
+    let form = document.getElementById('lobby-gameConfig');
+    let unblockLogicControls = form.querySelector("#config-podUnblockingLogicControls");
+
+    if(form['config-unstablePodsMode'].checked){
+        unblockLogicControls.style.display = ''
+    }else{
+        unblockLogicControls.style.display = 'none'
+    }
+
+    let turnNumInput = form["config-podAfterTurn"]
+    if(form['config-podUnblockLogic'].value === 'turn'){
+        turnNumInput.style.display = ''
+    }else{
+        turnNumInput.style.display = 'none'
+    }
 }

@@ -424,6 +424,34 @@
                         <input type="checkbox" name="config-survivalMode" />
                         <div class="checkmark"></div>
                     </label>
+                    <label class="checkbox-container" style="padding-top: 2%;">
+                        <span>Unstable Pods Mode</span>
+                        <input type="checkbox" name="config-unstablePodsMode" onchange="updateUnstablePodControls()" />
+                        <div class="checkmark"></div>
+                    </label>
+                    <fieldset id="config-podUnblockingLogicControls" class="player-team-assignment" style="display: none;">
+                        <legend>
+                           Pod Unblocking
+                        </legend> 
+                        <label class="checkbox-container">
+                            Even Turns
+                            <input type="radio" name="config-podUnblockLogic" checked value="even" onchange="updateUnstablePodControls()" />
+                            <div class="checkmark"></div>
+                        </label>
+                        <label class="checkbox-container">
+                            Odd Turns
+                            <input type="radio" name="config-podUnblockLogic" checked value="odd" onchange="updateUnstablePodControls()" />
+                            <div class="checkmark"></div>
+                        </label>
+                        <label class="checkbox-container">
+                            After Turn #
+                            <input type="radio" name="config-podUnblockLogic" checked value="turn" onchange="updateUnstablePodControls()" />
+                            <div class="checkmark"></div>
+                        </label>
+                        <label class="text-input-label">                        
+                            <input type="number" min="1" class="text-input" style="width: 75px" name="config-podAfterTurn" placeholder="Turn #" />
+                        </label>
+                    </fieldset>
                 </div>
             </div>         
             <div id="config-presets" style="display: none;">

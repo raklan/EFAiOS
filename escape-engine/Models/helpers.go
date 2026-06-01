@@ -38,6 +38,7 @@ func GetNonmovableSpaces(player *Player) []int {
 		Space_HumanStart,
 		Space_Wall,
 		Space_UsedPod,
+		Space_BlockedPod,
 	}
 	if player.Team == PlayerTeam_Alien {
 		cantMoveInto = append(cantMoveInto, Space_Pod)
@@ -132,6 +133,37 @@ func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) 
 	}
 
 	return gameEvent, nil
+}
+
+func HandleEscapePodBlocking(gameState *GameState) {
+	podsShouldBeBlocked := false
+	//Logic is recorded in docs for PodUnblockTiming
+	switch gameState.GameMap.GameConfig.Modifiers.PodUnblockTiming {
+	case -2:
+		podsShouldBeBlocked = gameState.Turn%2 != 0
+	case -1:
+		podsShouldBeBlocked = gameState.Turn%2 == 0
+	case 0:
+		podsShouldBeBlocked = true
+	default:
+		podsShouldBeBlocked = gameState.Turn < gameState.GameMap.GameConfig.Modifiers.PodUnblockTiming
+	}
+
+	//Don't touch used pods
+	allPods := slices.Concat(gameState.GameMap.GetSpacesOfType(Space_Pod), gameState.GameMap.GetSpacesOfType(Space_BlockedPod))
+	typeToSet := Space_Pod
+	for _, pod := range allPods {
+		if podsShouldBeBlocked {
+			typeToSet = Space_BlockedPod
+		}
+
+		gameState.GameMap.Spaces[pod.GetMapKey()] = Space{
+			Row:  pod.Row,
+			Col:  pod.Col,
+			Type: typeToSet,
+		}
+	}
+
 }
 
 func GetUnmarshalledCardArray(intermediate []CardBase) []Card {

@@ -333,6 +333,11 @@ func (endTurn EndTurn) Execute(gameState *Models.GameState, playerId string) (*M
 		gameState.Turn++
 	}
 
+	//Blocked Pods unblocking
+	if gameState.GameMap.GameConfig.Modifiers.UnstablePodsMode {
+		Models.HandleEscapePodBlocking(gameState)
+	}
+
 	//MaxTurns elapsed
 	if gameState.Turn > gameState.GameMap.GameConfig.Modifiers.NumTurns {
 		if gameEvent == nil {

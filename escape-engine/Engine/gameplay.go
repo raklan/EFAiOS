@@ -74,6 +74,10 @@ func GetInitialGameState(roomCode string, gameConfig GameConfig.GameConfig) (Mod
 
 	assignStartingPositions(&gameState, &mapDef)
 
+	if gameState.GameMap.GameConfig.Modifiers.UnstablePodsMode {
+		Models.HandleEscapePodBlocking(&gameState)
+	}
+
 	slices.SortFunc(gameState.Players, func(p1 Models.Player, p2 Models.Player) int { return rand.Intn(100) - rand.Intn(100) })
 	firstNonSpectatorPlayer := slices.IndexFunc(gameState.Players, func(player Models.Player) bool { return player.Team != Models.PlayerTeam_Spectator })
 	if firstNonSpectatorPlayer == -1 {
