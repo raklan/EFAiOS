@@ -105,30 +105,73 @@
     <p>This section contains a collection of different game modes you can activate for your game, most of which are
         inspired by the original tabletop version's scenario tool. Each one has a unique
         effect on the game. Feel free to mix and match the different modes - you can activate any number of them at
-        once.</p>
+        once. If two modes have a unique, conflicting, or non-obvious interaction, it will be noted in both Modes'
+        descriptions.</p>
     <ul>
         <li><span class="list-item">Evacuation Mode</span>: When enabled, this adds an evolution to the Game
-            Board. At the beginning of a set turn, a random Dangerous or Safe Sector will be transformed into a special Evacuation
+            Board. At the beginning of a set turn, a random Dangerous or Safe Sector will be transformed into a special
+            Evacuation
             Sector. Any human entering this new Sector immediately escapes, without needing to draw Escape Pod cards.
             The turn on which this sector should appear is set by a secondary control that appears in the Game Settings
             window upon activating this mode.</li>
+        <li><span class="list-item">Infested Pods Mode</span>: When enabled, this changes the starting location of Alien
+            players. Aliens will now start in a randomly selected Escape Pod Sector, instead of an Alien Start Sector.
+            <ul class="interaction-details">Other Mode Interactions:
+                <li><span class="list-item">Scatter Mode</span>: If both Infested Pods and Scatter are active, Infested
+                    Pods will override the start location for Alien Players, but still allow Human Players to be spawned
+                    randomly.</li>
+            </ul>
+        </li>
         <li><span class="list-item">Last Man Standing Mode</span>: When enabled, this changes the way Escape Pods are
             handled. At the beginning of the game, all Escape Pods will become Blocked, and cannot be entered. They
             remain Blocked until there is only one Human player remaining in the game, at which point they become
-            Unblocked and may be used as normal.</li>
+            Unblocked and may be used as normal.
+            <ul class="interaction-details">Other Mode Interactions:
+                <li><span class="list-item">Unstable Pods Mode</span>: If
+                    both Unstable Pods and Last Man
+                    Standing are active, all Escape Pods are blocked until the unblocking criteria for both modes is
+                    met. For
+                    example, if both are active, and Unstable Pods is set to "Even Turns" then Escape Pods will become
+                    unblocked
+                    on every even-numbered turn once there is only one Human player remaining.</li>
+            </ul>
+        </li>
         <li><span class="list-item">Last Resort Mode</span>: When enabled, this changes the way the game
             handles running out of Escape Pod Sectors. When all Escape Pods Sectors have been marked as used, the game
             will pick a random Dangerous or Safe Sector and turn it into a special Evacuation Sector. Any human entering
-            this new Sector immediately escapes, without needing to draw Escape Pod cards. This also overrides the end
-            condition of Reactor Mode - if both Last Resort and Reactor mode are enabled, humans will still need to
-            reach the Evacuation Sector after activating all Reactor Nodes.</li>
+            this new Sector immediately escapes, without needing to draw Escape Pod cards.
+            <ul class="interaction-details">
+                Other Mode Interactions:
+                <li><span class="list-item">Reactor Mode</span>: If both Last Resort and Reactor mode are enabled,
+                    humans will still need
+                    to
+                    reach the Evacuation Sector after activating all Reactor Nodes.</li>
+            </ul>
+        </li>
         <li><span class="list-item">Reactor Mode</span>: When enabled, this switches the game's Escape Pod
             logic. Now, every Escape Pod sector is a Reactor Node, and Escape Pod cards are no longer used. Humans can
             reactivate the Reactor Nodes by entering
             that sector and are no longer removed from the game upon doing so. Once every Reactor Node has been
             activated,
             the ship's onboard security is reactivated, killing the Aliens. Every surviving Human immediately and
-            automatically wins!</li>
+            automatically wins!
+            <ul class="interaction-details">
+                Other Mode Interactions:
+                <li><span class="list-item">Last Resort Mode</span>: If both Last Resort and Reactor mode are enabled,
+                    humans will still need
+                    to
+                    reach the Evacuation Sector after activating all Reactor Nodes.</li>
+            </ul>
+        </li>
+        <li><span class="list-item">Scatter Mode</span>: When enabled this changes the starting location of ALL players.
+            Every player will now start in a randomly selected Alien Start, Human Start, Dangerous, or Safe Sector.
+            <ul class="interaction-details">
+                Other Mode Interactions:
+                <li><span class="list-item">Infested Pods Mode</span>: If both Infested Pods and Scatter are active,
+                    Infested Pods will override the start location for Alien Players, but still allow Human Players to
+                    be spawned randomly.</li>
+            </ul>
+        </li>
         <li><span class="list-item">Survival Mode</span>: When enabled, this switches the game's end condition.
             After the maximum number of turns have elapsed,
             reinforcements arrive and save the remaining humans. All remaining humans immediately and automatically
@@ -146,10 +189,18 @@
                 <li><span style="font-style: italic">On Turn #</span>: Escape Pods become unblocked and permanently
                     usable, starting at the beginning of the set game turn number.</li>
             </ul>
-            Note - this Mode supports simultaneous use with Last Man Standing Mode. If both Unstable Pods and Last Man
-            Standing are active, all Escape Pods are blocked until the unblocking criteria for both modes is met. For
-            example, if both are active, and Unstable Pods is set to "Even Turns" then Escape Pods will become unblocked
-            on every even-numbered turn once there is only one Human player remaining.
+            Escape Pods are still single-use, and permanently become used as normal.
+            <ul class="interaction-details">
+                Other Mode Interactions:
+                <li>
+                    <span class="list-item">Last Man Standing Mode</span>: If both Unstable Pods and Last Man
+                    Standing are active, all Escape Pods are blocked until the unblocking criteria for both modes is
+                    met. For
+                    example, if both are active, and Unstable Pods is set to "Even Turns" then Escape Pods will become
+                    unblocked
+                    on every even-numbered turn once there is only one Human player remaining.
+                </li>
+            </ul>
         </li>
     </ul>
 

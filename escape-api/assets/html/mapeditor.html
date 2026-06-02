@@ -419,6 +419,11 @@
                         <input type="number" min="1" class="text-input" name="config-evacuationTiming" placeholder="Turn #" />
                     </label>
                     <label class="checkbox-container" style="padding-top: 2%;">
+                        <span>Infested Pods Mode</span>
+                        <input type="checkbox" name="config-infestedPodsMode" />
+                        <div class="checkmark"></div>
+                    </label>
+                    <label class="checkbox-container" style="padding-top: 2%;">
                         <span>Last Man Standing Mode</span>
                         <input type="checkbox" name="config-lastManStandingMode" />
                         <div class="checkmark"></div>
@@ -431,6 +436,11 @@
                     <label class="checkbox-container" style="padding-top: 2%;">
                         <span>Reactor Mode</span>
                         <input type="checkbox" name="config-reactorMode" />
+                        <div class="checkmark"></div>
+                    </label>
+                    <label class="checkbox-container" style="padding-top: 2%;">
+                        <span>Scatter Mode</span>
+                        <input type="checkbox" name="config-scatterMode" />
                         <div class="checkmark"></div>
                     </label>
                     <label class="checkbox-container" style="padding-top: 2%;">
@@ -458,7 +468,7 @@
                             <div class="checkmark"></div>
                         </label>
                         <label class="checkbox-container">
-                            On Turn #
+                            After Turn #
                             <input type="radio" name="config-podUnblockLogic" checked value="turn" onchange="updateUnstablePodControls()" />
                             <div class="checkmark"></div>
                         </label>

@@ -500,6 +500,22 @@ func assignStartingPositions(gameState *Models.GameState, gameMap *Models.GameMa
 	log.Println("Assigning starting postitions")
 	humanStarts, alienStarts := gameMap.GetSpacesOfType(Models.Space_HumanStart), gameMap.GetSpacesOfType(Models.Space_AlienStart)
 	for index, player := range gameState.Players {
+		if gameState.GameMap.GameConfig.Modifiers.InfestedPodsMode && player.Team == Models.PlayerTeam_Alien {
+			podSectors := gameMap.GetSpacesOfType(Models.Space_Pod)
+			startingSpace := podSectors[rand.Intn(len(podSectors))]
+
+			gameState.Players[index].Row, gameState.Players[index].Col = startingSpace.Row, startingSpace.Col
+			continue
+		}
+
+		if gameState.GameMap.GameConfig.Modifiers.ScatterMode {
+			validSpaces := gameMap.GetSpacesOfType(Models.Space_AlienStart, Models.Space_HumanStart, Models.Space_Dangerous, Models.Space_Safe)
+			startingSpace := validSpaces[rand.Intn(len(validSpaces))]
+
+			gameState.Players[index].Row, gameState.Players[index].Col = startingSpace.Row, startingSpace.Col
+			continue
+		}
+
 		if player.Team == Models.PlayerTeam_Human && player.Role != Models.Role_Psychologist {
 			startingSpace := humanStarts[rand.Intn(len(humanStarts))]
 

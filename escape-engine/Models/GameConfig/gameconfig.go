@@ -43,12 +43,16 @@ type GameModifiers struct {
 	EvacuationMode bool `json:"evacuationMode"`
 	//On this turn, spawn a randomly-placed Evacuation Sector
 	EvacuationTiming int `json:"evacuationTiming"`
+	//Whether Aliens should spawn in a randomly selected Escape Pod, instead of an Alien Start Sector.
+	InfestedPodsMode bool `json:"infestedPodsMode"`
 	//Whether to block all escape pods until there is only one human remaining
 	LastManStandingMode bool `json:"lastManStandingMode"`
 	//Whether the game should add a randomly placed guaranteed escape sector after all escape pods are marked as used.
 	LastResortMode bool `json:"lastResortMode"`
 	//Whether the game should be played such that escape pods do not remove humans from the game, and the humans' new win condition is to activate each escape pod
 	ReactorMode bool `json:"reactorMode"`
+	//Whether players should be placed in a completely random sector to start the game, instead of their team's Start Sectors.
+	ScatterMode bool `json:"scatterMode"`
 	//Whether the game should be played such that after NumTurns, the Humans automatically win, instead of automatically dying
 	SurvivalMode bool `json:"survivalMode"`
 	//Whether the Escape Pods should start the game as blocked, and become unblocked using the logic in PodUnblockTiming

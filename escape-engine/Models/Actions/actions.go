@@ -460,7 +460,7 @@ func drawRandomCardFromDeck(gameState *Models.GameState) *Models.Card {
 }
 
 func createRandomEvacuationSector(gameState *Models.GameState, currentGameEvent *Models.GameEvent) {
-	validSectors := slices.Concat(gameState.GameMap.GetSpacesOfType(Models.Space_Dangerous), gameState.GameMap.GetSpacesOfType(Models.Space_Safe))
+	validSectors := gameState.GameMap.GetSpacesOfType(Models.Space_Dangerous, Models.Space_Safe)
 
 	if len(validSectors) == 0 {
 		return

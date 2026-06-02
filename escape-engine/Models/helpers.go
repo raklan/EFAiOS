@@ -55,7 +55,15 @@ func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) 
 		Col:         col,
 		Description: fmt.Sprintf("Player '%s' attacked [%s-%d]!\n", actingPlayer.Name, col, row),
 	}
-	alienStarts := gameState.GameMap.GetSpacesOfType(Space_AlienStart)
+
+	potentialNewStarts := []Space{}
+	if gameState.GameMap.GameConfig.Modifiers.InfestedPodsMode {
+		potentialNewStarts = gameState.GameMap.GetSpacesOfType(Space_Pod)
+	} else if gameState.GameMap.GameConfig.Modifiers.ScatterMode {
+		potentialNewStarts = gameState.GameMap.GetSpacesOfType(Space_AlienStart, Space_HumanStart, Space_Dangerous, Space_Safe)
+	} else {
+		potentialNewStarts = gameState.GameMap.GetSpacesOfType(Space_AlienStart)
+	}
 
 	go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Attacked [%s-%d]", col, row))
 
@@ -105,7 +113,7 @@ func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) 
 
 		if !playerWasSaved {
 			if targetPlayer.Team == PlayerTeam_Human || (targetPlayer.Team == PlayerTeam_Alien && gameState.GameMap.GameConfig.Modifiers.AliensRespawn) {
-				newSpaceForPlayer := alienStarts[rand.Intn(len(alienStarts))]
+				newSpaceForPlayer := potentialNewStarts[rand.Intn(len(potentialNewStarts))]
 
 				gameState.Players[index].Team = PlayerTeam_Alien
 				gameState.Players[index].Row, gameState.Players[index].Col = newSpaceForPlayer.Row, newSpaceForPlayer.Col
@@ -156,7 +164,7 @@ func HandleEscapePodBlocking(gameState *GameState) {
 	}
 
 	//Don't touch used pods
-	allPods := slices.Concat(gameState.GameMap.GetSpacesOfType(Space_Pod), gameState.GameMap.GetSpacesOfType(Space_BlockedPod))
+	allPods := gameState.GameMap.GetSpacesOfType(Space_Pod, Space_BlockedPod)
 	typeToSet := Space_Pod
 	for _, pod := range allPods {
 		if podsShouldBeBlocked {

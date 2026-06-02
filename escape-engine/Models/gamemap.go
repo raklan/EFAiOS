@@ -19,10 +19,10 @@ type GameMap struct {
 	Spaces      map[string]Space      `json:"spaces"`
 }
 
-func (gameMap *GameMap) GetSpacesOfType(spaceType int) []Space {
+func (gameMap *GameMap) GetSpacesOfType(spaceTypes ...int) []Space {
 	spaces := []Space{}
 	for _, space := range gameMap.Spaces {
-		if space.Type == spaceType {
+		if slices.Contains(spaceTypes, space.Type) {
 			spaces = append(spaces, space)
 		}
 	}
