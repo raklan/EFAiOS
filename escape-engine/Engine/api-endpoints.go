@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"escape-api/LogUtil"
 	"escape-engine/Models"
+	"escape-engine/Models/GameConfig"
 	"escape-engine/Models/Recap"
 	"fmt"
 	"log"
@@ -13,7 +14,7 @@ import (
 )
 
 // Given the path, gets any data that should be rendered with that requested template, if any. Only returns an error if one occurs (i.e. no data being found is not considered an error)
-func GetApiData(path string, query url.Values) (any, error) {
+func GetTemplateData(path string, query url.Values) (any, error) {
 	funcLogPrefix := "==GetApiData=="
 	defer LogUtil.EnsureLogPrefixIsReset()
 	LogUtil.SetLogPrefix(ModuleLogPrefix, PackageLogPrefix)
@@ -159,4 +160,9 @@ func GetMapForLobby(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(gameState.GameMap)
+}
+
+func ModifierDescriptions(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(GameConfig.FormattedModifierDescriptions)
 }

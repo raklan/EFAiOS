@@ -24,6 +24,7 @@ const ClickModes = {
 
 let gameHasEnded = false;
 let roleDescription = '';
+let modifierDescriptions = null;
 let showYourTurnNotification = true;
 let currentTurn = 0;
 let autoTurnEnd = false;
@@ -496,7 +497,7 @@ function cardClick(card) {
     sendWsMessage(ws, 'submitAction', toSend)
 }
 
-function renderTeamCard() {
+async function renderTeamCard() {
     var teamCard = document.getElementById("team")
     teamCard.innerHTML = `<span>${thisPlayer.team}</span>`;
     teamCard.style.setProperty('--team-color', getTeamColor())
@@ -515,13 +516,14 @@ async function renderRoleCard() {
     }
 }
 
-function renderStatusEffects() {
+async function renderStatusEffects() {
     var statusEffectList = document.getElementById("status-effects")
     statusEffectList.replaceChildren()
     statusEffectList.style.setProperty('--team-color', "white")
 
     let title = document.createElement("h5")
     title.innerText = thisPlayer?.statusEffects?.length > 0 ? "Current Status Effects" : "No Status Effects"
+    title.style.marginTop = '5px'
     statusEffectList.appendChild(title)
 
     for (let statusEffect of thisPlayer.statusEffects) {
@@ -538,7 +540,7 @@ function renderStatusEffects() {
     }
 }
 
-function renderTurnOrder() {
+async function renderTurnOrder() {
     var turnOrderList = document.getElementById('turn-order')
     turnOrderList.replaceChildren();
     turnOrderList.style.setProperty('--team-color', "white")
@@ -558,6 +560,60 @@ function renderTurnOrder() {
         }
 
         turnOrderList.appendChild(entry);
+    }
+}
+
+async function renderModifierList(gameModifiers){
+    if(modifierDescriptions === null){
+        await fetch('/api/modifierDescriptions')
+            .then(resp => resp.json())
+            .then(apiObj => {
+                modifierDescriptions = apiObj
+            })
+    }
+
+    let modifierListControls = document.getElementById("modifier-list-controls");
+    let modifiersCard = document.getElementById("modifier-list");
+    let list = modifiersCard.querySelector("#modifier-descriptions");
+    list.replaceChildren();
+
+    let activeGameModes = Object.keys(gameModifiers).filter(val => val !== 'autoTurnEnd' && gameModifiers[val] === true);
+    if(activeGameModes?.length > 0){
+        modifierListControls.style.display = '';
+    }else{
+        modifierListControls.style.display = 'none';
+    }
+
+    for(let mode of activeGameModes){
+        if(modifierDescriptions[mode]?.length > 0){
+            let li = document.createElement("li");
+            let descriptionHTML = '';
+
+            if(mode === 'evacuationMode'){
+                descriptionHTML = modifierDescriptions[mode].replace('[%VAR]', gameModifiers.evacuationTiming);
+            }else if(mode === 'survivalMode'){
+                descriptionHTML = modifierDescriptions[mode].replace('[%VAR]', gameModifiers.numTurns);
+            }else if(mode === 'unstablePodsMode'){
+                let condition = '';
+                switch (gameModifiers.podUnblockTiming){
+                    case -2:
+                        condition = 'on even-numbered turns';
+                        break;
+                    case -1:
+                        condition = 'on odd-numbered turns';
+                        break;
+                    default:
+                        condition = `starting on Turn ${gameModifiers.podUnblockTiming}`;
+                        break;
+                }
+                descriptionHTML = modifierDescriptions[mode].replace('[%VAR]', condition);
+            }else{
+                descriptionHTML = modifierDescriptions[mode];
+            }
+
+            li.innerHTML = descriptionHTML;
+            list.appendChild(li);
+        }
     }
 }
 
@@ -666,23 +722,48 @@ function initializeEventLog(players) {
 }
 
 function toggleEventLog(open) {
-    let eventLogControls = document.getElementById('event-log-controls');
+    let eventLog = document.getElementById('event-log');
     let openIcon = document.getElementById('event-toggle-open');
     let closeIcon = document.getElementById('event-toggle-close');
-    let eventToggle = document.getElementById('event-log-toggle');
+    let eventToggle = document.getElementById('event-log-controls');
     let tabselector = document.getElementById('tab-selector')
 
     if (open) {
         eventToggle.title = 'Close Event Log';
+        eventToggle.classList.add('show');
         openIcon.style.display = 'none';
         closeIcon.style.display = '';
-        eventLogControls.classList.add('show');
+        eventLog.classList.add('show');
         viewPlayerEvents(tabselector.value)
     } else {
         eventToggle.title = 'Open Event Log';
+        eventToggle.classList.remove('show')
         openIcon.style.display = '';
         closeIcon.style.display = 'none';
-        eventLogControls.classList.remove('show');
+        eventLog.classList.remove('show');      
+    }
+}
+
+function toggleModifierList(open) {
+    let modifierList = document.getElementById('modifier-list');
+    let openIcon = document.getElementById('modifier-toggle-open');
+    let closeIcon = document.getElementById('modifier-toggle-close');
+    let modifierToggle = document.getElementById('modifier-list-controls');
+    let tabselector = document.getElementById('tab-selector')
+
+    if (open) {
+        modifierToggle.title = 'Close Modifier List';
+        modifierToggle.classList.add('show');
+        openIcon.style.display = 'none';
+        closeIcon.style.display = '';
+        modifierList.classList.add('show');
+        viewPlayerEvents(tabselector.value)
+    } else {
+        modifierToggle.title = 'Open Modifier List';
+        modifierToggle.classList.remove('show')
+        openIcon.style.display = '';
+        closeIcon.style.display = 'none';
+        modifierList.classList.remove('show');      
     }
 }
 

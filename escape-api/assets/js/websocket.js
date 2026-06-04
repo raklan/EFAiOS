@@ -240,6 +240,7 @@ async function handleGameStateMessage(gameState) {
     renderPlayerHand();
     renderTurnOrder();
     renderTurnNumber(gameState.turn, gameState.gameMap.gameConfig.modifiers.numTurns, gameState.gameMap.name);
+    renderModifierList(gameState.gameMap.gameConfig.modifiers);
 }
 
 async function handleLobbyInfoMessage(messageData) {

@@ -33,6 +33,7 @@ func startServer() {
 	http.HandleFunc("/api/mapForLobby", Engine.GetMapForLobby)
 
 	http.HandleFunc("/api/role", Engine.RoleDescription)
+	http.HandleFunc("/api/modifierDescriptions", Engine.ModifierDescriptions)
 
 	http.HandleFunc("/lobby/host", Engine.HostLobby)
 	http.HandleFunc("/lobby/join", Engine.HandleJoinLobby)
@@ -74,7 +75,7 @@ func serveHtml(w http.ResponseWriter, r *http.Request) {
 	layoutPath := filepath.Join("escape-api", "assets", "html", "templates", "layout.html")
 	requestedFilePath := filepath.Join("escape-api", "assets", "html", fmt.Sprintf("%s.html", filepath.Clean(r.URL.Path)))
 
-	templateData, err := Engine.GetApiData(r.URL.Path, r.URL.Query())
+	templateData, err := Engine.GetTemplateData(r.URL.Path, r.URL.Query())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -68,7 +68,7 @@
     <h3>Lobby</h3>
     <div id="lobby-roomCode"></div>
     <div style="display: flex; flex-direction: row; justify-content: space-around; width: 100%">
-        <div style="width: 33%;">            
+        <div style="width: 33%;">
             <h4 style="text-align: center;">Players</h4>
             <div id="lobby-playerList"></div>
         </div>
@@ -81,7 +81,8 @@
         </div>
     </div>
     <div id="lobby-controls">
-        <button id="lobby-joinAsSpectator" style="--button-color: white" onclick="switchPlayerSpectating()">Join As Spectator</button>
+        <button id="lobby-joinAsSpectator" style="--button-color: white" onclick="switchPlayerSpectating()">Join As
+            Spectator</button>
         <button id="lobby-gameConfigButton" style="display: none; --button-color: white">Game Settings</button>
         <button id="lobby-startButton" style="display: none;">Start</button>
     </div>
@@ -97,7 +98,8 @@
         </div>
         <form id="lobby-gameConfig" style="white-space: normal;">
             <div id="config-tabs">
-                <button type="button" onclick="configTabSwitch(event, 'config-teams')" style="--button-color: white">Teams</button>
+                <button type="button" onclick="configTabSwitch(event, 'config-teams')"
+                    style="--button-color: white">Teams</button>
                 <button type="button" onclick="configTabSwitch(event, 'config-roles')">Roles</button>
                 <button type="button" onclick="configTabSwitch(event, 'config-cards')">Cards</button>
                 <button type="button" onclick="configTabSwitch(event, 'config-modifiers')">Modifiers</button>
@@ -115,7 +117,7 @@
                         <span>Aliens</span>
                         <input type="number" min="0" class="text-input" name="config-numAliens"
                             placeholder="# Players" />
-                    </label>                    
+                    </label>
                 </div>
                 <h2>Manual Team Assignment</h2>
                 <div id="team-assignment-player-list" class="config-group">
@@ -186,7 +188,7 @@
                         <span>Required</span>
                         <input type="number" min="0" class="text-input" name="config-numPsychologistRequired"
                             placeholder="# Required" onchange="updatePossible('numPsychologist')" />
-                    </label>                 
+                    </label>
                     <label class="text-input-label" style="color: deepskyblue">
                         Soldier
                         <span>Available</span>
@@ -278,16 +280,16 @@
                         Communications Officer
                         <span>Available</span>
                         <input type="number" min="0" class="text-input" name="config-numCommunicationsOfficer"
-                        placeholder="# Possible" onchange="checkPossible('numCommunicationsOfficer')" />
+                            placeholder="# Possible" onchange="checkPossible('numCommunicationsOfficer')" />
                         <span>Required</span>
                         <input type="number" min="0" class="text-input" name="config-numCommunicationsOfficerRequired"
-                        placeholder="# Required" onchange="updatePossible('numCommunicationsOfficer')" />
+                            placeholder="# Required" onchange="updatePossible('numCommunicationsOfficer')" />
                     </label>
                     <label class="text-input-label" style="color: deepskyblue">
                         Scout
                         <span>Available</span>
-                        <input type="number" min="0" class="text-input" name="config-numScout"
-                            placeholder="# Possible" onchange="checkPossible('numScout')" />
+                        <input type="number" min="0" class="text-input" name="config-numScout" placeholder="# Possible"
+                            onchange="checkPossible('numScout')" />
                         <span>Required</span>
                         <input type="number" min="0" class="text-input" name="config-numScoutRequired"
                             placeholder="# Required" onchange="updatePossible('numScout')" />
@@ -299,10 +301,10 @@
                         Calling
                         <span>Available</span>
                         <input type="number" min="0" class="text-input" name="config-numCalling"
-                        placeholder="# Possible" onchange="checkPossible('numCalling')" />
+                            placeholder="# Possible" onchange="checkPossible('numCalling')" />
                         <span>Required</span>
                         <input type="number" min="0" class="text-input" name="config-numCallingRequired"
-                        placeholder="# Required" onchange="updatePossible('numCalling')" />
+                            placeholder="# Required" onchange="updatePossible('numCalling')" />
                     </label>
                     <label class="text-input-label" style="color: red">
                         Tracker
@@ -428,7 +430,7 @@
                             placeholder="# of Cards" />
                     </label>
                 </div>
-            </div>   
+            </div>
             <div id="config-modifiers" style="display: none;">
                 <h2>Modifiers</h2>
                 <div class="config-group">
@@ -454,9 +456,10 @@
                         <input type="checkbox" name="config-evacuationMode" onchange="updateEvacuationModeControls()" />
                         <div class="checkmark"></div>
                     </label>
-                    <label class="text-input-label" id="config-evacuationTimingInput" style="display: none;">                
-                        <span>Open Evacuation on Turn #</span>        
-                        <input type="number" min="1" class="text-input" name="config-evacuationTiming" placeholder="Turn #" />
+                    <label class="text-input-label" id="config-evacuationTimingInput" style="display: none;">
+                        <span>Open Evacuation on Turn #</span>
+                        <input type="number" min="1" class="text-input" name="config-evacuationTiming"
+                            placeholder="Turn #" />
                     </label>
                     <label class="checkbox-container" style="padding-top: 2%;">
                         <span>Infested Pods Mode</span>
@@ -493,31 +496,36 @@
                         <input type="checkbox" name="config-unstablePodsMode" onchange="updateUnstablePodControls()" />
                         <div class="checkmark"></div>
                     </label>
-                    <fieldset id="config-podUnblockingLogicControls" class="player-team-assignment" style="display: none;">
+                    <fieldset id="config-podUnblockingLogicControls" class="player-team-assignment"
+                        style="display: none;">
                         <legend>
-                           Pod Unblocking
-                        </legend> 
+                            Pod Unblocking
+                        </legend>
                         <label class="checkbox-container">
                             Even Turns
-                            <input type="radio" name="config-podUnblockLogic" checked value="even" onchange="updateUnstablePodControls()" />
+                            <input type="radio" name="config-podUnblockLogic" checked value="even"
+                                onchange="updateUnstablePodControls()" />
                             <div class="checkmark"></div>
                         </label>
                         <label class="checkbox-container">
                             Odd Turns
-                            <input type="radio" name="config-podUnblockLogic" checked value="odd" onchange="updateUnstablePodControls()" />
+                            <input type="radio" name="config-podUnblockLogic" checked value="odd"
+                                onchange="updateUnstablePodControls()" />
                             <div class="checkmark"></div>
                         </label>
                         <label class="checkbox-container">
                             After Turn #
-                            <input type="radio" name="config-podUnblockLogic" checked value="turn" onchange="updateUnstablePodControls()" />
+                            <input type="radio" name="config-podUnblockLogic" checked value="turn"
+                                onchange="updateUnstablePodControls()" />
                             <div class="checkmark"></div>
                         </label>
-                        <label class="text-input-label">                        
-                            <input type="number" min="1" class="text-input" style="width: 75px" name="config-podAfterTurn" placeholder="Turn #" />
+                        <label class="text-input-label">
+                            <input type="number" min="1" class="text-input" style="width: 75px"
+                                name="config-podAfterTurn" placeholder="Turn #" />
                         </label>
                     </fieldset>
                 </div>
-            </div>         
+            </div>
             <div id="config-presets" style="display: none;">
                 {{range GetConfigPresets}}
                 <button type="button" class="preset-button"
@@ -532,27 +540,45 @@
     <canvas id="can"></canvas>
     <div id="turn-number"></div>
     <div id="gridParent" style="width: 80%; height: 100%; display: flex; justify-content: center;"></div>
+    <div id="event-log" onclick="">
+        <div style="display: flex; justify-content: center; padding: 2px">
+            <select id="tab-selector" class="tab-selector"></select>
+        </div>
+    </div>
     <div id="event-log-controls">
-        <div id="event-log" onclick="">
-            <div style="display: flex; justify-content: center; padding: 2px">
-                <select id="tab-selector" class="tab-selector"></select>
-            </div>
-        </div>
-        <div id="event-log-toggle">
-            <svg id="event-toggle-open" onclick="toggleEventLog(true)" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
+        <svg id="event-toggle-open" onclick="toggleEventLog(true)" xmlns="http://www.w3.org/2000/svg" width="48"
+            height="48" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM3 3H2v1h1z" />
+            <path
+                d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1z" />
+            <path fill-rule="evenodd"
+                d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5zM2 7h1v1H2zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm1 .5H2v1h1z" />
+        </svg>
+        <svg id="event-toggle-close" onclick="toggleEventLog(false)" style="display: none;"
+            xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+            <path
+                d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+        </svg>
+    </div>
+    <div id="modifier-list-controls" style="display: none;">        
+        <div id="modifier-list-toggle">
+            <svg id="modifier-toggle-open" onclick="toggleModifierList(true)" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-stars"
                 viewBox="0 0 16 16">
-                <path fill-rule="evenodd"
-                    d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM3 3H2v1h1z" />
                 <path
-                    d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1z" />
-                <path fill-rule="evenodd"
-                    d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5zM2 7h1v1H2zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm1 .5H2v1h1z" />
+                    d="M7.657 6.247c.11-.33.576-.33.686 0l.645 1.937a2.89 2.89 0 0 0 1.829 1.828l1.936.645c.33.11.33.576 0 .686l-1.937.645a2.89 2.89 0 0 0-1.828 1.829l-.645 1.936a.361.361 0 0 1-.686 0l-.645-1.937a2.89 2.89 0 0 0-1.828-1.828l-1.937-.645a.361.361 0 0 1 0-.686l1.937-.645a2.89 2.89 0 0 0 1.828-1.828zM3.794 1.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387A1.73 1.73 0 0 0 4.593 5.69l-.387 1.162a.217.217 0 0 1-.412 0L3.407 5.69A1.73 1.73 0 0 0 2.31 4.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387A1.73 1.73 0 0 0 3.407 2.31zM10.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732L9.1 2.137a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z" />
             </svg>
-            <svg id="event-toggle-close" onclick="toggleEventLog(false)" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
-                viewBox="0 0 16 16">
-                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+            <svg id="modifier-toggle-close" onclick="toggleModifierList(false)" style="display: none;"
+                xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                <path
+                    d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
             </svg>
         </div>
+    </div>
+    <div id="modifier-list" onclick="">
+        <h4 style="align-self: center;">Active Modifiers</h4>
+        <ul id="modifier-descriptions">            
+        </ul>
     </div>
     <div id="cards" onclick=""></div>
     <div id="team" class="player-card" onclick=""></div>
@@ -583,7 +609,7 @@
                 </div>
                 <div style="width: 70%">
                     <input type="range" id="stroke-width" value="2" min="2" max="32" step="2"
-                        onchange="updateStrokeWidth(this)" style="width:100%"/>
+                        onchange="updateStrokeWidth(this)" style="width:100%" />
                 </div>
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -611,7 +637,8 @@
             </div>
         </div>
         <div id="paint-toggle" title="Open Paint Tray" onclick="togglePaint()">
-            <svg id="paint-toggle-pencil" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+            <svg id="paint-toggle-pencil" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
+                viewBox="0 0 16 16">
                 <path
                     d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
             </svg>
@@ -688,11 +715,11 @@
         addEventListener('beforeunload', (event) => {
             console.log('leaving page, closing websocket connection');
             sendWsMessage(ws, 'disconnect', {});
-            ws.close();            
+            ws.close();
         })
     }
 
-    async function loadLobbyMapPreview(mapId){
+    async function loadLobbyMapPreview(mapId) {
         let mapPreview = null;
         let gridParent = document.getElementById("lobby-gridParent");
         let loadingMessage = document.getElementById('map-loading');
@@ -713,7 +740,7 @@
         clearGrid();
         createGrid(MAP.rows, MAP.cols, gridParent, false);
         drawMapOnPage();
-        
+
         loadingMessage.style.display = 'none';
         gridParent.style.visibility = 'visible';
     }

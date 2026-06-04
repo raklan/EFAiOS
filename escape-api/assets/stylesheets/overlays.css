@@ -185,21 +185,8 @@
 
 #event-log-controls {
     position: fixed;
-    height: 65%;
     top: 15%;
-    left: -337px;
-    padding-left: 5px;
-    display: grid;
-    grid-template-columns: 10fr 1fr;
-    transition: all 0.3s ease-in-out;
-}
-
-#event-log-controls.show {
-    left: 0px;
-    transition: all 0.3s ease-in-out;
-}
-
-#event-log-toggle {
+    left: 0;
     cursor: pointer;
     align-self: start;
     justify-self: end;
@@ -209,17 +196,34 @@
     background-color: black;
     width: fit-content;
     grid-column-start: 11;
+    transition: all 0.3s ease-in-out;
+}
+
+#event-log-controls.show {
+    left: 330px;
+    transition: all 0.3s ease-in-out;
 }
 
 #event-log {
     max-height: inherit;
     border: 1px solid white;
+    position: fixed;
+    top: 15%;
+    left: -337px;
     width: 330px;
+    height: 65%;
     display: flex;
     flex-direction: column;
     grid-column-start: span 10;
     background-color: black;
     overflow-y: auto;
+    transition: all 0.3s ease-in-out;
+    z-index: 10;
+}
+
+#event-log.show{
+    left: 0;
+    transition: all 0.3s ease-in-out;
 }
 
 .tab-selector {
@@ -274,6 +278,59 @@
     }
 }
 
+#modifier-list-controls {
+    position: fixed;
+    top: 25%;
+    left: 0;
+    cursor: pointer;
+    align-self: start;
+    justify-self: end;
+    padding: 5px;
+    padding-bottom: 0px;
+    border: 1px solid lime;
+    background-color: black;
+    width: fit-content;
+    z-index: 5;    
+    transition: all 0.3s ease-in-out;
+}
+
+#modifier-list-controls.show {
+    left: 330px;
+    transition: all 0.3s ease-in-out;
+}
+
+#modifier-list {
+    max-height: inherit;
+    border: 1px solid white;
+    color: white;
+    position: fixed;
+    top: 25%;
+    left: -337px;
+    width: 330px;
+    max-height: 40%;
+    display: flex;
+    flex-direction: column;
+    grid-column-start: span 10;
+    background-color: black;
+    overflow-y: auto;
+    scrollbar-color: white black;
+    transition: all 0.3s ease-in-out;
+    z-index: 5;
+}
+
+#modifier-list.show{
+    left: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+#modifier-descriptions{
+    margin-right: 10px;
+}
+
+.modifier-entry-title{
+    text-decoration: underline;
+}
+
 @media (max-width: 1000px) {
     .card {
         width: 100px;
@@ -297,5 +354,14 @@
     #status-effects {
         height: 75px;
         top: 150px;
+    }
+
+    #modifier-list{
+        top: 30%;
+        height: 40%;
+    }
+
+    #modifier-list-controls{
+        top: 30%
     }
 }
