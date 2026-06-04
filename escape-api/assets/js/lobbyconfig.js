@@ -14,12 +14,12 @@ function setModifierConfig(configObject) {
     let configForm = document.getElementById("lobby-gameConfig")       
 
     setConfigInputValue('config-numTurns', configObject.modifiers.numTurns);
-    configForm['config-aliensRespawn'].checked = configObject.modifiers.aliensRespawn;
     configForm['config-autoTurnEnd'].checked = configObject.modifiers.autoTurnEnd;
     configForm['config-infestedPodsMode'].checked = configObject.modifiers.infestedPodsMode;
     configForm['config-lastManStandingMode'].checked = configObject.modifiers.lastManStandingMode;
     configForm['config-lastResortMode'].checked = configObject.modifiers.lastResortMode;
     configForm['config-reactorMode'].checked = configObject.modifiers.reactorMode;
+    configForm['config-relentlessAliensMode'].checked = configObject.modifiers.relentlessAliensMode;
     configForm['config-scatterMode'].checked = configObject.modifiers.scatterMode;
     configForm['config-survivalMode'].checked = configObject.modifiers.survivalMode;
     configForm['config-unstablePodsMode'].checked = configObject.modifiers.unstablePodsMode;
@@ -144,11 +144,11 @@ function getGameConfig() {
 
     config.modifiers = {
         numTurns: getConfigValue('config-numTurns'),
-        aliensRespawn: configForm['config-aliensRespawn']?.checked,
         autoTurnEnd: configForm['config-autoTurnEnd']?.checked,
         infestedPodsMode: configForm['config-infestedPodsMode']?.checked,
         lastManStandingMode: configForm['config-lastManStandingMode']?.checked,
         lastResortMode: configForm['config-lastResortMode']?.checked,
+        relentlessAliensMode: configForm['config-relentlessAliensMode']?.checked,
         reactorMode: configForm['config-reactorMode']?.checked,
         scatterMode: configForm['config-scatterMode']?.checked,
         survivalMode: configForm['config-survivalMode']?.checked,

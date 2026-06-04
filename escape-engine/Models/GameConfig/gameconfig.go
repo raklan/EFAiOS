@@ -35,8 +35,6 @@ type GameConfig struct {
 type GameModifiers struct {
 	//Number of turns before the game should end
 	NumTurns int `json:"numTurns"`
-	//Whether Alien players should join the Spectators team upon death
-	AliensRespawn bool `json:"aliensRespawn"`
 	//Whether players' turns should automatically end after moving (and choosing to attack, for aliens) if there are no cards in their hand
 	AutoTurnEnd bool `json:"autoTurnEnd"`
 	//Whether the game should spawn a random Evacuation Sector on turn # in `EvacuationTiming`
@@ -51,6 +49,8 @@ type GameModifiers struct {
 	LastResortMode bool `json:"lastResortMode"`
 	//Whether the game should be played such that escape pods do not remove humans from the game, and the humans' new win condition is to activate each escape pod
 	ReactorMode bool `json:"reactorMode"`
+	//Whether Alien players should respawn in an Alien Start Sector upon death, instead of joining the spectator team.
+	RelentlessAliensMode bool `json:"relentlessAliensMode"`
 	//Whether players should be placed in a completely random sector to start the game, instead of their team's Start Sectors.
 	ScatterMode bool `json:"scatterMode"`
 	//Whether the game should be played such that after NumTurns, the Humans automatically win, instead of automatically dying
@@ -63,14 +63,15 @@ type GameModifiers struct {
 
 //Descriptions that can be more or less plugged directly into an innerHTML attribute of the modifier descriptions window. Modes that have configuration values have a [%VAR] in the string that can be replaced as needed.
 var FormattedModifierDescriptions = map[string]string{
-	"evacuationMode":      "<span class=\"modifier-entry-title\">Evacuation Mode</span>: At the beginning of Turn [%VAR], a random Dangerous or Safe Sector will become an Evacuation Sector. Any human reaching this sector escapes.",
-	"infestedPodsMode":    "<span class=\"modifier-entry-title\">Infested Pods Mode</span>: Aliens start in a randomly selected Escape Pod Sector.",
-	"lastManStandingMode": "<span class=\"modifier-entry-title\">Last Man Standing Mode</span>: All Escape Pod Sectors are unusable until there is only 1 Human Player remaining.",
-	"lastResortMode":      "<span class=\"modifier-entry-title\">Last Resort Mode</span>: Once all Escape Pod Sectors are used, a random Dangerous or Safe Sector will become an Evacuation Sector. Any human reaching this sector escapes.",
-	"reactorMode":         "<span class=\"modifier-entry-title\">Reactor Mode</span>: Humans cannot escape through Escape Pod Sectors. When all Escape Pod sectors have been visited, all remaining Humans automatically escape.",
-	"scatterMode":         "<span class=\"modifier-entry-title\">Scatter Mode</span>: All players start in a randomly selected Sector.",
-	"survivalMode":        "<span class=\"modifier-entry-title\">Survival Mode</span>: After [%VAR] turns have elapsed, all surviving Humans automatically escape.",
-	"unstablePodsMode":    "<span class=\"modifier-entry-title\">Unstable Pods Mode</span>: All Escape Pod Sectors are unusable. They only become usable [%VAR].",
+	"evacuationMode":       "<span class=\"modifier-entry-title\">Evacuation Mode</span>: At the beginning of Turn [%VAR], a random Dangerous or Safe Sector will become an Evacuation Sector. Any human reaching this sector escapes.",
+	"infestedPodsMode":     "<span class=\"modifier-entry-title\">Infested Pods Mode</span>: Aliens start in a randomly selected Escape Pod Sector.",
+	"lastManStandingMode":  "<span class=\"modifier-entry-title\">Last Man Standing Mode</span>: All Escape Pod Sectors are unusable until there is only 1 Human Player remaining.",
+	"lastResortMode":       "<span class=\"modifier-entry-title\">Last Resort Mode</span>: Once all Escape Pod Sectors are used, a random Dangerous or Safe Sector will become an Evacuation Sector. Any human reaching this sector escapes.",
+	"reactorMode":          "<span class=\"modifier-entry-title\">Reactor Mode</span>: Humans cannot escape through Escape Pod Sectors. When all Escape Pod sectors have been visited, all remaining Humans automatically escape.",
+	"relentlessAliensMode": "<span class=\"modifier-entry-title\">Relentless Aliens Mode</span>: Upon death, Alien Players will respawn at the start of their next turn.",
+	"scatterMode":          "<span class=\"modifier-entry-title\">Scatter Mode</span>: All players start in a randomly selected Sector.",
+	"survivalMode":         "<span class=\"modifier-entry-title\">Survival Mode</span>: After [%VAR] turns have elapsed, all surviving Humans automatically escape.",
+	"unstablePodsMode":     "<span class=\"modifier-entry-title\">Unstable Pods Mode</span>: All Escape Pod Sectors are unusable. They only become usable [%VAR].",
 }
 
 func GetConfigPresets() []GameConfigPreset {
@@ -135,9 +136,9 @@ func GetConfigPresets() []GameConfigPreset {
 					"Psychic":           0,
 				},
 				Modifiers: GameModifiers{
-					NumTurns:      40,
-					AliensRespawn: false,
-					AutoTurnEnd:   false,
+					NumTurns:             40,
+					RelentlessAliensMode: false,
+					AutoTurnEnd:          false,
 				},
 			}),
 		},
@@ -201,9 +202,9 @@ func GetConfigPresets() []GameConfigPreset {
 					"Psychic":           0,
 				},
 				Modifiers: GameModifiers{
-					NumTurns:      40,
-					AliensRespawn: false,
-					AutoTurnEnd:   false,
+					NumTurns:             40,
+					RelentlessAliensMode: false,
+					AutoTurnEnd:          false,
 				},
 			}),
 		},
@@ -267,9 +268,9 @@ func GetConfigPresets() []GameConfigPreset {
 					"Psychic":           0,
 				},
 				Modifiers: GameModifiers{
-					NumTurns:      40,
-					AliensRespawn: false,
-					AutoTurnEnd:   false,
+					NumTurns:             40,
+					RelentlessAliensMode: false,
+					AutoTurnEnd:          false,
 				},
 			}),
 		},
@@ -333,9 +334,9 @@ func GetConfigPresets() []GameConfigPreset {
 					"Psychic":           0,
 				},
 				Modifiers: GameModifiers{
-					NumTurns:      0,
-					AliensRespawn: false,
-					AutoTurnEnd:   false,
+					NumTurns:             0,
+					RelentlessAliensMode: false,
+					AutoTurnEnd:          false,
 				},
 			}),
 		},
