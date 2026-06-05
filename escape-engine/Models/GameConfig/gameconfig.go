@@ -55,6 +55,8 @@ type GameModifiers struct {
 	ScatterMode bool `json:"scatterMode"`
 	//Whether the game should be played such that after NumTurns, the Humans automatically win, instead of automatically dying
 	SurvivalMode bool `json:"survivalMode"`
+	//Whether to omit alerts about player deaths from GameEvents
+	UnconfirmedKillsMode bool `json:"unconfirmedKillsMode"`
 	//Whether the Escape Pods should start the game as blocked, and become unblocked using the logic in PodUnblockTiming
 	UnstablePodsMode bool `json:"unstablePodsMode"`
 	//When to mark Escape Pods as unblocked. The following logic applies: If == -2, unblock on Even Turns. If == -1, unblock on Odd turns. If == 0, never unblock. If > 0, unblock forever starting on that turn #
@@ -71,6 +73,7 @@ var FormattedModifierDescriptions = map[string]string{
 	"relentlessAliensMode": "<span class=\"modifier-entry-title\">Relentless Aliens Mode</span>: Upon death, Alien Players will respawn at the start of their next turn.",
 	"scatterMode":          "<span class=\"modifier-entry-title\">Scatter Mode</span>: All players start in a randomly selected Sector.",
 	"survivalMode":         "<span class=\"modifier-entry-title\">Survival Mode</span>: After [%VAR] turns have elapsed, all surviving Humans automatically escape.",
+	"unconfirmedKillsMode": "<span class=\"modifier-entry-title\">Unconfirmed Kills Mode</span>: Player deaths and uses of the Armored or Cloned Status Effects are not announced in Game Event Alerts.",
 	"unstablePodsMode":     "<span class=\"modifier-entry-title\">Unstable Pods Mode</span>: All Escape Pod Sectors are unusable. They only become usable [%VAR].",
 }
 

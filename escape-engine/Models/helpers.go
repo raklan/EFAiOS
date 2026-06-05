@@ -91,12 +91,16 @@ func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) 
 				switch se {
 				case StatusEffect_Armored:
 					playerWasSaved = true
-					gameEvent.Description += fmt.Sprintf("Player '%s' was saved by Armor!\n", targetPlayer.Name)
+					if !gameState.GameMap.GameConfig.Modifiers.UnconfirmedKillsMode {
+						gameEvent.Description += fmt.Sprintf("Player '%s' was saved by Armor!\n", targetPlayer.Name)
+					}
 					go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Attacked Player '%s'", targetPlayer.Name))
 					go Recap.AddDataToRecap(gameState.Id, targetPlayer.Id, gameState.Turn, fmt.Sprintf("Attacked by Player '%s' and saved by Armor", actingPlayer.Name))
 				case StatusEffect_Cloned:
 					playerWasSaved = true
-					gameEvent.Description += fmt.Sprintf("Player '%s' activated their Emergency Clone!\n", targetPlayer.Name)
+					if !gameState.GameMap.GameConfig.Modifiers.UnconfirmedKillsMode {
+						gameEvent.Description += fmt.Sprintf("Player '%s' activated their Emergency Clone!\n", targetPlayer.Name)
+					}
 
 					humanStarts := gameState.GameMap.GetSpacesOfType(Space_HumanStart)
 					newSpaceForPlayer := humanStarts[rand.Intn(len(humanStarts))]
@@ -134,7 +138,9 @@ func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) 
 				actingPlayer.AddStatusEffect(StatusEffect_Hyperphagic, NewHyperphagic)
 			}
 
-			gameEvent.Description += fmt.Sprintf("Player '%s' died!\n", targetPlayer.Name)
+			if !gameState.GameMap.GameConfig.Modifiers.UnconfirmedKillsMode {
+				gameEvent.Description += fmt.Sprintf("Player '%s' died!\n", targetPlayer.Name)
+			}
 			go Recap.AddDataToRecap(gameState.Id, actingPlayer.Id, gameState.Turn, fmt.Sprintf("Killed Player '%s'", targetPlayer.Name))
 			go Recap.AddDataToRecap(gameState.Id, targetPlayer.Id, gameState.Turn, fmt.Sprintf("Killed by Player '%s'", actingPlayer.Name))
 		}
