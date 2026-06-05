@@ -1,55 +1,203 @@
 {{define "styling"}}
+<style>
+    .list-item {
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    .interaction-details{
+        font-style: italic;
+        color: yellowgreen;
+    }
+</style>
 {{end}}
 {{define "body"}}
-<h2>Version 1.2.0 Changelog</h2>
-<h3>What's New</h3>
+<h2 id="changelog">Version 1.3.0 Changelog</h2>
+<p>Note: <span class="list-item">This is a breaking change for map files. You will need the new release version of every
+        official map,
+        and any maps you have created before this will need their Config options re-saved.</span></p>
+<h3 id="what-s-new">What&#39;s New</h3>
 <ul>
-    <li>Added maps from the Spring map pack</li>
-    <li>Added maps from the Before the World Ends map pack</li>
-    <ul>
-        <li>
-            None of the above maps came with descriptions or suggested player counts, so I playtested most of them and
-            just came up with those myself. They're not official, and might change if I realize there's an issue with
-            one.
-        </li>
-    </ul>
-    <li>
-        Added a new sound player that will play sounds under the following circumstances:
-        <ul>
-            <li>When it is your turn</li>
-            <li>When someone dies</li>
-            <li>Some randomly timed ambient sounds</li>
-            <li>I'll probably add more as time goes on, but I wanted to get this release out</li>
+    <li>The Game Settings popup for the host of a game has received a restructuring, both for improved feel and better
+        support for new additions. The following has changed:<ul>
+            <li>A new tab called &quot;Teams&quot; has been added.</li>
+            <li>A new tab called &quot;Modifiers&quot; has been added.</li>
+            <li>The &quot;General&quot; tab has been removed. Each option on that tab has been moved as follows:<ul>
+                    <li>The &quot;Humans&quot; and &quot;Aliens&quot; inputs have been moved to the &quot;Teams&quot;
+                        tab.</li>
+                    <li>The &quot;Working Pods&quot; and &quot;Broken Pods&quot; inputs have been moved to their own
+                        section in the &quot;Cards&quot; tab.</li>
+                    <li>The &quot;Turns,&quot; &quot;Aliens Can Respawn,&quot; &quot;Auto Turn End,&quot; and
+                        &quot;Survival Mode&quot; inputs have all been moved to the &quot;Modifiers&quot; tab.<ul>
+                            <li>&quot;Aliens Can Respawn&quot; has been renamed to &quot;Relentless Aliens Mode&quot;
+                                and placed with the other Game Modes. </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>There is now visual indication of which tab is active.</li>
+            <li>The close button for the popup is now bigger.</li>
+            <li>There is now a &quot;Help&quot; question mark next to the close button, which will open a compendium
+                page in a new browser tab with explanations of each control and how they affect the game.</li>
         </ul>
     </li>
-    <li>The above-mentioned audio player also has a "Mute Audio" button visible in the top navbar</li>       
-    <li>The "Captain" role has been given a new Status Effect called Careful, replacing its previously given "Sedated"
-        Status Effect.</li>
-    <ul>
-        <li>Careful allows the player to avoid drawing a card the next time they enter a Dangerous Sector. It does not
-            trigger until you do so, as opposed to Sedated, which triggers even if you enter a Safe Sector.</li>
-        <li>This was added after a rereading of the Captain's role effect from the official game rules</li>
+    <li><span class="list-item">New Config Option:</span> Manual Team Assignment. This option is found on the
+        &quot;Teams&quot; tab.
+        For every player in the game, the host has 4 options for controlling which team each player is on:<ul>
+            <li>Default: Leave as-is. If the player has joined as a Spectator, it will leave the player on the Spectator
+                team. Otherwise, randomly assign the player&#39;s team as normal.</li>
+            <li>Spectator: Force this player to be on the Spectator team.</li>
+            <li>Human: Force this player to be on the Human team. This overrides the player if they have selected
+                &quot;Join as Spectator.&quot;</li>
+            <li>Alien: Force this player to be on the Alien team. This overrides the player if they have selected
+                &quot;Join as Spectator.&quot;</li>
+        </ul>
+    </li>
+    <li><span class="list-item">New Config Options:</span> Game Modes. A large number of new Game Modes have been added
+        to the game,
+        which can all be found in the Game Settings popup &quot;Modifiers&quot; tab under the &quot;Game Modes&quot;
+        section. 
+        <ul>
+        <li><span class="list-item">Destructive Attacks Mode</span>: When enabled, this changes how Attacks are handled.
+            Whenever a Sector is attacked, it degrades. Safe Sectors become Dangerous Sectors, and Dangerous Sectors
+            become Wall Sectors. Any players that were in the Dangerous Sector that survived the attack before it became a Wall remain in that
+            Sector and will have to leave it on their next turn.</li>
+        <li><span class="list-item">Evacuation Mode</span>: When enabled, this adds an evolution to the Game
+            Board. At the beginning of a set turn, a random Dangerous or Safe Sector will be transformed into a special
+            Evacuation
+            Sector. Any human entering this new Sector immediately escapes, without needing to draw Escape Pod cards.
+            The turn on which this sector should appear is set by a secondary control that appears in the Game Settings
+            window upon activating this mode.</li>
+        <li><span class="list-item">Infested Pods Mode</span>: When enabled, this changes the starting location of Alien
+            players. Aliens will now start in a randomly selected Escape Pod Sector, instead of an Alien Start Sector.
+            <ul class="interaction-details">Other Mode Interactions:
+                <li><span class="list-item">Scatter Mode</span>: If both Infested Pods and Scatter are active, Infested
+                    Pods will override the start location for Alien Players, but still allow Human Players to be spawned
+                    randomly.</li>
+            </ul>
+        </li>
+        <li><span class="list-item">Last Man Standing Mode</span>: When enabled, this changes the way Escape Pods are
+            handled. At the beginning of the game, all Escape Pods will become Blocked, and cannot be entered. They
+            remain Blocked until there is only one Human player remaining in the game, at which point they become
+            Unblocked and may be used as normal.
+            <ul class="interaction-details">Other Mode Interactions:
+                <li><span class="list-item">Unstable Pods Mode</span>: If
+                    both Unstable Pods and Last Man
+                    Standing are active, all Escape Pods are blocked until the unblocking criteria for both modes is
+                    met. For
+                    example, if both are active, and Unstable Pods is set to "Even Turns" then Escape Pods will become
+                    unblocked
+                    on every even-numbered turn once there is only one Human player remaining.</li>
+            </ul>
+        </li>
+        <li><span class="list-item">Last Resort Mode</span>: When enabled, this changes the way the game
+            handles running out of Escape Pod Sectors. When all Escape Pods Sectors have been marked as used, the game
+            will pick a random Dangerous or Safe Sector and turn it into a special Evacuation Sector. Any human entering
+            this new Sector immediately escapes, without needing to draw Escape Pod cards.
+            <ul class="interaction-details">
+                Other Mode Interactions:
+                <li><span class="list-item">Reactor Mode</span>: If both Last Resort and Reactor mode are enabled,
+                    humans will still need
+                    to
+                    reach the Evacuation Sector after activating all Reactor Nodes.</li>
+            </ul>
+        </li>
+        <li><span class="list-item">Reactor Mode</span>: When enabled, this switches the game's Escape Pod
+            logic. Now, every Escape Pod sector is a Reactor Node, and Escape Pod cards are no longer used. Humans can
+            reactivate the Reactor Nodes by entering
+            that sector and are no longer removed from the game upon doing so. Once every Reactor Node has been
+            activated,
+            the ship's onboard security is reactivated, killing the Aliens. Every surviving Human immediately and
+            automatically wins!
+            <ul class="interaction-details">
+                Other Mode Interactions:
+                <li><span class="list-item">Last Resort Mode</span>: If both Last Resort and Reactor mode are enabled,
+                    humans will still need
+                    to
+                    reach the Evacuation Sector after activating all Reactor Nodes.</li>
+            </ul>
+        </li>
+        <li><span class="list-item">Relentless Aliens Mode</span>: When enabled, upon death, Aliens will respawn at the
+            start of their next turn at a randomly selected Alien Start Sector.
+            <ul class="interaction-details">
+                Other Mode Interactions:
+                <li><span class="list-item">Infested Pods Mode</span>: If both Infested Pods and Relentless Aliens modes
+                    are enabled, upon death, Alien players will respawn at a randomly selected Escape Pod Sector at the
+                    start of their next turn.</li>
+                <li><span class="list-item">Scatter Mode</span>: If both Scatter and Relentless Aliens modes
+                    are enabled, upon death, Alien players will respawn at a randomly selected Dangerous, Safe, Human
+                    Start, or Alien Start Sector at the
+                    start of their next turn.</li>
+            </ul>
+        </li>
+        <li><span class="list-item">Scatter Mode</span>: When enabled this changes the starting location of ALL players.
+            Every player will now start in a randomly selected Alien Start, Human Start, Dangerous, or Safe Sector,
+            instead of their team's Start Sectors.
+            <ul class="interaction-details">
+                Other Mode Interactions:
+                <li><span class="list-item">Infested Pods Mode</span>: If both Infested Pods and Scatter are active,
+                    Infested Pods will override the start location for Alien Players, but still allow Human Players to
+                    be spawned randomly.</li>
+            </ul>
+        </li>
+        <li><span class="list-item">Survival Mode</span>: When enabled, this switches the game's end condition.
+            After the maximum number of turns have elapsed,
+            reinforcements arrive and save the remaining humans. All remaining humans immediately and automatically
+            escape.</li>
+        <li><span class="list-item">Unconfirmed Kills Mode</span>: When enabled, Player deaths and uses of Status
+            Effects that prevent death (such as <a href="/compendium/statuseffects#armored">Armored</a> or <a
+                href="/compendium/statuseffects#cloned">Cloned</a>) are no longer announced in Game Event Alerts.</li>
+        <li><span class="list-item">Unstable Pods Mode</span>: When enabled, this changes the way Escape Pods
+            are handled. Escape Pods will become Blocked, and cannot be entered. They become unblocked and may be used
+            as normal using logic set
+            by a secondary control that appears in the Game Settings window upon activating this mode, which has the
+            following options:
+            <ul>
+                <li><span style="font-style: italic">Even Turns</span>: Escape Pods are unblocked and usable only on
+                    even-numbered game turns. (2, 4, 6, etc.)</li>
+                <li><span style="font-style: italic">Odd Turns</span>: Escape Pods are unblocked and usable only on
+                    odd-numbered game turns. (1, 3, 5, etc.)</li>
+                <li><span style="font-style: italic">On Turn #</span>: Escape Pods become unblocked and permanently
+                    usable, starting at the beginning of the set game turn number.</li>
+            </ul>
+            Escape Pods are still single-use, and permanently become used as normal.
+            <ul class="interaction-details">
+                Other Mode Interactions:
+                <li>
+                    <span class="list-item">Last Man Standing Mode</span>: If both Unstable Pods and Last Man
+                    Standing are active, all Escape Pods are blocked until the unblocking criteria for both modes is
+                    met. For
+                    example, if both are active, and Unstable Pods is set to "Even Turns" then Escape Pods will become
+                    unblocked
+                    on every even-numbered turn once there is only one Human player remaining.
+                </li>
+            </ul>
+        </li>
     </ul>
-    <li>The "Soldier" role has been given a new Status Effect called Armed, replacing its previously given "Attack" card
-        at the start.</li>
-    <ul>
-        <li>Armed allows the player to choose to attack after moving, exactly the way Aliens can. The alert will read
-            the same as an Alien attack as well.</li>
-        <li>This was added as a result of rereading the Soldier's attack from the official game rules. It mentions that
-            Soldier is useful for pretending to be an alien, which (to me) reads like the Soldier's attack should be
-            treated exactly the same as an Alien attack, instead of announcing a card was played.</li>
-    </ul>
-    <li>There is now an option in the event log to view all events, instead of filtered by player</li>
-    <li>The event log will now automatically scroll down if it's open when a new event is added</li> 
-    <li>The lobby screen now shows a preview of the map that will be used during the game</li>
-    <li>There is now a version number listed on the bottom-right of the homepage, which is also a link to a changelog.</li>
+    </li>
+    <li>If any Game Modes are active, there will be a new &quot;Modifier List&quot; that appears on the left side of the
+        gameplay screen which can be toggled open, with a short description of each active Game Mode and its effect.
+        This toggle is found under the Event Log toggle.</li>
+    <li>To better support the fact that game boards are able to change partway through a game, the Recap screen will now
+        show the state of the board at the end of the game.</li>
 </ul>
-<h3>Bugfixes</h3>
+<h3 id="bugfixes">Bugfixes</h3>
 <ul>
-    <li>Fixed a bug where the host's game config would be reset anytime a new player joined the lobby</li>
-    <li>Fixed mismatched grammar on player number suggestions for all maps on the Maps screen</li>
-    <li>The "Adrenaline" card's alert message has received a slight wording clarification</li>
+    <li>Fixed a bug where resizing the gameplay window as a spectator could break the board rendering.</li>
+    <li>Fixed a bug where players pre-assigned as Spectators could still be set to have the first turn, softlocking the
+        game.</li>
+    <li>Fixed a bug where the Role Assignment process could fail if it tried to assign a role for a team which had more
+        slots available than players that got assigned to that team.</li>
+    <li>Fixed a bug where the pre-game lobby would fail to establish a connection to the server if the server was
+        running under HTTPS.</li>
+    <li>Alphabetized both spots a list of roles is presented (The Game Settings window &amp; the Dictionary).</li>
+    <li>Alphabetized the &quot;Helpful Terms&quot; list in the compendium dictionary.</li>
+    <li>Added a bottom margin to all Compendium pages, to avoid the &quot;Rejoin Game&quot; box from always hiding any
+        information at the bottom of the page.</li>
 </ul>
+<p><span class="list-item">Full Changelog</span>: <a
+        href="https://github.com/raklan/EFAiOS/compare/v1.2.0...v1.3.0">https://github.com/raklan/EFAiOS/compare/v1.2.0...v1.3.0</a>
+</p>
+
 {{end}}
 {{define "scripts"}}
 {{end}}
