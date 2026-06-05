@@ -37,6 +37,8 @@ type GameModifiers struct {
 	NumTurns int `json:"numTurns"`
 	//Whether players' turns should automatically end after moving (and choosing to attack, for aliens) if there are no cards in their hand
 	AutoTurnEnd bool `json:"autoTurnEnd"`
+	//Whether Attacks should turn the targeted space into 1 "tier" lower of sector. Safe -> Dangerous -> Wall
+	DescructiveAttacksMode bool `json:"destructiveAttacksMode"`
 	//Whether the game should spawn a random Evacuation Sector on turn # in `EvacuationTiming`
 	EvacuationMode bool `json:"evacuationMode"`
 	//On this turn, spawn a randomly-placed Evacuation Sector
@@ -65,16 +67,17 @@ type GameModifiers struct {
 
 //Descriptions that can be more or less plugged directly into an innerHTML attribute of the modifier descriptions window. Modes that have configuration values have a [%VAR] in the string that can be replaced as needed.
 var FormattedModifierDescriptions = map[string]string{
-	"evacuationMode":       "<span class=\"modifier-entry-title\">Evacuation Mode</span>: At the beginning of Turn [%VAR], a random Dangerous or Safe Sector will become an Evacuation Sector. Any human reaching this sector escapes.",
-	"infestedPodsMode":     "<span class=\"modifier-entry-title\">Infested Pods Mode</span>: Aliens start in a randomly selected Escape Pod Sector.",
-	"lastManStandingMode":  "<span class=\"modifier-entry-title\">Last Man Standing Mode</span>: All Escape Pod Sectors are unusable until there is only 1 Human Player remaining.",
-	"lastResortMode":       "<span class=\"modifier-entry-title\">Last Resort Mode</span>: Once all Escape Pod Sectors are used, a random Dangerous or Safe Sector will become an Evacuation Sector. Any human reaching this sector escapes.",
-	"reactorMode":          "<span class=\"modifier-entry-title\">Reactor Mode</span>: Humans cannot escape through Escape Pod Sectors. When all Escape Pod sectors have been visited, all remaining Humans automatically escape.",
-	"relentlessAliensMode": "<span class=\"modifier-entry-title\">Relentless Aliens Mode</span>: Upon death, Alien Players will respawn at the start of their next turn.",
-	"scatterMode":          "<span class=\"modifier-entry-title\">Scatter Mode</span>: All players start in a randomly selected Sector.",
-	"survivalMode":         "<span class=\"modifier-entry-title\">Survival Mode</span>: After [%VAR] turns have elapsed, all surviving Humans automatically escape.",
-	"unconfirmedKillsMode": "<span class=\"modifier-entry-title\">Unconfirmed Kills Mode</span>: Player deaths and uses of the Armored or Cloned Status Effects are not announced in Game Event Alerts.",
-	"unstablePodsMode":     "<span class=\"modifier-entry-title\">Unstable Pods Mode</span>: All Escape Pod Sectors are unusable. They only become usable [%VAR].",
+	"destructiveAttacksMode": "<span class=\"modifier-entry-title\">Destructive Attacks Mode</span>: Each time a Sector is attacked, it degrades - Safe Sectors become Dangerous, and Dangerous Sectors become Walls.",
+	"evacuationMode":         "<span class=\"modifier-entry-title\">Evacuation Mode</span>: At the beginning of Turn [%VAR], a random Dangerous or Safe Sector will become an Evacuation Sector. Any human reaching this sector escapes.",
+	"infestedPodsMode":       "<span class=\"modifier-entry-title\">Infested Pods Mode</span>: Aliens start in a randomly selected Escape Pod Sector.",
+	"lastManStandingMode":    "<span class=\"modifier-entry-title\">Last Man Standing Mode</span>: All Escape Pod Sectors are unusable until there is only 1 Human Player remaining.",
+	"lastResortMode":         "<span class=\"modifier-entry-title\">Last Resort Mode</span>: Once all Escape Pod Sectors are used, a random Dangerous or Safe Sector will become an Evacuation Sector. Any human reaching this sector escapes.",
+	"reactorMode":            "<span class=\"modifier-entry-title\">Reactor Mode</span>: Humans cannot escape through Escape Pod Sectors. When all Escape Pod sectors have been visited, all remaining Humans automatically escape.",
+	"relentlessAliensMode":   "<span class=\"modifier-entry-title\">Relentless Aliens Mode</span>: Upon death, Alien Players will respawn at the start of their next turn.",
+	"scatterMode":            "<span class=\"modifier-entry-title\">Scatter Mode</span>: All players start in a randomly selected Sector.",
+	"survivalMode":           "<span class=\"modifier-entry-title\">Survival Mode</span>: After [%VAR] turns have elapsed, all surviving Humans automatically escape.",
+	"unconfirmedKillsMode":   "<span class=\"modifier-entry-title\">Unconfirmed Kills Mode</span>: Player deaths and uses of the Armored or Cloned Status Effects are not announced in Game Event Alerts.",
+	"unstablePodsMode":       "<span class=\"modifier-entry-title\">Unstable Pods Mode</span>: All Escape Pod Sectors are unusable. They only become usable [%VAR].",
 }
 
 func GetConfigPresets() []GameConfigPreset {

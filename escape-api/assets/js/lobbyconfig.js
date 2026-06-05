@@ -15,6 +15,7 @@ function setModifierConfig(configObject) {
 
     setConfigInputValue('config-numTurns', configObject.modifiers.numTurns);
     configForm['config-autoTurnEnd'].checked = configObject.modifiers.autoTurnEnd;
+    configForm['config-destructiveAttacksMode'].checked = configObject.modifiers.destructiveAttacksMode;
     configForm['config-infestedPodsMode'].checked = configObject.modifiers.infestedPodsMode;
     configForm['config-lastManStandingMode'].checked = configObject.modifiers.lastManStandingMode;
     configForm['config-lastResortMode'].checked = configObject.modifiers.lastResortMode;
@@ -22,6 +23,7 @@ function setModifierConfig(configObject) {
     configForm['config-relentlessAliensMode'].checked = configObject.modifiers.relentlessAliensMode;
     configForm['config-scatterMode'].checked = configObject.modifiers.scatterMode;
     configForm['config-survivalMode'].checked = configObject.modifiers.survivalMode;
+    configForm['config-unconfirmedKillsMode'].checked = configObject.modifiers.unconfirmedKillsMode;
     configForm['config-unstablePodsMode'].checked = configObject.modifiers.unstablePodsMode;
     switch(configObject?.modifiers?.podUnblockTiming){
         case -2:
@@ -145,6 +147,7 @@ function getGameConfig() {
     config.modifiers = {
         numTurns: getConfigValue('config-numTurns'),
         autoTurnEnd: configForm['config-autoTurnEnd']?.checked,
+        destructiveAttacksMode: configForm['config-destructiveAttacksMode']?.checked,
         infestedPodsMode: configForm['config-infestedPodsMode']?.checked,
         lastManStandingMode: configForm['config-lastManStandingMode']?.checked,
         lastResortMode: configForm['config-lastResortMode']?.checked,
@@ -152,6 +155,7 @@ function getGameConfig() {
         reactorMode: configForm['config-reactorMode']?.checked,
         scatterMode: configForm['config-scatterMode']?.checked,
         survivalMode: configForm['config-survivalMode']?.checked,
+        unconfirmedKillsMode: configForm['config-unconfirmedKillsMode']?.checked,
         unstablePodsMode: configForm['config-unstablePodsMode']?.checked,
         evacuationMode: configForm['config-evacuationMode']?.checked,
         evacuationTiming: getConfigValue('config-evacuationTiming')

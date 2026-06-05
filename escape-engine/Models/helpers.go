@@ -146,6 +146,24 @@ func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) 
 		}
 	}
 
+	if gameState.GameMap.GameConfig.Modifiers.DescructiveAttacksMode {
+		attackedSpace := gameState.GameMap.Spaces[Space{
+			Row: row,
+			Col: col,
+		}.GetMapKey()]
+
+		newSpaceType := Space_Wall
+		if attackedSpace.Type == Space_Safe {
+			newSpaceType = Space_Dangerous
+		}
+
+		gameState.GameMap.Spaces[attackedSpace.GetMapKey()] = Space{
+			Row:  attackedSpace.Row,
+			Col:  attackedSpace.Col,
+			Type: newSpaceType,
+		}
+	}
+
 	return gameEvent, nil
 }
 

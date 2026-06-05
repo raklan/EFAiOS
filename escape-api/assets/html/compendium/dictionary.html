@@ -108,6 +108,10 @@
         once. If two modes have a unique, conflicting, or non-obvious interaction, it will be noted in both Modes'
         descriptions.</p>
     <ul>
+        <li><span class="list-item">Destructive Attacks Mode</span>: When enabled, this changes how Attacks are handled.
+            Whenever a Sector is attacked, it degrades. Safe Sectors become Dangerous Sectors, and Dangerous Sectors
+            become Wall Sectors. Any players that were in the Dangerous Sector that survived the attack before it became a Wall remain in that
+            Sector and will have to leave it on their next turn.</li>
         <li><span class="list-item">Evacuation Mode</span>: When enabled, this adds an evolution to the Game
             Board. At the beginning of a set turn, a random Dangerous or Safe Sector will be transformed into a special
             Evacuation
@@ -191,7 +195,8 @@
             reinforcements arrive and save the remaining humans. All remaining humans immediately and automatically
             escape.</li>
         <li><span class="list-item">Unconfirmed Kills Mode</span>: When enabled, Player deaths and uses of Status
-            Effects that prevent death (such as <a href="/compendium/statuseffects#armored">Armored</a> or <a href="/compendium/statuseffects#cloned">Cloned</a>) are no longer announced in Game Event Alerts.</li>
+            Effects that prevent death (such as <a href="/compendium/statuseffects#armored">Armored</a> or <a
+                href="/compendium/statuseffects#cloned">Cloned</a>) are no longer announced in Game Event Alerts.</li>
         <li><span class="list-item">Unstable Pods Mode</span>: When enabled, this changes the way Escape Pods
             are handled. Escape Pods will become Blocked, and cannot be entered. They become unblocked and may be used
             as normal using logic set
