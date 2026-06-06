@@ -23,10 +23,17 @@ func GetAllowedSpaces(player *Player, gameState *GameState) int {
 		allowedSpaces++
 	}
 
-	//Hyperphagic
+	//Hyperphagic is a permanent bonus, so don't subtract any uses
 	if player.HasStatusEffect(StatusEffect_Hyperphagic) {
-		//Hyperphagic is a permanent bonus, so don't subtract any uses
-		allowedSpaces++
+		if gameState.GameMap.GameConfig.Modifiers.BloodlustMode {
+			for _, se := range player.StatusEffects {
+				if se.Name == StatusEffect_Hyperphagic {
+					allowedSpaces += se.UsesLeft
+				}
+			}
+		} else {
+			allowedSpaces++
+		}
 	}
 
 	return allowedSpaces
@@ -134,8 +141,12 @@ func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) 
 			gameState.Players[index].Hand = []Card{}
 			gameState.Players[index].StatusEffects = []StatusEffect{}
 
-			if actingPlayer.Team == PlayerTeam_Alien && targetPlayer.Team == PlayerTeam_Human {
+			if gameState.GameMap.GameConfig.Modifiers.NecrophagiaMode {
 				actingPlayer.AddStatusEffect(StatusEffect_Hyperphagic, NewHyperphagic)
+			} else {
+				if actingPlayer.Team == PlayerTeam_Alien && targetPlayer.Team == PlayerTeam_Human {
+					actingPlayer.AddStatusEffect(StatusEffect_Hyperphagic, NewHyperphagic)
+				}
 			}
 
 			if !gameState.GameMap.GameConfig.Modifiers.UnconfirmedKillsMode {

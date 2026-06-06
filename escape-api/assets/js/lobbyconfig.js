@@ -15,10 +15,12 @@ function setModifierConfig(configObject) {
 
     setConfigInputValue('config-numTurns', configObject.modifiers.numTurns);
     configForm['config-autoTurnEnd'].checked = configObject.modifiers.autoTurnEnd;
+    configForm['config-bloodlustMode'].checked = configObject.modifiers.bloodlustMode;
     configForm['config-destructiveAttacksMode'].checked = configObject.modifiers.destructiveAttacksMode;
     configForm['config-infestedPodsMode'].checked = configObject.modifiers.infestedPodsMode;
     configForm['config-lastManStandingMode'].checked = configObject.modifiers.lastManStandingMode;
     configForm['config-lastResortMode'].checked = configObject.modifiers.lastResortMode;
+    configForm['config-necrophagiaMode'].checked = configObject.modifiers.necrophagiaMode;
     configForm['config-reactorMode'].checked = configObject.modifiers.reactorMode;
     configForm['config-relentlessAliensMode'].checked = configObject.modifiers.relentlessAliensMode;
     configForm['config-scatterMode'].checked = configObject.modifiers.scatterMode;
@@ -147,10 +149,12 @@ function getGameConfig() {
     config.modifiers = {
         numTurns: getConfigValue('config-numTurns'),
         autoTurnEnd: configForm['config-autoTurnEnd']?.checked,
+        bloodlustMode: configForm['config-bloodlustMode']?.checked,
         destructiveAttacksMode: configForm['config-destructiveAttacksMode']?.checked,
         infestedPodsMode: configForm['config-infestedPodsMode']?.checked,
         lastManStandingMode: configForm['config-lastManStandingMode']?.checked,
         lastResortMode: configForm['config-lastResortMode']?.checked,
+        necrophagiaMode: configForm['config-necrophagiaMode']?.checked,
         relentlessAliensMode: configForm['config-relentlessAliensMode']?.checked,
         reactorMode: configForm['config-reactorMode']?.checked,
         scatterMode: configForm['config-scatterMode']?.checked,

@@ -405,6 +405,11 @@
                 <h2>Game Modes</h2>
                 <div class="config-group">
                     <label class="checkbox-container" style="padding-top: 2%;">
+                        <span>Bloodlust Mode</span>
+                        <input type="checkbox" name="config-bloodlustMode" />
+                        <div class="checkmark"></div>
+                    </label>
+                    <label class="checkbox-container" style="padding-top: 2%;">
                         <span>Destructive Attacks Mode</span>
                         <input type="checkbox" name="config-destructiveAttacksMode" />
                         <div class="checkmark"></div>
@@ -414,9 +419,10 @@
                         <input type="checkbox" name="config-evacuationMode" onchange="updateEvacuationModeControls()" />
                         <div class="checkmark"></div>
                     </label>
-                    <label class="text-input-label" id="config-evacuationTimingInput" style="display: none;">                
-                        <span>Open Evacuation on Turn #</span>        
-                        <input type="number" min="1" class="text-input" name="config-evacuationTiming" placeholder="Turn #" />
+                    <label class="text-input-label" id="config-evacuationTimingInput" style="display: none;">
+                        <span>Open Evacuation on Turn #</span>
+                        <input type="number" min="1" class="text-input" name="config-evacuationTiming"
+                            placeholder="Turn #" />
                     </label>
                     <label class="checkbox-container" style="padding-top: 2%;">
                         <span>Infested Pods Mode</span>
@@ -431,6 +437,11 @@
                     <label class="checkbox-container" style="padding-top: 2%;">
                         <span>Last Resort Mode</span>
                         <input type="checkbox" name="config-lastResortMode" />
+                        <div class="checkmark"></div>
+                    </label>
+                    <label class="checkbox-container" style="padding-top: 2%;">
+                        <span>Necrophagia Mode</span>
+                        <input type="checkbox" name="config-necrophagiaMode" />
                         <div class="checkmark"></div>
                     </label>
                     <label class="checkbox-container" style="padding-top: 2%;">
@@ -463,27 +474,32 @@
                         <input type="checkbox" name="config-unstablePodsMode" onchange="updateUnstablePodControls()" />
                         <div class="checkmark"></div>
                     </label>
-                    <fieldset id="config-podUnblockingLogicControls" class="player-team-assignment" style="display: none;">
+                    <fieldset id="config-podUnblockingLogicControls" class="player-team-assignment"
+                        style="display: none;">
                         <legend>
-                           Pod Unblocking
-                        </legend> 
+                            Pod Unblocking
+                        </legend>
                         <label class="checkbox-container">
                             Even Turns
-                            <input type="radio" name="config-podUnblockLogic" checked value="even" onchange="updateUnstablePodControls()" />
+                            <input type="radio" name="config-podUnblockLogic" checked value="even"
+                                onchange="updateUnstablePodControls()" />
                             <div class="checkmark"></div>
                         </label>
                         <label class="checkbox-container">
                             Odd Turns
-                            <input type="radio" name="config-podUnblockLogic" checked value="odd" onchange="updateUnstablePodControls()" />
+                            <input type="radio" name="config-podUnblockLogic" checked value="odd"
+                                onchange="updateUnstablePodControls()" />
                             <div class="checkmark"></div>
                         </label>
                         <label class="checkbox-container">
                             After Turn #
-                            <input type="radio" name="config-podUnblockLogic" checked value="turn" onchange="updateUnstablePodControls()" />
+                            <input type="radio" name="config-podUnblockLogic" checked value="turn"
+                                onchange="updateUnstablePodControls()" />
                             <div class="checkmark"></div>
                         </label>
-                        <label class="text-input-label">                        
-                            <input type="number" min="1" class="text-input" style="width: 75px" name="config-podAfterTurn" placeholder="Turn #" />
+                        <label class="text-input-label">
+                            <input type="number" min="1" class="text-input" style="width: 75px"
+                                name="config-podAfterTurn" placeholder="Turn #" />
                         </label>
                     </fieldset>
                 </div>

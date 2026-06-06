@@ -100,7 +100,7 @@ func NewFeline() StatusEffect {
 func NewHyperphagic() StatusEffect {
 	return StatusEffect{
 		Name:        StatusEffect_Hyperphagic,
-		Description: "You have fed on a human, gaining strength. But you want more...",
+		Description: "You have fed on a corpse, gaining strength. But you want more...",
 		UsesLeft:    1,
 	}
 }

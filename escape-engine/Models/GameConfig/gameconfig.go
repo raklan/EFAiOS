@@ -37,6 +37,8 @@ type GameModifiers struct {
 	NumTurns int `json:"numTurns"`
 	//Whether players' turns should automatically end after moving (and choosing to attack, for aliens) if there are no cards in their hand
 	AutoTurnEnd bool `json:"autoTurnEnd"`
+	//Whether to allow extra Hyperphagic bonuses stack
+	BloodlustMode bool `json:"bloodlustMode"`
 	//Whether Attacks should turn the targeted space into 1 "tier" lower of sector. Safe -> Dangerous -> Wall
 	DescructiveAttacksMode bool `json:"destructiveAttacksMode"`
 	//Whether the game should spawn a random Evacuation Sector on turn # in `EvacuationTiming`
@@ -49,6 +51,8 @@ type GameModifiers struct {
 	LastManStandingMode bool `json:"lastManStandingMode"`
 	//Whether the game should add a randomly placed guaranteed escape sector after all escape pods are marked as used.
 	LastResortMode bool `json:"lastResortMode"`
+	//Whether to give all players Hyperphagic for killing any other player
+	NecrophagiaMode bool `json:"necrophagiaMode"`
 	//Whether the game should be played such that escape pods do not remove humans from the game, and the humans' new win condition is to activate each escape pod
 	ReactorMode bool `json:"reactorMode"`
 	//Whether Alien players should respawn in an Alien Start Sector upon death, instead of joining the spectator team.
@@ -67,11 +71,13 @@ type GameModifiers struct {
 
 //Descriptions that can be more or less plugged directly into an innerHTML attribute of the modifier descriptions window. Modes that have configuration values have a [%VAR] in the string that can be replaced as needed.
 var FormattedModifierDescriptions = map[string]string{
+	"bloodlustMode":          "<span class=\"modifier-entry-title\">Bloodlust Mode</span>: Players with the Hyperphagic Status Effect can move +1 space for EACH kill, instead of a flat +1 bonus.",
 	"destructiveAttacksMode": "<span class=\"modifier-entry-title\">Destructive Attacks Mode</span>: Each time a Sector is attacked, it degrades - Safe Sectors become Dangerous, and Dangerous Sectors become Walls.",
 	"evacuationMode":         "<span class=\"modifier-entry-title\">Evacuation Mode</span>: At the beginning of Turn [%VAR], a random Dangerous or Safe Sector will become an Evacuation Sector. Any human reaching this sector escapes.",
 	"infestedPodsMode":       "<span class=\"modifier-entry-title\">Infested Pods Mode</span>: Aliens start in a randomly selected Escape Pod Sector.",
 	"lastManStandingMode":    "<span class=\"modifier-entry-title\">Last Man Standing Mode</span>: All Escape Pod Sectors are unusable until there is only 1 Human Player remaining.",
 	"lastResortMode":         "<span class=\"modifier-entry-title\">Last Resort Mode</span>: Once all Escape Pod Sectors are used, a random Dangerous or Safe Sector will become an Evacuation Sector. Any human reaching this sector escapes.",
+	"necrophagiaMode":        "<span class=\"modifier-entry-title\">Necrophagia Mode</span>: Every player gains Hyperphagic for killing any other Player, regardless of team.",
 	"reactorMode":            "<span class=\"modifier-entry-title\">Reactor Mode</span>: Humans cannot escape through Escape Pod Sectors. When all Escape Pod sectors have been visited, all remaining Humans automatically escape.",
 	"relentlessAliensMode":   "<span class=\"modifier-entry-title\">Relentless Aliens Mode</span>: Upon death, Alien Players will respawn at the start of their next turn.",
 	"scatterMode":            "<span class=\"modifier-entry-title\">Scatter Mode</span>: All players start in a randomly selected Sector.",
