@@ -7,10 +7,10 @@ My goal with this is twofold: First, a lightweight version that's easy to set up
 
 ## Features
 - Every Card & Role found in the Ultimate edition of the Tabletop version, as well as host controls over how many of each can be in the game.
-  ![image](https://github.com/user-attachments/assets/2fd42acb-a49e-4b12-98d2-e746841e090a)
+  <img width="1012" height="508" alt="image" src="https://github.com/user-attachments/assets/dd227121-2e97-4c25-9238-b0021742e0da" />
 
 - The Release Version comes prebundled with an editable recreation of every map found in the Ultimate edition of the Tabletop version, as well as both the Spring and Before the World Ends map packs.
-  ![image](https://github.com/user-attachments/assets/070f76a2-abd9-4e62-80bb-70fcfdc99755)
+  <img width="1889" height="874" alt="image" src="https://github.com/user-attachments/assets/8390bc7d-70be-4251-8a37-4b8429e1e1b8" />
 
 - Screen Drawing built-in so you can keep notes right on your device, as well as an Event Log to ensure you don't miss important turns.
   ![image](https://github.com/user-attachments/assets/275a5c02-5bcb-4780-b849-b42eef0b57f9)
@@ -33,14 +33,16 @@ My goal with this is twofold: First, a lightweight version that's easy to set up
 - [Easy Map Sharing](#map-sharing)
 
 ## How to Run
-I'll probably get it deployed in some fashion (and post the URL in this README when I do), but if for whatever reason that doesn't happen or you just want to run it yourself, you'll have three options:
+I'll probably get it deployed in some fashion (and post the URL in this README when I do), but if for whatever reason that doesn't happen or you just want to run it yourself, you'll have three options. However you run the project, the site will run on port 80 of whatever machine is running it, so any device on the same internet network can connect to your machine's IP via any web browser to play!
   ### Recommended/Easiest
   Check out the [Releases Page](https://github.com/raklan/EFAiOS/releases), which is the easiest way to get set up. Every release will have a ZIP folder included called EFAiOS-vX.Y.Z (replace X.Y.Z with the version number) that you can download and extract. There will be a .exe file inside called `efaios.exe` that you can run.
-  ### Other Options
-  - You can clone the repository, install Go on your machine, and simply run the command `go run ./escape-api` from the root directory. 
-  - I'll also probably push a docker image of the project that you can set up your own container for. Be aware that this option will not come with any premade maps.
-
-However you run the project, the site will run on port 80 of whatever machine is running it, so any device on the same internet network can connect to your machine's IP via any web browser to play!
+  ### Docker
+  Every release version now has an image pushed to Docker Hub [here](https://hub.docker.com/repository/docker/rak1an/efaios), following the same tagging semantics as this repository. You can pull the latest release via `docker pull rak1an/efaios:latest` or a specific version via `docker pull rak1an/efaios:v[version number]` (for example, `docker pull rak1an/efaios:v1.3.0`). From there, you can run it in a container as desired.
+  
+  _Note: Every version prior to v1.1.4 will not include any official maps, since the map files were not officially added to the repository until that release. If you use this method to run any earlier versions, maps will not be included in the image._
+  
+  ### Building From Source
+  You can clone the repository, install Go on your machine, and simply run the command `go run ./escape-api` from the root directory. 
 
 ## Map Sharing
 With the map editor, I wanted to make sharing maps between computers easy; The idea is that if my friends want to make maps, they can run the server themselves, make a map, and easily send a file to me that I can import into the "official" server so we can all play their map. With that in mind, here's how to share maps:
