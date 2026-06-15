@@ -1,15 +1,16 @@
-FROM golang:1.23 AS builder
+FROM golang:tip-bookworm AS builder
 
 RUN mkdir /logs
 RUN mkdir /maps
+
+COPY ./maps/ /maps
+
 WORKDIR /app
 
 RUN mkdir ./escape-engine
-# RUN mkdir ./escape-models
 RUN mkdir ./escape-api
 
 COPY ./escape-engine/ ./escape-engine
-# COPY ./escape-models/ ./escape-models
 COPY ./escape-api/ ./escape-api
 
 RUN CGO_ENABLED=0 GOOS=linux go build -C ./escape-api -o escapeserver
