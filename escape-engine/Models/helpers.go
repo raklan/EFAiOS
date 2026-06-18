@@ -65,7 +65,7 @@ func AttackSpace(row int, col string, gameState *GameState) (*GameEvent, error) 
 
 	potentialNewStarts := []Space{}
 	if gameState.GameMap.GameConfig.Modifiers.InfestedPodsMode {
-		potentialNewStarts = gameState.GameMap.GetSpacesOfType(Space_Pod)
+		potentialNewStarts = gameState.GameMap.GetSpacesOfType(Space_Pod, Space_UsedPod)
 	} else if gameState.GameMap.GameConfig.Modifiers.ScatterMode {
 		potentialNewStarts = gameState.GameMap.GetSpacesOfType(Space_AlienStart, Space_HumanStart, Space_Dangerous, Space_Safe)
 	} else {

@@ -245,12 +245,17 @@ async function handleGameStateMessage(gameState) {
 
 async function handleLobbyInfoMessage(messageData) {
     if (!thisPlayer) {
-        thisPlayer = messageData.lobbyInfo?.players?.find(p => p.id == messageData.playerID)
-        setConfigFormFromObject(messageData.lobbyInfo.mapConfig);
-        loadLobbyMapPreview(messageData.lobbyInfo.mapId);
+        thisPlayer = messageData.lobbyInfo?.players?.find(p => p.id == messageData.playerID)        
     }else{
         thisPlayer = messageData.lobbyInfo?.players?.find(p => p.id == thisPlayer.id)
     }
+
+    //Only load map preview/config window if the game hasn't started
+    if(!(messageData.lobbyInfo?.gameStateId?.length > 0)){
+        setConfigFormFromObject(messageData.lobbyInfo.mapConfig);
+        loadLobbyMapPreview(messageData.lobbyInfo.mapId);
+    }
+
     const connectionInfo = {
         type: 'rejoin',
         playerId: thisPlayer.id,
